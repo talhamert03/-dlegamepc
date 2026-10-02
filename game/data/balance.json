@@ -38,31 +38,52 @@
  },
  "primary": {
   "str": {
-   "attack": 1.5,
-   "hp_flat": 4,
-   "phys_dmg": 0.2
+   "main": {
+    "attack_flat": 0.5,
+    "attack_pct": 0.2
+   },
+   "always": {
+    "hp_flat": 3,
+    "phys_dmg": 0.1
+   }
   },
   "dex": {
-   "attack": 1.5,
-   "crit_chance": 0.08,
-   "attack_speed": 0.25,
-   "evasion": 0.05
+   "main": {
+    "attack_flat": 0.5,
+    "attack_pct": 0.2
+   },
+   "always": {
+    "crit_chance": 0.04,
+    "attack_speed": 0.1,
+    "evasion": 0.03
+   }
   },
   "int": {
-   "spell": 1.5,
-   "cast_speed": 0.25,
-   "skill_dmg": 0.3,
-   "cdr": 0.1
+   "main": {
+    "spell_flat": 0.5,
+    "spell_pct": 0.2
+   },
+   "always": {
+    "cast_speed": 0.1,
+    "skill_dmg": 0.1,
+    "cdr": 0.03
+   }
   },
   "vit": {
-   "hp_flat": 12,
-   "def_flat": 0.4,
-   "hp_regen_pct": 0.002
+   "main": {},
+   "always": {
+    "hp_flat": 10,
+    "hp_pct": 0.15,
+    "def_flat": 0.3
+   }
   },
   "luk": {
-   "item_find": 0.15,
-   "gold_find": 0.12,
-   "crit_chance": 0.03
+   "main": {},
+   "always": {
+    "item_find": 0.15,
+    "gold_find": 0.12,
+    "crit_chance": 0.02
+   }
   }
  },
  "caps": {
@@ -429,5 +450,6 @@
    "set": 1.25,
    "mythic": 1.4
   }
- }
+ },
+ "start_stats": 5
 }

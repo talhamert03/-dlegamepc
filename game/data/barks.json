@@ -1,0 +1,30 @@
+{
+  "generic": {
+    "level_up": [{"tr": "Daha güçlüyüm!", "en": "I feel stronger!"}, {"tr": "Bir seviye daha!", "en": "Another level!"}, {"tr": "Bu antrenman işe yarıyor.", "en": "This training pays off."}],
+    "boss": [{"tr": "İşte büyük olan geliyor!", "en": "Here comes the big one!"}, {"tr": "Dikkat, boss!", "en": "Careful, a boss!"}, {"tr": "Hazır olun!", "en": "Get ready!"}],
+    "join": [{"tr": "Lonca'ya katılmaktan onur duyarım!", "en": "Honored to join the guild!"}, {"tr": "Merhaba ekip!", "en": "Hello team!"}],
+    "ally_down": [{"tr": "Dayan! Birazdan kalkarsın!", "en": "Hang on! You'll be up soon!"}, {"tr": "Arkadaşımızı düşürdüler!", "en": "They got one of us!"}],
+    "legendary": [{"tr": "O ışık... efsanevi mi?!", "en": "That light... legendary?!"}, {"tr": "Vay be! Şuna bak!", "en": "Whoa! Look at that!"}],
+    "idle": [{"tr": "Hâlâ orada mısın?", "en": "Are you still there?"}, {"tr": "Biz iyiyiz, sen işine bak!", "en": "We're fine, focus on your work!"}],
+    "night": [{"tr": "Gece çöktü, dikkatli olun.", "en": "Night has fallen, stay sharp."}]
+  },
+  "classes": {
+    "knight": {"level_up": [{"tr": "Kalkanım daha da sağlam!", "en": "My shield grows stronger!"}], "boss": [{"tr": "Arkama geçin!", "en": "Get behind me!"}]},
+    "berserker": {"level_up": [{"tr": "DAHA FAZLA!", "en": "MORE!"}], "boss": [{"tr": "Sonunda değerli bir rakip!", "en": "Finally, a worthy foe!"}]},
+    "archer": {"level_up": [{"tr": "Oklarım daha keskin.", "en": "My arrows fly truer."}], "boss": [{"tr": "Hedef kilitlendi.", "en": "Target locked."}]},
+    "assassin": {"level_up": [{"tr": "Gölgeler beni seviyor.", "en": "The shadows like me."}], "boss": [{"tr": "Zayıf noktasını buldum.", "en": "Found its weak spot."}]},
+    "mage": {"level_up": [{"tr": "Yeni bir büyü öğrendim!", "en": "I learned a new spell!"}], "boss": [{"tr": "Ateş topu zamanı!", "en": "Fireball time!"}]},
+    "necromancer": {"level_up": [{"tr": "Ruhlar fısıldıyor...", "en": "The spirits whisper..."}], "boss": [{"tr": "Ölüler bize yardım edecek.", "en": "The dead will aid us."}]},
+    "cleric": {"level_up": [{"tr": "Işık benimle!", "en": "The light is with me!"}], "boss": [{"tr": "Sizi iyileştireceğim, merak etmeyin!", "en": "I'll heal you, don't worry!"}]},
+    "bard": {"level_up": [{"tr": "Bu bir şarkıya değer!", "en": "This deserves a song!"}], "boss": [{"tr": "Savaş marşı çalıyorum!", "en": "Playing the war march!"}]}
+  },
+  "heroes": {
+    "pip": {"level_up": [{"tr": "Dua ettim, seviye geldi! Tesadüf mü?", "en": "I prayed and I leveled! Coincidence?"}], "join": [{"tr": "Ups, iyileştirme yerine şimşek attım...", "en": "Oops, cast lightning instead of a heal..."}]},
+    "vex": {"level_up": [{"tr": "Bonbon bu seviyeyi beğendi.", "en": "Bonbon likes this level."}], "join": [{"tr": "Korkmayın, kafatası zararsız. Çoğunlukla.", "en": "Don't worry, the skull is harmless. Mostly."}]},
+    "bjorn": {"boss": [{"tr": "DAHA FAZLA GOBLİN!", "en": "MORE GOBLINS!"}], "join": [{"tr": "Düelloyu kazandınız. Baltam artık sizin!", "en": "You won the duel. My axe is yours!"}]},
+    "lyra": {"level_up": [{"tr": "Yıldızlar nişan almama yardım ediyor.", "en": "The stars help my aim."}], "join": [{"tr": "Bu slime'lar beni bekliyordu sanırım.", "en": "These slimes were waiting for me."}]},
+    "kael": {"level_up": [{"tr": "Lonca kaptanı olarak bu iyi bir gün!", "en": "A good day for the guild captain!"}]},
+    "nova": {"join": [{"tr": "Öz Kulesi'nin öğrencisi Nova, hizmetinizde!", "en": "Nova of the Tower, at your service!"}]},
+    "finn": {"join": [{"tr": "Şarkı söylerken cebinizi korursanız iyi olur.", "en": "Watch your pockets while I sing."}]}
+  }
+}

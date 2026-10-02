@@ -1,0 +1,105 @@
+class_name SpriteLib
+extends RefCounted
+## Builds and caches SpriteFrames from generated sprite sheets.
+
+static var _cache: Dictionary = {}
+static var _meta: Dictionary = {}
+
+
+static func _anim_meta(dir: String) -> Dictionary:
+	if _meta.has(dir):
+		return _meta[dir]
+	var path := dir + "anims.json"
+	var d: Dictionary = {}
+	if FileAccess.file_exists(path):
+		var p: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+		if p is Dictionary:
+			d = p
+	_meta[dir] = d
+	return d
+
+
+static func frames_for(kind: String, id: String) -> SpriteFrames:
+	var key := kind + ":" + id
+	if _cache.has(key):
+		return _cache[key]
+	var dir := "res://assets/sprites/heroes/" if kind == "hero" else "res://assets/sprites/enemies/"
+	var meta := _anim_meta(dir)
+	var path := dir + id + ".png"
+	if not ResourceLoader.exists(path) or meta.is_empty():
+		_cache[key] = null
+		return null
+	var tex: Texture2D = load(path)
+	var info: Dictionary = meta.get("sheets", {}).get(id, meta)
+	var fw: int = int(info.get("frame_w", meta.get("frame_w", 64)))
+	var fh: int = int(info.get("frame_h", meta.get("frame_h", 56)))
+	var anims: Dictionary = info.get("anims", meta.get("anims", {}))
+	var sf := SpriteFrames.new()
+	sf.remove_animation("default")
+	for an in anims:
+		var a: Dictionary = anims[an]
+		sf.add_animation(an)
+		sf.set_animation_speed(an, float(a.get("fps", 8)))
+		sf.set_animation_loop(an, bool(a.get("loop", false)))
+		for i in int(a.get("count", 1)):
+			var at := AtlasTexture.new()
+			at.atlas = tex
+			at.region = Rect2((int(a["start"]) + i) * fw, 0, fw, fh)
+			sf.add_frame(an, at)
+	_cache[key] = sf
+	return sf
+
+
+static func sheet_info(kind: String, id: String) -> Dictionary:
+	var dir := "res://assets/sprites/heroes/" if kind == "hero" else "res://assets/sprites/enemies/"
+	var meta := _anim_meta(dir)
+	var info: Dictionary = meta.get("sheets", {}).get(id, {})
+	if info.is_empty():
+		info = {"frame_w": meta.get("frame_w", 64), "frame_h": meta.get("frame_h", 56),
+			"root": meta.get("root", [28, 54])}
+	return info
+
+
+static func impact_frame(kind: String, id: String, anim: String) -> int:
+	var dir := "res://assets/sprites/heroes/" if kind == "hero" else "res://assets/sprites/enemies/"
+	var meta := _anim_meta(dir)
+	var info: Dictionary = meta.get("sheets", {}).get(id, meta)
+	return int(info.get("anims", {}).get(anim, {}).get("impact", 3))
+
+
+static func portrait(id: String) -> Texture2D:
+	var p := "res://assets/portraits/%s.png" % id
+	return load(p) if ResourceLoader.exists(p) else null
+
+
+static func hero_icon(id: String) -> Texture2D:
+	var p := "res://assets/sprites/heroes/icons/%s.png" % id
+	return load(p) if ResourceLoader.exists(p) else null
+
+
+static func item_icon(item: Dictionary) -> Texture2D:
+	var bt: String = item.get("btype", "")
+	var tier := int(item.get("tier", 0))
+	var w: String = item.get("weight", "")
+	var cands := []
+	if w != "":
+		cands.append("res://assets/sprites/items/%s_%s_t%d.png" % [bt, w, tier])
+	cands.append("res://assets/sprites/items/%s_t%d.png" % [bt, tier])
+	cands.append("res://assets/sprites/items/%s.png" % bt)
+	for c in cands:
+		if _cache.has(c):
+			return _cache[c]
+		if ResourceLoader.exists(c):
+			var t: Texture2D = load(c)
+			_cache[c] = t
+			return t
+	return null
+
+
+static func skill_icon(sid: String) -> Texture2D:
+	var p := "res://assets/sprites/skills/%s.png" % sid
+	if _cache.has(p):
+		return _cache[p]
+	var t: Texture2D = load(p) if ResourceLoader.exists(p) else null
+	_cache[p] = t
+	return t
