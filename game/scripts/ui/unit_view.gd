@@ -189,6 +189,7 @@ func _play(a: String) -> void:
 		var tx := _target_x()
 		if not is_nan(tx):
 			_dash = clampf((tx - unit.x) * _facing - _h * 0.55 - 6.0, 0.0, 150.0)
+		AudioManager.play("swing%d" % (randi() % 2), 0.1, 0.32 if unit.is_hero_side() else 0.22)
 
 
 var _dash := 0.0

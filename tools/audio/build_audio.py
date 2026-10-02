@@ -222,4 +222,11 @@ def music():
 if __name__ == "__main__":
     sfx()
     music()
+    # layered combat sounds replace the chip versions of hit/crit/shoot/magic/death
+    import sys
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import build_sfx_hd
+    import build_music_hd
+    build_sfx_hd.main()
+    build_music_hd.main()
     print("audio done")

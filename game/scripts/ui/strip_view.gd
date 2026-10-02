@@ -353,7 +353,8 @@ func _on_unit_died(u: Combatant) -> void:
 	tw.tween_interval(1.2 if u.side == Combatant.Side.ENEMY else 0.3)
 	tw.tween_callback(v.queue_free)
 	if u.side == Combatant.Side.ENEMY:
-		AudioManager.play("coin", 0.15, 0.4)
+		AudioManager.play("death", 0.12, 0.45)
+		AudioManager.play("coin", 0.15, 0.35)
 		_spawn_vfx("coin", Vector2(u.x, BattleSim.GROUND_Y - 8), Color("#F7C948"), 4)
 		if u.etype == "boss" or u.etype == "actboss":
 			_shake = 0.5
@@ -437,7 +438,7 @@ func _on_damage(src, tgt, amount: float, crit: bool, element: String, kind: Stri
 		_spawn_number("BLOCK", pos + Vector2(0, -6), Color("#8FB4FF"))
 	_spawn_number(txt, pos, Color("#FFD84A") if crit and not tgt.is_hero_side() else col, crit)
 	if kind != "dot":
-		AudioManager.play("crit" if crit else "hit%d" % (_rng.randi() % 3), 0.1, 0.5 if not crit else 0.7)
+		AudioManager.play("crit" if crit else _hit_sound(src, element), 0.08, 0.55 if not crit else 0.75)
 		var tv: UnitView = views.get(tgt.uid)
 		var hp := tv.center() if tv else pos
 		var melee_src: bool = src != null and bool(src.stats.get("melee", true)) and src.projectile == ""
@@ -454,6 +455,22 @@ func _on_damage(src, tgt, amount: float, crit: bool, element: String, kind: Stri
 			_shake = max(_shake, 0.12)
 	if crit and src != null and (src.etype == "boss" or src.etype == "actboss"):
 		_shake = 0.25
+
+
+## Blades ring, heavy weapons and monsters thud, spells sparkle.
+func _hit_sound(src, element: String) -> String:
+	if element != "physical" and element != "":
+		return "hit_magic"
+	if src == null:
+		return "hit_blunt%d" % (_rng.randi() % 2)
+	if src.is_hero_side() and src.etype == "hero":
+		var cls: String = str(DataDB.hero_def(src.id).get("class", "knight"))
+		if cls in ["mage", "necromancer", "cleric", "bard"]:
+			return "hit_magic"
+		if cls == "berserker":
+			return "hit_blunt%d" % (_rng.randi() % 2)
+		return "hit%d" % (_rng.randi() % 3)
+	return "hit_blunt%d" % (_rng.randi() % 2)
 
 
 func _on_heal(tgt, amount: float) -> void:

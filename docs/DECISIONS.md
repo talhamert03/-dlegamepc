@@ -36,22 +36,25 @@ yapay zeka) projeye katılmadan önce bu dosyayı okumalı.
 - `_migrate()` sürüm yükseltmeleri için tek giriş noktası.
 
 ## Sanat
-- **Karakterler ve arka planlar yapay zeka ile üretildi** (Higgsfield, `gpt_image_2_5`), tek bir stil tarifiyle:
-  yüksek çözünürlüklü, detaylı anime pixel-art. Boru hattı:
-  `tools/art/ai_prompts.py` (promptlar) → `tools/art/ai_jobs.py` (iş/URL kaydı, `art_src/jobs_*.json`, `urls_*.json`) →
-  `tools/art/import_ai_art.py <heroes|enemies|pets|bg>` (indir, kırp, ayak hizası, portre 560px, yüz ortalı ikon) →
-  `game/assets/hd/...` + `meta.json`. Ham indirmeler `art_src/raw/` altında (git dışı).
-- Arka planlar 21:9 panoramadan alt bant kesilerek 336px (şeridin 4 katı) yüksekliğe indirilir; `strip_view.gd` aynalı
-  tekrarla kaydırır. HD arka plan yoksa eski prosedürel parallax katmanları kullanılır.
-- **HD birimler tek görsel + prosedürel animasyon** (idle/koşu/saldırı/yetenek/vuruş/ölüm/zafer), pivot ayaklarda.
-  `unit.gdshader` `texel_scale` ile dış hat/çözülme efektlerini mantıksal piksel boyutunda tutar; kostümler aynı shader ile renk değiştirir.
-- UI: Cinzel/Nunito (OFL, Türkçe karakterli) fontlar, `UIFrame` vektör çerçeveler, `tools/art/build_ui_hd.py` ile HD ikon/küre/slot.
-- Eski prosedürel pixel-art boru hattı (`tools/art/pixelrig.py`, `chars.py`) yedek olarak duruyor; HD görseli olmayan birimler onu kullanır.
-- Bir karakteri yeniden üretmek: promptunu `ai_prompts.py` içinde düzenle, yeni işin URL'sini `urls_<tür>.json`'a yaz,
-  `import_ai_art.py <tür> <id>` çalıştır.
+- **Görsel hedef: TBH: Task Bar Hero kalitesi.** Kompakt şerit (360x72 mantıksal, 1080p'de 2x), küçük chibi
+  karakterler, gerçek kare animasyonu, demir çerçeveli paneller ve kırmızı başlık kurdeleleri.
+- **Savaş sprite'ları: animasyonlu chibi sheet'ler** (`assets/hd/anim/`). Her birim için tek AI görseli
+  (gpt_image_2_5, referans = birimin HD illüstrasyonu): 6x4 kare — idle, koşu, saldırı, hasar+ölüm.
+  `tools/art/ai_sheets.py` promptları ve iş kayıtlarını tutar, `tools/art/import_sheets.py` arka planı ayıklar,
+  kareleri böler ve ayak noktasına hizalar (titreme yok). Sheet'i olmayan birimler HD illüstrasyon + prosedürel
+  harekete düşer.
+- `UnitView` saldırı karesini simülasyonun vuruş anına (`act_impact`) senkronlar; yakın dövüşçüler hedefe atılır,
+  menzilliler geri teper; vuruşta flaş, geri itme, kritikte vuruş donması (hit-stop) ve sarsıntı.
+- HD illüstrasyonlar portre, kahraman penceresi ve sinematik girişte kullanılır; arka planlar JPEG.
+- UI: `UISkin` (tamamen vektör: demir panel, kurdele, bronz madalyon, ahşap buton, nadirlik renkli slot),
+  `GameStyleBox` ile tüm Button'lara uygulanır. Fontlar Cinzel/Nunito (OFL).
+- Ses: `tools/audio/build_sfx_hd.py` katmanlı vuruş sesleri (darbe + gövde + metal tınısı + oda yankısı),
+  `tools/audio/build_music_hd.py` lavta/arp, yaylı pad, flüt, davul ve salon yankısıyla döngüsel müzikler.
 
 ## Bilinen sınırlamalar / sonraki adımlar
 - **Steam:** `SteamService` şimdilik stub (başarım ve skor çağrıları loglanır). GodotSteam eklentisi eklenince doldurulacak.
 - **Kostümler:** 6 hesap çapında kostüm, kahramanın ana renk rampasını shader ile yeniden renklendirir (yeni sprite gerekmez). Kalıp/aksesuar değiştiren kostümler henüz yok.
 - macOS export preset'i yok (imzalama/notarization gerektirir).
 - Yalnızca TR/EN dil desteği.
+- **Animasyon sheet'i eksik birimler:** 27/48 kahraman ve 16/112 düşman-boss sheet'li (kredi sınırı). Kalanlar
+  `ai_sheets.py batch` + `import_sheets.py` ile aynı boru hattından üretilebilir (~0.25 kredi/sheet).
