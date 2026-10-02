@@ -8,6 +8,7 @@ import math
 FAMILY = {
     "sword": "blade", "mace": "blade", "axe": "heavy", "greatsword": "heavy",
     "dagger": "dagger", "bow": "bow", "staff": "staff", "scythe": "staff", "lute": "lute",
+    "spear": "blade", "trident": "blade", "claw": "dagger", "bomb": "dagger", "none": "blade",
 }
 
 CLASS_WEAPON = {

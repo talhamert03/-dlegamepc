@@ -108,7 +108,7 @@ func _process(delta: float) -> void:
 			var aps: float = float(unit.stats.get("aps", 1.0))
 			sp = clamp(aps, 1.0, 2.25)
 		_play(want, sp)
-	mat.set_shader_parameter("flash", clamp(unit.flash_t / 0.12, 0.0, 1.0))
+	mat.set_shader_parameter("flash", clamp(unit.flash_t / 0.12, 0.0, 1.0) * 0.65)
 	if not unit.alive:
 		_death_t += delta
 		if kind != "hero":

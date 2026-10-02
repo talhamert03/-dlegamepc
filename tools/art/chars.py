@@ -35,6 +35,27 @@ TEMPLATES = {
 }
 
 
+SCALE_KEYS = ["T", "SW", "WW", "HW", "neck", "head_u", "head_v", "thigh", "shin", "foot", "foot_r", "uarm", "larm", "hand"]
+
+
+def scaled_template(name: str, k: float, W=None, H=None, root=None):
+    """Return a copy of a template scaled by k (used for small goblins and big bosses)."""
+    m = dict(TEMPLATES[name])
+    for key in SCALE_KEYS:
+        m[key] = m[key] * k
+    for key in ("thigh_r", "shin_r", "uarm_r", "larm_r", "head_c"):
+        m[key] = tuple(v * k for v in m[key])
+    m["scale"] = m["scale"] * k
+    m["k"] = k
+    if W:
+        m["W"] = W
+    if H:
+        m["H"] = H
+    if root:
+        m["root"] = root
+    return m
+
+
 def skeleton_for(m):
     T = m["T"]
     if m["view"] == "side":
@@ -477,7 +498,7 @@ class Builder:
     def weapon(self, kind):
         s, side = self.s, self.side
         zw = 10.5 if side else 8.4
-        sc = 0.48 if side else 1.0     # battle sprites use smaller weapons
+        sc = (0.48 if side else 1.0) * self.m.get("k", 1.0)     # battle sprites use smaller weapons
         if kind == "sword":
             L = 30 * sc
             self.add("weapon", "capsule", "leather2", zw, {"a": (-2.5 * sc, 0), "b": (2.5 * sc, 0), "r0": 1.0 * sc + 0.35}, bevel=1)
@@ -551,6 +572,23 @@ class Builder:
             self.add("weapon", "ellipse", "dark", zw - 0.45, {"c": (2 * sc, 6 * sc), "rx": 1.8 * sc + 0.3, "ry": 1.8 * sc + 0.3}, bevel=1)
             self.add("weapon", "capsule", "leather2", zw - 0.4, {"a": (-4 * sc, 6 * sc), "b": (-20 * sc, 6 * sc), "r0": 1.1 * sc + 0.3}, bevel=1)
             self.add("weapon", "capsule", "trim", zw - 0.35, {"a": (-20 * sc, 6 * sc), "b": (-24 * sc, 4 * sc), "r0": 1.4 * sc + 0.3}, bevel=1)
+        elif kind == "spear":
+            L = 44 * sc
+            self.add("weapon", "capsule", "wood", zw - 1.5, {"a": (-L * 0.45, 0), "b": (L * 0.6, 0), "r0": 1.0 * sc + 0.3}, bevel=1)
+            self.add("weapon", "poly", "metal", zw - 1.4, {"pts": [(L * 0.58, -2.4 * sc - 0.5), (L * 0.6 + 9 * sc, 0), (L * 0.58, 2.4 * sc + 0.5)]},
+                     bevel=1, name="spearhead")
+        elif kind == "trident":
+            L = 40 * sc
+            self.add("weapon", "capsule", "dark", zw - 1.5, {"a": (-L * 0.4, 0), "b": (L * 0.6, 0), "r0": 1.0 * sc + 0.3}, bevel=1)
+            for o in (-3.5, 0, 3.5):
+                self.add("weapon", "capsule", "metal", zw - 1.4, {"a": (L * 0.6, o * sc), "b": (L * 0.6 + 7 * sc, o * sc), "r0": 0.8 * sc + 0.3}, bevel=1)
+            self.add("weapon", "capsule", "metal", zw - 1.4, {"a": (L * 0.6, -3.5 * sc), "b": (L * 0.6, 3.5 * sc), "r0": 0.8 * sc + 0.3}, bevel=1)
+        elif kind == "claw":
+            for o in (-1.5, 0, 1.5):
+                self.add("weapon", "capsule", "bone", zw, {"a": (0.5, o * sc * 1.4), "b": (6 * sc + 2, o * sc * 2.2), "r0": 0.6 * sc + 0.3, "r1": 0.3}, bevel=1)
+        elif kind == "bomb":
+            self.add("weapon", "ellipse", "dark", zw, {"c": (2 * sc, 0), "rx": 4 * sc + 0.8, "ry": 4 * sc + 0.8}, bevel=3 * sc + 0.5, name="bomb")
+            self.add("weapon", "capsule", "trim", zw + 0.1, {"a": (5 * sc + 1, -1 * sc), "b": (8 * sc + 1.5, -3 * sc), "r0": 0.6 * sc + 0.2}, bevel=1)
         elif kind == "book":
             self.add("offhand", "poly", "primary", 10.2 if side else 9.4,
                      {"pts": [(-4 * sc - 0.6, -5 * sc - 0.6), (6 * sc + 0.6, -5 * sc - 0.6), (6 * sc + 0.6, 5 * sc + 0.6), (-4 * sc - 0.6, 5 * sc + 0.6)]},
@@ -562,7 +600,7 @@ class Builder:
 
     def shield(self):
         s, side = self.s, self.side
-        sc = 0.48 if side else 1.0
+        sc = (0.48 if side else 1.0) * self.m.get("k", 1.0)
         z = 10.8 if side else 9.6
         R = 10 * sc + 0.8
         self.add("offhand", "ellipse", "primary", z, {"c": (0, 0), "rx": R * 1.15, "ry": R}, bevel=R * 0.5, name="shield")

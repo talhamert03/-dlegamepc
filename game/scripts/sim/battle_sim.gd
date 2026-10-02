@@ -988,7 +988,7 @@ func _apply_damage(src: Combatant, tgt: Combatant, amount: float, crit: bool, el
 		tgt.shield -= absorbed
 		dmg -= absorbed
 	tgt.hp -= dmg
-	tgt.flash_t = 0.12
+	tgt.flash_t = 0.09
 	if tgt.anim != "attack" and tgt.anim != "skill" and tgt.busy_t <= 0:
 		tgt.set_anim("hit")
 	if src != null and src.alive:
