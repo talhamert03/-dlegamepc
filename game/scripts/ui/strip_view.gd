@@ -73,7 +73,11 @@ func _ready() -> void:
 	EventBus.zone_changed.connect(_on_zone)
 	EventBus.stage_changed.connect(func(_s): _update_hud_text())
 	EventBus.boss_spawned.connect(_on_boss_spawned)
-	EventBus.boss_defeated.connect(func(_z): _show_banner(DataDB.t("boss_defeated"), Color("#F7C948")))
+	EventBus.boss_defeated.connect(func(_z):
+		_show_banner(DataDB.t("boss_defeated"), Color("#F7C948"))
+		AudioManager.play("loot_legendary", 0.0, 0.6)
+		AudioManager.play_music(str(BattleSim.zone().get("music", "act1"))))
+	EventBus.boss_failed.connect(func(_z): AudioManager.play_music(str(BattleSim.zone().get("music", "act1"))))
 	EventBus.party_wiped.connect(func(): _show_banner(DataDB.t("party_wiped"), Color("#FF6A5A")))
 	EventBus.phase_changed.connect(_on_phase)
 	EventBus.party_changed.connect(_rebuild_units)
@@ -316,6 +320,7 @@ func _on_unit_died(u: Combatant) -> void:
 	tw.tween_interval(1.2 if u.side == Combatant.Side.ENEMY else 0.3)
 	tw.tween_callback(v.queue_free)
 	if u.side == Combatant.Side.ENEMY:
+		AudioManager.play("coin", 0.15, 0.4)
 		_spawn_vfx("coin", Vector2(u.x, BattleSim.GROUND_Y - 8), Color("#F7C948"), 4)
 		if u.etype == "boss" or u.etype == "actboss":
 			_shake = 0.5
@@ -397,17 +402,20 @@ func _on_damage(src, tgt, amount: float, crit: bool, element: String, kind: Stri
 		_spawn_number("BLOCK", pos + Vector2(0, -6), Color("#8FB4FF"))
 	_spawn_number(txt, pos, Color("#FFD84A") if crit and not tgt.is_hero_side() else col, crit)
 	if kind != "dot":
+		AudioManager.play("crit" if crit else "hit%d" % (_rng.randi() % 3), 0.1, 0.5 if not crit else 0.7)
 		_spawn_vfx("crit" if crit else "hit", pos + Vector2(_rng.randf_range(-3, 3), _rng.randf_range(-4, 4)), col, 6)
 	if crit and src != null and (src.etype == "boss" or src.etype == "actboss"):
 		_shake = 0.25
 
 
 func _on_heal(tgt, amount: float) -> void:
+	AudioManager.play("heal", 0.1, 0.4)
 	_spawn_number("+" + F.fmt_num(amount), _unit_pos(tgt, true), Color("#6CFF8A"))
 	_spawn_vfx("heal", Vector2(tgt.x, BattleSim.GROUND_Y), Color("#8CFF9A"), 6)
 
 
 func _on_projectile(src, tgt, kind: String, travel: float) -> void:
+	AudioManager.play("shoot" if kind.begins_with("arrow") else "magic", 0.12, 0.35)
 	var p := Projectile.new()
 	var a := _unit_pos(src) + Vector2(6 if src.is_hero_side() else -6, -4)
 	var b := _unit_pos(tgt)
@@ -517,6 +525,7 @@ func _on_boss_spawned(u) -> void:
 	_boss_name.text = u.name
 	_show_banner(DataDB.t("boss_appears", {"name": u.name}), Color("#FF6A5A"))
 	AudioManager.play("boss_warning", 0.0, 1.0)
+	AudioManager.play_music("boss")
 
 
 func _on_phase(p: String) -> void:

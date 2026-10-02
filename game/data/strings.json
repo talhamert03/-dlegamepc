@@ -1026,5 +1026,45 @@
  "town_name": {
   "tr": "Taşköprü Kasabası",
   "en": "Stonebridge Town"
+ },
+ "title_new": {
+  "tr": "Yeni Oyun",
+  "en": "New Game"
+ },
+ "title_settings": {
+  "tr": "Ayarlar",
+  "en": "Settings"
+ },
+ "skip": {
+  "tr": "Atla",
+  "en": "Skip"
+ },
+ "intro_1": {
+  "tr": "Bin yıl önce, Dünya Kristali Aethoria'ya Öz veriyordu...",
+  "en": "A thousand years ago, the World Crystal gave Essence to Aethoria..."
+ },
+ "intro_2": {
+  "tr": "Uçurum Kralı Morvath kristali parçaladı.",
+  "en": "Morvath, King of the Abyss, shattered it."
+ },
+ "intro_3": {
+  "tr": "Parçalar dört diyara dağıldı; canavarlar güçlendi.",
+  "en": "The shards scattered across four realms; monsters grew strong."
+ },
+ "intro_4": {
+  "tr": "Taşköprü kasabasında boş bir lonca binası...",
+  "en": "In Stonebridge stands an empty guild hall..."
+ },
+ "intro_5": {
+  "tr": "...ve şimdi senin! Gezgin Lonca kuruldu.",
+  "en": "...and now it's yours! The Wandering Guild is founded."
+ },
+ "for_sale": {
+  "tr": "SATILIK",
+  "en": "FOR SALE"
+ },
+ "guild_sign": {
+  "tr": "GEZGİN LONCA",
+  "en": "WANDERER GUILD"
  }
 }

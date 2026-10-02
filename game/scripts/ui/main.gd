@@ -31,11 +31,15 @@ func _ready() -> void:
 
 func _boot() -> void:
 	var cmd := OS.get_cmdline_user_args()
-	if cmd.has("--fresh"):
+	if cmd.has("--title") or (not cmd.has("--fresh") and not GameState.has_save()):
+		await _run_title()
+		GameState.new_game()
+		Settings.set_v("tutorial_done", false)
+	elif cmd.has("--fresh"):
 		GameState.new_game()
 	elif not GameState.load_game():
 		GameState.new_game()
-		Settings.set_v("tutorial_done", false)
+	Quests.ensure_daily()
 	var away := OfflineSim.apply()
 	BattleSim.start()
 	if away.get("seconds", 0) >= 120:
@@ -45,6 +49,45 @@ func _boot() -> void:
 	Tutorial.start_if_needed(self)
 	if cmd.has("--screenshot"):
 		_screenshot_mode(cmd)
+
+
+func _run_title() -> void:
+	var w := get_window()
+	strip.visible = false
+	cpanel.visible = false
+	for b in _round.values():
+		b.visible = false
+	var sc: int = WindowManager.ui_scale
+	w.content_scale_size = TitleScreen.SIZE
+	w.size = TitleScreen.SIZE * sc
+	var scr: Rect2i = DisplayServer.screen_get_usable_rect(DisplayServer.window_get_current_screen())
+	w.position = scr.position + (scr.size - w.size) / 2
+	var t := TitleScreen.new()
+	add_child(t)
+	if OS.get_cmdline_user_args().has("--screenshot"):
+		await get_tree().create_timer(2.0).timeout
+		get_viewport().get_texture().get_image().save_png("user://screenshots/title.png")
+		t._start_intro()
+		await get_tree().create_timer(1.5).timeout
+		get_viewport().get_texture().get_image().save_png("user://screenshots/intro.png")
+		t._finish()
+	else:
+		await t.finished
+	# shrink & slide into the strip position
+	var target_size := WindowManager.STRIP_SIZE * sc
+	w.content_scale_size = WindowManager.STRIP_SIZE
+	w.size = target_size
+	var from := w.position
+	WindowManager.place_strip()
+	var to := w.position
+	w.position = from
+	var tw := create_tween()
+	tw.tween_property(w, "position", to, 0.6).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	await tw.finished
+	strip.visible = true
+	cpanel.visible = true
+	for b in _round.values():
+		b.visible = true
 
 
 func _build_round_buttons() -> void:
