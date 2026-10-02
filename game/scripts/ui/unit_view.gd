@@ -31,8 +31,11 @@ func setup(u: Combatant) -> void:
 		var r: Array = info.get("root", [28, 54])
 		root_off = Vector2(float(r[0]), float(r[1]))
 	elif kind == "summon":
-		frames = SpriteLib.frames_for("enemy", "summon_" + sheet_id)
-		var info2 := SpriteLib.sheet_info("enemy", "summon_" + sheet_id)
+		var sheet: String = str(vis.get("sheet", "summon_" + sheet_id))
+		frames = SpriteLib.frames_for("enemy", sheet)
+		var info2 := SpriteLib.sheet_info("enemy", sheet)
+		if u.etype == "pet":
+			_show_bar = false
 		var r2: Array = info2.get("root", [24, 46])
 		root_off = Vector2(float(r2[0]), float(r2[1]))
 		_head_y = -float(info2.get("height", 24)) - 4.0

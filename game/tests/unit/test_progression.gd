@@ -69,3 +69,23 @@ func test_corrupt_save_falls_back_to_backup() -> void:
 	GameState.reset_state()
 	runner.check(GameState.load_game(8), "loaded backup")
 	runner.check(GameState.gold == 50, "backup gold 50, got %d" % GameState.gold)
+
+
+func test_pets() -> void:
+	GameState.new_game()
+	runner.check(GameState.grant_pet("jelly"), "grant pet")
+	runner.check(GameState.pets["active"] == "jelly", "first pet auto active")
+	GameState.grant_pet("jelly")
+	runner.check(GameState.pet_level("jelly") == 2, "duplicate levels pet")
+	var m := GameState.account_mods()
+	runner.check(float(m.get("gold_find", 0.0)) >= 7.0, "pet bonus applied %s" % str(m.get("gold_find", 0.0)))
+	BattleSim.quiet = true
+	BattleSim.start()
+	var pets_in := BattleSim.heroes.filter(func(u): return u.etype == "pet")
+	runner.check(pets_in.size() == 1, "pet unit spawned")
+	BattleSim.simulate(60.0)
+	runner.check(BattleSim.heroes.filter(func(u): return u.etype == "pet").size() == 1, "pet persists")
+	BattleSim.stop()
+	BattleSim.quiet = false
+	GameState.set_active_pet("")
+	runner.check(GameState.pets["active"] == "", "pet dismissed")

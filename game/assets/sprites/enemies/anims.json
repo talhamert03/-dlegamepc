@@ -6200,6 +6200,536 @@
      "impact": -1
     }
    }
+  },
+  "pet_jelly": {
+   "frame_w": 64,
+   "frame_h": 56,
+   "root": [
+    26,
+    54
+   ],
+   "height": 12,
+   "anims": {
+    "idle": {
+     "start": 0,
+     "count": 4,
+     "fps": 6,
+     "loop": true,
+     "impact": -1
+    },
+    "run": {
+     "start": 4,
+     "count": 4,
+     "fps": 10,
+     "loop": true,
+     "impact": -1
+    },
+    "attack": {
+     "start": 8,
+     "count": 6,
+     "fps": 12,
+     "loop": false,
+     "impact": 3
+    },
+    "skill": {
+     "start": 14,
+     "count": 6,
+     "fps": 10,
+     "loop": false,
+     "impact": 3
+    },
+    "hit": {
+     "start": 20,
+     "count": 2,
+     "fps": 10,
+     "loop": false,
+     "impact": -1
+    },
+    "death": {
+     "start": 22,
+     "count": 6,
+     "fps": 9,
+     "loop": false,
+     "impact": -1
+    }
+   }
+  },
+  "pet_nightwing": {
+   "frame_w": 74,
+   "frame_h": 66,
+   "root": [
+    31,
+    64
+   ],
+   "height": 31,
+   "anims": {
+    "idle": {
+     "start": 0,
+     "count": 4,
+     "fps": 6,
+     "loop": true,
+     "impact": -1
+    },
+    "run": {
+     "start": 4,
+     "count": 4,
+     "fps": 10,
+     "loop": true,
+     "impact": -1
+    },
+    "attack": {
+     "start": 8,
+     "count": 6,
+     "fps": 12,
+     "loop": false,
+     "impact": 3
+    },
+    "skill": {
+     "start": 14,
+     "count": 6,
+     "fps": 10,
+     "loop": false,
+     "impact": 3
+    },
+    "hit": {
+     "start": 20,
+     "count": 2,
+     "fps": 10,
+     "loop": false,
+     "impact": -1
+    },
+    "death": {
+     "start": 22,
+     "count": 6,
+     "fps": 9,
+     "loop": false,
+     "impact": -1
+    }
+   }
+  },
+  "pet_cotton": {
+   "frame_w": 64,
+   "frame_h": 56,
+   "root": [
+    26,
+    54
+   ],
+   "height": 16,
+   "anims": {
+    "idle": {
+     "start": 0,
+     "count": 4,
+     "fps": 6,
+     "loop": true,
+     "impact": -1
+    },
+    "run": {
+     "start": 4,
+     "count": 4,
+     "fps": 10,
+     "loop": true,
+     "impact": -1
+    },
+    "attack": {
+     "start": 8,
+     "count": 6,
+     "fps": 12,
+     "loop": false,
+     "impact": 3
+    },
+    "skill": {
+     "start": 14,
+     "count": 6,
+     "fps": 10,
+     "loop": false,
+     "impact": 3
+    },
+    "hit": {
+     "start": 20,
+     "count": 2,
+     "fps": 10,
+     "loop": false,
+     "impact": -1
+    },
+    "death": {
+     "start": 22,
+     "count": 6,
+     "fps": 9,
+     "loop": false,
+     "impact": -1
+    }
+   }
+  },
+  "pet_glimmer": {
+   "frame_w": 74,
+   "frame_h": 66,
+   "root": [
+    31,
+    64
+   ],
+   "height": 30,
+   "anims": {
+    "idle": {
+     "start": 0,
+     "count": 4,
+     "fps": 6,
+     "loop": true,
+     "impact": -1
+    },
+    "run": {
+     "start": 4,
+     "count": 4,
+     "fps": 10,
+     "loop": true,
+     "impact": -1
+    },
+    "attack": {
+     "start": 8,
+     "count": 6,
+     "fps": 12,
+     "loop": false,
+     "impact": 3
+    },
+    "skill": {
+     "start": 14,
+     "count": 6,
+     "fps": 10,
+     "loop": false,
+     "impact": 3
+    },
+    "hit": {
+     "start": 20,
+     "count": 2,
+     "fps": 10,
+     "loop": false,
+     "impact": -1
+    },
+    "death": {
+     "start": 22,
+     "count": 6,
+     "fps": 9,
+     "loop": false,
+     "impact": -1
+    }
+   }
+  },
+  "pet_ember_fox": {
+   "frame_w": 64,
+   "frame_h": 56,
+   "root": [
+    26,
+    54
+   ],
+   "height": 16,
+   "anims": {
+    "idle": {
+     "start": 0,
+     "count": 4,
+     "fps": 6,
+     "loop": true,
+     "impact": -1
+    },
+    "run": {
+     "start": 4,
+     "count": 4,
+     "fps": 10,
+     "loop": true,
+     "impact": -1
+    },
+    "attack": {
+     "start": 8,
+     "count": 6,
+     "fps": 12,
+     "loop": false,
+     "impact": 3
+    },
+    "skill": {
+     "start": 14,
+     "count": 6,
+     "fps": 10,
+     "loop": false,
+     "impact": 3
+    },
+    "hit": {
+     "start": 20,
+     "count": 2,
+     "fps": 10,
+     "loop": false,
+     "impact": -1
+    },
+    "death": {
+     "start": 22,
+     "count": 6,
+     "fps": 9,
+     "loop": false,
+     "impact": -1
+    }
+   }
+  },
+  "pet_pengu": {
+   "frame_w": 64,
+   "frame_h": 56,
+   "root": [
+    26,
+    54
+   ],
+   "height": 12,
+   "anims": {
+    "idle": {
+     "start": 0,
+     "count": 4,
+     "fps": 6,
+     "loop": true,
+     "impact": -1
+    },
+    "run": {
+     "start": 4,
+     "count": 4,
+     "fps": 10,
+     "loop": true,
+     "impact": -1
+    },
+    "attack": {
+     "start": 8,
+     "count": 6,
+     "fps": 12,
+     "loop": false,
+     "impact": 3
+    },
+    "skill": {
+     "start": 14,
+     "count": 6,
+     "fps": 10,
+     "loop": false,
+     "impact": 3
+    },
+    "hit": {
+     "start": 20,
+     "count": 2,
+     "fps": 10,
+     "loop": false,
+     "impact": -1
+    },
+    "death": {
+     "start": 22,
+     "count": 6,
+     "fps": 9,
+     "loop": false,
+     "impact": -1
+    }
+   }
+  },
+  "pet_pixie": {
+   "frame_w": 74,
+   "frame_h": 66,
+   "root": [
+    31,
+    64
+   ],
+   "height": 32,
+   "anims": {
+    "idle": {
+     "start": 0,
+     "count": 4,
+     "fps": 6,
+     "loop": true,
+     "impact": -1
+    },
+    "run": {
+     "start": 4,
+     "count": 4,
+     "fps": 10,
+     "loop": true,
+     "impact": -1
+    },
+    "attack": {
+     "start": 8,
+     "count": 6,
+     "fps": 12,
+     "loop": false,
+     "impact": 3
+    },
+    "skill": {
+     "start": 14,
+     "count": 6,
+     "fps": 10,
+     "loop": false,
+     "impact": 3
+    },
+    "hit": {
+     "start": 20,
+     "count": 2,
+     "fps": 10,
+     "loop": false,
+     "impact": -1
+    },
+    "death": {
+     "start": 22,
+     "count": 6,
+     "fps": 9,
+     "loop": false,
+     "impact": -1
+    }
+   }
+  },
+  "pet_pebble": {
+   "frame_w": 64,
+   "frame_h": 56,
+   "root": [
+    26,
+    54
+   ],
+   "height": 17,
+   "anims": {
+    "idle": {
+     "start": 0,
+     "count": 4,
+     "fps": 6,
+     "loop": true,
+     "impact": -1
+    },
+    "run": {
+     "start": 4,
+     "count": 4,
+     "fps": 10,
+     "loop": true,
+     "impact": -1
+    },
+    "attack": {
+     "start": 8,
+     "count": 6,
+     "fps": 12,
+     "loop": false,
+     "impact": 3
+    },
+    "skill": {
+     "start": 14,
+     "count": 6,
+     "fps": 10,
+     "loop": false,
+     "impact": 3
+    },
+    "hit": {
+     "start": 20,
+     "count": 2,
+     "fps": 10,
+     "loop": false,
+     "impact": -1
+    },
+    "death": {
+     "start": 22,
+     "count": 6,
+     "fps": 9,
+     "loop": false,
+     "impact": -1
+    }
+   }
+  },
+  "pet_voidling": {
+   "frame_w": 64,
+   "frame_h": 56,
+   "root": [
+    26,
+    54
+   ],
+   "height": 18,
+   "anims": {
+    "idle": {
+     "start": 0,
+     "count": 4,
+     "fps": 6,
+     "loop": true,
+     "impact": -1
+    },
+    "run": {
+     "start": 4,
+     "count": 4,
+     "fps": 10,
+     "loop": true,
+     "impact": -1
+    },
+    "attack": {
+     "start": 8,
+     "count": 6,
+     "fps": 12,
+     "loop": false,
+     "impact": 3
+    },
+    "skill": {
+     "start": 14,
+     "count": 6,
+     "fps": 10,
+     "loop": false,
+     "impact": 3
+    },
+    "hit": {
+     "start": 20,
+     "count": 2,
+     "fps": 10,
+     "loop": false,
+     "impact": -1
+    },
+    "death": {
+     "start": 22,
+     "count": 6,
+     "fps": 9,
+     "loop": false,
+     "impact": -1
+    }
+   }
+  },
+  "pet_drakeling": {
+   "frame_w": 64,
+   "frame_h": 56,
+   "root": [
+    26,
+    54
+   ],
+   "height": 20,
+   "anims": {
+    "idle": {
+     "start": 0,
+     "count": 4,
+     "fps": 6,
+     "loop": true,
+     "impact": -1
+    },
+    "run": {
+     "start": 4,
+     "count": 4,
+     "fps": 10,
+     "loop": true,
+     "impact": -1
+    },
+    "attack": {
+     "start": 8,
+     "count": 6,
+     "fps": 12,
+     "loop": false,
+     "impact": 3
+    },
+    "skill": {
+     "start": 14,
+     "count": 6,
+     "fps": 10,
+     "loop": false,
+     "impact": 3
+    },
+    "hit": {
+     "start": 20,
+     "count": 2,
+     "fps": 10,
+     "loop": false,
+     "impact": -1
+    },
+    "death": {
+     "start": 22,
+     "count": 6,
+     "fps": 9,
+     "loop": false,
+     "impact": -1
+    }
+   }
   }
  }
 }

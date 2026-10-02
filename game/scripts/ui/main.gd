@@ -202,6 +202,14 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 				GameState.unlock_hero(hid, false)
 			EventBus.party_changed.emit()
 	for a in cmd:
+		if a.begins_with("--pets="):
+			for pid in a.substr(7).split(","):
+				GameState.grant_pet(pid)
+				GameState.grant_pet(pid)
+	for a in cmd:
+		if a == "--ending":
+			EventBus.story_completed.emit()
+	for a in cmd:
 		if a == "--loot":
 			for i in 40:
 				var r: String = ["rare", "epic", "legendary", "set", "magic"][i % 5]

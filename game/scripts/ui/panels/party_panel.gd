@@ -11,8 +11,13 @@ func build(c: Control) -> void:
 	var v := W.vbox(2)
 	v.size = c.size
 	c.add_child(v)
+	var top := W.hbox(4)
+	v.add_child(top)
 	var hint := UITheme.label(DataDB.t("party_hint"), UITheme.C_DIM)
-	v.add_child(hint)
+	hint.custom_minimum_size = Vector2(c.size.x - 50, 0)
+	hint.clip_text = true
+	top.add_child(hint)
+	top.add_child(UITheme.button(DataDB.t("btn_pets"), "green", func(): WindowManager.toggle_panel("pets"), Vector2(44, 12)))
 	_slots_row = W.hbox(3)
 	v.add_child(_slots_row)
 	v.add_child(UITheme.hsep(int(c.size.x)))

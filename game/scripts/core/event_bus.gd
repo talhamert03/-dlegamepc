@@ -20,6 +20,8 @@ signal boss_defeated(zone_id: String)
 signal boss_failed(zone_id: String)
 signal party_wiped()
 signal party_changed()
+signal pet_changed(pet_id: String)
+signal story_completed()
 
 # progression / economy
 signal hero_leveled(hero_id: String, level: int)

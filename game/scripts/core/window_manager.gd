@@ -18,6 +18,8 @@ const PANELS := {
 	"dps": {"script": "res://scripts/ui/panels/dps_panel.gd", "size": Vector2i(170, 150), "title": "panel_dps"},
 	"quests": {"script": "res://scripts/ui/panels/quests_panel.gd", "size": Vector2i(200, 200), "title": "panel_quests"},
 	"codex": {"script": "res://scripts/ui/panels/codex_panel.gd", "size": Vector2i(220, 220), "title": "panel_codex"},
+	"ending": {"script": "res://scripts/ui/panels/ending_panel.gd", "size": Vector2i(240, 135), "title": "panel_ending"},
+	"pets": {"script": "res://scripts/ui/panels/pets_panel.gd", "size": Vector2i(200, 200), "title": "panel_pets"},
 }
 const GROUPS := {"hero": ["stats", "hero", "portrait"], "bag": ["inventory"], "world": ["world"], "growth": ["growth"]}
 
@@ -34,6 +36,7 @@ var _any_focused := true
 func _ready() -> void:
 	get_tree().root.close_requested.connect(_on_root_close)
 	get_tree().auto_accept_quit = false
+	EventBus.story_completed.connect(func(): open_panel("ending"))
 
 
 func setup_main_window() -> void:

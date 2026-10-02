@@ -1,1 +1,37 @@
-{}
+{
+  "max_level": 10,
+  "drop": {"boss": 0.04, "actboss": 0.12, "first_clear": 0.25, "tower10": 0.15},
+  "collection_per_pet": {"stat": "gold_find", "value": 1.0},
+  "pets": {
+    "jelly": {"name": {"tr": "Jöle", "en": "Jelly"}, "rarity": "R", "act": 1, "projectile": "bolt_holy", "element": "physical",
+      "visual": {"rig": "blob", "color": "#7FD85A", "scale": 0.75},
+      "bonus": {"gold_find": 3.0}, "desc": {"tr": "Yolda bulduğu bozuklukları getirir.", "en": "Brings back coins it finds on the road."}},
+    "cotton": {"name": {"tr": "Pamuk", "en": "Cotton"}, "rarity": "R", "act": 1, "projectile": "note", "element": "physical",
+      "visual": {"rig": "quad", "kind": "bunny", "color": "#F4EEE4", "scale": 0.7},
+      "bonus": {"item_find": 3.0}, "desc": {"tr": "Burnu her zaman parlak şeyleri bulur.", "en": "Its nose always finds shiny things."}},
+    "ember_fox": {"name": {"tr": "Kızıl", "en": "Ember"}, "rarity": "SR", "act": 1, "projectile": "fireball", "element": "fire",
+      "visual": {"rig": "quad", "kind": "wolf", "color": "#E8843A", "scale": 0.62},
+      "bonus": {"attack_pct": 1.5}, "desc": {"tr": "Kuyruğundan kıvılcımlar saçan cesur tilki.", "en": "A brave fox with a sparking tail."}},
+    "nightwing": {"name": {"tr": "Gece", "en": "Nightwing"}, "rarity": "R", "act": 2, "projectile": "bolt_chaos", "element": "chaos",
+      "visual": {"rig": "flyer", "kind": "bat", "color": "#6A5A8A", "scale": 0.85},
+      "bonus": {"lifesteal": 0.3}, "desc": {"tr": "Geceleri partiyi korur, gündüz uyur. Çoğunlukla.", "en": "Guards the party at night, sleeps by day. Mostly."}},
+    "glimmer": {"name": {"tr": "Işıltı", "en": "Glimmer"}, "rarity": "SR", "act": 2, "projectile": "bolt_holy", "element": "holy",
+      "visual": {"rig": "flyer", "kind": "wisp", "color": "#B8F0FF", "scale": 0.85},
+      "bonus": {"cdr": 0.6}, "desc": {"tr": "Kayıp bir orman ruhu; büyüleri hızlandırır.", "en": "A lost forest spirit that quickens spells."}},
+    "pengu": {"name": {"tr": "Pengu", "en": "Pengu"}, "rarity": "R", "act": 3, "projectile": "ice", "element": "cold",
+      "visual": {"rig": "blob", "kind": "penguin", "color": "#2E3240", "scale": 0.62},
+      "bonus": {"all_res": 1.2}, "desc": {"tr": "Soğuktan korkmaz, sıcaktan da. Hiçbir şeyden korkmaz.", "en": "Not afraid of cold, or heat. Or anything."}},
+    "pebble": {"name": {"tr": "Çakıl", "en": "Pebble"}, "rarity": "SR", "act": 3, "projectile": "bolt_arcane", "element": "physical",
+      "visual": {"rig": "golem", "kind": "crystal", "color": "#9FB8FF", "scale": 0.55},
+      "bonus": {"def_pct": 2.0}, "desc": {"tr": "Kristal golemin en küçük ve en inatçı parçası.", "en": "The smallest, most stubborn piece of a crystal golem."}},
+    "pixie": {"name": {"tr": "Peri", "en": "Pixie"}, "rarity": "SR", "act": 4, "projectile": "bolt_holy", "element": "holy",
+      "visual": {"rig": "flyer", "kind": "fairy", "color": "#FFB0D8", "scale": 0.85},
+      "bonus": {"hp_regen_pct": 0.12}, "desc": {"tr": "Yaralara toz serper, iyileştirir. Bazen hapşırtır.", "en": "Sprinkles dust on wounds. Sometimes causes sneezes."}},
+    "drakeling": {"name": {"tr": "Ejder Yavrusu", "en": "Drakeling"}, "rarity": "SSR", "act": 4, "projectile": "fireball", "element": "fire",
+      "visual": {"rig": "quad", "kind": "drake", "color": "#D8503A", "scale": 0.6},
+      "bonus": {"crit_dmg": 4.0}, "desc": {"tr": "Henüz uçamıyor ama hırsı kocaman.", "en": "Can't fly yet, but its ambition is huge."}},
+    "voidling": {"name": {"tr": "Boşluk Gözü", "en": "Voidling"}, "rarity": "SSR", "act": 0, "projectile": "bolt_chaos", "element": "chaos",
+      "visual": {"rig": "flyer", "kind": "eye", "color": "#7A4A9A", "scale": 0.6},
+      "bonus": {"penetrate": 1.0, "boss_dmg": 2.0}, "desc": {"tr": "Sonsuz Kule'nin derinliklerinden. Seni izliyor.", "en": "From the depths of the Endless Tower. It watches you."}}
+  }
+}

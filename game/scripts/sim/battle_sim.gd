@@ -40,6 +40,10 @@ func _ready() -> void:
 	EventBus.party_changed.connect(_on_party_changed)
 	EventBus.equipment_changed.connect(func(_h): refresh_hero_stats())
 	EventBus.hero_leveled.connect(func(_h, _l): refresh_hero_stats())
+	EventBus.pet_changed.connect(func(_p):
+		if not heroes.is_empty():
+			refresh_hero_stats()
+			_add_pet())
 
 
 func _process(delta: float) -> void:
@@ -111,6 +115,51 @@ func build_party() -> void:
 		heroes.append(u)
 		if not quiet:
 			EventBus.unit_spawned.emit(u)
+	_add_pet()
+
+
+## The active pet fights from behind the party. It cannot be targeted or damaged.
+func _add_pet() -> void:
+	for u in heroes.filter(func(x): return x.etype == "pet"):
+		heroes.erase(u)
+		if not quiet:
+			EventBus.unit_died.emit(u)
+	var pid: String = str(GameState.pets.get("active", ""))
+	if pid == "" or GameState.pet_level(pid) <= 0:
+		return
+	var pd := GameState.pet_def(pid)
+	var p := Combatant.new()
+	p.side = Combatant.Side.HERO
+	p.id = pid
+	p.name = DataDB.tx(pd.get("name", {}))
+	p.etype = "pet"
+	var power := 0.0
+	var n := 0
+	var lv := 1
+	for u in heroes:
+		if u.etype == "hero":
+			power += float(u.stats.get("power", 10))
+			lv = max(lv, u.level)
+			n += 1
+	power = power / max(1, n)
+	var pmods: Dictionary = GameState.account_mods()
+	var pet_mult: float = (0.25 + 0.03 * GameState.pet_level(pid)) * (1.0 + float(pmods.get("pet_dmg", 0.0)) / 100.0)
+	p.level = lv
+	p.stats = {"power": power * pet_mult, "def": 0.0, "crit_chance": 10.0, "crit_dmg": 150.0, "aps": 0.8,
+		"range": 200.0, "melee": false, "threat": -99.0}
+	p.max_hp = 1.0
+	p.hp = 1.0
+	p.element = str(pd.get("element", "physical"))
+	p.projectile = str(pd.get("projectile", "bolt_arcane"))
+	var back_x: float = INF
+	for u in heroes:
+		back_x = min(back_x, u.home_x)
+	p.home_x = (back_x if back_x < INF else HERO_X[0]) - 16.0
+	p.x = p.home_x
+	p.visual = {"kind": "summon", "id": "pet_" + pid, "sheet": "pet_" + pid}
+	heroes.append(p)
+	if not quiet:
+		EventBus.unit_spawned.emit(p)
 
 
 func _make_hero_unit(hid: String, slot: int) -> Combatant:
@@ -231,6 +280,7 @@ func _revive_all() -> void:
 	if had_dead and not quiet:
 		for u in heroes:
 			EventBus.unit_revived.emit(u)
+	_add_pet()
 
 
 func _set_phase(p: String) -> void:
@@ -360,7 +410,7 @@ func _spawn_boss() -> void:
 func front_hero_x() -> float:
 	var m := -INF
 	for u in heroes:
-		if u.alive:
+		if u.alive and u.etype != "pet":
 			m = max(m, u.x)
 	return m if m > -INF else 100.0
 
@@ -611,7 +661,7 @@ func _enemy_act(e: Combatant, dt: float, fx: float) -> void:
 
 
 func _enemy_target(e: Combatant) -> Combatant:
-	var alive: Array = heroes.filter(func(u): return u.alive)
+	var alive: Array = heroes.filter(func(u): return u.alive and u.etype != "pet")
 	if alive.is_empty():
 		return null
 	var mode: String = e.stats.get("target", "front")
@@ -638,8 +688,8 @@ func _enemy_target(e: Combatant) -> Combatant:
 func _select_targets(u: Combatant, sdef: Dictionary) -> Array:
 	var mode: String = sdef.get("target", "enemy_front")
 	var maxn: int = int(sdef.get("max_targets", 1))
-	var foes: Array = (enemies if u.is_hero_side() else heroes).filter(func(e): return e.alive)
-	var allies: Array = (heroes if u.is_hero_side() else enemies).filter(func(e): return e.alive)
+	var foes: Array = (enemies if u.is_hero_side() else heroes).filter(func(e): return e.alive and e.etype != "pet")
+	var allies: Array = (heroes if u.is_hero_side() else enemies).filter(func(e): return e.alive and e.etype != "pet")
 	var reach: float = float(u.stats.get("range", 26)) + 30.0
 	var fx := front_hero_x()
 	var in_range: Array = foes.filter(func(e): return (e.x - (fx if bool(u.stats.get("melee", true)) else u.x)) <= reach + 40.0)
@@ -797,7 +847,7 @@ func _summon(owner: Combatant, kind: String, count: int, pct: float, dur: float)
 
 
 func _boss_mech(e: Combatant, m: String) -> void:
-	var alive: Array = heroes.filter(func(u): return u.alive)
+	var alive: Array = heroes.filter(func(u): return u.alive and u.etype != "pet")
 	if alive.is_empty():
 		return
 	var atk: float = float(e.stats.get("power", 10))
@@ -988,7 +1038,7 @@ func calc_damage(src: Combatant, tgt: Combatant, mult: float, element: String, i
 
 
 func _apply_damage(src: Combatant, tgt: Combatant, amount: float, crit: bool, element: String, kind: String) -> void:
-	if not tgt.alive:
+	if not tgt.alive or tgt.etype == "pet":
 		return
 	var dmg := amount
 	if tgt.shield > 0:
@@ -1144,7 +1194,17 @@ func _boss_killed() -> void:
 		EventBus.notify.emit(DataDB.t("difficulty_unlocked", {"name": DataDB.tx(DataDB.difficulties[difficulty + 1]["name"])}), Color("#FF8A1F"))
 	if first:
 		_first_clear_rewards()
+	var btype: String = str(DataDB.enemy_def(str(zone().get("boss", ""))).get("type", "boss"))
+	var drop: Dictionary = DataDB.pets.get("drop", {})
+	var chance: float = float(drop.get("actboss" if btype == "actboss" else "boss", 0.04))
+	if first:
+		chance = max(chance, float(drop.get("first_clear", 0.25)))
+	_roll_pet(int(zone().get("act", 1)), chance)
 	EventBus.boss_defeated.emit(zid)
+	if first and difficulty == 0 and zone_idx == DataDB.zones.size() - 1:
+		GameState.flags["story_done"] = true
+		if not quiet:
+			EventBus.story_completed.emit()
 	boss_unit = null
 	_set_phase("victory")
 	for u in heroes:
@@ -1265,6 +1325,7 @@ func _tower_cleared() -> void:
 		GameState.add_material("star_dust", 1 + tower_floor / 10)
 		if tower_floor % 10 == 0:
 			GameState.add_material("guild_badge", 1)
+			_roll_pet(0, float(DataDB.pets.get("drop", {}).get("tower10", 0.15)) * (3.0 if tower_floor % 50 == 0 else 1.0))
 			GameState.add_material("mythic_essence", 1 if tower_floor % 50 == 0 else 0)
 		SteamService.submit_score("tower", tower_floor)
 	tower_floor += 1
@@ -1273,6 +1334,32 @@ func _tower_cleared() -> void:
 	if not quiet:
 		EventBus.notify.emit(DataDB.t("tower_floor", {"n": tower_floor}), Color("#9FDFFF"))
 	_set_phase("travel")
+
+
+## Rolls a pet drop from the pool of the given act (0 = tower-only pets + all acts).
+func _roll_pet(act_n: int, chance: float) -> void:
+	if rng.randf() >= chance:
+		return
+	var pool: Array = []
+	var all_pets: Dictionary = DataDB.pets.get("pets", {})
+	for pid in all_pets:
+		var pa := int(all_pets[pid].get("act", 1))
+		if pa == act_n or (act_n == 0) or (pa > 0 and pa < act_n and rng.randf() < 0.3):
+			var w: float = {"R": 6.0, "SR": 3.0, "SSR": 1.0}.get(str(all_pets[pid].get("rarity", "R")), 3.0)
+			pool.append([pid, w])
+	if pool.is_empty():
+		return
+	var total := 0.0
+	for e in pool:
+		total += float(e[1])
+	var r := rng.randf() * total
+	for e in pool:
+		r -= float(e[1])
+		if r <= 0.0:
+			GameState.grant_pet(str(e[0]))
+			if not quiet:
+				AudioManager.play("loot_legendary", 0.0, 0.8)
+			return
 
 
 func _tower_failed() -> void:

@@ -1090,5 +1090,97 @@
  "tower_best": {
   "tr": "En iyi kat: {n}",
   "en": "Best floor: {n}"
+ },
+ "panel_pets": {
+  "tr": "Evcil Dostlar",
+  "en": "Pets"
+ },
+ "btn_pets": {
+  "tr": "Evciller",
+  "en": "Pets"
+ },
+ "pets_hint": {
+  "tr": "Aktif evcil dost arkadan savaşır ve partiye bonus verir.",
+  "en": "The active pet fights from the back and buffs the party."
+ },
+ "pets_owned": {
+  "tr": "Koleksiyon: {n}/{m}  (her dost +%1 Altın)",
+  "en": "Collection: {n}/{m}  (+1% Gold each)"
+ },
+ "pet_level": {
+  "tr": "Sv {n}/{m}",
+  "en": "Lv {n}/{m}"
+ },
+ "lv_short": {
+  "tr": "sv",
+  "en": "lv"
+ },
+ "pet_active": {
+  "tr": "Aktif",
+  "en": "Active"
+ },
+ "pet_set_active": {
+  "tr": "Yanına Al",
+  "en": "Take Along"
+ },
+ "pet_src_tower": {
+  "tr": "Sonsuz Kule'nin her 10. katında bulunabilir.",
+  "en": "Found on every 10th floor of the Endless Tower."
+ },
+ "pet_src_act": {
+  "tr": "Perde {n} bosslarından düşer.",
+  "en": "Drops from Act {n} bosses."
+ },
+ "pet_new": {
+  "tr": "Yeni evcil dost: {name}!",
+  "en": "New pet: {name}!"
+ },
+ "pet_up": {
+  "tr": "{name} güçlendi! Sv {n}",
+  "en": "{name} grew stronger! Lv {n}"
+ },
+ "panel_ending": {
+  "tr": "Son",
+  "en": "The End"
+ },
+ "ending_1": {
+  "tr": "Morvath'ın gölgesi dağıldı...",
+  "en": "Morvath's shadow fades away..."
+ },
+ "ending_2": {
+  "tr": "Dört diyardan toplanan parçalar yeniden birleşti.",
+  "en": "The shards from four realms come together again."
+ },
+ "ending_3": {
+  "tr": "Dünya Kristali yeniden parlıyor. Aethoria nefes alıyor!",
+  "en": "The World Crystal shines again. Aethoria breathes!"
+ },
+ "ending_4": {
+  "tr": "Gezgin Lonca artık bir efsane. Kasabada bayram var!",
+  "en": "The Wandering Guild is now a legend. The town celebrates!"
+ },
+ "ending_5": {
+  "tr": "Ama Uçurum'un derinliklerinde bir şey kıpırdıyor... Kabus zorluğu açıldı!",
+  "en": "But something stirs deep in the Abyss... Nightmare unlocked!"
+ },
+ "credits_thanks": {
+  "tr": "Oynadığın için teşekkürler!",
+  "en": "Thanks for playing!"
+ },
+ "credits_kills": {
+  "tr": "Yenilen canavar: {n}",
+  "en": "Monsters defeated: {n}"
+ },
+ "credits_bosses": {
+  "tr": "Yenilen boss: {n}",
+  "en": "Bosses defeated: {n}"
+ },
+ "credits_heroes": {
+  "tr": "Loncadaki kahraman: {n}",
+  "en": "Heroes in the guild: {n}"
+ },
+ "credits_next": {
+  "tr": "Macera Kabus'ta devam ediyor...",
+  "en": "The adventure continues in Nightmare..."
  }
 }

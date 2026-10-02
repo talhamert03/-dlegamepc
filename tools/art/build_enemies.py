@@ -51,6 +51,9 @@ def main():
         jobs.append((eid, e["visual"], villains, heroes, False))
     for sid, vis in SUMMONS.items():
         jobs.append((sid, vis, villains, heroes, True))
+    pets = json.load(open(os.path.join(GAME, "data/pets.json"), encoding="utf-8"))["pets"]
+    for pid, pd in pets.items():
+        jobs.append(("pet_" + pid, pd["visual"], villains, heroes, True))
     only = set(sys.argv[1:])
     if only:
         jobs = [j for j in jobs if j[0] in only]

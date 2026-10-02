@@ -213,12 +213,63 @@ func account_mods() -> Dictionary:
 			var fb: Dictionary = fd.get("full_bonus", {})
 			if fb.has("stat"):
 				out[fb["stat"]] = float(out.get(fb["stat"], 0.0)) + float(fb["value"])
+	# pets: active pet bonus scales with level, every owned pet adds a small collection bonus
+	var pd: Dictionary = DataDB.pets
+	var owned: Dictionary = pets.get("owned", {})
+	var coll: Dictionary = pd.get("collection_per_pet", {})
+	if coll.has("stat") and owned.size() > 0:
+		out[coll["stat"]] = float(out.get(coll["stat"], 0.0)) + float(coll["value"]) * owned.size()
+	var act_pet: String = str(pets.get("active", ""))
+	if act_pet != "" and owned.has(act_pet):
+		var bon: Dictionary = pet_def(act_pet).get("bonus", {})
+		for st in bon:
+			out[st] = float(out.get(st, 0.0)) + float(bon[st]) * pet_level(act_pet)
 	# guild hall
 	for node_id in guild:
 		var nd: Dictionary = GuildHall.node_def(node_id)
 		if nd.has("stat"):
 			out[nd["stat"]] = float(out.get(nd["stat"], 0.0)) + float(nd.get("per", 0)) * int(guild[node_id])
 	return out
+
+
+func pet_def(pid: String) -> Dictionary:
+	return DataDB.pets.get("pets", {}).get(pid, {})
+
+
+func pet_level(pid: String) -> int:
+	return int(pets.get("owned", {}).get(pid, 0))
+
+
+## Grants a pet (or levels it up on duplicates). Returns true when something changed.
+func grant_pet(pid: String) -> bool:
+	if pet_def(pid).is_empty():
+		return false
+	var owned: Dictionary = pets.get("owned", {})
+	var maxl := int(DataDB.pets.get("max_level", 10))
+	var lv := int(owned.get(pid, 0))
+	if lv >= maxl:
+		add_material("star_dust", 2)
+		return false
+	owned[pid] = lv + 1
+	pets["owned"] = owned
+	if str(pets.get("active", "")) == "":
+		pets["active"] = pid
+	invalidate_stats()
+	EventBus.pet_changed.emit(pid)
+	var nm := DataDB.tx(pet_def(pid).get("name", {}))
+	if lv == 0:
+		EventBus.notify.emit(DataDB.t("pet_new", {"name": nm}), Color("#FFB0D8"))
+	else:
+		EventBus.notify.emit(DataDB.t("pet_up", {"name": nm, "n": lv + 1}), Color("#FFB0D8"))
+	return true
+
+
+func set_active_pet(pid: String) -> void:
+	if pid != "" and pet_level(pid) <= 0:
+		return
+	pets["active"] = pid
+	invalidate_stats()
+	EventBus.pet_changed.emit(pid)
 
 
 func hero_stats(hid: String) -> Dictionary:
