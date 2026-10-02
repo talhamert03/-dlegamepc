@@ -25,6 +25,7 @@ var values: Dictionary = {
 	"show_bg": true,
 	"colorblind": false,
 	"panel_pos": {},
+	"remember_panels": false, # false: a reopened panel returns to its default spot
 	"tutorial_done": false,
 	"start_with_os": false,
 }

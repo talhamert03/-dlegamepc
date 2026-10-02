@@ -5,8 +5,19 @@ yapay zeka) projeye katılmadan önce bu dosyayı okumalı.
 
 ## Motor ve pencereler
 - **Godot 4.4.1, GL Compatibility.** Eski/entegre GPU'larda da çalışsın, şerit sürekli açık kalacağı için düşük güç tüketimi.
-- **Native çoklu pencere** (`embed_subwindows=false`). Her panel ayrı, kenarlıksız, şeffaf, her zaman üstte bir OS penceresi;
-  şerit 480x84 mantıksal çözünürlükte, tam sayı ölçekleme (varsayılan 2x). Paneller şeride/birbirine yapışır (snap).
+- **Native çoklu pencere** (`embed_subwindows=false`). Her panel ayrı, kenarlıksız, her zaman üstte bir OS penceresi.
+- **Ölçek otomatik:** şerit ekran genişliğinin ~%80'ine ve en uzun panel + şerit ekran yüksekliğine sığacak en büyük tam sayı
+  (1920x1080/1200 → 3x, 2560x1440 → 4x, 1366x768 → 2x). Pixel art keskin kalsın diye kesirli ölçek yok.
+- **Yerleşim:** şerit görev çubuğunun hemen üstünde, ortada. Kahraman grubu (statlar + kahraman + portre) şeridin üstünde ortalı;
+  diğer paneller sağda kendi "ev" konumlarında. Açılan panel doluysa en yakın boş yere kayar (portrenin üstü son çare).
+  Paneller boş herhangi bir yerinden sürüklenebilir, kenarlara mıknatısla yapışır, ekrandan taşmaz. Kapatılıp açılan panel
+  ev konumuna döner ("Panel yerini hatırla" ayarı açılırsa son konumunda açılır).
+- **Paneller opak pencere.** Windows + OpenGL'de piksel-şeffaf ikincil pencereler görünmez ve tıklama-geçirgen olabiliyor
+  (butonlar "çalışmıyor" gibi görünür); bu yüzden yalnızca ana şerit/başlık penceresi şeffaf.
+- **Yerleşik tooltip'ler kapalı** (`gui/timers/tooltip_delay_sec`). Godot'nun tooltip'i native popup penceredir ve açıkken
+  yapılan bir sonraki tıklamayı yutar. `WindowManager._route_tooltips` aynı `tooltip_text`'i odak almayan, tıklamayı geçiren kendi
+  tooltip penceremizde gösterir.
+- Pencere yöneticisi ilk açılışta konumu değiştirebildiği için şerit ve paneller gösterildikten sonra konumlarına yeniden yerleştirilir.
 - Odak dışındayken FPS 15'e düşer; tam ekran uygulama algılanınca şerit gizlenir.
 
 ## Simülasyon

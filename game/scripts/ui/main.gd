@@ -53,6 +53,7 @@ func _boot() -> void:
 
 func _run_title() -> void:
 	var w := get_window()
+	WindowManager.title_mode = true
 	strip.visible = false
 	cpanel.visible = false
 	for b in _round.values():
@@ -62,6 +63,7 @@ func _run_title() -> void:
 	w.size = TitleScreen.SIZE * sc
 	var scr: Rect2i = DisplayServer.screen_get_usable_rect(DisplayServer.window_get_current_screen())
 	w.position = scr.position + (scr.size - w.size) / 2
+	get_tree().create_timer(0.15).timeout.connect(func(): w.position = scr.position + (scr.size - w.size) / 2)
 	var t := TitleScreen.new()
 	add_child(t)
 	if OS.get_cmdline_user_args().has("--screenshot"):
@@ -73,6 +75,8 @@ func _run_title() -> void:
 		t._finish()
 	else:
 		await t.finished
+	WindowManager.title_mode = false
+	WindowManager.close_panel("settings")
 	# shrink & slide into the strip position
 	var target_size := WindowManager.STRIP_SIZE * sc
 	w.content_scale_size = WindowManager.STRIP_SIZE
@@ -153,22 +157,31 @@ func _on_notify(text: String, color: Color) -> void:
 func _unhandled_input(ev: InputEvent) -> void:
 	if ev is InputEventKey and ev.pressed and not ev.echo:
 		WindowManager.handle_hotkey(ev)
-	# drag the strip with the middle or right mouse button on empty battle area
-	if ev is InputEventMouseButton and ev.button_index == MOUSE_BUTTON_RIGHT:
+	# drag the strip: left or right mouse on any empty part of the battlefield
+	if ev is InputEventMouseButton and (ev.button_index == MOUSE_BUTTON_LEFT or ev.button_index == MOUSE_BUTTON_RIGHT):
 		if ev.pressed:
 			_drag = true
+			_drag_moved = false
 			_drag_off = DisplayServer.mouse_get_position() - get_window().position
-		else:
+			_drag_start = DisplayServer.mouse_get_position()
+		elif _drag:
 			_drag = false
-			Settings.set_v("strip_pos", "free")
-			Settings.set_v("strip_x", get_window().position.x)
-			Settings.set_v("strip_y", get_window().position.y)
+			if _drag_moved:
+				Settings.set_v("strip_pos", "free")
+				Settings.set_v("strip_x", get_window().position.x)
+				Settings.set_v("strip_y", get_window().position.y)
 	if ev is InputEventMouseMotion and _drag:
-		get_window().position = DisplayServer.mouse_get_position() - _drag_off
+		var m := DisplayServer.mouse_get_position()
+		if not _drag_moved and (m - _drag_start).length() < 4:
+			return
+		_drag_moved = true
+		get_window().position = WindowManager.clamp_to_screen(m - _drag_off, get_window().size)
 
 
 var _drag := false
+var _drag_moved := false
 var _drag_off := Vector2i.ZERO
+var _drag_start := Vector2i.ZERO
 
 
 # ------------------------------------------------------------------ automated screenshots (CI / docs)

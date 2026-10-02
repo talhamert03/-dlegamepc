@@ -9,8 +9,8 @@ var _showing := false
 
 func _init() -> void:
 	borderless = true
-	transparent = true
-	transparent_bg = true
+	transparent = false
+	transparent_bg = false
 	unfocusable = true
 	always_on_top = true
 	unresizable = true

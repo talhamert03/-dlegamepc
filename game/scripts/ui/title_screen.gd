@@ -44,11 +44,11 @@ func _ready() -> void:
 		add_child(s)
 		_heroes.append(s)
 	_buttons = W.vbox(2)
-	_buttons.position = Vector2(94, 62)
+	_buttons.position = Vector2(84, 62)
 	add_child(_buttons)
 	_buttons.add_child(UITheme.button(DataDB.t("title_new"), "orange", _start_intro, Vector2(72, 13)))
 	_buttons.add_child(UITheme.button(DataDB.t("title_settings"), "brown", func(): WindowManager.toggle_panel("settings"), Vector2(72, 13)))
-	_buttons.add_child(UITheme.button(DataDB.t("tray_quit"), "red", func(): get_tree().quit(), Vector2(72, 13)))
+	_buttons.add_child(UITheme.button(DataDB.t("tray_quit"), "red", func(): WindowManager.quit_game(), Vector2(72, 13)))
 	_buttons.modulate.a = 0.0
 	_text = UITheme.label("", UITheme.C_TEXT, 13, UITheme.font_title)
 	_text.position = Vector2(10, 92)

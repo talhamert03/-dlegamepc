@@ -31,10 +31,11 @@ func refresh() -> void:
 	match tab:
 		0:
 			_choice("set_lang", "lang", ["tr", "en"], ["Türkçe", "English"])
-			_choice("set_scale", "scale", [0, 1, 2, 3, 4], [DataDB.t("auto"), "1x", "2x", "3x", "4x"], func(v): WindowManager.set_scale(int(v)))
+			_choice("set_scale", "scale", [0, 2, 3, 4, 5], [DataDB.t("auto"), "2x", "3x", "4x", "5x"], func(v): WindowManager.set_scale(int(v)))
 			_choice("set_strip_pos", "strip_pos", ["taskbar", "top", "free"], [DataDB.t("pos_taskbar"), DataDB.t("pos_top"), DataDB.t("pos_free")],
 				func(_v): WindowManager.place_strip())
 			_toggle("set_on_top", "always_on_top", func(v): WindowManager.set_always_on_top(v))
+			_toggle("set_remember_panels", "remember_panels")
 			_choice("set_fps_idle", "fps_idle", [5, 10, 15, 30], ["5", "10", "15", "30"])
 			_choice("set_fps_focus", "fps_focus", [30, 60, 144], ["30", "60", "144"])
 			_choice("set_dmg_numbers", "dmg_numbers", [0, 1, 2], [DataDB.t("off"), DataDB.t("crits"), DataDB.t("all")])

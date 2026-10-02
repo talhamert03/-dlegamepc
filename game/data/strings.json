@@ -616,8 +616,8 @@
   "en": "Cost: {g} gold"
  },
  "reset_layout": {
-  "tr": "Panel düzenini sıfırla",
-  "en": "Reset panel layout"
+  "tr": "Pencere düzenini sıfırla",
+  "en": "Reset window layout"
  },
  "roster": {
   "tr": "Kahramanlar",
@@ -1194,5 +1194,9 @@
  "costume": {
   "tr": "Kostüm",
   "en": "Costume"
+ },
+ "set_remember_panels": {
+  "tr": "Panel yerini hatırla",
+  "en": "Remember panel spots"
  }
 }

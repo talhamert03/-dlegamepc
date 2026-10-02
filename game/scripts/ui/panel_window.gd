@@ -16,9 +16,11 @@ var _title_label: Label
 
 
 func _init() -> void:
+	# Opaque on purpose: per-pixel transparent secondary windows are unreliable on Windows + OpenGL
+	# (they can render invisible and click-through), so panels draw their own solid background.
 	borderless = true
-	transparent = true
-	transparent_bg = true
+	transparent = false
+	transparent_bg = false
 	unresizable = true
 	always_on_top = true
 	wrap_controls = false
@@ -42,17 +44,25 @@ func _ready() -> void:
 	root = Control.new()
 	root.size = logical_size
 	root.theme = UITheme.theme
+	# any click that no button/slot consumes bubbles up here and drags the window
+	root.mouse_filter = Control.MOUSE_FILTER_STOP
+	root.gui_input.connect(_on_drag_input)
 	add_child(root)
+	var bg := ColorRect.new()
+	bg.color = Color("#140E10")
+	bg.size = Vector2(logical_size)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(bg)
 	var frame := UITheme.nine("panel", 8)
 	frame.size = Vector2(logical_size.x, logical_size.y - 5)
 	frame.position = Vector2(0, 5)
+	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(frame)
-	# drag area (whole top band)
+	# title band: always a drag handle, shows the move cursor
 	var drag := Control.new()
 	drag.position = Vector2(0, 0)
-	drag.size = Vector2(logical_size.x - 16, 16)
-	drag.mouse_filter = Control.MOUSE_FILTER_STOP
-	drag.gui_input.connect(_on_drag_input)
+	drag.size = Vector2(logical_size.x - 16, 18)
+	drag.mouse_filter = Control.MOUSE_FILTER_PASS
 	drag.mouse_default_cursor_shape = Control.CURSOR_MOVE
 	root.add_child(drag)
 	# title plaque
@@ -61,6 +71,7 @@ func _ready() -> void:
 	var tw: float = max(60.0, UITheme.font_title.get_string_size(title_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x + 20.0)
 	plaque.size = Vector2(tw, 16)
 	plaque.position = Vector2(round((logical_size.x - tw) / 2.0), 0)
+	plaque.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(plaque)
 	_title_label.position = plaque.position + Vector2(0, -1)
 	_title_label.size = Vector2(tw, 16)
@@ -86,6 +97,7 @@ func _ready() -> void:
 	x.scale = Vector2(1, 1)
 	root.add_child(x)
 	content = Control.new()
+	content.mouse_filter = Control.MOUSE_FILTER_PASS
 	content.position = Vector2(8, 19)
 	content.size = Vector2(logical_size.x - 16, logical_size.y - 27)
 	root.add_child(content)
@@ -133,6 +145,13 @@ func _on_drag_input(ev: InputEvent) -> void:
 			WindowManager.panel_moved(self)
 	elif ev is InputEventMouseMotion and _dragging:
 		position = WindowManager.snap_position(self, DisplayServer.mouse_get_position() - _drag_offset)
+
+
+func _notification(what: int) -> void:
+	# a released button outside the window (fast drags) must still end the drag
+	if what == NOTIFICATION_WM_MOUSE_EXIT and _dragging and not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		_dragging = false
+		WindowManager.panel_moved(self)
 
 
 func _unhandled_input(ev: InputEvent) -> void:
