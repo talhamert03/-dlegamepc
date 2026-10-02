@@ -2,8 +2,9 @@ class_name StripView
 extends Control
 ## The battle strip: parallax background, units, projectiles, VFX, damage numbers and HUD.
 
-const W := 400
-const H := 84
+const W := 360
+const H := 72
+const BG_CROP := 12          # the background art is 84 px tall: drop the top of the sky so its ground meets GROUND_Y
 const LAYERS := [["sky", 0.0], ["far", 0.1], ["mid", 0.4], ["ground", 1.0]]
 
 var bg_root: Node2D
@@ -122,21 +123,21 @@ func _build_hud() -> void:
 	_wave_dots.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_wave_dots.draw.connect(_draw_wave_dots)
 	hud.add_child(_wave_dots)
-	_boss_bar = UITheme.bar(120, 4, Color("#D63A3A"))
-	_boss_bar.position = Vector2(200, 4)
+	_boss_bar = UITheme.bar(110, 4, Color("#D63A3A"))
+	_boss_bar.position = Vector2(196, 5)
 	_boss_bar.visible = false
 	hud.add_child(_boss_bar)
 	_boss_name = UITheme.label("", Color("#FF9A8A"))
-	_boss_name.position = Vector2(200, -3)
+	_boss_name.position = Vector2(196, -2)
 	_boss_name.visible = false
 	hud.add_child(_boss_name)
 	_boss_time = UITheme.label("", UITheme.C_TEXT)
-	_boss_time.position = Vector2(324, 0)
+	_boss_time.position = Vector2(310, 0)
 	_boss_time.visible = false
 	hud.add_child(_boss_time)
 	_banner = UITheme.label("", UITheme.C_GOLD, 13, UITheme.font_title)
 	_banner.size = Vector2(W, 16)
-	_banner.position = Vector2(0, 28)
+	_banner.position = Vector2(0, 22)
 	_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_banner.add_theme_color_override("font_outline_color", Color("#140E10"))
 	_banner.add_theme_constant_override("outline_size", 2)
@@ -225,13 +226,13 @@ func _process(delta: float) -> void:
 	for l in LAYERS:
 		var s: Sprite2D = bg_layers[l[0]]
 		if s.texture:
-			s.region_rect = Rect2(floor(sc * float(l[1])), 0, W, H)
+			s.region_rect = Rect2(floor(sc * float(l[1])), BG_CROP, W, H)
 			s.modulate = tint if l[0] != "ground" else tint.lerp(Color.WHITE, 0.35)
 	if hd_bg.visible:
-		hd_bg.region_rect = Rect2(sc * 0.75 * HD_BG_SCALE, 0, W * HD_BG_SCALE, H * HD_BG_SCALE)
+		hd_bg.region_rect = Rect2(sc * 0.75 * HD_BG_SCALE, BG_CROP * HD_BG_SCALE, W * HD_BG_SCALE, H * HD_BG_SCALE)
 		hd_bg.modulate = tint.lerp(Color.WHITE, 0.25)
 	if fore.texture:
-		fore.region_rect = Rect2(floor(sc * 1.3), 0, W, H)
+		fore.region_rect = Rect2(floor(sc * 1.3), BG_CROP, W, H)
 		fore.modulate = Color(tint.r, tint.g, tint.b, 0.75)
 	units_root.modulate = tint.lerp(Color.WHITE, 0.6)
 	# boss HUD
@@ -252,9 +253,11 @@ func _process(delta: float) -> void:
 		_banner.modulate.a = clamp(_banner_t, 0.0, 1.0)
 		if _banner_t <= 0:
 			_banner.visible = false
+	UnitView.hitstop = max(0.0, UnitView.hitstop - delta)
 	if _shake > 0 and Settings.get_v("screen_shake", true):
 		_shake = max(0.0, _shake - delta)
-		position = Vector2(round(_rng.randf_range(-1, 1) * _shake * 4), 0)
+		var amp := _shake * 5.0
+		position = Vector2(_rng.randf_range(-1, 1) * amp, _rng.randf_range(-1, 1) * amp * 0.5)
 	else:
 		position = Vector2.ZERO
 	_update_numbers(delta)
@@ -269,8 +272,8 @@ func _draw() -> void:
 		for i in 8:
 			var c := Color("#7FB8E8").lerp(Color("#CFE8F6"), i / 8.0) * tint
 			draw_rect(Rect2(0, i * 7, W, 7), c)
-		draw_rect(Rect2(0, 56, W, 28), Color("#5A8A3A") * tint)
-		draw_rect(Rect2(0, 76, W, 8), Color("#7A5A3A") * tint)
+		draw_rect(Rect2(0, 44, W, 28), Color("#5A8A3A") * tint)
+		draw_rect(Rect2(0, 64, W, 8), Color("#7A5A3A") * tint)
 	for p in _weather:
 		match _weather_kind:
 			"snow":
@@ -358,9 +361,9 @@ func _on_unit_died(u: Combatant) -> void:
 
 func _unit_pos(u: Combatant, head := false) -> Vector2:
 	var v: UnitView = views.get(u.uid)
-	var y := BattleSim.GROUND_Y - (24.0 if not head else 40.0)
+	var y := BattleSim.GROUND_Y - (18.0 if not head else 34.0)
 	if v:
-		y = BattleSim.GROUND_Y + v._head_y * (0.55 if not head else 1.0)
+		y = BattleSim.GROUND_Y + v._head_y * (0.5 if not head else 1.0)
 	return Vector2(u.x, y)
 
 
@@ -392,10 +395,11 @@ func _spawn_number(text: String, pos: Vector2, color: Color, big := false) -> vo
 	l.text = text
 	l.add_theme_color_override("font_color", color)
 	l.add_theme_font_override("font", UITheme.font_big if big else UITheme.font_small)
-	l.add_theme_font_size_override("font_size", 10 if big else 8)
+	l.add_theme_font_size_override("font_size", 12 if big else 9)
 	var sz := l.get_minimum_size()
-	l.position = (pos - Vector2(sz.x / 2.0, 0)).round()
-	_active_nums.append({"l": l, "t": 0.0, "life": 0.9 if big else 0.7, "vx": _rng.randf_range(-8, 8), "y0": l.position.y, "big": big})
+	l.pivot_offset = sz / 2.0
+	l.position = (pos - Vector2(sz.x / 2.0, sz.y * 0.6)).round()
+	_active_nums.append({"l": l, "t": 0.0, "life": 0.95 if big else 0.75, "vx": _rng.randf_range(-10, 10), "y0": l.position.y, "big": big})
 
 
 func _update_numbers(delta: float) -> void:
@@ -408,11 +412,12 @@ func _update_numbers(delta: float) -> void:
 			_num_pool.append(l)
 			_active_nums.erase(n)
 			continue
-		l.position.y = round(float(n["y0"]) - 14.0 * sqrt(k))
-		l.position.x += float(n["vx"]) * delta
-		l.modulate.a = 1.0 if k < 0.6 else (1.0 - (k - 0.6) / 0.4)
-		if n["big"]:
-			l.scale = Vector2.ONE * (1.0 + 0.3 * max(0.0, 0.2 - k) * 5.0)
+		# pop up on an arc, overshoot-scale in, then fade
+		l.position.y = float(n["y0"]) - 16.0 * sqrt(k) + 10.0 * k * k
+		l.position.x += float(n["vx"]) * delta * (1.0 - k)
+		l.modulate.a = 1.0 if k < 0.65 else (1.0 - (k - 0.65) / 0.35)
+		var pop: float = 1.0 + (0.6 if n["big"] else 0.35) * max(0.0, 1.0 - k * 7.0)
+		l.scale = Vector2.ONE * pop
 
 
 func _on_damage(src, tgt, amount: float, crit: bool, element: String, kind: String) -> void:
@@ -433,7 +438,20 @@ func _on_damage(src, tgt, amount: float, crit: bool, element: String, kind: Stri
 	_spawn_number(txt, pos, Color("#FFD84A") if crit and not tgt.is_hero_side() else col, crit)
 	if kind != "dot":
 		AudioManager.play("crit" if crit else "hit%d" % (_rng.randi() % 3), 0.1, 0.5 if not crit else 0.7)
-		_spawn_vfx("crit" if crit else "hit", pos + Vector2(_rng.randf_range(-3, 3), _rng.randf_range(-4, 4)), col, 6)
+		var tv: UnitView = views.get(tgt.uid)
+		var hp := tv.center() if tv else pos
+		var melee_src: bool = src != null and bool(src.stats.get("melee", true)) and src.projectile == ""
+		var sz: float = 7.0 if not crit else 10.0
+		if tv:
+			sz *= clampf(tv._h / 34.0, 0.8, 1.8)
+		if melee_src:
+			_spawn_vfx("cut", hp + Vector2(_rng.randf_range(-2, 2), _rng.randf_range(-3, 3)), col, sz * 1.3,
+				{"dir": 1.0 if src.is_hero_side() else -1.0})
+		_spawn_vfx("impact", hp + Vector2(_rng.randf_range(-3, 3), _rng.randf_range(-4, 4)), col, sz)
+		if crit:
+			_spawn_vfx("crit", hp, col, sz)
+			UnitView.hitstop = 0.07
+			_shake = max(_shake, 0.12)
 	if crit and src != null and (src.etype == "boss" or src.etype == "actboss"):
 		_shake = 0.25
 
@@ -447,8 +465,10 @@ func _on_heal(tgt, amount: float) -> void:
 func _on_projectile(src, tgt, kind: String, travel: float) -> void:
 	AudioManager.play("shoot" if kind.begins_with("arrow") else "magic", 0.12, 0.35)
 	var p := Projectile.new()
-	var a := _unit_pos(src) + Vector2(6 if src.is_hero_side() else -6, -4)
-	var b := _unit_pos(tgt)
+	var sv: UnitView = views.get(src.uid)
+	var tv: UnitView = views.get(tgt.uid)
+	var a := sv.strike_point() if sv else _unit_pos(src) + Vector2(6 if src.is_hero_side() else -6, -4)
+	var b := tv.center() if tv else _unit_pos(tgt)
 	p.setup(kind, a, b, travel)
 	fx_root.add_child(p)
 
@@ -468,7 +488,7 @@ func _on_vfx(vfx: String, pos: Vector2, data: Dictionary) -> void:
 	var col := Color.WHITE
 	match vfx:
 		"telegraph":
-			_spawn_vfx("telegraph", Vector2(200, BattleSim.GROUND_Y + 1), Color.RED, 120, data)
+			_spawn_vfx("telegraph", Vector2(170, BattleSim.GROUND_Y + 1), Color.RED, 110, data)
 			return
 		"heal":
 			return
@@ -490,7 +510,7 @@ func _on_vfx(vfx: String, pos: Vector2, data: Dictionary) -> void:
 		_spawn_vfx("meteor", pos, col, 10)
 		_shake = 0.2
 	if vfx == "arrow_rain" or vfx == "arrows" or vfx == "star_rain":
-		_spawn_vfx("rain", Vector2(300, BattleSim.GROUND_Y), Color("#E8D9A8"), 80)
+		_spawn_vfx("rain", Vector2(280, BattleSim.GROUND_Y), Color("#E8D9A8"), 70)
 	if vfx == "lightning":
 		for uid in tgts:
 			var v: UnitView = views.get(uid)

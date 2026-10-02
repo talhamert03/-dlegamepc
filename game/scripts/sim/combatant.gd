@@ -44,6 +44,8 @@ var mech_t: float = 0.0
 var telegraph: Dictionary = {}
 var anim: String = "idle"
 var anim_t: float = 0.0
+var act_impact: float = 0.25   # seconds from the start of the current attack/skill to its hit (drives the view)
+var act_len: float = 0.5
 var flash_t: float = 0.0
 var last_target: int = 0
 

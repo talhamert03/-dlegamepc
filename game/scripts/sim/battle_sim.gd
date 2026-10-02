@@ -3,9 +3,9 @@ extends Node
 ## from rendering. The view (StripView) only reads state and listens to EventBus signals.
 
 const TICK := 0.1
-const HERO_X := [192.0, 163.0, 134.0, 105.0, 76.0]   # slot 0 = front-most
+const HERO_X := [196.0, 166.0, 136.0, 106.0, 76.0]   # slot 0 = front-most
 const SPAWN_X := 420.0
-const GROUND_Y := 76.0
+const GROUND_Y := 64.0
 
 var running := false
 var speed := 1.0
@@ -591,6 +591,8 @@ func _basic_attack(u: Combatant, t: Combatant) -> void:
 	var impact: float = min(0.25, interval * 0.5)
 	u.busy_t = min(0.5, interval * 0.8)
 	u.set_anim("attack")
+	u.act_impact = impact
+	u.act_len = max(u.busy_t, impact + 0.15)
 	if not quiet:
 		EventBus.attack_started.emit(u, "attack")
 	var mult := 1.0
@@ -625,6 +627,8 @@ func _enemy_act(e: Combatant, dt: float, fx: float) -> void:
 			e.telegraph = {"mech": m, "t": 1.5}
 			e.mech_t = rng.randf_range(9.0, 13.0)
 			e.set_anim("skill")
+			e.act_impact = 1.5
+			e.act_len = 1.8
 			if not quiet:
 				EventBus.vfx_requested.emit("telegraph", Vector2(e.x, GROUND_Y), {"t": 1.5, "mech": m, "uid": e.uid})
 			return
@@ -647,6 +651,9 @@ func _enemy_act(e: Combatant, dt: float, fx: float) -> void:
 	e.atk_cd = 1.0 / aps
 	e.busy_t = min(0.5, e.atk_cd * 0.7)
 	e.set_anim("attack")
+	e.act_impact = 0.3
+	e.act_len = max(e.busy_t, 0.45)
+	e.last_target = t.uid
 	if not quiet:
 		EventBus.attack_started.emit(e, "attack")
 	var mult := 1.0
@@ -739,6 +746,10 @@ func _cast_skill(u: Combatant, sdef: Dictionary, lvl: int, is_ult: bool) -> void
 		return
 	u.busy_t = 0.6
 	u.set_anim("skill")
+	u.act_impact = 0.3
+	u.act_len = 0.6
+	if targets[0].side != u.side:
+		u.last_target = targets[0].uid
 	if not quiet:
 		EventBus.skill_cast.emit(u, str(sdef.get("id", "")))
 		EventBus.attack_started.emit(u, "skill")

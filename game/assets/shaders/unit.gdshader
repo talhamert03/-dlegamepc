@@ -2,6 +2,9 @@ shader_type canvas_item;
 // Hit flash, tint, elite/boss outline glow and dissolve-on-death for unit sprites.
 
 uniform float flash : hint_range(0.0, 1.0) = 0.0;
+uniform vec4 flash_color : source_color = vec4(1.0);
+// additive glow while charging a skill
+uniform vec4 glow : source_color = vec4(0.0);
 uniform vec4 tint : source_color = vec4(1.0);
 uniform vec4 outline_color : source_color = vec4(0.0);
 uniform float dissolve : hint_range(0.0, 1.0) = 0.0;
@@ -27,7 +30,8 @@ void fragment() {
 	}
 	c.rgb = apply_recolor(c.rgb);
 	c.rgb *= tint.rgb;
-	c.rgb = mix(c.rgb, vec3(1.0), flash * step(0.01, c.a));
+	c.rgb = mix(c.rgb, flash_color.rgb, flash * step(0.01, c.a));
+	c.rgb += glow.rgb * glow.a * step(0.01, c.a);
 	if (dissolve > 0.0) {
 		float n = hash(UV / px);
 		if (n < dissolve) {

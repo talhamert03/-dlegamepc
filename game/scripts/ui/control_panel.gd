@@ -3,7 +3,7 @@ extends Control
 ## Right-hand side control block of the strip (menu buttons, gold, quick icons).
 
 const W := 80
-const H := 84
+const H := 72
 
 var _gold: Label
 var _btns: Dictionary = {}
@@ -25,21 +25,21 @@ func _ready() -> void:
 	var x := 5
 	for ic in icons:
 		var b := UITheme.icon_button(ic[0], ic[1], DataDB.t(ic[2]))
-		b.position = Vector2(x, 4)
+		b.position = Vector2(x, 3)
 		add_child(b)
 		_btns[ic[0]] = b
 		x += 14
 	# main 2x2 buttons
-	var defs := [["hero", "btn_hero", Vector2(4, 15)], ["bag", "btn_bag", Vector2(42, 15)],
-		["growth", "btn_growth", Vector2(4, 30)], ["world", "btn_world", Vector2(42, 30)]]
+	var defs := [["hero", "btn_hero", Vector2(4, 14)], ["bag", "btn_bag", Vector2(42, 14)],
+		["growth", "btn_growth", Vector2(4, 27)], ["world", "btn_world", Vector2(42, 27)]]
 	for d in defs:
 		var gid: String = d[0]
-		var b := UITheme.button(DataDB.t(d[1]), "brown", func(): WindowManager.toggle_group(gid), Vector2(36, 13))
+		var b := UITheme.button(DataDB.t(d[1]), "brown", func(): WindowManager.toggle_group(gid), Vector2(36, 12))
 		b.add_theme_font_size_override("font_size", 7)
 		b.clip_text = true
 		add_child(b)
 		b.position = d[2]
-		b.size = Vector2(36, 13)
+		b.size = Vector2(36, 12)
 		_btns[gid] = b
 		var dot := ColorRect.new()
 		dot.color = Color("#FF5A4A")
@@ -53,31 +53,31 @@ func _ready() -> void:
 	var pb := UITheme.button(DataDB.t("btn_party"), "blue", func(): WindowManager.toggle_panel("party"), Vector2(36, 12))
 	pb.add_theme_font_size_override("font_size", 7)
 	add_child(pb)
-	pb.position = Vector2(4, 45)
+	pb.position = Vector2(4, 40)
 	pb.size = Vector2(36, 12)
 	_btns["party"] = pb
 	var tb := UITheme.button(DataDB.t("btn_tavern"), "gold", func(): WindowManager.toggle_panel("tavern"), Vector2(36, 12))
 	tb.add_theme_font_size_override("font_size", 7)
 	add_child(tb)
-	tb.position = Vector2(42, 45)
+	tb.position = Vector2(42, 40)
 	tb.size = Vector2(36, 12)
 	_btns["tavern"] = tb
 	# gold
 	var coin: TextureRect = preload("res://scripts/ui/widgets.gd").icon_rect(UITheme.icon("gold"))
-	coin.position = Vector2(5, 61)
+	coin.position = Vector2(5, 55)
 	coin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(coin)
 	_gold = UITheme.label("0", UITheme.C_GOLD)
-	_gold.position = Vector2(14, 59)
+	_gold.position = Vector2(14, 53)
 	add_child(_gold)
 	_lvl = UITheme.label("", UITheme.C_DIM)
-	_lvl.position = Vector2(50, 59)
+	_lvl.position = Vector2(48, 53)
 	add_child(_lvl)
-	_xp_bar = UITheme.bar(70, 3, Color("#F2B33D"))
-	_xp_bar.position = Vector2(5, 71)
+	_xp_bar = UITheme.bar(60, 3, Color("#F2B33D"))
+	_xp_bar.position = Vector2(5, 65)
 	add_child(_xp_bar)
 	var menu := UITheme.icon_button("menu", func(): WindowManager.toggle_panel("codex"), DataDB.t("tip_codex"))
-	menu.position = Vector2(68, 76)
+	menu.position = Vector2(67, 61)
 	add_child(menu)
 	EventBus.gold_changed.connect(func(_g): _refresh())
 	EventBus.hero_leveled.connect(func(_h, _l): _refresh())

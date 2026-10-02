@@ -68,6 +68,28 @@ static func impact_frame(kind: String, id: String, anim: String) -> int:
 
 
 static var _hd: Dictionary = {}
+static var _anim: Dictionary = {}
+
+
+## Animated chibi sheet (6 x 4 cells: idle, move, attack, hurt+death) metadata:
+## {"cw","ch","ax","ay","h","fly"} or {} when the unit has no sheet yet.
+static func anim_meta(kind: String, id: String) -> Dictionary:
+	if _anim.is_empty():
+		var path := "res://assets/hd/anim/meta.json"
+		if FileAccess.file_exists(path):
+			var p: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+			if p is Dictionary:
+				_anim = p
+		if _anim.is_empty():
+			_anim = {"_": {}}
+	return _anim.get(kind, {}).get(id, {})
+
+
+static func anim_sheet(kind: String, id: String) -> Texture2D:
+	if anim_meta(kind, id).is_empty():
+		return null
+	var p := "res://assets/hd/anim/%s/%s.png" % [kind, id]
+	return load(p) if ResourceLoader.exists(p) else null
 
 
 ## HD (AI-illustrated) art metadata: {kind: {id: {"w","h","foot_x"}}}

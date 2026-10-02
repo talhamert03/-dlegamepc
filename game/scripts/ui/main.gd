@@ -24,12 +24,12 @@ func _ready() -> void:
 	strip = StripView.new()
 	strip_root.add_child(strip)
 	cpanel = ControlPanel.new()
-	cpanel.position = Vector2(400, 0)
+	cpanel.position = Vector2(StripView.W, 0)
 	strip_root.add_child(cpanel)
 	_build_round_buttons()
 	_notify_box = VBoxContainer.new()
-	_notify_box.position = Vector2(230, 14)
-	_notify_box.size = Vector2(168, 60)
+	_notify_box.position = Vector2(190, 12)
+	_notify_box.size = Vector2(166, 48)
 	_notify_box.alignment = BoxContainer.ALIGNMENT_END
 	_notify_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_notify_box.z_index = 50
@@ -57,7 +57,8 @@ func _boot() -> void:
 		var p := WindowManager.open_panel("away")
 		if p and p.has_method("set_report"):
 			p.set_report(away)
-	Tutorial.start_if_needed(strip_root)
+	if not cmd.has("--screenshot") or cmd.has("--tutorial"):
+		Tutorial.start_if_needed(strip_root)
 	if cmd.has("--screenshot"):
 		_screenshot_mode(cmd)
 
@@ -92,7 +93,7 @@ func _run_title() -> void:
 
 
 func _build_round_buttons() -> void:
-	var defs := [["red", "town", Vector2(2, 14), "tip_town"], ["green", "dps", Vector2(2, 30), "tip_dps"], ["blue", "auto", Vector2(2, 46), "tip_auto"]]
+	var defs := [["red", "town", Vector2(2, 12), "tip_town"], ["green", "dps", Vector2(2, 27), "tip_dps"], ["blue", "auto", Vector2(2, 42), "tip_auto"]]
 	for d in defs:
 		var b := UITheme.round_button(d[0], d[1])
 		b.position = d[2]
@@ -252,6 +253,16 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 	await get_tree().create_timer(secs).timeout
 	var out := "user://screenshots/"
 	DirAccess.make_dir_recursive_absolute(out)
+	for a in cmd:
+		if a.begins_with("--burst="):
+			# strip frames at ~30 fps for checking animation timing
+			var sc0: int = WindowManager.ui_scale
+			var sr0 := WindowManager.strip_rect()
+			for i in int(a.substr(8)):
+				await get_tree().process_frame
+				await get_tree().create_timer(0.033).timeout
+				var im := get_viewport().get_texture().get_image()
+				im.get_region(Rect2i(Vector2i(sr0.position) * sc0, Vector2i(sr0.size) * sc0)).save_png(out + "burst_%03d.png" % i)
 	var img := get_viewport().get_texture().get_image()
 	img.save_png(out + "screen.png")
 	var sc: int = WindowManager.ui_scale

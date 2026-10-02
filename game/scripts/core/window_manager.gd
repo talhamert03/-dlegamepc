@@ -7,7 +7,7 @@ extends Node
 ## Rendering uses canvas_items stretch at an integer scale: pixel art stays sharp, text and vector UI are
 ## drawn at native resolution.
 
-const STRIP_SIZE := Vector2i(480, 84)
+const STRIP_SIZE := Vector2i(440, 72)    # battle view 360 + control block 80
 const MAX_PANEL_H := 250
 const GAP := 2   # logical pixels between panels / strip
 const PANELS := {
@@ -117,20 +117,21 @@ func _usable() -> Rect2i:
 	return DisplayServer.screen_get_usable_rect(DisplayServer.window_get_current_screen())
 
 
-## Largest integer scale where the strip fits ~80% of the screen width and a full-height panel fits
-## above it. 1920x1080/1200 -> 3x, 2560x1440 -> 4x, 1366x768 -> 2x.
+## Compact, taskbar-hero sized: about one integer step per 520 px of screen height
+## (1920x1080/1200 -> 2x, 2560x1440 -> 3x, 4K -> 4x), reduced until the strip and a full panel still fit.
 func compute_scale() -> int:
 	var s := int(Settings.get_v("scale", 0))
 	if s > 0:
 		return s
 	var usable := _usable()
-	var best := 1
-	for k in range(1, 7):
+	var k := clampi(int(round(usable.size.y / 520.0)), 2, 6)
+	while k > 1:
 		var fits_w: bool = STRIP_SIZE.x * k <= int(usable.size.x * 0.8)
 		var fits_h: bool = (STRIP_SIZE.y + MAX_PANEL_H + 6) * k <= usable.size.y
 		if fits_w and fits_h:
-			best = k
-	return best
+			break
+		k -= 1
+	return k
 
 
 func area_size() -> Vector2:

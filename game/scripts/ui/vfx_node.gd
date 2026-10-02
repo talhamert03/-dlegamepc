@@ -22,9 +22,20 @@ func setup(k: String, c: Color, s: float, d: Dictionary = {}) -> void:
 		"hit":
 			life = 0.22
 		"crit":
-			life = 0.3
+			life = 0.34
 		"slash":
 			life = 0.28
+		"impact":
+			life = 0.26
+			for i in 7:
+				var a0 := _rng.randf_range(-PI, PI)
+				_parts.append([a0, _rng.randf_range(0.6, 1.0), _rng.randf_range(0.7, 1.3)])
+		"cut":
+			life = 0.22
+		"dust":
+			life = 0.5
+			for i in 6:
+				_parts.append([Vector2(_rng.randf_range(-size, size), 0), _rng.randf_range(-6, 6), _rng.randf_range(4, 9)])
 		"heal", "levelup":
 			life = 0.9 if kind == "levelup" else 0.7
 			for i in (14 if kind == "levelup" else 8):
@@ -74,10 +85,53 @@ func _px(p: Vector2, c: Color, s := 1.0) -> void:
 	draw_rect(Rect2(round(p.x), round(p.y), s, s), c)
 
 
+func _ease_out(x: float) -> float:
+	return 1.0 - (1.0 - x) * (1.0 - x)
+
+
 func _draw() -> void:
 	var k := t / life
 	var a := 1.0 - k
 	match kind:
+		"impact":
+			# white core flash + element-coloured sparks flying out
+			var e := _ease_out(min(1.0, k * 1.6))
+			var core := size * (0.35 + 0.5 * e)
+			draw_circle(Vector2.ZERO, core, Color(1, 1, 1, 0.85 * (1.0 - e)))
+			draw_arc(Vector2.ZERO, core * 1.25, 0, TAU, 20, Color(color, 0.7 * (1.0 - e)), 1.2, true)
+			for p in _parts:
+				var dir := Vector2(cos(p[0]), sin(p[0]) * 0.75)
+				var r0: float = size * 0.3 + size * 1.1 * e * float(p[1])
+				var r1: float = r0 + size * 0.55 * (1.0 - k) * float(p[2])
+				draw_line(dir * r0, dir * r1, Color(color.lightened(0.35), a), 1.4, true)
+		"cut":
+			# a fast crescent swept across the target (data.dir = facing of the attacker)
+			var dirx: float = float(data.get("dir", 1.0))
+			var sweep := _ease_out(min(1.0, k * 2.2))
+			var r := size * 1.1
+			var a0 := -1.25
+			var a1 := lerpf(-1.25, 1.15, sweep)
+			var n := 14
+			var pts := PackedVector2Array()
+			var cols := PackedColorArray()
+			for i in n + 1:
+				var f := float(i) / n
+				var ang: float = lerpf(a0, a1, f)
+				var pr := Vector2(cos(ang) * r * 0.55 * dirx, sin(ang) * r)
+				pts.append(pr)
+				cols.append(Color(1, 1, 1, a * f))
+			if pts.size() > 1:
+				draw_polyline_colors(pts, cols, 2.6 * (1.0 - k * 0.6), true)
+				var inner := PackedVector2Array()
+				for q in pts:
+					inner.append(q * 0.8)
+				draw_polyline_colors(inner, cols, 1.2, true)
+				var tip := pts[pts.size() - 1]
+				draw_circle(tip, 1.6 * a, Color(color.lightened(0.6), a))
+		"dust":
+			for p in _parts:
+				var pos: Vector2 = p[0] + Vector2(float(p[1]) * k, -k * 3.0)
+				draw_circle(pos, float(p[2]) * (0.4 + k * 0.6) * 0.5, Color(0.75, 0.68, 0.58, 0.35 * a))
 		"hit":
 			var r := 2.0 + k * 6.0
 			for i in 6:
