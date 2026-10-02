@@ -16,11 +16,11 @@ var dim := false
 var _hover := false
 
 
-func _init(sz := 20.0) -> void:
+func _init(sz := 22.0) -> void:
 	custom_minimum_size = Vector2(sz, sz)
 	size = Vector2(sz, sz)
 	# HD frames are minified (mipmaps), pixel item icons are magnified (stay crisp)
-	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	mouse_entered.connect(func():
 		_hover = true
@@ -43,7 +43,7 @@ func _draw() -> void:
 	var r := Rect2(Vector2.ZERO, size)
 	var rar: String = item.get("rarity", "common")
 	UISkin.slot(ci, r, UISkin.rarity_fill(rar), not item.is_empty(), _hover)
-	var isz := 16.0
+	var isz := roundf(size.x * 0.8)
 	var o := ((size - Vector2(isz, isz)) / 2.0).round()
 	if item.is_empty():
 		if placeholder:
@@ -101,6 +101,9 @@ func _get_drag_data(_pos: Vector2) -> Variant:
 		return null
 	var p := TextureRect.new()
 	p.texture = SpriteLib.item_icon(item)
+	p.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	p.size = Vector2(24, 24)
+	p.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	set_drag_preview(p)
 	WindowManager.hide_tooltip()
 	return {"item": item, "source": source, "key": key}

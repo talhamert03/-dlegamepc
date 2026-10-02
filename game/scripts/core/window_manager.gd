@@ -16,7 +16,7 @@ const PANELS := {
 	"skills": {"script": "res://scripts/ui/panels/hero_panel.gd", "size": Vector2i(196, 334), "title": "panel_skills"},
 	"portrait": {"script": "res://scripts/ui/panels/portrait_panel.gd", "size": Vector2i(150, 250), "title": "panel_portrait"},
 	"inventory": {"script": "res://scripts/ui/panels/inventory_panel.gd", "size": Vector2i(176, 250), "title": "panel_inventory"},
-	"stash": {"script": "res://scripts/ui/panels/stash_panel.gd", "size": Vector2i(180, 196), "title": "panel_stash"},
+	"stash": {"script": "res://scripts/ui/panels/stash_panel.gd", "size": Vector2i(180, 240), "title": "panel_stash"},
 	"blacksmith": {"script": "res://scripts/ui/panels/blacksmith_panel.gd", "size": Vector2i(200, 260), "title": "panel_blacksmith"},
 	"world": {"script": "res://scripts/ui/panels/world_panel.gd", "size": Vector2i(240, 334), "title": "panel_world"},
 	"growth": {"script": "res://scripts/ui/panels/growth_panel.gd", "size": Vector2i(248, 260), "title": "panel_growth"},
@@ -82,8 +82,17 @@ func setup_overlay(desk: Control, strip_root: Control) -> void:
 	setup_main_window()
 
 
+const LAYOUT_VERSION := 2      # bump when logical sizes change: saved strip / panel positions become invalid
+
+
 func setup_main_window() -> void:
 	var w := get_window()
+	if int(Settings.get_v("layout_version", 1)) != LAYOUT_VERSION:
+		Settings.set_v("layout_version", LAYOUT_VERSION)
+		Settings.set_v("strip_pos", "taskbar")
+		Settings.set_v("strip_lx", -1)
+		Settings.set_v("strip_ly", -1)
+		Settings.set_v("panel_lpos", {})
 	ui_scale = compute_scale()
 	var usable := _usable()
 	# window = usable area rounded down to a multiple of the scale, bottom-aligned (keeps pixel art crisp)
@@ -99,11 +108,14 @@ func setup_main_window() -> void:
 	w.size = phys
 	var pos := Vector2i(usable.position.x + (usable.size.x - phys.x) / 2, usable.end.y - phys.y)
 	w.position = pos
-	# window managers may move a window when it is first mapped: put it back once shown
-	get_tree().create_timer(0.15).timeout.connect(func():
-		w.size = phys
-		w.position = pos
-		layout_changed())
+	# window managers may move/resize a window when it is first mapped: put it back once shown
+	for delay in [0.15, 1.0]:
+		get_tree().create_timer(delay).timeout.connect(func():
+			w.size = phys
+			w.position = pos
+			layout_changed())
+	if not w.size_changed.is_connected(layout_changed):
+		w.size_changed.connect(layout_changed)
 	if desktop:
 		desktop.size = Vector2(logical)
 		panels_layer.size = desktop.size
@@ -271,7 +283,8 @@ func _default_pos(id: String, size_l: Vector2i) -> Vector2:
 			var v: Array = saved[id]
 			return clamp_to_area(Vector2(float(v[0]), float(v[1])), w)
 	var s := strip_rect()
-	var above: bool = Settings.get_v("strip_pos", "taskbar") != "top"
+	# above the strip when there is room (normal taskbar position), otherwise below it
+	var above: bool = s.position.y - w.y - GAP >= 0.0 or s.end.y + GAP + w.y > area_size().y
 	var y := s.position.y - w.y - GAP if above else s.end.y + GAP
 	var x := s.end.x - w.x
 	var home: String = HOME.get(id, "right")
@@ -391,10 +404,13 @@ func _update_region() -> void:
 		for c in top_layer.get_children():
 			if c != tooltip and c is Control and c.visible and c.has_meta("region"):
 				rects.append(Rect2(c.position, c.size))
+	# map logical rects to real window pixels with the transform the renderer actually uses, so the region
+	# stays on the drawn UI even if the OS resized the window or applied DPI scaling behind our back
+	var xf := get_tree().root.get_final_transform()
 	var irects: Array[Rect2i] = []
 	for r: Rect2 in rects:
-		var a := Vector2i((r.position * ui_scale).floor())
-		var b := Vector2i((r.end * ui_scale).ceil())
+		var a := Vector2i((xf * r.position).floor())
+		var b := Vector2i((xf * r.end).ceil())
 		if b.x > a.x and b.y > a.y:
 			irects.append(Rect2i(a, b - a))
 	var poly := union_outline(irects)

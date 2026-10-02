@@ -6,8 +6,8 @@ const EQUIP_L := ["weapon", "offhand", "helm", "chest", "gloves", "boots"]
 const EQUIP_R := ["amulet", "cape", "ring1", "ring2", "belt", "charm"]
 const SLOT_ICONS := {"weapon": "sword", "offhand": "shield", "helm": "crown", "chest": "shield", "gloves": "hammer", "boots": "boot",
 	"belt": "bag", "cape": "flag", "amulet": "gem", "ring1": "gem", "ring2": "gem", "charm": "sparkle"}
-const SLOT := 22.0
-const COLS := 10
+const SLOT := 24.0
+const COLS := 9
 
 var tab := 0                      # 0 bag, 1 formation
 var sel_slot := 0                 # formation: selected party slot
@@ -154,9 +154,7 @@ func build(c: Control) -> void:
 	_count.size = Vector2(68, 9)
 	_count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	c.add_child(_count)
-	_ctx = PopupMenu.new()
-	_ctx.add_theme_font_override("font", UITheme.font_small)
-	_ctx.add_theme_font_size_override("font_size", 8)
+	_ctx = UITheme.context_menu()
 	_ctx.id_pressed.connect(_on_ctx)
 	add_child(_ctx)
 	EventBus.inventory_changed.connect(refresh)
@@ -368,6 +366,8 @@ func _on_bag_right(slot: ItemSlot) -> void:
 	_ctx.add_item(DataDB.t("ctx_sell") + " (%s)" % F.fmt_num(ItemUtil.sell_price(slot.item)), 2)
 	_ctx.add_item(DataDB.t("ctx_salvage"), 3)
 	_ctx.add_item(DataDB.t("ctx_unlock") if slot.item.get("locked", false) else DataDB.t("ctx_lock"), 4)
+	_ctx.content_scale_factor = WindowManager.ui_scale
+	_ctx.reset_size()
 	_ctx.position = DisplayServer.mouse_get_position()
 	_ctx.popup()
 	WindowManager.hide_tooltip()
@@ -467,7 +467,7 @@ func _build_formation() -> void:
 	var sc := W.scroll(Vector2(w - 4, 62))
 	sc.position = Vector2(2, 59)
 	_page.add_child(sc)
-	var g := W.grid(10, 1)
+	var g := W.grid(COLS, 1)
 	sc.add_child(g)
 	for hid in GameState.heroes:
 		var h: HeroState = GameState.heroes[hid]

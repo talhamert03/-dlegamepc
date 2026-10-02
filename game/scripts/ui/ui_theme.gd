@@ -233,6 +233,29 @@ func icon_button(icon_name: String, cb: Callable, tip := "") -> TextureButton:
 	return b
 
 
+## Right-click menu in the game's style. It is a separate OS popup window, so it gets the UI scale itself.
+func context_menu() -> PopupMenu:
+	var m := PopupMenu.new()
+	m.add_theme_font_override("font", font_body)
+	m.add_theme_font_size_override("font_size", 10)
+	m.add_theme_color_override("font_color", Color("#EBDCC4"))
+	m.add_theme_color_override("font_hover_color", Color.WHITE)
+	m.add_theme_constant_override("v_separation", 6)
+	m.add_theme_constant_override("h_separation", 6)
+	m.add_theme_constant_override("item_start_padding", 8)
+	m.add_theme_constant_override("item_end_padding", 10)
+	var bg := _flat(Color("#16171D"), Color("#8C6A3A"), 3, 1)
+	bg.content_margin_left = 3
+	bg.content_margin_right = 3
+	bg.content_margin_top = 4
+	bg.content_margin_bottom = 4
+	m.add_theme_stylebox_override("panel", bg)
+	var hv := _flat(Color("#8C4716"), Color("#F3C77A"), 2, 1)
+	m.add_theme_stylebox_override("hover", hv)
+	m.about_to_popup.connect(func(): m.content_scale_factor = WindowManager.ui_scale)
+	return m
+
+
 ## Bronze medallion button with an HD glyph (hero panel bottom bar).
 func medallion(icon_name: String, cb: Callable, tip := "", rad := 11.0) -> BaseButton:
 	var b := TextureButton.new()

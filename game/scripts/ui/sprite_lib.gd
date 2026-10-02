@@ -163,10 +163,26 @@ static func item_icon(item: Dictionary) -> Texture2D:
 		if _cache.has(c):
 			return _cache[c]
 		if ResourceLoader.exists(c):
-			var t: Texture2D = load(c)
+			var t: Texture2D = _crisp(load(c))
 			_cache[c] = t
 			return t
 	return null
+
+
+## Pixel icon pre-scaled 4x (nearest) so it can be drawn at any size with smooth filtering and stay crisp.
+static func _crisp(t: Texture2D) -> Texture2D:
+	if t == null:
+		return null
+	var img := t.get_image()
+	if img == null:
+		return t
+	img = img.duplicate()
+	if img.is_compressed():
+		img.decompress()
+	img.convert(Image.FORMAT_RGBA8)
+	img.resize(img.get_width() * 4, img.get_height() * 4, Image.INTERPOLATE_NEAREST)
+	img.generate_mipmaps()
+	return ImageTexture.create_from_image(img)
 
 
 static func skill_icon(sid: String) -> Texture2D:
