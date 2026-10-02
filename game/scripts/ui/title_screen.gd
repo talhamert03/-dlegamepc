@@ -1,200 +1,562 @@
 class_name TitleScreen
 extends Control
-## First-launch title screen + 5-panel intro story, then the window shrinks into the strip.
+## First-launch title + cinematic intro story.
+##
+## Covers the whole overlay with a dark backdrop and plays in a large 16:9 frame: a night camp with the
+## party's animated sprites around a campfire under the logo, then five illustrated story beats (slow
+## camera moves, letterbox, typewriter narration, flashes and particles). Then the game shrinks to the strip.
 
 signal finished
 
-const SIZE := Vector2i(240, 135)
+const SIZE := Vector2i(240, 135)          # kept for callers; the real size is the whole overlay
+const BEATS := ["intro_1", "intro_2", "intro_3", "intro_4", "intro_5"]
+const BEAT_LEN := 6.0
+const SCENES := "res://assets/hd/scenes/%s.jpg"
 
+var _frame := Rect2()
+var _view: Control
 var _t := 0.0
-var _stage := "title"     # title | intro | done
-var _slide := 0
-var _slide_t := 0.0
-var _logo_y := -40.0
-var _fire_t := 0.0
-var _heroes: Array = []
+var _stage := "title"                      # title | intro | outro | done
+var _beat := -1
+var _bt := 0.0
+var _fade := 1.0                           # black fade overlay
+var _shake := 0.0
+var _flash := 0.0
+var _tex: Dictionary = {}
+var _parts: Array = []
+var _rng := RandomNumberGenerator.new()
 var _buttons: VBoxContainer
 var _text: Label
 var _skip: Button
-var _rng := RandomNumberGenerator.new()
-var _sky: Texture2D
-var _mid: Texture2D
-var _ground: Texture2D
-
-const SLIDES := ["intro_1", "intro_2", "intro_3", "intro_4", "intro_5"]
+var _heroes: Array = []
+var _hint: Label
+var _logo: Control
 
 
 func _ready() -> void:
-	size = Vector2(SIZE)
 	theme = UITheme.theme
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	_sky = load("res://assets/backgrounds/dark_forest/sky.png")
-	_mid = load("res://assets/backgrounds/dark_forest/mid.png")
-	_ground = load("res://assets/backgrounds/forest/ground.png")
-	var xs := [36.0, 66.0, 214.0]
-	var ids := ["lyra", "kael", "pip"]
-	for i in 3:
-		var s := AnimatedSprite2D.new()
-		s.sprite_frames = SpriteLib.frames_for("hero", ids[i])
+	_rng.randomize()
+	var area := WindowManager.area_size()
+	position = Vector2.ZERO
+	size = area
+	var fw := minf(area.x * 0.9, area.y * 0.9 * 16.0 / 9.0)
+	var fh := fw * 9.0 / 16.0
+	_frame = Rect2(((area - Vector2(fw, fh)) / 2.0).round(), Vector2(fw, fh).round())
+	_view = Control.new()
+	_view.position = _frame.position
+	_view.size = _frame.size
+	_view.clip_contents = true
+	_view.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_view.draw.connect(_draw_view)
+	add_child(_view)
+	# the party around the campfire (animated chibi sheets)
+	var cast := [["lyra", -0.30, false], ["kael", -0.17, false], ["pip", 0.17, true], ["bjorn", 0.30, true]]
+	for c in cast:
+		var tex := SpriteLib.anim_sheet("heroes", c[0])
+		if tex == null:
+			continue
+		var m := SpriteLib.anim_meta("heroes", c[0])
+		var s := Sprite2D.new()
+		s.texture = tex
+		s.hframes = 6
+		s.vframes = 4
 		s.centered = false
-		s.offset = Vector2(-28, -54)
-		s.position = Vector2(xs[i], 122)
-		s.flip_h = i == 2
-		s.play("idle")
-		add_child(s)
+		s.offset = -Vector2(float(m["ax"]), float(m["ay"]))
+		s.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+		var k := _frame.size.y * 0.2 / float(m["h"])
+		s.scale = Vector2(-k if c[2] else k, k)
+		s.position = Vector2(_frame.size.x * (0.5 + float(c[1])), _frame.size.y * 0.86)
+		s.set_meta("phase", _rng.randf() * 6.0)
+		_view.add_child(s)
 		_heroes.append(s)
-	_buttons = W.vbox(2)
-	_buttons.position = Vector2(84, 62)
+	var bw := clampf(_frame.size.x * 0.17, 110.0, 150.0)
+	_buttons = W.vbox(5)
+	_buttons.size = Vector2(bw, 80)
+	_buttons.position = Vector2(_frame.position.x + (_frame.size.x - bw) / 2.0, _frame.position.y + _frame.size.y * 0.40)
 	add_child(_buttons)
-	_buttons.add_child(UITheme.button(DataDB.t("title_new"), "orange", _start_intro, Vector2(72, 13)))
-	_buttons.add_child(UITheme.button(DataDB.t("title_settings"), "brown", func(): WindowManager.toggle_panel("settings"), Vector2(72, 13)))
-	_buttons.add_child(UITheme.button(DataDB.t("tray_quit"), "red", func(): WindowManager.quit_game(), Vector2(72, 13)))
+	for d in [["title_new", "orange", _start_intro], ["title_settings", "brown", func(): WindowManager.toggle_panel("settings")],
+			["tray_quit", "red", func(): WindowManager.quit_game()]]:
+		var b := UITheme.button(DataDB.t(d[0]), d[1], d[2], Vector2(bw, 22))
+		b.add_theme_font_size_override("font_size", 11)
+		_buttons.add_child(b)
 	_buttons.modulate.a = 0.0
-	_text = UITheme.label("", UITheme.C_TEXT, 13, UITheme.font_title)
-	_text.position = Vector2(10, 92)
-	_text.size = Vector2(220, 40)
+	_text = UITheme.label("", Color("#F4EAD2"), 15, UITheme.font_title)
+	_text.position = Vector2(_frame.position.x + _frame.size.x * 0.08, _frame.end.y - _frame.size.y * 0.13)
+	_text.size = Vector2(_frame.size.x * 0.84, _frame.size.y * 0.11)
 	_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_text.add_theme_color_override("font_outline_color", Color("#140E10"))
-	_text.add_theme_constant_override("outline_size", 2)
+	_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_text.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+	_text.add_theme_constant_override("outline_size", 4)
 	_text.visible = false
 	add_child(_text)
-	_skip = UITheme.button(DataDB.t("skip"), "gray", _finish, Vector2(30, 11))
-	_skip.position = Vector2(206, 2)
+	_hint = UITheme.label(DataDB.t("click_continue"), Color(1, 1, 1, 0.5), 8)
+	_hint.position = Vector2(_frame.end.x - 160, _frame.end.y - 14)
+	_hint.size = Vector2(150, 10)
+	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_hint.visible = false
+	add_child(_hint)
+	_skip = UITheme.button(DataDB.t("skip") + "  ›", "brown", _finish, Vector2(54, 16))
+	_skip.position = Vector2(_frame.end.x - 62, _frame.position.y + 8)
 	_skip.visible = false
 	add_child(_skip)
+	for k in ["forest", "temple", "throne", "ruins", "meadow", "snow", "desert", "ash", "town"]:
+		var p := SCENES % k
+		_tex[k] = load(p) if ResourceLoader.exists(p) else null
+	_tex["morvath"] = load("res://assets/hd/scenes/morvath.png") if ResourceLoader.exists("res://assets/hd/scenes/morvath.png") else null
+	# textures must be loaded before the first draw call that uses them (first-use inside _draw renders blank)
+	for b in ["goblin_king", "ice_witch", "pharaoh", "demon_hunter"]:
+		_tex["boss_" + b] = SpriteLib.hd_sprite("enemies", b)
+	for h in ["lyra", "kael", "pip", "bjorn"]:
+		_tex["hero_" + h] = SpriteLib.portrait(h)
+	var g := Gradient.new()
+	g.set_color(0, Color(1, 1, 1, 0))
+	g.set_color(1, Color(1, 1, 1, 1))
+	g.add_point(0.55, Color(1, 1, 1, 0.0))
+	g.add_point(0.85, Color(1, 1, 1, 0.45))
+	var vt := GradientTexture2D.new()
+	vt.gradient = g
+	vt.fill = GradientTexture2D.FILL_RADIAL
+	vt.fill_from = Vector2(0.5, 0.5)
+	vt.fill_to = Vector2(1.0, 1.0)
+	vt.width = 256
+	vt.height = 144
+	_tex["vignette"] = vt
+	# logo sits above the cinematic view
+	_logo = Control.new()
+	_logo.size = size
+	_logo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_logo.draw.connect(_draw_logo)
+	add_child(_logo)
+	move_child(_logo, _view.get_index() + 1)
 	AudioManager.play_music("title")
 
 
 func _process(delta: float) -> void:
 	_t += delta
-	_fire_t += delta
-	_logo_y = lerp(_logo_y, 14.0, min(1.0, delta * 4.0))
-	if _t > 0.8:
-		_buttons.modulate.a = min(1.0, _buttons.modulate.a + delta * 2.0)
-	if _stage == "intro":
-		_slide_t += delta
-		if _slide_t > 3.6:
-			_next_slide()
+	_bt += delta
+	_shake = maxf(0.0, _shake - delta)
+	_flash = maxf(0.0, _flash - delta * 2.2)
+	match _stage:
+		"title":
+			_fade = maxf(0.0, _fade - delta * 0.8)
+			if _t > 1.2:
+				_buttons.modulate.a = minf(1.0, _buttons.modulate.a + delta * 1.6)
+			for s: Sprite2D in _heroes:
+				s.frame = posmod(int((_t + float(s.get_meta("phase"))) * 7.0), 6)
+		"intro":
+			_fade = maxf(0.0, _fade - delta * 1.5) if _bt < BEAT_LEN - 0.6 else minf(1.0, _fade + delta * 1.8)
+			_text.visible_ratio = clampf((_bt - 0.5) / 2.2, 0.0, 1.0)
+			_hint.visible = _text.visible_ratio >= 1.0
+			_hint.modulate.a = 0.5 + 0.3 * sin(_t * 4.0)
+			_beat_events()
+			if _bt >= BEAT_LEN:
+				_next_beat()
+		"outro":
+			_fade = minf(1.0, _fade + delta * 1.4)
+			if _fade >= 1.0:
+				_stage = "done"
+				finished.emit()
+				queue_free()
+	_update_parts(delta)
+	_view.position = _frame.position + (Vector2(_rng.randf_range(-1, 1), _rng.randf_range(-1, 1)) * _shake * 10.0).round()
+	_view.queue_redraw()
+	_logo.queue_redraw()
 	queue_redraw()
 
 
 func _gui_input(ev: InputEvent) -> void:
-	if _stage == "intro" and ev is InputEventMouseButton and ev.pressed:
-		_next_slide()
+	if _stage == "intro" and ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+		if _text.visible_ratio < 1.0:
+			_bt = maxf(_bt, 2.7)
+		else:
+			_bt = maxf(_bt, BEAT_LEN - 0.6)
 
 
-func _draw() -> void:
-	if _stage == "title":
-		_draw_scene()
-		_draw_logo()
-	else:
-		_draw_slide()
+func _unhandled_input(ev: InputEvent) -> void:
+	if _stage == "intro" and ev is InputEventKey and ev.pressed and ev.keycode == KEY_ESCAPE:
+		_finish()
 
 
-func _draw_scene() -> void:
-	if _sky:
-		draw_texture_rect_region(_sky, Rect2(0, 0, 240, 84), Rect2(0, 0, 240, 84))
-		draw_texture_rect_region(_sky, Rect2(0, 84, 240, 51), Rect2(0, 60, 240, 24))
-	if _mid:
-		draw_texture_rect_region(_mid, Rect2(0, 50, 240, 84), Rect2(_t * 3.0, 0, 240, 84))
-	draw_rect(Rect2(0, 118, 240, 17), Color("#2E3B2A"))
-	draw_rect(Rect2(0, 118, 240, 2), Color("#3F5236"))
-	# campfire with flickering light
-	var fx := 186.0
-	var fy := 121.0
-	var flick := 0.8 + 0.2 * sin(_fire_t * 13.0) * sin(_fire_t * 7.3)
-	draw_circle(Vector2(fx, fy - 2), 26.0 * flick, Color(1.0, 0.55, 0.2, 0.08))
-	draw_circle(Vector2(fx, fy - 2), 14.0 * flick, Color(1.0, 0.6, 0.25, 0.10))
-	draw_rect(Rect2(fx - 6, fy - 1, 12, 2), Color("#5A3E2E"))
-	draw_rect(Rect2(fx - 4, fy - 2, 8, 1), Color("#7A5A3A"))
-	for i in 5:
-		var h: float = 4.0 + 3.0 * abs(sin(_fire_t * (5.0 + i) + i))
-		var c := Color("#FF7A33") if i % 2 == 0 else Color("#FFD84A")
-		draw_rect(Rect2(fx - 4 + i * 2, fy - 2 - h, 2, h), c)
-	for i in 4:
-		var sp := fmod(_fire_t * 18.0 + i * 13.0, 30.0)
-		draw_rect(Rect2(fx - 2 + sin(_fire_t * 3 + i) * 4, fy - 8 - sp, 1, 1), Color(1, 0.8, 0.4, 1.0 - sp / 30.0))
-
-
-func _draw_logo() -> void:
-	var f := UITheme.font_big
-	var t1 := "IDLE PARTY"
-	var w := f.get_string_size(t1, HORIZONTAL_ALIGNMENT_LEFT, -1, 20).x
-	var x := (240 - w) / 2.0
-	for o in [Vector2(-1, 0), Vector2(1, 0), Vector2(0, -1), Vector2(0, 2)]:
-		draw_string(f, Vector2(x, _logo_y + 16) + o, t1, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color("#140E10"))
-	draw_string(f, Vector2(x, _logo_y + 16), t1, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color("#FF8A3D"))
-	draw_string(f, Vector2(x, _logo_y + 15), t1, HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color("#FFB36A"))
-	var t2 := "Desktop Legends"
-	var w2 := UITheme.font_title.get_string_size(t2, HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x
-	draw_string(UITheme.font_title, Vector2((240 - w2) / 2.0 + 1, _logo_y + 31), t2, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("#140E10"))
-	draw_string(UITheme.font_title, Vector2((240 - w2) / 2.0, _logo_y + 30), t2, HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("#F2E6C9"))
-
-
-func _draw_slide() -> void:
-	var k: float = clamp(_slide_t / 0.6, 0.0, 1.0) * clamp((3.6 - _slide_t) / 0.5, 0.0, 1.0)
-	draw_rect(Rect2(0, 0, 240, 135), Color("#100C16"))
-	var cx := 120.0
-	var cy := 50.0
-	match _slide:
-		0:
-			# glowing world crystal
-			for r in range(30, 0, -3):
-				draw_circle(Vector2(cx, cy), r, Color(0.5, 0.85, 1.0, 0.03 * k))
-			_crystal(cx, cy, 1.0, Color("#9FDFFF"), k)
-		1:
-			_crystal(cx, cy, 1.0, Color("#9FDFFF"), k)
-			var sh := Color(0.1, 0.0, 0.15, 0.85 * k)
-			draw_circle(Vector2(cx - 40 + _slide_t * 8, cy - 10), 22, sh)
-			draw_rect(Rect2(cx - 50 + _slide_t * 8, cy - 4, 4, 2), Color(1, 0.2, 0.3, k))
-			draw_rect(Rect2(cx - 42 + _slide_t * 8, cy - 4, 4, 2), Color(1, 0.2, 0.3, k))
-		2:
-			for i in 4:
-				var a := i * TAU / 4.0 + 0.5
-				var d := 10.0 + _slide_t * 18.0
-				_crystal(cx + cos(a) * d, cy + sin(a) * d * 0.6, 0.4, Color("#9FDFFF"), k)
-		3:
-			if _mid:
-				draw_texture_rect_region(UITheme.tex("../backgrounds/town/mid"), Rect2(0, 10, 240, 84), Rect2(40, 0, 240, 84), Color(1, 1, 1, k))
-			draw_rect(Rect2(cx - 16, cy - 2, 32, 12), Color(0.35, 0.25, 0.18, k))
-			draw_string(UITheme.font_small, Vector2(cx - 14, cy + 6), DataDB.t("for_sale"), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(1, 0.9, 0.7, k))
-		4:
-			draw_rect(Rect2(cx - 22, cy - 4, 44, 12), Color(0.45, 0.3, 0.2, k))
-			draw_string(UITheme.font_small, Vector2(cx - 20, cy + 4), DataDB.t("guild_sign"), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(1, 0.85, 0.4, k))
-	_text.modulate.a = k
-
-
-func _crystal(x: float, y: float, s: float, c: Color, a: float) -> void:
-	var pts := PackedVector2Array([Vector2(x, y - 18 * s), Vector2(x + 9 * s, y), Vector2(x, y + 18 * s), Vector2(x - 9 * s, y)])
-	draw_colored_polygon(pts, Color(c, a))
-	var pts2 := PackedVector2Array([Vector2(x, y - 18 * s), Vector2(x + 9 * s, y), Vector2(x, y)])
-	draw_colored_polygon(pts2, Color(1, 1, 1, 0.5 * a))
-
-
+# ------------------------------------------------------------------ flow
 func _start_intro() -> void:
 	_stage = "intro"
 	_buttons.visible = false
 	for h in _heroes:
 		h.visible = false
-	_slide = -1
 	_skip.visible = true
 	_text.visible = true
-	_next_slide()
+	_beat = -1
+	_next_beat()
 
 
-func _next_slide() -> void:
-	_slide += 1
-	_slide_t = 0.0
-	if _slide >= SLIDES.size():
-		_finish()
+func _next_beat() -> void:
+	_beat += 1
+	_bt = 0.0
+	_fade = 1.0
+	_parts.clear()
+	_fired.clear()
+	if _beat >= BEATS.size():
+		_stage = "outro"
+		_text.visible = false
+		_skip.visible = false
+		_hint.visible = false
 		return
-	_text.text = DataDB.t(SLIDES[_slide])
+	_text.text = DataDB.t(BEATS[_beat])
+	_text.visible_ratio = 0.0
+
+
+var _fired: Dictionary = {}
+
+
+func _once(key: String) -> bool:
+	if _fired.has(key):
+		return false
+	_fired[key] = true
+	return true
+
+
+func _beat_events() -> void:
+	match _beat:
+		1:
+			if _bt > 2.0 and _once("shatter"):
+				_shake = 0.6
+				_flash = 1.0
+				AudioManager.play("boss_warning", 0.0, 1.0)
+				var c := Vector2(_frame.size.x * 0.3, _frame.size.y * 0.42)
+				for i in 46:
+					var a := _rng.randf() * TAU
+					_parts.append({"k": "shard", "p": c, "v": Vector2(cos(a), sin(a) - 0.3) * _rng.randf_range(120, 420), "t": 0.0,
+						"life": _rng.randf_range(1.2, 2.6), "r": _rng.randf() * TAU, "s": _rng.randf_range(4, 10)})
+		4:
+			if _bt > 1.4 and _once("guild"):
+				_flash = 0.6
+				AudioManager.play("levelup", 0.0, 0.9)
+				var c2 := Vector2(_frame.size.x * 0.5, _frame.size.y * 0.33)
+				for i in 60:
+					var a2 := _rng.randf() * TAU
+					_parts.append({"k": "spark", "p": c2, "v": Vector2(cos(a2), sin(a2)) * _rng.randf_range(60, 260), "t": 0.0,
+						"life": _rng.randf_range(0.8, 1.8), "c": [Color("#FFD978"), Color("#FFF2C2"), Color("#FF9A5A")][i % 3]})
 
 
 func _finish() -> void:
-	if _stage == "done":
+	if _stage == "done" or _stage == "outro":
 		return
-	_stage = "done"
-	finished.emit()
-	queue_free()
+	_stage = "outro"
+	_text.visible = false
+	_skip.visible = false
+	_hint.visible = false
+
+
+# ------------------------------------------------------------------ particles
+func _update_parts(delta: float) -> void:
+	var f := _frame.size
+	if _stage == "title":
+		# fireflies + embers from the campfire
+		while _parts.size() < 40:
+			var ember := _rng.randf() < 0.45
+			_parts.append({"k": "ember" if ember else "fly", "t": 0.0, "life": _rng.randf_range(2.0, 5.0),
+				"p": Vector2(f.x * 0.5 + _rng.randf_range(-10, 10), f.y * 0.84) if ember else Vector2(_rng.randf() * f.x, _rng.randf_range(f.y * 0.35, f.y * 0.9)),
+				"v": Vector2(_rng.randf_range(-8, 8), _rng.randf_range(-45, -25)) if ember else Vector2(_rng.randf_range(-6, 6), _rng.randf_range(-4, 4)),
+				"ph": _rng.randf() * 6.0})
+	elif _stage == "intro" and (_beat == 0 or _beat == 2):
+		while _parts.size() < 36:
+			_parts.append({"k": "mote", "t": 0.0, "life": _rng.randf_range(2.5, 5.0), "p": Vector2(_rng.randf() * f.x, f.y * _rng.randf_range(0.2, 1.0)),
+				"v": Vector2(_rng.randf_range(-5, 5), _rng.randf_range(-16, -6)), "ph": _rng.randf() * 6.0})
+	for p in _parts:
+		p["t"] = float(p["t"]) + delta
+		var v: Vector2 = p["v"]
+		if p["k"] == "shard":
+			v.y += 260.0 * delta
+			p["v"] = v
+			p["r"] = float(p["r"]) + delta * 6.0
+		elif p["k"] == "spark":
+			p["v"] = v * (1.0 - delta * 1.6) + Vector2(0, 40.0 * delta)
+		p["p"] = (p["p"] as Vector2) + v * delta
+	_parts = _parts.filter(func(p): return float(p["t"]) < float(p["life"]))
+
+
+# ------------------------------------------------------------------ drawing
+func _draw() -> void:
+	# dim the desktop behind the cinematic
+	draw_rect(Rect2(Vector2.ZERO, size), Color(0, 0, 0, 0.92))
+	var ci := get_canvas_item()
+	UISkin.stroke(ci, _frame.grow(3.0), 4, Color(0, 0, 0, 1), 2.0)
+	UISkin.stroke(ci, _frame.grow(2.0), 4, Color(UISkin.BRONZE, 0.85), 1.0)
+
+
+## Pan / zoom over a scene image so it covers the frame. pan: 0..1 across the spare width.
+func _scene(key: String, pan: float, zoom := 1.0, tint := Color.WHITE, alpha := 1.0, rect := Rect2()) -> void:
+	var tex: Texture2D = _tex.get(key)
+	if tex == null:
+		return
+	if rect.size == Vector2.ZERO:
+		rect = Rect2(Vector2.ZERO, _frame.size)
+	var ts := Vector2(tex.get_width(), tex.get_height())
+	var sc := maxf(rect.size.x / ts.x, rect.size.y / ts.y) * zoom
+	var src := rect.size / sc
+	var spare := ts - src
+	var org := Vector2(spare.x * clampf(pan, 0.0, 1.0), spare.y * 0.5)
+	_view.draw_texture_rect_region(tex, rect, Rect2(org, src), Color(tint, alpha))
+
+
+func _figure(tex: Texture2D, foot: Vector2, h: float, alpha := 1.0, flip := false, tint := Color.WHITE) -> void:
+	if tex == null:
+		return
+	var k := h / float(tex.get_height())
+	var w := tex.get_width() * k
+	var r := Rect2(foot - Vector2(w / 2.0, h), Vector2(w, h))
+	if flip:
+		r = Rect2(Vector2(r.end.x, r.position.y), Vector2(-w, h))
+	_view.draw_texture_rect(tex, r, false, Color(tint, alpha))
+
+
+func _vignette(col: Color, strength: float) -> void:
+	var vt: Texture2D = _tex.get("vignette")
+	if vt:
+		_view.draw_texture_rect(vt, Rect2(Vector2.ZERO, _frame.size), false, Color(col.r, col.g, col.b, strength))
+
+
+func _draw_view() -> void:
+	var f := _frame.size
+	var ci := _view.get_canvas_item()
+	match _stage:
+		"title", "done":
+			_draw_camp()
+		_:
+			if _beat >= 0 and _beat < BEATS.size():
+				_draw_beat(_beat)
+	# particles
+	for p in _parts:
+		var k: float = float(p["t"]) / float(p["life"])
+		var a := sin(k * PI)
+		var pos: Vector2 = p["p"]
+		match p["k"]:
+			"fly":
+				var tw := 0.5 + 0.5 * sin(_t * 3.0 + float(p["ph"]))
+				_view.draw_circle(pos, 3.0, Color(1.0, 0.9, 0.4, 0.12 * a * tw))
+				_view.draw_circle(pos, 1.1, Color(1.0, 0.95, 0.6, 0.85 * a * tw))
+			"ember":
+				_view.draw_circle(pos + Vector2(sin(_t * 4.0 + float(p["ph"])) * 3.0, 0), 1.0, Color(1.0, 0.6, 0.2, a))
+			"mote":
+				_view.draw_circle(pos + Vector2(sin(_t + float(p["ph"])) * 6.0, 0), 1.3, Color(1.0, 0.92, 0.65, 0.7 * a))
+			"shard":
+				var s: float = p["s"]
+				var r: float = p["r"]
+				var pts := PackedVector2Array([pos + Vector2(cos(r), sin(r)) * s, pos + Vector2(cos(r + 2.3), sin(r + 2.3)) * s * 0.5,
+					pos + Vector2(cos(r + 3.6), sin(r + 3.6)) * s * 0.7])
+				_view.draw_colored_polygon(pts, Color(0.62, 0.9, 1.0, 1.0 - k))
+				_view.draw_circle(pos, s * 1.4, Color(0.6, 0.9, 1.0, 0.12 * (1.0 - k)))
+			"spark":
+				_view.draw_circle(pos, 1.6, Color(p["c"], 1.0 - k))
+	# letterbox + flash + fade
+	if _stage == "intro" or _stage == "outro":
+		var bar := f.y * 0.115
+		_view.draw_rect(Rect2(0, 0, f.x, bar), Color(0, 0, 0, 0.92))
+		_view.draw_rect(Rect2(0, f.y - bar * 1.25, f.x, bar * 1.25), Color(0, 0, 0, 0.92))
+		# beat dots
+		for i in BEATS.size():
+			var c := Vector2(f.x / 2.0 + (i - 2) * 12.0, f.y - 7.0)
+			_view.draw_circle(c, 2.4 if i == _beat else 1.8, Color("#F2CB7A") if i == _beat else Color(1, 1, 1, 0.25))
+	if _flash > 0.0:
+		_view.draw_rect(Rect2(Vector2.ZERO, f), Color(1, 0.97, 0.9, _flash))
+	if _fade > 0.0:
+		_view.draw_rect(Rect2(Vector2.ZERO, f), Color(0, 0, 0, _fade))
+
+
+func _draw_camp() -> void:
+	var f := _frame.size
+	var ci := _view.get_canvas_item()
+	# night forest: the day panorama pushed to moonlight
+	_scene("forest", 0.5 + 0.5 * sin(_t * 0.05), 1.06, Color(0.32, 0.38, 0.62))
+	UISkin.fill(ci, Rect2(0, 0, f.x, f.y * 0.55), 0, Color(0.02, 0.03, 0.10, 0.65), Color(0.02, 0.03, 0.1, 0.0))
+	# moon
+	var mc := Vector2(f.x * 0.82, f.y * 0.16)
+	for i in 5:
+		_view.draw_circle(mc, 14.0 + i * 9.0, Color(0.75, 0.82, 1.0, 0.035))
+	_view.draw_circle(mc, 12.0, Color("#E8EEFF"))
+	_view.draw_circle(mc + Vector2(3, -2), 10.5, Color(0.86, 0.9, 1.0, 0.5))
+	# campfire light pool
+	var fc := Vector2(f.x * 0.5, f.y * 0.85)
+	var flick := 0.85 + 0.15 * sin(_t * 11.0) * sin(_t * 6.7)
+	for i in 7:
+		var r := (f.y * 0.55) * (1.0 - i / 7.0) * flick
+		_view.draw_set_transform(fc, 0.0, Vector2(1.0, 0.45))
+		_view.draw_circle(Vector2.ZERO, r, Color(1.0, 0.55, 0.2, 0.045))
+		_view.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	_campfire(fc, f.y * 0.09)
+	_vignette(Color(0, 0, 0), 1.0)
+
+
+func _campfire(c: Vector2, s: float) -> void:
+	var ci := _view.get_canvas_item()
+	# stones and crossed logs
+	for i in 7:
+		var ang := PI + i * PI / 6.0
+		_view.draw_circle(c + Vector2(cos(ang) * s * 0.95, s * 0.12 + sin(ang) * s * 0.1), s * 0.16, Color("#4A4642"))
+	for d in [-1.0, 1.0]:
+		var p0 := c + Vector2(-s * 0.8 * d, s * 0.1)
+		var p1 := c + Vector2(s * 0.6 * d, -s * 0.18)
+		_view.draw_line(p0, p1, Color("#2A190E"), s * 0.26, true)
+		_view.draw_line(p0, p1, Color("#6B4429"), s * 0.18, true)
+	# flame tongues: back (red) to front (yellow-white)
+	var layers := [[Color("#C9301A"), 1.25, 7], [Color("#FF6A1F"), 1.0, 6], [Color("#FFB23A"), 0.72, 5], [Color("#FFF2B0"), 0.42, 3]]
+	for li in layers.size():
+		var L: Array = layers[li]
+		var col: Color = L[0]
+		var hk: float = L[1]
+		var n: int = L[2]
+		for j in n:
+			var fx: float = (float(j) / maxf(1.0, n - 1.0) - 0.5) * s * 0.9 * hk
+			var ph := j * 1.9 + li * 0.7
+			var h := s * 1.3 * hk * (0.7 + 0.3 * sin(_t * (7.0 + j) + ph)) * (1.0 - absf(fx) / (s * 0.75))
+			var w := s * 0.22 * hk
+			var sway := sin(_t * 5.0 + ph) * s * 0.12
+			var base := c + Vector2(fx, 0)
+			var pts := PackedVector2Array([base + Vector2(-w, 0), base + Vector2(-w * 0.6, -h * 0.5), base + Vector2(sway, -h),
+				base + Vector2(w * 0.6, -h * 0.55), base + Vector2(w, 0)])
+			UISkin.poly(ci, pts, Color(col, 0.0), Color(col, 0.95))
+	_view.draw_circle(c + Vector2(0, -s * 0.2), s * 0.35, Color(1.0, 0.95, 0.7, 0.35))
+
+
+func _draw_logo() -> void:
+	if _stage != "title":
+		return
+	var cx := _frame.position.x + _frame.size.x / 2.0
+	var y0 := _frame.position.y + _frame.size.y * 0.13
+	var sz := int(clampf(_frame.size.y * 0.115, 30.0, 64.0))
+	var f := UITheme.font_big
+	var t1 := "IDLE PARTY"
+	var w := f.get_string_size(t1, HORIZONTAL_ALIGNMENT_LEFT, -1, sz).x
+	var pos := Vector2(cx - w / 2.0, y0 + sz * 0.8)
+	var a := clampf(_t * 0.8, 0.0, 1.0)
+	_logo.draw_string_outline(f, pos + Vector2(0, 3), t1, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, 8, Color(0, 0, 0, 0.8 * a))
+	_logo.draw_string_outline(f, pos, t1, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, 5, Color("#3A1606", a))
+	_logo.draw_string(f, pos, t1, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, Color("#F2A33A", a))
+	_logo.draw_string(f, pos + Vector2(0, -sz * 0.04), t1, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, Color(1.0, 0.86, 0.5, 0.55 * a))
+	var t2 := "DESKTOP LEGENDS"
+	var s2 := int(sz * 0.36)
+	var w2 := UITheme.font_title.get_string_size(t2, HORIZONTAL_ALIGNMENT_LEFT, -1, s2).x
+	var p2 := Vector2(cx - w2 / 2.0, pos.y + s2 * 1.6)
+	_logo.draw_string_outline(UITheme.font_title, p2, t2, HORIZONTAL_ALIGNMENT_LEFT, -1, s2, 4, Color(0, 0, 0, 0.85 * a))
+	_logo.draw_string(UITheme.font_title, p2, t2, HORIZONTAL_ALIGNMENT_LEFT, -1, s2, Color("#F4EAD2", a))
+	var ci := _logo.get_canvas_item()
+	UISkin.diamond(ci, Vector2(cx - w2 / 2.0 - 10, p2.y - s2 * 0.35), 3.0)
+	UISkin.diamond(ci, Vector2(cx + w2 / 2.0 + 10, p2.y - s2 * 0.35), 3.0)
+
+
+func _draw_beat(b: int) -> void:
+	var f := _frame.size
+	var e := _bt / BEAT_LEN
+	match b:
+		0:
+			# the World Crystal over the sun temple
+			_scene("temple", 0.2 + e * 0.5, 1.0 + e * 0.08, Color(1.0, 0.95, 0.85))
+			_crystal(Vector2(f.x * 0.5, f.y * 0.4), f.y * 0.17, 1.0)
+			_vignette(Color(0.1, 0.05, 0.0), 0.8)
+		1:
+			# Morvath shatters it
+			_scene("throne", 0.7 - e * 0.4, 1.04 + e * 0.05, Color(0.85, 0.55, 0.55))
+			var ci := _view.get_canvas_item()
+			UISkin.fill(ci, Rect2(Vector2.ZERO, f), 0, Color(0.25, 0.0, 0.05, 0.25), Color(0.05, 0.0, 0.0, 0.55))
+			var mx := lerpf(f.x * 1.15, f.x * 0.7, clampf(_bt / 1.6, 0.0, 1.0))
+			_figure(_tex.get("morvath"), Vector2(mx, f.y * 1.02), f.y * 0.92, 1.0, true, Color(1.0, 0.8, 0.8))
+			if _bt < 2.0:
+				_crystal(Vector2(f.x * 0.3, f.y * 0.42), f.y * 0.14, 1.0, _bt * 0.5)
+			_vignette(Color(0.3, 0.0, 0.0), 1.0)
+		2:
+			# the shards fall on four realms; their monsters rise
+			var keys := ["meadow", "snow", "desert", "ash"]
+			var bosses := ["goblin_king", "ice_witch", "pharaoh", "demon_hunter"]
+			var sw := f.x / 4.0
+			for i in 4:
+				var appear := clampf((_bt - i * 0.35) / 0.7, 0.0, 1.0)
+				var r := Rect2(i * sw, f.y * (1.0 - appear) * -0.15, sw, f.y)
+				_scene(keys[i], 0.3 + 0.1 * i + e * 0.2, 1.0, Color(0.85, 0.8, 0.85), appear, Rect2(r.position, Vector2(sw + 1, f.y)))
+				var rise := clampf((_bt - 1.4 - i * 0.3) / 0.9, 0.0, 1.0)
+				var tex: Texture2D = _tex.get("boss_" + bosses[i])
+				_figure(tex, Vector2(i * sw + sw * 0.5, f.y * (0.92 + (1.0 - rise) * 0.4)), f.y * 0.48, rise, true, Color(0.9, 0.75, 0.75))
+				# falling shard streak
+				var st := clampf((_bt - 0.4 - i * 0.35) / 0.8, 0.0, 1.0)
+				if st > 0.0 and st < 1.0:
+					var p := Vector2(i * sw + sw * 0.5, lerpf(-10.0, f.y * 0.55, st))
+					_view.draw_line(p - Vector2(0, 40), p, Color(0.6, 0.9, 1.0, 0.6), 3.0, true)
+					_view.draw_circle(p, 4.0, Color(0.8, 0.95, 1.0))
+				if i > 0:
+					_view.draw_line(Vector2(i * sw, 0), Vector2(i * sw, f.y), Color(0, 0, 0, 0.85), 3.0)
+			_vignette(Color(0, 0, 0), 0.9)
+		3, 4:
+			# Stonebridge: the empty guild hall, then the Wandering Guild
+			var warm := 1.0 if b == 4 else 0.85
+			_scene("town", 0.15 + e * 0.35 + (0.35 if b == 4 else 0.0), 1.03, Color(warm, warm * 0.95, warm * 0.85))
+			var founded := b == 4 and _bt > 1.4
+			_sign(Vector2(f.x * 0.5, f.y * 0.2), f.y * 0.2, DataDB.t("guild_sign") if founded else DataDB.t("for_sale"), founded)
+			if b == 4:
+				var cast := [["lyra", -0.3], ["kael", -0.16], ["pip", 0.16], ["bjorn", 0.3]]
+				for i in cast.size():
+					var a := clampf((_bt - 1.6 - i * 0.25) / 0.6, 0.0, 1.0)
+					var tex2: Texture2D = _tex.get("hero_" + str(cast[i][0]))
+					_figure(tex2, Vector2(f.x * (0.5 + float(cast[i][1])), f.y * (0.98 + (1.0 - a) * 0.08)), f.y * 0.62, a, float(cast[i][1]) > 0.0)
+			_vignette(Color(0, 0, 0), 0.7)
+
+
+func _crystal(c: Vector2, s: float, a: float, crack := 0.0) -> void:
+	var ci := _view.get_canvas_item()
+	var pulse := 0.85 + 0.15 * sin(_t * 2.4)
+	for i in 8:
+		_view.draw_circle(c, s * (2.4 - i * 0.25) * pulse, Color(0.55, 0.85, 1.0, 0.04 * a))
+	# slow light rays
+	for i in 10:
+		var ang := _t * 0.15 + i * TAU / 10.0
+		var d := Vector2(cos(ang), sin(ang))
+		var n := Vector2(-d.y, d.x)
+		var pts := PackedVector2Array([c, c + d * s * 3.2 + n * s * 0.18, c + d * s * 3.2 - n * s * 0.18])
+		_view.draw_colored_polygon(pts, Color(0.75, 0.92, 1.0, 0.06 * a))
+	var top := c + Vector2(0, -s * 1.25)
+	var bot := c + Vector2(0, s * 1.05)
+	var l := c + Vector2(-s * 0.55, -s * 0.1)
+	var r := c + Vector2(s * 0.55, -s * 0.1)
+	var ml := c + Vector2(-s * 0.2, s * 0.05)
+	UISkin.poly(ci, PackedVector2Array([top, l, ml]), Color(0.85, 0.97, 1.0, a), Color(0.35, 0.7, 0.95, a))
+	UISkin.poly(ci, PackedVector2Array([top, ml, r]), Color(0.65, 0.9, 1.0, a), Color(0.2, 0.55, 0.9, a))
+	UISkin.poly(ci, PackedVector2Array([l, bot, ml]), Color(0.4, 0.75, 0.98, a), Color(0.15, 0.4, 0.8, a))
+	UISkin.poly(ci, PackedVector2Array([ml, bot, r]), Color(0.3, 0.62, 0.95, a), Color(0.1, 0.3, 0.7, a))
+	var outline := PackedVector2Array([top, r, bot, l, top])
+	_view.draw_polyline(outline, Color(1, 1, 1, 0.8 * a), 1.5, true)
+	if crack > 0.0:
+		var rr := RandomNumberGenerator.new()
+		rr.seed = 7
+		for i in int(3 + crack * 9):
+			var p0 := c + Vector2(rr.randf_range(-0.3, 0.3), rr.randf_range(-0.6, 0.6)) * s
+			var p1 := p0 + Vector2(rr.randf_range(-0.5, 0.5), rr.randf_range(-0.5, 0.5)) * s * crack
+			_view.draw_line(p0, p1, Color(0.1, 0.0, 0.1, 0.9), 2.0, true)
+
+
+func _sign(c: Vector2, s: float, txt: String, glow: bool) -> void:
+	var ci := _view.get_canvas_item()
+	var swing := sin(_t * 1.6) * 0.03
+	var w := s * 2.4
+	var h := s * 0.62
+	_view.draw_set_transform(c, swing, Vector2.ONE)
+	_view.draw_line(Vector2(-w * 0.35, -h * 1.1), Vector2(-w * 0.3, -h * 0.5), Color("#2A2A2E"), 2.0, true)
+	_view.draw_line(Vector2(w * 0.35, -h * 1.1), Vector2(w * 0.3, -h * 0.5), Color("#2A2A2E"), 2.0, true)
+	var r := Rect2(-w / 2.0, -h / 2.0, w, h)
+	if glow:
+		for i in 6:
+			UISkin.fill(ci, r.grow(4.0 + i * 4.0), 8, Color(1.0, 0.8, 0.35, 0.05), Color(1.0, 0.8, 0.35, 0.05))
+	UISkin.fill(ci, r, 4, Color("#8A5A32"), Color("#4E3019"))
+	UISkin.stroke(ci, r, 4, Color(0, 0, 0, 0.9), 1.5)
+	UISkin.stroke(ci, r.grow(-3.0), 3, Color("#C8913F" if glow else "#6E4A2A"), 1.2)
+	for i in 3:
+		_view.draw_line(Vector2(-w / 2.0 + 6, -h / 2.0 + h * (0.3 + i * 0.22)), Vector2(w / 2.0 - 6, -h / 2.0 + h * (0.3 + i * 0.22)),
+			Color(0, 0, 0, 0.18), 1.0)
+	var fs := int(h * 0.42)
+	var tw := UITheme.font_title.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	var tp := Vector2(-tw / 2.0, fs * 0.36)
+	_view.draw_string_outline(UITheme.font_title, tp, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 4, Color(0, 0, 0, 0.8))
+	_view.draw_string(UITheme.font_title, tp, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("#FFE7A6") if glow else Color("#F2E2C4"))
+	for k in [-1.0, 1.0]:
+		UISkin.rivet(ci, Vector2(k * (w / 2.0 - 5), -h / 2.0 + 5), 2.0)
+		UISkin.rivet(ci, Vector2(k * (w / 2.0 - 5), h / 2.0 - 5), 2.0)
+	_view.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)

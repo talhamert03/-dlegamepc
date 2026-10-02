@@ -1226,5 +1226,9 @@
  "cleared": {
   "tr": "Temizlendi",
   "en": "Cleared"
+ },
+ "click_continue": {
+  "tr": "Devam etmek için tıkla",
+  "en": "Click to continue"
  }
 }

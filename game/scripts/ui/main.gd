@@ -67,18 +67,20 @@ func _run_title() -> void:
 	WindowManager.title_mode = true
 	strip_root.visible = false
 	var t := TitleScreen.new()
-	t.position = ((size - Vector2(TitleScreen.SIZE)) / 2.0).round()
 	add_child(t)
 	move_child(t, strip_root.get_index() + 1)
 	WindowManager.title_control = t
 	WindowManager.layout_changed()
 	if OS.get_cmdline_user_args().has("--screenshot"):
-		await get_tree().create_timer(2.0).timeout
+		await get_tree().create_timer(2.5).timeout
 		get_viewport().get_texture().get_image().save_png("user://screenshots/title.png")
 		t._start_intro()
-		await get_tree().create_timer(1.5).timeout
-		get_viewport().get_texture().get_image().save_png("user://screenshots/intro.png")
+		for i in TitleScreen.BEATS.size():
+			await get_tree().create_timer(3.2).timeout
+			get_viewport().get_texture().get_image().save_png("user://screenshots/intro_%d.png" % i)
+			t._bt = TitleScreen.BEAT_LEN
 		t._finish()
+		await t.finished
 	else:
 		await t.finished
 	WindowManager.title_mode = false

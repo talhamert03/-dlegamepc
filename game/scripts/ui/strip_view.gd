@@ -208,7 +208,7 @@ func _set_theme(theme_name: String) -> void:
 		s.texture = load(path) if ResourceLoader.exists(path) else null
 	var fpath := "res://assets/backgrounds/%s/fore.png" % theme_name
 	fore.texture = load(fpath) if ResourceLoader.exists(fpath) else null
-	var hpath := "res://assets/hd/bg/%s.png" % theme_name
+	var hpath := "res://assets/hd/bg/%s.jpg" % theme_name
 	hd_bg.texture = load(hpath) if ResourceLoader.exists(hpath) else null
 	hd_bg.visible = hd_bg.texture != null
 	for l in LAYERS:

@@ -130,7 +130,7 @@ def main():
 
 
 def import_backgrounds():
-    """art_src/urls_bg.json {theme: url} -> game/assets/hd/bg/<theme>.png, a band 336 px tall (4x strip)
+    """art_src/urls_bg.json {theme: url} -> game/assets/hd/bg/<theme>.jpg, a band 336 px tall (4x strip)
     cropped from the bottom of the panorama so the painted ground lines up with the battle ground line."""
     urls = json.load(open(os.path.join(SRC, "urls_bg.json")))
     os.makedirs(os.path.join(OUT, "bg"), exist_ok=True)
@@ -144,7 +144,7 @@ def import_backgrounds():
         band_h = min(band_h, img.height)
         img = img.crop((0, img.height - band_h, img.width, img.height))
         img = img.resize((round(img.width * 336 / img.height), 336), Image.LANCZOS)
-        img.save(os.path.join(OUT, "bg", theme + ".png"), optimize=True)
+        img.save(os.path.join(OUT, "bg", theme + ".jpg"), quality=90, optimize=True)
         print("ok", theme, img.size)
 
 
