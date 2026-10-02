@@ -1,34 +1,23 @@
-extends Window
-## Floating tooltip as its own native window so it can extend beyond panel bounds.
+extends Control
+## Floating tooltip drawn in the overlay's top layer (never takes input).
 
-var root: Control
 var box: VBoxContainer
-var bg: NinePatchRect
+var bg: Control
 var _showing := false
 
 
-func _init() -> void:
-	borderless = true
-	transparent = false
-	transparent_bg = false
-	unfocusable = true
-	always_on_top = true
-	unresizable = true
-	visible = false
-	content_scale_mode = Window.CONTENT_SCALE_MODE_VIEWPORT
-	mouse_passthrough = true
-
-
 func _ready() -> void:
-	root = Control.new()
-	root.theme = UITheme.theme
-	add_child(root)
-	bg = UITheme.nine("tooltip", 3)
-	root.add_child(bg)
+	theme = UITheme.theme
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	visible = false
+	z_index = 100
+	bg = UITheme.tooltip_bg()
+	add_child(bg)
 	box = VBoxContainer.new()
-	box.position = Vector2(5, 4)
+	box.position = Vector2(6, 5)
 	box.add_theme_constant_override("separation", 1)
-	root.add_child(box)
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(box)
 
 
 func _clear() -> void:
@@ -57,7 +46,7 @@ func show_item(item: Dictionary, compare_hero := "") -> void:
 		return
 	var r: String = item.get("rarity", "common")
 	var col := ItemUtil.rarity_color(r)
-	_line(ItemUtil.display_name(item), col, UITheme.font_title, 13)
+	_line(ItemUtil.display_name(item), col, UITheme.font_title, 10)
 	var slot_name: String = DataDB.tx(DataDB.items["slot_names"].get(item.get("slot", "") if item.get("slot", "") != "ring" else "ring1", {}))
 	var sub := "%s %s  iLvl %d" % [ItemUtil.rarity_name(r), slot_name, int(item.get("ilvl", 1))]
 	if item.get("cat", "") == "armor":
@@ -117,24 +106,24 @@ func show_item(item: Dictionary, compare_hero := "") -> void:
 
 func _present() -> void:
 	await get_tree().process_frame
-	var sz := box.get_combined_minimum_size() + Vector2(10, 8)
-	sz = sz.ceil()
+	var sz := (box.get_combined_minimum_size() + Vector2(12, 10)).ceil()
 	bg.size = sz
-	var sc: int = WindowManager.ui_scale
-	content_scale_size = Vector2i(sz)
-	size = Vector2i(sz) * sc
-	var m := DisplayServer.mouse_get_position()
-	var usable: Rect2i = DisplayServer.screen_get_usable_rect(DisplayServer.window_get_current_screen())
-	var p := m + Vector2i(16, -size.y - 8)
-	if p.y < usable.position.y:
-		p.y = m.y + 16
-	if p.x + size.x > usable.end.x:
-		p.x = m.x - size.x - 16
-	position = p
+	size = sz
+	var area: Vector2 = get_parent().size
+	var m: Vector2 = get_parent().get_local_mouse_position()
+	var p := m + Vector2(10, -sz.y - 6)
+	if p.y < 0:
+		p.y = m.y + 12
+	if p.x + sz.x > area.x:
+		p.x = m.x - sz.x - 10
+	position = Vector2(clampf(p.x, 0, max(0.0, area.x - sz.x)), clampf(p.y, 0, max(0.0, area.y - sz.y)))
 	visible = true
 	_showing = true
+	WindowManager.layout_changed()
 
 
 func hide_tip() -> void:
-	visible = false
+	if visible:
+		visible = false
+		WindowManager.layout_changed()
 	_showing = false

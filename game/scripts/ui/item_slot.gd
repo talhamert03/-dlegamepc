@@ -40,7 +40,7 @@ func _draw() -> void:
 	draw_texture(UITheme.tex("slot_hover" if _hover else "slot_normal"), Vector2.ZERO)
 	if item.is_empty():
 		if placeholder:
-			draw_texture(placeholder, Vector2(2, 2), Color(1, 1, 1, 0.18))
+			draw_texture_rect(placeholder, Rect2(5, 5, 10, 10), false, Color(1, 1, 1, 0.18))
 		return
 	var r: String = item.get("rarity", "common")
 	if r != "common":
@@ -55,7 +55,7 @@ func _draw() -> void:
 	if enh > 0:
 		draw_string(UITheme.font_small, Vector2(1, 8), "+%d" % enh, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#9FF3C0"))
 	if item.get("locked", false):
-		draw_texture(UITheme.icon("lock"), Vector2(12, 12), Color(1, 1, 1, 0.8))
+		draw_texture_rect(UITheme.icon("lock"), Rect2(13, 13, 6, 6), false, Color(1, 1, 1, 0.85))
 	if selected:
 		draw_rect(Rect2(1, 1, 18, 18), Color("#FFE45C"), false, 1.0)
 	if compare_hero != "" and source != "equip" and GameState.heroes.has(compare_hero):

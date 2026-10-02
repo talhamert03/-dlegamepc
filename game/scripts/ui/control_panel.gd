@@ -35,6 +35,8 @@ func _ready() -> void:
 	for d in defs:
 		var gid: String = d[0]
 		var b := UITheme.button(DataDB.t(d[1]), "brown", func(): WindowManager.toggle_group(gid), Vector2(36, 13))
+		b.add_theme_font_size_override("font_size", 7)
+		b.clip_text = true
 		add_child(b)
 		b.position = d[2]
 		b.size = Vector2(36, 13)
@@ -49,18 +51,19 @@ func _ready() -> void:
 		_dots[gid] = dot
 	# party / tavern quick buttons
 	var pb := UITheme.button(DataDB.t("btn_party"), "blue", func(): WindowManager.toggle_panel("party"), Vector2(36, 12))
+	pb.add_theme_font_size_override("font_size", 7)
 	add_child(pb)
 	pb.position = Vector2(4, 45)
 	pb.size = Vector2(36, 12)
 	_btns["party"] = pb
 	var tb := UITheme.button(DataDB.t("btn_tavern"), "gold", func(): WindowManager.toggle_panel("tavern"), Vector2(36, 12))
+	tb.add_theme_font_size_override("font_size", 7)
 	add_child(tb)
 	tb.position = Vector2(42, 45)
 	tb.size = Vector2(36, 12)
 	_btns["tavern"] = tb
 	# gold
-	var coin := TextureRect.new()
-	coin.texture = UITheme.icon("gold")
+	var coin: TextureRect = preload("res://scripts/ui/widgets.gd").icon_rect(UITheme.icon("gold"))
 	coin.position = Vector2(5, 61)
 	coin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(coin)

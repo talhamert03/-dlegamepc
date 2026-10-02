@@ -1,6 +1,8 @@
 extends Control
-## Root of the main (strip) window: battle strip + control panel + quick buttons.
+## Root of the overlay window. Hosts the battle strip (strip view + control panel + quick buttons);
+## WindowManager adds the panel and tooltip layers on top.
 
+var strip_root: Control
 var strip: StripView
 var cpanel: ControlPanel
 var _round: Dictionary = {}
@@ -10,13 +12,20 @@ var _auto_btn: TextureButton
 
 func _ready() -> void:
 	theme = UITheme.theme
-	size = Vector2(WindowManager.STRIP_SIZE)
-	WindowManager.setup_main_window()
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	strip_root = Control.new()
+	strip_root.name = "Strip"
+	strip_root.size = Vector2(WindowManager.STRIP_SIZE)
+	strip_root.clip_contents = true
+	strip_root.mouse_filter = Control.MOUSE_FILTER_PASS
+	strip_root.gui_input.connect(_on_strip_input)
+	add_child(strip_root)
+	WindowManager.setup_overlay(self, strip_root)
 	strip = StripView.new()
-	add_child(strip)
+	strip_root.add_child(strip)
 	cpanel = ControlPanel.new()
 	cpanel.position = Vector2(400, 0)
-	add_child(cpanel)
+	strip_root.add_child(cpanel)
 	_build_round_buttons()
 	_notify_box = VBoxContainer.new()
 	_notify_box.position = Vector2(230, 14)
@@ -24,8 +33,10 @@ func _ready() -> void:
 	_notify_box.alignment = BoxContainer.ALIGNMENT_END
 	_notify_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_notify_box.z_index = 50
-	add_child(_notify_box)
+	strip_root.add_child(_notify_box)
 	EventBus.notify.connect(_on_notify)
+	get_viewport().size_changed.connect(func():
+		size = get_viewport().get_visible_rect().size)
 	call_deferred("_boot")
 
 
@@ -46,26 +57,20 @@ func _boot() -> void:
 		var p := WindowManager.open_panel("away")
 		if p and p.has_method("set_report"):
 			p.set_report(away)
-	Tutorial.start_if_needed(self)
+	Tutorial.start_if_needed(strip_root)
 	if cmd.has("--screenshot"):
 		_screenshot_mode(cmd)
 
 
 func _run_title() -> void:
-	var w := get_window()
 	WindowManager.title_mode = true
-	strip.visible = false
-	cpanel.visible = false
-	for b in _round.values():
-		b.visible = false
-	var sc: int = WindowManager.ui_scale
-	w.content_scale_size = TitleScreen.SIZE
-	w.size = TitleScreen.SIZE * sc
-	var scr: Rect2i = DisplayServer.screen_get_usable_rect(DisplayServer.window_get_current_screen())
-	w.position = scr.position + (scr.size - w.size) / 2
-	get_tree().create_timer(0.15).timeout.connect(func(): w.position = scr.position + (scr.size - w.size) / 2)
+	strip_root.visible = false
 	var t := TitleScreen.new()
+	t.position = ((size - Vector2(TitleScreen.SIZE)) / 2.0).round()
 	add_child(t)
+	move_child(t, strip_root.get_index() + 1)
+	WindowManager.title_control = t
+	WindowManager.layout_changed()
 	if OS.get_cmdline_user_args().has("--screenshot"):
 		await get_tree().create_timer(2.0).timeout
 		get_viewport().get_texture().get_image().save_png("user://screenshots/title.png")
@@ -76,37 +81,24 @@ func _run_title() -> void:
 	else:
 		await t.finished
 	WindowManager.title_mode = false
+	WindowManager.title_control = null
 	WindowManager.close_panel("settings")
-	# shrink & slide into the strip position
-	var target_size := WindowManager.STRIP_SIZE * sc
-	w.content_scale_size = WindowManager.STRIP_SIZE
-	w.size = target_size
-	var from := w.position
+	strip_root.visible = true
+	strip_root.modulate.a = 0.0
 	WindowManager.place_strip()
-	var to := w.position
-	w.position = from
 	var tw := create_tween()
-	tw.tween_property(w, "position", to, 0.6).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-	await tw.finished
-	strip.visible = true
-	cpanel.visible = true
-	for b in _round.values():
-		b.visible = true
+	tw.tween_property(strip_root, "modulate:a", 1.0, 0.5)
+	WindowManager.layout_changed()
 
 
 func _build_round_buttons() -> void:
 	var defs := [["red", "town", Vector2(2, 14), "tip_town"], ["green", "dps", Vector2(2, 30), "tip_dps"], ["blue", "auto", Vector2(2, 46), "tip_auto"]]
 	for d in defs:
-		var b := TextureButton.new()
-		b.texture_normal = UITheme.tex("round_%s_normal" % d[0])
-		b.texture_hover = UITheme.tex("round_%s_hover" % d[0])
-		b.texture_pressed = UITheme.tex("round_%s_pressed" % d[0])
+		var b := UITheme.round_button(d[0], d[1])
 		b.position = d[2]
-		b.focus_mode = Control.FOCUS_NONE
 		b.tooltip_text = DataDB.t(d[3])
 		b.z_index = 45
-		b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		add_child(b)
+		strip_root.add_child(b)
 		_round[d[1]] = b
 	_round["town"].pressed.connect(_on_town)
 	_round["dps"].pressed.connect(func(): WindowManager.toggle_panel("dps"))
@@ -142,8 +134,8 @@ func _update_auto() -> void:
 func _on_notify(text: String, color: Color) -> void:
 	var l := UITheme.label(text, color)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	l.add_theme_color_override("font_outline_color", Color("#140E10"))
-	l.add_theme_constant_override("outline_size", 2)
+	l.add_theme_color_override("font_outline_color", Color("#0B0D14"))
+	l.add_theme_constant_override("outline_size", 3)
 	_notify_box.add_child(l)
 	while _notify_box.get_child_count() > 3:
 		_notify_box.get_child(0).queue_free()
@@ -154,34 +146,51 @@ func _on_notify(text: String, color: Color) -> void:
 	tw.tween_callback(l.queue_free)
 
 
+func _input(ev: InputEvent) -> void:
+	# clicking anywhere on a panel raises it
+	if ev is InputEventMouseButton and ev.pressed and WindowManager.panels_layer:
+		var m := get_local_mouse_position()
+		var layer := WindowManager.panels_layer
+		for i in range(layer.get_child_count() - 1, -1, -1):
+			var p := layer.get_child(i) as Control
+			if p and p.visible and Rect2(p.position, p.size).has_point(m):
+				if i != layer.get_child_count() - 1:
+					p.move_to_front()
+				break
+
+
 func _unhandled_input(ev: InputEvent) -> void:
 	if ev is InputEventKey and ev.pressed and not ev.echo:
 		WindowManager.handle_hotkey(ev)
-	# drag the strip: left or right mouse on any empty part of the battlefield
+
+
+## Drag the strip with the left or right mouse button on any empty part of the battlefield.
+func _on_strip_input(ev: InputEvent) -> void:
 	if ev is InputEventMouseButton and (ev.button_index == MOUSE_BUTTON_LEFT or ev.button_index == MOUSE_BUTTON_RIGHT):
 		if ev.pressed:
 			_drag = true
 			_drag_moved = false
-			_drag_off = DisplayServer.mouse_get_position() - get_window().position
-			_drag_start = DisplayServer.mouse_get_position()
+			_drag_start = get_local_mouse_position()
+			_drag_off = _drag_start - strip_root.position
 		elif _drag:
 			_drag = false
 			if _drag_moved:
 				Settings.set_v("strip_pos", "free")
-				Settings.set_v("strip_x", get_window().position.x)
-				Settings.set_v("strip_y", get_window().position.y)
-	if ev is InputEventMouseMotion and _drag:
-		var m := DisplayServer.mouse_get_position()
-		if not _drag_moved and (m - _drag_start).length() < 4:
+				Settings.set_v("strip_lx", strip_root.position.x)
+				Settings.set_v("strip_ly", strip_root.position.y)
+	elif ev is InputEventMouseMotion and _drag:
+		var m := get_local_mouse_position()
+		if not _drag_moved and (m - _drag_start).length() < 3.0:
 			return
 		_drag_moved = true
-		get_window().position = WindowManager.clamp_to_screen(m - _drag_off, get_window().size)
+		strip_root.position = WindowManager.clamp_to_area(m - _drag_off, strip_root.size)
+		WindowManager.layout_changed()
 
 
 var _drag := false
 var _drag_moved := false
-var _drag_off := Vector2i.ZERO
-var _drag_start := Vector2i.ZERO
+var _drag_off := Vector2.ZERO
+var _drag_start := Vector2.ZERO
 
 
 # ------------------------------------------------------------------ automated screenshots (CI / docs)
@@ -243,10 +252,14 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 	await get_tree().create_timer(secs).timeout
 	var out := "user://screenshots/"
 	DirAccess.make_dir_recursive_absolute(out)
-	get_viewport().get_texture().get_image().save_png(out + "strip.png")
+	var img := get_viewport().get_texture().get_image()
+	img.save_png(out + "screen.png")
+	var sc: int = WindowManager.ui_scale
+	var sr := WindowManager.strip_rect()
+	img.get_region(Rect2i(Vector2i(sr.position) * sc, Vector2i(sr.size) * sc)).save_png(out + "strip.png")
 	for id in WindowManager.panels:
-		var w: Window = WindowManager.panels[id]
+		var w: Control = WindowManager.panels[id]
 		if is_instance_valid(w):
-			w.get_texture().get_image().save_png(out + "panel_%s.png" % id)
+			img.get_region(Rect2i(Vector2i(w.position) * sc, Vector2i(w.size) * sc)).save_png(out + "panel_%s.png" % id)
 	print("SCREENSHOTS_DONE ", ProjectSettings.globalize_path(out))
 	get_tree().quit()

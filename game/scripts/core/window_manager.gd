@@ -1,5 +1,11 @@
 extends Node
-## Owns the main strip window placement and all floating native panel windows.
+## Owns the single transparent overlay window that hosts the battle strip, every panel and the tooltip.
+##
+## The overlay covers the screen's usable area (never the taskbar). Everything outside the visible UI is
+## excluded with a mouse-passthrough region, which on Windows is a window region: clicks *and* drawing
+## outside it go to the desktop, so it also works on drivers where per-pixel transparency is broken.
+## Rendering uses canvas_items stretch at an integer scale: pixel art stays sharp, text and vector UI are
+## drawn at native resolution.
 
 const STRIP_SIZE := Vector2i(480, 84)
 const MAX_PANEL_H := 250
@@ -24,16 +30,32 @@ const PANELS := {
 	"pets": {"script": "res://scripts/ui/panels/pets_panel.gd", "size": Vector2i(200, 200), "title": "panel_pets"},
 }
 const GROUPS := {"hero": ["stats", "hero", "portrait"], "bag": ["inventory"], "world": ["world"], "growth": ["growth"]}
+## Default home of every panel: panels sit above the strip, bottom-aligned. Groups open side by side;
+## a reopened panel comes back here.
+const HOME := {
+	"stats": "group", "hero": "group", "portrait": "group",
+	"inventory": "right", "world": "right", "growth": "center", "party": "right", "tavern": "right",
+	"pets": "right", "quests": "right", "codex": "center", "settings": "right", "dps": "left",
+	"away": "center", "ending": "center",
+	"stash": "left_of:inventory", "blacksmith": "left_of:inventory",
+}
 
 var ui_scale: int = 2
 var panels: Dictionary = {}
 var selected_hero: String = ""
-var tooltip: Window = null
+var tooltip: Control = null
 var hidden_all := false
 var tray: Node = null
+var title_mode := false          # true while the title screen is shown
+var title_control: Control = null
+var desktop: Control = null      # overlay root (logical coordinates)
+var strip: Control = null        # battle strip root
+var panels_layer: Control = null
+var top_layer: Control = null
 var _focus_poll := 0.0
 var _any_focused := true
-var title_mode := false   # true while the title screen is shown
+var _region_dirty := true
+var _last_region: PackedVector2Array = PackedVector2Array()
 
 
 func _ready() -> void:
@@ -42,30 +64,66 @@ func _ready() -> void:
 	EventBus.story_completed.connect(func(): open_panel("ending"))
 
 
+## Called by Main with the overlay root and the strip control.
+func setup_overlay(desk: Control, strip_root: Control) -> void:
+	desktop = desk
+	strip = strip_root
+	panels_layer = Control.new()
+	panels_layer.name = "Panels"
+	panels_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	desk.add_child(panels_layer)
+	top_layer = Control.new()
+	top_layer.name = "Top"
+	top_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	top_layer.z_index = 90
+	desk.add_child(top_layer)
+	tooltip = load("res://scripts/ui/tooltip_window.gd").new()
+	top_layer.add_child(tooltip)
+	setup_main_window()
+
+
 func setup_main_window() -> void:
 	var w := get_window()
 	ui_scale = compute_scale()
-	w.content_scale_size = STRIP_SIZE
-	w.size = STRIP_SIZE * ui_scale
-	w.always_on_top = bool(Settings.get_v("always_on_top", true))
+	var usable := _usable()
+	# window = usable area rounded down to a multiple of the scale, bottom-aligned (keeps pixel art crisp)
+	var logical := Vector2i(usable.size.x / ui_scale, usable.size.y / ui_scale)
+	var phys := logical * ui_scale
 	w.borderless = true
 	w.transparent = true
-	place_strip()
-	# window managers may re-centre a window when it is first mapped: place it again once shown
+	w.always_on_top = bool(Settings.get_v("always_on_top", true))
+	w.unresizable = true
+	w.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
+	w.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_IGNORE
+	w.content_scale_size = logical
+	w.size = phys
+	var pos := Vector2i(usable.position.x + (usable.size.x - phys.x) / 2, usable.end.y - phys.y)
+	w.position = pos
+	# window managers may move a window when it is first mapped: put it back once shown
 	get_tree().create_timer(0.15).timeout.connect(func():
-		if not title_mode:
-			place_strip())
+		w.size = phys
+		w.position = pos
+		layout_changed())
+	if desktop:
+		desktop.size = Vector2(logical)
+		panels_layer.size = desktop.size
+		top_layer.size = desktop.size
+	place_strip()
 	_setup_tray()
-	_ensure_tooltip()
+	layout_changed()
+
+
+func _usable() -> Rect2i:
+	return DisplayServer.screen_get_usable_rect(DisplayServer.window_get_current_screen())
 
 
 ## Largest integer scale where the strip fits ~80% of the screen width and a full-height panel fits
-## above it (pixel art stays crisp). 1920x1080/1200 -> 3x, 2560x1440 -> 4x, 1366x768 -> 2x.
+## above it. 1920x1080/1200 -> 3x, 2560x1440 -> 4x, 1366x768 -> 2x.
 func compute_scale() -> int:
 	var s := int(Settings.get_v("scale", 0))
 	if s > 0:
 		return s
-	var usable: Rect2i = DisplayServer.screen_get_usable_rect(DisplayServer.window_get_current_screen())
+	var usable := _usable()
 	var best := 1
 	for k in range(1, 7):
 		var fits_w: bool = STRIP_SIZE.x * k <= int(usable.size.x * 0.8)
@@ -75,43 +133,40 @@ func compute_scale() -> int:
 	return best
 
 
+func area_size() -> Vector2:
+	return desktop.size if desktop else Vector2(STRIP_SIZE)
+
+
 func place_strip() -> void:
-	var w := get_window()
-	var usable: Rect2i = DisplayServer.screen_get_usable_rect(DisplayServer.window_get_current_screen())
-	var mode: String = Settings.get_v("strip_pos", "taskbar")
-	var sx: int = int(Settings.get_v("strip_x", -1))
-	var sy: int = int(Settings.get_v("strip_y", -1))
-	if mode == "free" and sx >= 0 and sy >= 0:
-		w.position = clamp_to_screen(Vector2i(sx, sy), w.size)
+	if strip == null:
 		return
-	# centered just above the taskbar (or at the top), never covering it
-	var x := usable.position.x + (usable.size.x - w.size.x) / 2
-	var y := usable.position.y + usable.size.y - w.size.y
-	if mode == "top":
-		y = usable.position.y
-	w.position = Vector2i(x, y)
+	var area := area_size()
+	var mode: String = Settings.get_v("strip_pos", "taskbar")
+	var sx: float = float(Settings.get_v("strip_lx", -1))
+	var sy: float = float(Settings.get_v("strip_ly", -1))
+	if mode == "free" and sx >= 0 and sy >= 0:
+		strip.position = clamp_to_area(Vector2(sx, sy), strip.size)
+	else:
+		var y := area.y - strip.size.y if mode != "top" else 0.0
+		strip.position = Vector2(round((area.x - strip.size.x) / 2.0), y)
+	layout_changed()
 
 
-func clamp_to_screen(pos: Vector2i, sz: Vector2i) -> Vector2i:
-	var usable: Rect2i = DisplayServer.screen_get_usable_rect(DisplayServer.window_get_current_screen())
-	return Vector2i(clampi(pos.x, usable.position.x, max(usable.position.x, usable.end.x - sz.x)),
-		clampi(pos.y, usable.position.y, max(usable.position.y, usable.end.y - sz.y)))
+func clamp_to_area(pos: Vector2, sz: Vector2) -> Vector2:
+	var area := area_size()
+	return Vector2(clampf(pos.x, 0, max(0.0, area.x - sz.x)), clampf(pos.y, 0, max(0.0, area.y - sz.y))).round()
 
 
-func strip_rect() -> Rect2i:
-	var w := get_window()
-	return Rect2i(w.position, w.size)
+func strip_rect() -> Rect2:
+	return Rect2(strip.position, strip.size) if strip else Rect2(Vector2.ZERO, Vector2(STRIP_SIZE))
 
 
 func set_scale(s: int) -> void:
 	Settings.set_v("scale", s)
-	ui_scale = compute_scale()
-	var w := get_window()
-	w.size = STRIP_SIZE * ui_scale
-	place_strip()
 	var ids: Array = panels.keys()
 	for id in ids:
 		close_panel(id)
+	setup_main_window()
 	for id in ids:
 		open_panel(id)
 
@@ -131,10 +186,8 @@ func toggle_group(g: String) -> void:
 		for id in ids:
 			close_panel(id)
 	else:
-		var i := 0
 		for id in ids:
-			open_panel(id, i, ids.size())
-			i += 1
+			open_panel(id)
 
 
 func toggle_panel(id: String) -> void:
@@ -144,13 +197,12 @@ func toggle_panel(id: String) -> void:
 		open_panel(id)
 
 
-func open_panel(id: String, index := -1, count := 1) -> PanelWindow:
+func open_panel(id: String, _index := -1, _count := 1) -> PanelWindow:
 	if is_open(id):
-		var p: PanelWindow = panels[id]
-		p.move_to_foreground()
-		p.grab_focus()
-		return p
-	if not PANELS.has(id):
+		var p0: PanelWindow = panels[id]
+		p0.move_to_front()
+		return p0
+	if not PANELS.has(id) or panels_layer == null:
 		push_warning("unknown panel %s" % id)
 		return null
 	var info: Dictionary = PANELS[id]
@@ -159,19 +211,23 @@ func open_panel(id: String, index := -1, count := 1) -> PanelWindow:
 		return null
 	var p: PanelWindow = scr.new()
 	p.setup(id, DataDB.t(info["title"]), info["size"])
-	p.position = _default_pos(id, info["size"], index, count)
-	get_tree().root.add_child(p)
+	p.position = _default_pos(id, info["size"])
+	panels_layer.add_child(p)
 	panels[id] = p
-	p.show()
-	p.move_to_foreground()
-	p.grab_focus()
-	var want := p.position
-	get_tree().create_timer(0.1).timeout.connect(func():
-		if is_instance_valid(p) and p.position != want and not p._dragging:
-			p.position = want)
+	_pop_in(p)
 	AudioManager.play("ui_open", 0.05, 0.6)
 	EventBus.tutorial_step.emit("open_" + id)
+	layout_changed()
 	return p
+
+
+func _pop_in(p: Control) -> void:
+	p.pivot_offset = p.size / 2.0
+	p.scale = Vector2(0.96, 0.96)
+	p.modulate.a = 0.0
+	var tw := p.create_tween().set_parallel(true)
+	tw.tween_property(p, "scale", Vector2.ONE, 0.12).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tw.tween_property(p, "modulate:a", 1.0, 0.10)
 
 
 func close_panel(id: String) -> void:
@@ -183,6 +239,18 @@ func close_panel(id: String) -> void:
 	p.queue_free()
 	hide_tooltip()
 	AudioManager.play("ui_close", 0.05, 0.5)
+	layout_changed()
+
+
+func close_top_panel() -> bool:
+	if panels_layer == null:
+		return false
+	for i in range(panels_layer.get_child_count() - 1, -1, -1):
+		var p := panels_layer.get_child(i)
+		if p is PanelWindow and not p.is_queued_for_deletion():
+			close_panel((p as PanelWindow).panel_id)
+			return true
+	return false
 
 
 func refresh_all() -> void:
@@ -191,154 +259,262 @@ func refresh_all() -> void:
 			panels[id].refresh()
 
 
-## Default home of every panel, in logical pixels relative to the strip's top-left corner (panels sit
-## above the strip, bottom-aligned). Groups open side by side; reopening a panel brings it back here.
-const HOME := {
-	# hero group, centred over the strip
-	"stats": "group", "hero": "group", "portrait": "group",
-	# right side, above the control panel
-	"inventory": "right", "world": "right", "growth": "center", "party": "right", "tavern": "right",
-	"pets": "right", "quests": "right", "codex": "center", "settings": "right", "dps": "left",
-	"away": "center", "ending": "center",
-	# workshop panels open next to the bag
-	"stash": "left_of:inventory", "blacksmith": "left_of:inventory",
-}
-
-
-func _default_pos(id: String, size_l: Vector2i, _index: int, _count: int) -> Vector2i:
+func _default_pos(id: String, size_l: Vector2i) -> Vector2:
+	var w := Vector2(size_l)
+	if title_mode:
+		return clamp_to_area((area_size() - w) / 2.0, w)
 	if bool(Settings.get_v("remember_panels", false)):
-		var saved: Dictionary = Settings.get_v("panel_pos", {})
+		var saved: Dictionary = Settings.get_v("panel_lpos", {})
 		if saved.has(id):
 			var v: Array = saved[id]
-			return clamp_to_screen(Vector2i(int(v[0]), int(v[1])), size_l * ui_scale)
-	var sc := ui_scale
+			return clamp_to_area(Vector2(float(v[0]), float(v[1])), w)
 	var s := strip_rect()
-	var w := size_l * sc
 	var above: bool = Settings.get_v("strip_pos", "taskbar") != "top"
-	var y := s.position.y - w.y - GAP * sc if above else s.end.y + GAP * sc
-	var x := s.position.x + s.size.x - w.x
+	var y := s.position.y - w.y - GAP if above else s.end.y + GAP
+	var x := s.end.x - w.x
 	var home: String = HOME.get(id, "right")
-	if title_mode:
-		# the title screen is in the middle of the screen: show panels centred over it
-		var usable: Rect2i = DisplayServer.screen_get_usable_rect(DisplayServer.window_get_current_screen())
-		return clamp_to_screen(usable.position + (usable.size - w) / 2, w)
 	match home:
 		"group":
 			var ids: Array = GROUPS["hero"]
-			var total := 0
+			var total := 0.0
 			for pid in ids:
-				total += PANELS[pid]["size"].x * sc + GAP * sc
-			total -= GAP * sc
-			x = s.position.x + (s.size.x - total) / 2
+				total += PANELS[pid]["size"].x + GAP
+			total -= GAP
+			x = s.position.x + (s.size.x - total) / 2.0
 			for pid in ids:
 				if pid == id:
 					break
-				x += PANELS[pid]["size"].x * sc + GAP * sc
+				x += PANELS[pid]["size"].x + GAP
+			return clamp_to_area(Vector2(x, y), w)
 		"right":
 			x = s.end.x - w.x
 		"left":
 			x = s.position.x
 		"center":
-			x = s.position.x + (s.size.x - w.x) / 2
+			x = s.position.x + (s.size.x - w.x) / 2.0
 		_:
 			if home.begins_with("left_of:"):
-				var other: String = home.substr(8)
-				var ow: int = PANELS[other]["size"].x * sc
-				x = s.end.x - ow - GAP * sc - w.x
-	if home == "group":
-		return clamp_to_screen(Vector2i(x, y), w)
-	return _free_spot(id, Vector2i(x, y), w)
+				x = s.end.x - PANELS[home.substr(8)]["size"].x - GAP - w.x
+	return _free_spot(id, Vector2(x, y), w)
 
 
 ## Nearest spot in the same row that doesn't cover another open panel (the portrait may be covered as
-## a last resort). Falls back to the home spot; the new panel is raised to the front either way.
-func _free_spot(id: String, home_pos: Vector2i, w: Vector2i) -> Vector2i:
-	var usable: Rect2i = DisplayServer.screen_get_usable_rect(DisplayServer.window_get_current_screen())
-	var g := GAP * ui_scale
+## a last resort). Falls back to the home spot; the new panel is on top either way.
+func _free_spot(id: String, home_pos: Vector2, w: Vector2) -> Vector2:
+	var area := area_size()
 	var others: Array = []
 	for pid in panels:
 		if pid != id and is_open(pid) and panels[pid].visible:
-			others.append([pid, Rect2i(panels[pid].position, panels[pid].size)])
+			others.append([pid, Rect2(panels[pid].position, panels[pid].size)])
 	var xs: Array = [home_pos.x]
 	for o in others:
-		var r: Rect2i = o[1]
-		xs.append(r.end.x + g)
-		xs.append(r.position.x - g - w.x)
-	xs.sort_custom(func(a, b): return absi(a - home_pos.x) < absi(b - home_pos.x))
+		var r: Rect2 = o[1]
+		xs.append(r.end.x + GAP)
+		xs.append(r.position.x - GAP - w.x)
+	xs.sort_custom(func(a, b): return absf(a - home_pos.x) < absf(b - home_pos.x))
 	for skip_portrait in [false, true]:
 		for x in xs:
-			if x < usable.position.x or x + w.x > usable.end.x:
+			if x < 0 or x + w.x > area.x:
 				continue
-			var cand := Rect2i(Vector2i(x, home_pos.y), w)
+			var cand := Rect2(Vector2(x, home_pos.y), w)
 			var hit := false
 			for o in others:
 				if skip_portrait and o[0] == "portrait":
 					continue
-				if cand.intersects(o[1]):
+				if cand.grow(-0.5).intersects(o[1]):
 					hit = true
 					break
 			if not hit:
-				return clamp_to_screen(cand.position, w)
-	return clamp_to_screen(home_pos, w)
+				return clamp_to_area(cand.position, w)
+	return clamp_to_area(home_pos, w)
 
 
 func panel_moved(p: PanelWindow) -> void:
-	var saved: Dictionary = Settings.get_v("panel_pos", {}).duplicate()
+	var saved: Dictionary = Settings.get_v("panel_lpos", {}).duplicate()
 	saved[p.panel_id] = [p.position.x, p.position.y]
-	Settings.set_v("panel_pos", saved, false)
+	Settings.set_v("panel_lpos", saved, false)
+	layout_changed()
 
 
 ## Magnetic edges: snaps to neighbouring panels / the strip when they line up, and stays on screen.
-func snap_position(p: Window, pos: Vector2i) -> Vector2i:
-	var snap := 6 * ui_scale
-	var g := GAP * ui_scale
+func snap_position(p: Control, pos: Vector2) -> Vector2:
+	var snap := 6.0
 	var rects: Array = [strip_rect()]
 	for id in panels:
-		var o: Window = panels[id]
+		var o: Control = panels[id]
 		if is_instance_valid(o) and o != p and o.visible:
-			rects.append(Rect2i(o.position, o.size))
-	var sz: Vector2i = p.size
-	for o: Rect2i in rects:
-		var r := Rect2i(pos, sz)
+			rects.append(Rect2(o.position, o.size))
+	var sz: Vector2 = p.size
+	for o: Rect2 in rects:
+		var r := Rect2(pos, sz)
 		var v_overlap: bool = r.position.y < o.end.y + snap and r.end.y > o.position.y - snap
 		var h_overlap: bool = r.position.x < o.end.x + snap and r.end.x > o.position.x - snap
 		if v_overlap:
-			if absi(r.position.x - o.end.x) < snap:
-				pos.x = o.end.x + g
-			elif absi(r.end.x - o.position.x) < snap:
-				pos.x = o.position.x - sz.x - g
+			if absf(r.position.x - o.end.x) < snap:
+				pos.x = o.end.x + GAP
+			elif absf(r.end.x - o.position.x) < snap:
+				pos.x = o.position.x - sz.x - GAP
 		if h_overlap:
-			if absi(r.end.y - o.position.y) < snap:
-				pos.y = o.position.y - sz.y - g
-			elif absi(r.position.y - o.end.y) < snap:
-				pos.y = o.end.y + g
-			if absi(r.position.x - o.position.x) < snap:
+			if absf(r.end.y - o.position.y) < snap:
+				pos.y = o.position.y - sz.y - GAP
+			elif absf(r.position.y - o.end.y) < snap:
+				pos.y = o.end.y + GAP
+			if absf(r.position.x - o.position.x) < snap:
 				pos.x = o.position.x
-			elif absi(r.end.x - o.end.x) < snap:
+			elif absf(r.end.x - o.end.x) < snap:
 				pos.x = o.end.x - sz.x
-		if v_overlap and absi(r.position.y - o.position.y) < snap:
+		if v_overlap and absf(r.position.y - o.position.y) < snap:
 			pos.y = o.position.y
-	return clamp_to_screen(pos, sz)
+	return clamp_to_area(pos, sz)
 
 
 func reset_layout() -> void:
-	Settings.set_v("panel_pos", {})
+	Settings.set_v("panel_lpos", {})
 	Settings.set_v("strip_pos", "taskbar")
 	place_strip()
 	for id in panels.keys():
 		if is_open(id):
 			var p: PanelWindow = panels[id]
-			p.position = _default_pos(id, p.logical_size, -1, 1)
+			p.position = _default_pos(id, p.logical_size)
+	layout_changed()
 
 
-# ------------------------------------------------------------------ tooltip window
-func _ensure_tooltip() -> void:
-	if tooltip != null:
+# ------------------------------------------------------------------ click-through region
+func layout_changed() -> void:
+	_region_dirty = true
+
+
+func _update_region() -> void:
+	_region_dirty = false
+	var rects: Array = []
+	if title_mode and title_control and is_instance_valid(title_control):
+		rects.append(Rect2(title_control.position, title_control.size * title_control.scale))
+	elif strip and strip.visible:
+		rects.append(strip_rect())
+	for id in panels:
+		var p: Control = panels[id]
+		if is_instance_valid(p) and p.visible and not p.is_queued_for_deletion():
+			rects.append(Rect2(p.position, p.size))
+	if tooltip and tooltip.visible:
+		rects.append(Rect2(tooltip.position, tooltip.size))
+	if top_layer:
+		for c in top_layer.get_children():
+			if c != tooltip and c is Control and c.visible and c.has_meta("region"):
+				rects.append(Rect2(c.position, c.size))
+	var irects: Array[Rect2i] = []
+	for r: Rect2 in rects:
+		var a := Vector2i((r.position * ui_scale).floor())
+		var b := Vector2i((r.end * ui_scale).ceil())
+		if b.x > a.x and b.y > a.y:
+			irects.append(Rect2i(a, b - a))
+	var poly := union_outline(irects)
+	if poly == _last_region:
 		return
-	tooltip = load("res://scripts/ui/tooltip_window.gd").new()
-	get_tree().root.add_child.call_deferred(tooltip)
+	_last_region = poly
+	get_window().mouse_passthrough_polygon = poly
 
 
+## Outline of the union of axis-aligned rectangles as ONE polygon: every boundary loop (outer edges and
+## holes, consistently oriented) is chained through zero-width bridges, which fills correctly under both
+## even-odd and non-zero rules (Windows window regions / X11 shape regions).
+static func union_outline(rects: Array[Rect2i]) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	if rects.is_empty():
+		return out
+	var xs: Array = []
+	var ys: Array = []
+	for r in rects:
+		for v in [r.position.x, r.end.x]:
+			if not xs.has(v):
+				xs.append(v)
+		for v in [r.position.y, r.end.y]:
+			if not ys.has(v):
+				ys.append(v)
+	xs.sort()
+	ys.sort()
+	var nx := xs.size() - 1
+	var ny := ys.size() - 1
+	var cov := PackedByteArray()
+	cov.resize(nx * ny)
+	for j in ny:
+		var cy: float = (ys[j] + ys[j + 1]) * 0.5
+		for i in nx:
+			var cx: float = (xs[i] + xs[i + 1]) * 0.5
+			for r in rects:
+				if cx > r.position.x and cx < r.end.x and cy > r.position.y and cy < r.end.y:
+					cov[j * nx + i] = 1
+					break
+	var covered := func(i: int, j: int) -> bool:
+		return i >= 0 and j >= 0 and i < nx and j < ny and cov[j * nx + i] == 1
+	# directed boundary edges, clockwise in y-down coordinates
+	var edges: Dictionary = {}   # start Vector2i -> Array of end Vector2i
+	var add_edge := func(a: Vector2i, b: Vector2i) -> void:
+		if not edges.has(a):
+			edges[a] = []
+		edges[a].append(b)
+	for j in ny:
+		for i in nx:
+			if not covered.call(i, j):
+				continue
+			var x0: int = xs[i]
+			var x1: int = xs[i + 1]
+			var y0: int = ys[j]
+			var y1: int = ys[j + 1]
+			if not covered.call(i, j - 1):
+				add_edge.call(Vector2i(x0, y0), Vector2i(x1, y0))
+			if not covered.call(i + 1, j):
+				add_edge.call(Vector2i(x1, y0), Vector2i(x1, y1))
+			if not covered.call(i, j + 1):
+				add_edge.call(Vector2i(x1, y1), Vector2i(x0, y1))
+			if not covered.call(i - 1, j):
+				add_edge.call(Vector2i(x0, y1), Vector2i(x0, y0))
+	var loops: Array = []
+	while not edges.is_empty():
+		var start: Vector2i = edges.keys()[0]
+		var loop: Array = [start]
+		var cur := start
+		var guard := 0
+		while guard < 100000:
+			guard += 1
+			var nexts: Array = edges.get(cur, [])
+			if nexts.is_empty():
+				break
+			var nxt: Vector2i = nexts.pop_back()
+			if nexts.is_empty():
+				edges.erase(cur)
+			if nxt == start:
+				break
+			loop.append(nxt)
+			cur = nxt
+		loops.append(_simplify(loop))
+	var anchor: Vector2i = loops[0][0]
+	for li in loops.size():
+		var l: Array = loops[li]
+		if li > 0:
+			out.append(Vector2(anchor))
+		for v in l:
+			out.append(Vector2(v))
+		out.append(Vector2(l[0]))
+	out.append(Vector2(anchor))
+	return out
+
+
+static func _simplify(loop: Array) -> Array:
+	var n := loop.size()
+	if n < 4:
+		return loop
+	var res: Array = []
+	for k in n:
+		var a: Vector2i = loop[(k - 1 + n) % n]
+		var b: Vector2i = loop[k]
+		var c: Vector2i = loop[(k + 1) % n]
+		var collinear := (a.x == b.x and b.x == c.x) or (a.y == b.y and b.y == c.y)
+		if not collinear:
+			res.append(b)
+	return res if res.size() >= 3 else loop
+
+
+# ------------------------------------------------------------------ tooltip
 func show_item_tooltip(item: Dictionary, compare_hero := "") -> void:
 	if tooltip:
 		tooltip.show_item(item, compare_hero)
@@ -354,30 +530,20 @@ func hide_tooltip() -> void:
 		tooltip.hide_tip()
 
 
-# ------------------------------------------------------------------ tooltip router
 var _tip_ctrl: Control = null
 var _tip_t := 0.0
 var _tip_text := ""
 var _tip_shown := false
 
 
-## Finds the control under the mouse in any of our windows and shows its tooltip_text after a short delay.
+## Shows the hovered control's tooltip_text in our own tooltip (Godot's native tooltip is a popup window).
 func _route_tooltips(delta: float) -> void:
-	var hovered: Control = null
-	var vps: Array = [get_window()]
-	for id in panels:
-		if is_instance_valid(panels[id]):
-			vps.append(panels[id])
-	for vp: Viewport in vps:
-		var c := vp.gui_get_hovered_control()
-		if c != null and c.is_visible_in_tree():
-			hovered = c
-			break
+	var c := get_viewport().gui_get_hovered_control() if desktop else null
 	var text := ""
-	if hovered != null:
-		text = hovered.get_tooltip(hovered.get_local_mouse_position())
-	if hovered != _tip_ctrl or text != _tip_text:
-		_tip_ctrl = hovered
+	if c != null and c.is_visible_in_tree():
+		text = c.get_tooltip(c.get_local_mouse_position())
+	if c != _tip_ctrl or text != _tip_text:
+		_tip_ctrl = c
 		_tip_text = text
 		_tip_t = 0.0
 		if _tip_shown:
@@ -395,14 +561,13 @@ func _route_tooltips(delta: float) -> void:
 # ------------------------------------------------------------------ focus / fps / hotkeys
 func _process(delta: float) -> void:
 	_route_tooltips(delta)
+	if _region_dirty and desktop:
+		_update_region()
 	_focus_poll += delta
 	if _focus_poll < 0.3:
 		return
 	_focus_poll = 0.0
 	var f := get_window().has_focus()
-	for id in panels:
-		if is_instance_valid(panels[id]) and panels[id].has_focus():
-			f = true
 	if f != _any_focused:
 		_any_focused = f
 		Engine.max_fps = int(Settings.get_v("fps_focus", 60)) if f else int(Settings.get_v("fps_idle", 15))
@@ -416,6 +581,8 @@ func handle_hotkey(ev: InputEventKey) -> void:
 	if ev.ctrl_pressed or ev.alt_pressed:
 		return
 	match ev.keycode:
+		KEY_ESCAPE:
+			close_top_panel()
 		KEY_H, KEY_C:
 			toggle_group("hero")
 		KEY_I, KEY_B:
@@ -443,19 +610,13 @@ func toggle_hide_all() -> void:
 		w.mode = Window.MODE_MINIMIZED
 	else:
 		w.mode = Window.MODE_WINDOWED
-		place_strip()
-	for id in panels:
-		if is_instance_valid(panels[id]):
-			panels[id].visible = not hidden_all
+		setup_main_window()
 	hide_tooltip()
 
 
 func set_always_on_top(v: bool) -> void:
 	Settings.set_v("always_on_top", v)
 	get_window().always_on_top = v
-	for id in panels:
-		if is_instance_valid(panels[id]):
-			panels[id].always_on_top = v
 
 
 func _setup_tray() -> void:
@@ -466,6 +627,7 @@ func _setup_tray() -> void:
 		return
 	tray = ClassDB.instantiate("StatusIndicator")
 	var menu := PopupMenu.new()
+	menu.prefer_native_menu = true
 	menu.add_item(DataDB.t("tray_show"), 0)
 	menu.add_item(DataDB.t("tray_mute"), 1)
 	menu.add_separator()

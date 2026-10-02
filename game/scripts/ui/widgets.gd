@@ -82,6 +82,12 @@ static func icon_rect(tex: Texture2D, size := Vector2.ZERO) -> TextureRect:
 	var t := TextureRect.new()
 	t.texture = tex
 	t.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+	if tex and tex.has_meta("hd"):
+		# HD UI art is drawn at its logical size with smooth filtering
+		if size == Vector2.ZERO:
+			size = tex.get_meta("lsize", Vector2(7, 7))
+		t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		t.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	if size != Vector2.ZERO:
 		t.custom_minimum_size = size
 		t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
