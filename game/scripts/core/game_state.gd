@@ -54,6 +54,7 @@ func _process(delta: float) -> void:
 	if _ach_t >= 5.0:
 		_ach_t = 0.0
 		Quests.check_achievements()
+		Costumes.check_unlocks()
 	if _autosave_t >= 60.0:
 		_autosave_t = 0.0
 		save_game()

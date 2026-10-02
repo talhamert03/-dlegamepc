@@ -57,6 +57,11 @@ func setup(u: Combatant) -> void:
 	mat = ShaderMaterial.new()
 	mat.shader = SHADER
 	mat.set_shader_parameter("time_offset", randf() * 6.0)
+	if kind == "hero":
+		Costumes.apply(mat, sheet_id)
+		EventBus.equipment_changed.connect(func(hid):
+			if hid == sheet_id and is_instance_valid(self):
+				Costumes.apply(mat, sheet_id))
 	if kind == "enemy" and vis.get("elite", false):
 		mat.set_shader_parameter("outline_color", Color(0.75, 0.4, 1.0, 0.9))
 	elif kind == "enemy" and vis.get("boss", false):

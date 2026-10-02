@@ -1182,5 +1182,17 @@
  "credits_next": {
   "tr": "Macera Kabus'ta devam ediyor...",
   "en": "The adventure continues in Nightmare..."
+ },
+ "costume_new": {
+  "tr": "Yeni kostüm açıldı: {name}!",
+  "en": "New costume unlocked: {name}!"
+ },
+ "costume_default": {
+  "tr": "Varsayılan",
+  "en": "Default"
+ },
+ "costume": {
+  "tr": "Kostüm",
+  "en": "Costume"
  }
 }

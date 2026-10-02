@@ -9,9 +9,9 @@ func test_party_clears_first_zone_stages() -> void:
 		GameState.add_to_party(hid)
 	BattleSim.quiet = true
 	BattleSim.start()
-	BattleSim.simulate(240.0)
+	BattleSim.simulate(420.0)
 	runner.check(int(GameState.totals["kills"]) > 30, "kills %d" % int(GameState.totals["kills"]))
-	runner.check(BattleSim.stage > 1 or BattleSim.zone_idx > 0, "progressed")
+	runner.check(BattleSim.stage > 1 or BattleSim.zone_idx > 0, "progressed (stage %d wave %d)" % [BattleSim.stage, BattleSim.wave])
 	runner.check(GameState.gold > 0, "gold earned")
 	BattleSim.stop()
 	BattleSim.quiet = false

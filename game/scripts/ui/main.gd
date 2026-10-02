@@ -207,6 +207,13 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 				GameState.grant_pet(pid)
 				GameState.grant_pet(pid)
 	for a in cmd:
+		if a.begins_with("--costume="):
+			GameState.flags["costumes"] = Costumes.defs().keys()
+			for h in GameState.heroes.values():
+				h.costume = a.substr(10)
+			BattleSim.build_party()
+			EventBus.party_changed.emit()
+	for a in cmd:
 		if a == "--ending":
 			EventBus.story_completed.emit()
 	for a in cmd:

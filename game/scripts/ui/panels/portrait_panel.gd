@@ -9,6 +9,8 @@ var _xp: ProgressBar
 var _xpl: Label
 var _stars: Label
 var _fac: Label
+var _costume: Label
+const PORTRAIT_SHADER := preload("res://assets/shaders/portrait.gdshader")
 
 
 func build(c: Control) -> void:
@@ -50,7 +52,30 @@ func build(c: Control) -> void:
 	_xp = UITheme.bar(int(c.size.x - 52), 3, Color("#F2B33D"))
 	_xp.position = Vector2(46, 215)
 	c.add_child(_xp)
+	_img.material = ShaderMaterial.new()
+	_img.material.shader = PORTRAIT_SHADER
+	var crow := W.hbox(2)
+	crow.position = Vector2(4, 160)
+	c.add_child(crow)
+	crow.add_child(UITheme.button("<", "brown", func(): _cycle_costume(-1), Vector2(12, 11)))
+	_costume = UITheme.label("", UITheme.C_TEXT)
+	_costume.custom_minimum_size = Vector2(c.size.x - 40, 0)
+	_costume.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	crow.add_child(_costume)
+	crow.add_child(UITheme.button(">", "brown", func(): _cycle_costume(1), Vector2(12, 11)))
 	EventBus.hero_leveled.connect(func(_h, _l): refresh())
+	refresh()
+
+
+func _cycle_costume(dir: int) -> void:
+	var hid := W.current_hero()
+	if hid == "":
+		return
+	var h: HeroState = GameState.heroes[hid]
+	var opts: Array = [""] + Costumes.unlocked()
+	var i: int = max(0, opts.find(h.costume))
+	h.costume = str(opts[(i + dir + opts.size()) % opts.size()])
+	EventBus.equipment_changed.emit(hid)
 	refresh()
 
 
@@ -70,6 +95,11 @@ func refresh() -> void:
 	var h: HeroState = GameState.heroes[hid]
 	set_panel_title(h.class_title())
 	_img.texture = SpriteLib.portrait(hid)
+	Costumes.apply(_img.material as ShaderMaterial, hid)
+	var cd: Dictionary = Costumes.defs().get(h.costume, {})
+	_costume.text = "%s: %s (%d/%d)" % [DataDB.t("costume"), DataDB.tx(cd.get("name", {})) if not cd.is_empty() else DataDB.t("costume_default"),
+		Costumes.unlocked().size() + 1, Costumes.defs().size() + 1]
+	_costume.tooltip_text = "\n".join(Costumes.defs().keys().map(func(k): return ("✓ " if Costumes.is_unlocked(k) else "✗ ") + DataDB.tx(Costumes.defs()[k].get("name", {})) + " — " + DataDB.tx(Costumes.defs()[k].get("hint", {}))))
 	_name.text = h.display_name()
 	_name.add_theme_color_override("font_color", {"R": UITheme.C_TEXT, "SR": UITheme.C_BLUE, "SSR": UITheme.C_ORANGE}.get(h.def().get("rarity", "R"), UITheme.C_TEXT))
 	_stars.text = "★".repeat(h.stars) + "☆".repeat(6 - h.stars)

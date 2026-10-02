@@ -306,6 +306,8 @@ func handle_hotkey(ev: InputEventKey) -> void:
 			toggle_panel("quests")
 		KEY_D:
 			toggle_panel("dps")
+		KEY_E:
+			toggle_panel("pets")
 
 
 func toggle_hide_all() -> void:
