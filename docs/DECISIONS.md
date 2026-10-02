@@ -34,6 +34,6 @@ yapay zeka) projeye katılmadan önce bu dosyayı okumalı.
 
 ## Bilinen sınırlamalar / sonraki adımlar
 - **Steam:** `SteamService` şimdilik stub (başarım ve skor çağrıları loglanır). GodotSteam eklentisi eklenince doldurulacak.
-- **Kostümler:** `HeroState.costume` alanı ve kayıt desteği var; kostüm içeriği ve dükkânı henüz yok.
+- **Kostümler:** 6 hesap çapında kostüm, kahramanın ana renk rampasını shader ile yeniden renklendirir (yeni sprite gerekmez). Kalıp/aksesuar değiştiren kostümler henüz yok.
 - macOS export preset'i yok (imzalama/notarization gerektirir).
 - Yalnızca TR/EN dil desteği.

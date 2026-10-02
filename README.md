@@ -41,7 +41,7 @@ Yerelde: export template'lerini kurup `godot --headless --export-release "Window
 - 4 perde, 40 bölge, 74 düşman türü, 40 boss (perde bossları mekanikli), 3 zorluk (Normal / Kabus / Cehennem)
 - Loot: 6 nadirlik + set + efsanevi, demirci (geliştirme, yeniden dövme, parçalama), sandık
 - Offline ilerleme, taverna, görevler, 41 başarım, kodeks, lonca salonu ağacı
-- **Sonsuz Kule** (Sv 50 / Kabus açılınca), **10 evcil dost** (boss ve kule düşüşleri), hikaye girişi ve finali
+- **Sonsuz Kule** (Sv 50 / Kabus açılınca), **10 evcil dost** (boss ve kule düşüşleri), **6 kostüm**, hikaye girişi ve finali
 - TR/EN dil, 21 SFX + 7 müzik parçası
 
 ## Proje yapısı
