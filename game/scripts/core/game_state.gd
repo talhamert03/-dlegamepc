@@ -263,6 +263,8 @@ func add_hero_xp(h: HeroState, amount: float) -> void:
 		leveled = true
 		if Settings.get_v("auto_stats", true):
 			h.auto_allocate()
+		if Settings.get_v("auto_skills", true):
+			h.auto_skills()
 		EventBus.hero_leveled.emit(h.id, h.level)
 	if leveled:
 		invalidate_stats()

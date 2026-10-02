@@ -21,12 +21,20 @@ func build(c: Control) -> void:
 	v.add_child(top)
 	_diff_btn = UITheme.button("", "gold", _cycle_diff, Vector2(60, 12))
 	top.add_child(_diff_btn)
-	top.add_child(W.spacer(8, 0))
+	var tb := UITheme.button(DataDB.t("tower_name"), "blue", func():
+		if BattleSim.mode == "tower":
+			BattleSim.leave_tower()
+		elif BattleSim.tower_unlocked():
+			BattleSim.enter_tower()
+		else:
+			EventBus.notify.emit(DataDB.t("tower_locked"), UITheme.C_RED), Vector2(0, 12))
+	tb.tooltip_text = DataDB.t("tower_best", {"n": int(GameState.progress.get("tower_best", 0))})
+	top.add_child(tb)
 	_tabs = W.hbox(1)
 	top.add_child(_tabs)
 	for i in range(1, 5):
 		var a := i
-		var b := UITheme.button(DataDB.t("act_n", {"n": i}), "brown", func(): _set_act(a), Vector2(38, 12))
+		var b := UITheme.button(DataDB.t("act_n", {"n": i}), "brown", func(): _set_act(a), Vector2(30, 12))
 		_tabs.add_child(b)
 	_map = TextureRect.new()
 	_map.custom_minimum_size = Vector2(240, 150)
@@ -106,6 +114,7 @@ func refresh() -> void:
 
 
 func _travel(zi: int) -> void:
+	BattleSim.mode = "zone"
 	BattleSim.go_to_zone(zi, _diff)
 	AudioManager.play("ui_travel")
 	refresh()

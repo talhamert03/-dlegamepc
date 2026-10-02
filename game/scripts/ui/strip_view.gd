@@ -149,6 +149,11 @@ func _draw_wave_dots() -> void:
 
 
 func _update_hud_text() -> void:
+	if BattleSim.mode == "tower":
+		_zone_label.text = DataDB.t("tower_name")
+		_stage_label.text = DataDB.t("floor_n", {"n": BattleSim.tower_floor})
+		_stage_label.position.x = 26 + UITheme.font_small.get_string_size(_zone_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x + 4
+		return
 	var z := BattleSim.zone()
 	_zone_label.text = DataDB.tx(z.get("name", {}))
 	var act := int(z.get("act", 1))
@@ -169,6 +174,12 @@ func _update_hud_text() -> void:
 
 # ------------------------------------------------------------------ background
 func _on_zone(_zid: String) -> void:
+	if _zid == "tower":
+		_set_theme("void")
+		_update_hud_text()
+		_show_banner(DataDB.t("tower_name"), Color("#9FDFFF"))
+		AudioManager.play_music("boss")
+		return
 	var z := BattleSim.zone()
 	_set_theme(str(z.get("background", "meadow")))
 	_update_hud_text()

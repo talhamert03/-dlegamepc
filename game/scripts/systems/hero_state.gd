@@ -118,6 +118,39 @@ func level_skill(sid: String) -> bool:
 	return true
 
 
+## Spends skill points automatically: actives first (up to 3), ult at 20+, then passives.
+func auto_skills() -> void:
+	var guard := 0
+	while skill_points > 0 and guard < 200:
+		guard += 1
+		var best := ""
+		var best_score := -1.0
+		for sid in class_skills():
+			if not can_level_skill(sid):
+				continue
+			var sd: Dictionary = DataDB.skill_def(sid)
+			var lv := skill_level(sid)
+			var score := 10.0 - lv
+			match sd.get("type", ""):
+				"active":
+					var active_count := 0
+					for e in equipped_skills:
+						if e != "":
+							active_count += 1
+					score += 6.0 if (equipped_skills.has(sid) or active_count < 3) else -20.0
+				"ult":
+					score += 8.0
+				"passive":
+					score += 3.0
+			score += int(sd.get("tier", 0)) * 2.0
+			if score > best_score:
+				best_score = score
+				best = sid
+		if best == "" or best_score < 0:
+			break
+		level_skill(best)
+
+
 func reset_skills() -> void:
 	var total := 0
 	for sid in skill_levels:

@@ -8,10 +8,16 @@ func setup() -> void:
 
 func test_hero_levels_and_points() -> void:
 	var h: HeroState = GameState.heroes["kael"]
-	var sp := h.stat_points
+	var before_skills := 0
+	for k in h.skill_levels:
+		before_skills += int(h.skill_levels[k])
 	GameState.add_hero_xp(h, F.xp_required(1) + F.xp_required(2) + 1)
 	runner.check(h.level == 3, "level 3, got %d" % h.level)
-	runner.check(h.skill_points >= 2, "skill points")
+	var after_skills := 0
+	for k in h.skill_levels:
+		after_skills += int(h.skill_levels[k])
+	# points are either banked or auto-spent on skills
+	runner.check(h.skill_points + after_skills - before_skills >= 2, "skill points")
 
 
 func test_stat_calc_sane() -> void:

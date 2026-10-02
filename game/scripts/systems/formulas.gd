@@ -83,7 +83,10 @@ static func enemy_stats(def: Dictionary, level: int, etype: String, difficulty: 
 	var diff_mult: float = float(b("enemy.difficulty_mult", [1.0, 1.25, 1.5])[clamp(difficulty, 0, 2)])
 	var type_hp: float = float(b("enemy.type_hp", {}).get(etype, 1.0))
 	var type_atk: float = float(b("enemy.type_atk", {}).get(etype, 1.0))
-	var hp: float = ref_dps(level) * float(b("ref.enemy_hp_k", 7.0)) * early_factor(level) * float(def.get("hp", 1.0)) * type_hp * diff_mult
+	var ef := early_factor(level)
+	if etype != "normal" and etype != "elite":
+		ef = 0.4 + 0.6 * ef
+	var hp: float = ref_dps(level) * float(b("ref.enemy_hp_k", 7.0)) * ef * float(def.get("hp", 1.0)) * (type_hp if etype == "normal" or etype == "elite" else type_hp * ef) * diff_mult
 	var atk: float = ref_hp(level) * float(b("ref.enemy_atk_k", 0.035)) * float(def.get("atk", 1.0)) * type_atk * diff_mult
 	atk *= lerp(0.6, 1.0, early_factor(level))
 	var dfn: float = float(b("enemy.def_base", 10)) + float(b("enemy.def_per_level", 4.5)) * level

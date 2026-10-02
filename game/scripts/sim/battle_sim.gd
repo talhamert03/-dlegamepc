@@ -17,6 +17,8 @@ var heroes: Array = []       # Combatant (heroes + summons)
 var enemies: Array = []
 var pending: Array = []      # scheduled hits/effects
 var zone_idx := 0
+var mode := "zone"           # zone | tower
+var tower_floor := 1
 var stage := 1
 var wave := 0
 var difficulty := 0
@@ -280,6 +282,9 @@ func _update_heroes_idle(dt: float) -> void:
 
 # ------------------------------------------------------------------ waves
 func _next_wave() -> void:
+	if mode == "tower":
+		_spawn_tower_floor()
+		return
 	if is_boss_stage():
 		_spawn_boss()
 		return
@@ -1073,6 +1078,14 @@ func _on_enemy_killed(e: Combatant) -> void:
 			EventBus.notify.emit(DataDB.t("auto_equipped", {"name": ItemUtil.display_name(it)}), ItemUtil.rarity_color(it["rarity"]))
 	for m in drops["materials"]:
 		GameState.add_material(m, int(drops["materials"][m]))
+	if mode == "tower":
+		var left := 0
+		for o in enemies:
+			if o.alive:
+				left += 1
+		if left == 0:
+			_tower_cleared()
+		return
 	if e == boss_unit:
 		_boss_killed()
 
@@ -1158,6 +1171,8 @@ func _after_boss_victory() -> void:
 	var maxz: int = int(GameState.progress["max_zone"][difficulty])
 	if auto and zone_idx + 1 <= maxz and zone_idx + 1 < DataDB.zones.size():
 		go_to_zone(zone_idx + 1)
+	elif auto and zone_idx + 1 >= DataDB.zones.size() and difficulty < 2 and int(GameState.progress["max_zone"][difficulty + 1]) >= 0:
+		go_to_zone(0, difficulty + 1)
 	else:
 		stage = stages_per_zone() - 1
 		GameState.progress["stage"] = stage
@@ -1166,6 +1181,9 @@ func _after_boss_victory() -> void:
 
 
 func _boss_timeout() -> void:
+	if mode == "tower":
+		_tower_failed()
+		return
 	boss_fail_count += 1
 	EventBus.boss_failed.emit(zone_id())
 	EventBus.notify.emit(DataDB.t("boss_failed"), Color("#FF6A5A"))
@@ -1185,6 +1203,9 @@ func _wipe() -> void:
 
 func _after_wipe() -> void:
 	_revive_all()
+	if mode == "tower":
+		_tower_failed()
+		return
 	if is_boss_stage():
 		boss_fail_count += 1
 	stage = max(1, stage - 2)
@@ -1192,6 +1213,73 @@ func _after_wipe() -> void:
 	GameState.progress["stage"] = stage
 	EventBus.stage_changed.emit(stage)
 	_set_phase("travel")
+
+
+# ------------------------------------------------------------------ endless tower
+func tower_unlocked() -> bool:
+	return GameState.max_hero_level() >= 50 or int(GameState.progress["max_zone"][1]) >= 0
+
+
+func enter_tower() -> void:
+	mode = "tower"
+	tower_floor = int(GameState.progress.get("tower_best", 0)) + 1
+	_clear_enemies()
+	_revive_all()
+	refresh_hero_stats()
+	_set_phase("travel")
+	EventBus.zone_changed.emit("tower")
+	EventBus.stage_changed.emit(tower_floor)
+
+
+func leave_tower() -> void:
+	mode = "zone"
+	go_to_zone(zone_idx, difficulty)
+
+
+func tower_level(fl: int) -> int:
+	return 50 + int(fl * 0.8)
+
+
+func _spawn_tower_floor() -> void:
+	var lv := tower_level(tower_floor)
+	var zi := (tower_floor * 7) % DataDB.zones.size()
+	var z := DataDB.zone(zi)
+	var roster: Array = z.get("enemies", ["slime_green"])
+	if tower_floor % 10 == 0:
+		boss_unit = _spawn_enemy(str(z.get("boss", "giant_slime")), lv, "boss", SPAWN_X)
+		boss_unit.mech_t = 6.0
+	else:
+		boss_unit = null
+		for i in 3:
+			var u := _spawn_enemy(roster[rng.randi() % roster.size()], lv, "elite", SPAWN_X + i * 18.0)
+			if boss_unit == null:
+				boss_unit = u
+	boss_t = 60.0
+	_set_phase("boss")
+
+
+func _tower_cleared() -> void:
+	var best := int(GameState.progress.get("tower_best", 0))
+	if tower_floor > best:
+		GameState.progress["tower_best"] = tower_floor
+		GameState.add_material("star_dust", 1 + tower_floor / 10)
+		if tower_floor % 10 == 0:
+			GameState.add_material("guild_badge", 1)
+			GameState.add_material("mythic_essence", 1 if tower_floor % 50 == 0 else 0)
+		SteamService.submit_score("tower", tower_floor)
+	tower_floor += 1
+	boss_unit = null
+	EventBus.stage_changed.emit(tower_floor)
+	if not quiet:
+		EventBus.notify.emit(DataDB.t("tower_floor", {"n": tower_floor}), Color("#9FDFFF"))
+	_set_phase("travel")
+
+
+func _tower_failed() -> void:
+	if not quiet:
+		EventBus.notify.emit(DataDB.t("tower_failed", {"n": tower_floor}), Color("#FF6A5A"))
+	mode = "zone"
+	go_to_zone(zone_idx, difficulty)
 
 
 ## Runs the simulation for `seconds` of game time (used by tests / bot balance runs).

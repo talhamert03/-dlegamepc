@@ -1066,5 +1066,29 @@
  "guild_sign": {
   "tr": "GEZGİN LONCA",
   "en": "WANDERER GUILD"
+ },
+ "tower_name": {
+  "tr": "Sonsuz Kule",
+  "en": "Endless Tower"
+ },
+ "floor_n": {
+  "tr": "Kat {n}",
+  "en": "Floor {n}"
+ },
+ "tower_floor": {
+  "tr": "Kat {n}'e çıkıldı!",
+  "en": "Reached floor {n}!"
+ },
+ "tower_failed": {
+  "tr": "Kule: kat {n}'de düştün.",
+  "en": "Tower: fell on floor {n}."
+ },
+ "tower_locked": {
+  "tr": "Kule Lv 50'de açılır.",
+  "en": "The Tower opens at Lv 50."
+ },
+ "tower_best": {
+  "tr": "En iyi kat: {n}",
+  "en": "Best floor: {n}"
  }
 }

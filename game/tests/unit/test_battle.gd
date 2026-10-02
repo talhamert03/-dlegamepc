@@ -33,3 +33,27 @@ func test_offline_clock_tamper() -> void:
 	GameState.last_save_unix = TimeService.unix_now() + 5000
 	var rep := OfflineSim.apply()
 	runner.check(int(rep["seconds"]) == 0, "no reward when clock moved back")
+
+
+func test_tower_runs() -> void:
+	GameState.new_game()
+	for hid in ["lyra", "pip"]:
+		GameState.unlock_hero(hid, false)
+		GameState.add_to_party(hid)
+	for hid in GameState.party:
+		if hid != "":
+			var need := 0.0
+			for l in range(1, 60):
+				need += F.xp_required(l)
+			GameState.add_hero_xp(GameState.heroes[hid], need)
+	runner.check(BattleSim.tower_unlocked(), "tower unlocked at high level")
+	BattleSim.quiet = true
+	BattleSim.start()
+	BattleSim.enter_tower()
+	runner.check(BattleSim.mode == "tower", "in tower")
+	BattleSim.simulate(120.0)
+	runner.check(BattleSim.tower_floor >= 1, "tower floor valid")
+	BattleSim.leave_tower()
+	runner.check(BattleSim.mode == "zone", "left tower")
+	BattleSim.stop()
+	BattleSim.quiet = false

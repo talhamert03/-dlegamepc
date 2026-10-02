@@ -17,6 +17,7 @@ var values: Dictionary = {
 	"particles": 1.0,
 	"auto_equip": true,
 	"auto_stats": true,
+	"auto_skills": true,
 	"auto_progress": true,
 	"barks": 1,               # 0 off 1 few 2 normal
 	"loot_common": "sell", "loot_magic": "keep", "loot_rare": "keep", "loot_epic": "keep",

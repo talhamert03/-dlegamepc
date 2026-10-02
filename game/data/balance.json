@@ -128,7 +128,7 @@
    "elite": 3.5,
    "miniboss": 10,
    "boss": 25,
-   "actboss": 40
+   "actboss": 32
   },
   "type_atk": {
    "normal": 1.0,
@@ -164,8 +164,8 @@
  },
  "stage": {
   "stages_per_zone": 10,
-  "waves_per_stage": 5,
-  "boss_time": 60,
+  "waves_per_stage": 7,
+  "boss_time": 75,
   "elite_chance": 0.2,
   "wave_min": 3,
   "wave_max": 5
@@ -385,8 +385,8 @@
   "hp_pct_lv": 0.004,
   "item_hp": 120,
   "item_hp_growth": 1.045,
-  "enemy_hp_k": 7.0,
-  "enemy_atk_k": 0.035,
+  "enemy_hp_k": 13.0,
+  "enemy_atk_k": 0.07,
   "early_factor_base": 0.25,
   "early_factor_lv": 0.025
  },

@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+env:
+  GODOT_VERSION: 4.4.1
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Godot
+        run: |
+          curl -sSL -o godot.zip https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+          unzip -q godot.zip
+          sudo mv Godot_v${GODOT_VERSION}-stable_linux.x86_64 /usr/local/bin/godot
+
+      - name: Run tests
+        working-directory: game
+        run: ./run_tests.sh
+
+      - name: Balance bot (2h simulated)
+        working-directory: game
+        run: godot --headless res://tests/BalanceBot.tscn -- --hours=2
+
+      - name: Install export templates
+        run: |
+          curl -sSL -o templates.tpz https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          unzip -qj templates.tpz "templates/windows_release_x86_64.exe" "templates/linux_release.x86_64" "templates/version.txt" \
+            -d ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
+
+      - name: Export Windows & Linux
+        working-directory: game
+        run: |
+          mkdir -p ../export/windows ../export/linux
+          godot --headless --export-release "Windows Desktop" ../export/windows/IdleParty.exe
+          godot --headless --export-release "Linux" ../export/linux/IdleParty.x86_64
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: IdleParty-windows
+          path: export/windows/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: IdleParty-linux
+          path: export/linux/
