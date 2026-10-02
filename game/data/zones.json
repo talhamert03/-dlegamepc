@@ -1,0 +1,904 @@
+{
+ "acts": [
+  {
+   "id": 1,
+   "name": {
+    "tr": "Sisli Orman",
+    "en": "Misty Forest"
+   },
+   "music": "act1",
+   "theme": "forest"
+  },
+  {
+   "id": 2,
+   "name": {
+    "tr": "Donmuş Zirveler",
+    "en": "Frozen Peaks"
+   },
+   "music": "act2",
+   "theme": "snow"
+  },
+  {
+   "id": 3,
+   "name": {
+    "tr": "Yanık Çöller",
+    "en": "Scorched Sands"
+   },
+   "music": "act3",
+   "theme": "desert"
+  },
+  {
+   "id": 4,
+   "name": {
+    "tr": "Uçurum Kapısı",
+    "en": "Abyssal Gate"
+   },
+   "music": "act4",
+   "theme": "abyss"
+  }
+ ],
+ "zones": [
+  {
+   "id": "a1_z01",
+   "act": 1,
+   "index": 1,
+   "name": {
+    "tr": "Taşköprü Çayırları",
+    "en": "Stonebridge Meadows"
+   },
+   "level": [
+    1,
+    2
+   ],
+   "enemies": [
+    "slime_green",
+    "bunny"
+   ],
+   "boss": "giant_slime",
+   "background": "meadow",
+   "music": "act1"
+  },
+  {
+   "id": "a1_z02",
+   "act": 1,
+   "index": 2,
+   "name": {
+    "tr": "Orman Kıyısı",
+    "en": "Forest Edge"
+   },
+   "level": [
+    2,
+    3
+   ],
+   "enemies": [
+    "slime_green",
+    "mushroom",
+    "boar"
+   ],
+   "boss": "boar_mother",
+   "background": "forest",
+   "music": "act1"
+  },
+  {
+   "id": "a1_z03",
+   "act": 1,
+   "index": 3,
+   "name": {
+    "tr": "Sisli Orman Yolu",
+    "en": "Misty Forest Path"
+   },
+   "level": [
+    3,
+    5
+   ],
+   "enemies": [
+    "goblin_apprentice",
+    "mushroom",
+    "wolf"
+   ],
+   "boss": "goblin_scout_chief",
+   "background": "forest_fog",
+   "music": "act1"
+  },
+  {
+   "id": "a1_z04",
+   "act": 1,
+   "index": 4,
+   "name": {
+    "tr": "Mantar Mağarası",
+    "en": "Mushroom Cave"
+   },
+   "level": [
+    5,
+    6
+   ],
+   "enemies": [
+    "poison_shroom",
+    "bat",
+    "goblin_apprentice"
+   ],
+   "boss": "king_mushroom",
+   "background": "cave",
+   "music": "act1"
+  },
+  {
+   "id": "a1_z05",
+   "act": 1,
+   "index": 5,
+   "name": {
+    "tr": "Goblin Kampı",
+    "en": "Goblin Camp"
+   },
+   "level": [
+    6,
+    7
+   ],
+   "enemies": [
+    "goblin_warrior",
+    "goblin_archer",
+    "goblin_shaman"
+   ],
+   "boss": "goblin_chief",
+   "background": "camp",
+   "music": "act1"
+  },
+  {
+   "id": "a1_z06",
+   "act": 1,
+   "index": 6,
+   "name": {
+    "tr": "Unutulmuş Mezarlık",
+    "en": "Forgotten Graveyard"
+   },
+   "level": [
+    7,
+    8
+   ],
+   "enemies": [
+    "skeleton",
+    "ghost",
+    "zombie"
+   ],
+   "boss": "grave_keeper",
+   "background": "graveyard",
+   "music": "act1"
+  },
+  {
+   "id": "a1_z07",
+   "act": 1,
+   "index": 7,
+   "name": {
+    "tr": "Örümcek Yuvası",
+    "en": "Spider Nest"
+   },
+   "level": [
+    8,
+    9
+   ],
+   "enemies": [
+    "spider",
+    "cocoon_zombie",
+    "bat"
+   ],
+   "boss": "queen_spider",
+   "background": "cave",
+   "music": "act1"
+  },
+  {
+   "id": "a1_z08",
+   "act": 1,
+   "index": 8,
+   "name": {
+    "tr": "Kuşatılmış Değirmen",
+    "en": "Besieged Mill"
+   },
+   "level": [
+    9,
+    10
+   ],
+   "enemies": [
+    "goblin_rider",
+    "goblin_bomber",
+    "goblin_warrior"
+   ],
+   "boss": "goblin_engineer",
+   "background": "meadow",
+   "music": "act1"
+  },
+  {
+   "id": "a1_z09",
+   "act": 1,
+   "index": 9,
+   "name": {
+    "tr": "Kadim Ağaç Kökleri",
+    "en": "Ancient Roots"
+   },
+   "level": [
+    10,
+    11
+   ],
+   "enemies": [
+    "ent_sapling",
+    "dark_fairy",
+    "forest_spirit"
+   ],
+   "boss": "rotten_ent",
+   "background": "forest",
+   "music": "act1"
+  },
+  {
+   "id": "a1_z10",
+   "act": 1,
+   "index": 10,
+   "name": {
+    "tr": "Goblin Kralı Tahtı",
+    "en": "Goblin King's Throne"
+   },
+   "level": [
+    11,
+    12
+   ],
+   "enemies": [
+    "goblin_warrior",
+    "goblin_shaman",
+    "goblin_archer"
+   ],
+   "boss": "goblin_king",
+   "background": "camp",
+   "music": "act1"
+  },
+  {
+   "id": "a2_z01",
+   "act": 2,
+   "index": 1,
+   "name": {
+    "tr": "Yıkık Dağ Köyü",
+    "en": "Ruined Mountain Village"
+   },
+   "level": [
+    12,
+    13
+   ],
+   "enemies": [
+    "snow_wolf",
+    "bandit",
+    "bandit_archer"
+   ],
+   "boss": "bandit_chief",
+   "background": "snow",
+   "music": "act2"
+  },
+  {
+   "id": "a2_z02",
+   "act": 2,
+   "index": 2,
+   "name": {
+    "tr": "Karlı Geçit",
+    "en": "Snowy Pass"
+   },
+   "level": [
+    13,
+    15
+   ],
+   "enemies": [
+    "yeti_cub",
+    "ice_slime",
+    "snow_wolf"
+   ],
+   "boss": "yeti",
+   "background": "snow",
+   "music": "act2"
+  },
+  {
+   "id": "a2_z03",
+   "act": 2,
+   "index": 3,
+   "name": {
+    "tr": "Donmuş Göl",
+    "en": "Frozen Lake"
+   },
+   "level": [
+    15,
+    16
+   ],
+   "enemies": [
+    "ice_elemental",
+    "penguin",
+    "ice_slime"
+   ],
+   "boss": "lake_monster",
+   "background": "ice",
+   "music": "act2"
+  },
+  {
+   "id": "a2_z04",
+   "act": 2,
+   "index": 4,
+   "name": {
+    "tr": "Kristal Mağaralar",
+    "en": "Crystal Caves"
+   },
+   "level": [
+    16,
+    18
+   ],
+   "enemies": [
+    "crystal_golem",
+    "ice_bat",
+    "ice_slime"
+   ],
+   "boss": "crystal_spider",
+   "background": "ice_cave",
+   "music": "act2"
+  },
+  {
+   "id": "a2_z05",
+   "act": 2,
+   "index": 5,
+   "name": {
+    "tr": "Cüce Madeni",
+    "en": "Dwarven Mine"
+   },
+   "level": [
+    18,
+    19
+   ],
+   "enemies": [
+    "ghost_miner",
+    "ice_bat",
+    "crystal_golem"
+   ],
+   "boss": "cursed_foreman",
+   "background": "mine",
+   "music": "act2"
+  },
+  {
+   "id": "a2_z06",
+   "act": 2,
+   "index": 6,
+   "name": {
+    "tr": "Fırtına Tepesi",
+    "en": "Storm Hill"
+   },
+   "level": [
+    19,
+    20
+   ],
+   "enemies": [
+    "harpy",
+    "storm_spirit",
+    "snow_wolf"
+   ],
+   "boss": "harpy_queen",
+   "background": "storm",
+   "music": "act2"
+  },
+  {
+   "id": "a2_z07",
+   "act": 2,
+   "index": 7,
+   "name": {
+    "tr": "Kuzey Kabileleri",
+    "en": "Northern Tribes"
+   },
+   "level": [
+    20,
+    22
+   ],
+   "enemies": [
+    "north_warrior",
+    "snow_wolf",
+    "bandit_archer"
+   ],
+   "boss": "bjorn_duel",
+   "background": "snow",
+   "music": "act2"
+  },
+  {
+   "id": "a2_z08",
+   "act": 2,
+   "index": 8,
+   "name": {
+    "tr": "Buz Tapınağı Girişi",
+    "en": "Ice Temple Gate"
+   },
+   "level": [
+    22,
+    23
+   ],
+   "enemies": [
+    "ice_guard",
+    "snow_fairy",
+    "ice_elemental"
+   ],
+   "boss": "frozen_knight",
+   "background": "ice",
+   "music": "act2"
+  },
+  {
+   "id": "a2_z09",
+   "act": 2,
+   "index": 9,
+   "name": {
+    "tr": "Ayna Salonu",
+    "en": "Hall of Mirrors"
+   },
+   "level": [
+    23,
+    24
+   ],
+   "enemies": [
+    "ice_knight",
+    "snow_fairy",
+    "ice_guard"
+   ],
+   "boss": "mirror_party",
+   "background": "ice_cave",
+   "music": "act2"
+  },
+  {
+   "id": "a2_z10",
+   "act": 2,
+   "index": 10,
+   "name": {
+    "tr": "Kış Cadısının Tahtı",
+    "en": "Winter Witch's Throne"
+   },
+   "level": [
+    24,
+    25
+   ],
+   "enemies": [
+    "ice_guard",
+    "ice_elemental",
+    "snow_fairy"
+   ],
+   "boss": "ice_witch",
+   "background": "ice",
+   "music": "act2"
+  },
+  {
+   "id": "a3_z01",
+   "act": 3,
+   "index": 1,
+   "name": {
+    "tr": "Kum Limanı",
+    "en": "Sand Harbor"
+   },
+   "level": [
+    25,
+    26
+   ],
+   "enemies": [
+    "pirate",
+    "sand_crab",
+    "bandit_archer"
+   ],
+   "boss": "pirate_captain",
+   "background": "harbor",
+   "music": "act3"
+  },
+  {
+   "id": "a3_z02",
+   "act": 3,
+   "index": 2,
+   "name": {
+    "tr": "Kızgın Kumullar",
+    "en": "Scorching Dunes"
+   },
+   "level": [
+    26,
+    28
+   ],
+   "enemies": [
+    "scorpion",
+    "sand_worm",
+    "lizardman"
+   ],
+   "boss": "giant_worm",
+   "background": "desert",
+   "music": "act3"
+  },
+  {
+   "id": "a3_z03",
+   "act": 3,
+   "index": 3,
+   "name": {
+    "tr": "Vaha",
+    "en": "Oasis"
+   },
+   "level": [
+    28,
+    29
+   ],
+   "enemies": [
+    "mirage",
+    "cactus",
+    "lizardman"
+   ],
+   "boss": "mirage_queen",
+   "background": "oasis",
+   "music": "act3"
+  },
+  {
+   "id": "a3_z04",
+   "act": 3,
+   "index": 4,
+   "name": {
+    "tr": "Gömülü Şehir",
+    "en": "Buried City"
+   },
+   "level": [
+    29,
+    30
+   ],
+   "enemies": [
+    "mummy",
+    "scarab",
+    "anubis_guard"
+   ],
+   "boss": "pharaoh",
+   "background": "tomb",
+   "music": "act3"
+  },
+  {
+   "id": "a3_z05",
+   "act": 3,
+   "index": 5,
+   "name": {
+    "tr": "Ateş Kanyonu",
+    "en": "Fire Canyon"
+   },
+   "level": [
+    30,
+    32
+   ],
+   "enemies": [
+    "fire_elemental",
+    "lava_slime",
+    "imp"
+   ],
+   "boss": "magma_golem",
+   "background": "lava",
+   "music": "act3"
+  },
+  {
+   "id": "a3_z06",
+   "act": 3,
+   "index": 6,
+   "name": {
+    "tr": "Öz Kulesi Kalıntıları",
+    "en": "Tower Ruins"
+   },
+   "level": [
+    32,
+    33
+   ],
+   "enemies": [
+    "cursed_book",
+    "animated_armor",
+    "imp"
+   ],
+   "boss": "mad_alchemist",
+   "background": "ruins",
+   "music": "act3"
+  },
+  {
+   "id": "a3_z07",
+   "act": 3,
+   "index": 7,
+   "name": {
+    "tr": "Arkana Kütüphanesi",
+    "en": "Arcane Library"
+   },
+   "level": [
+    33,
+    34
+   ],
+   "enemies": [
+    "cursed_book",
+    "ink_slime",
+    "animated_armor"
+   ],
+   "boss": "library_guardian",
+   "background": "library",
+   "music": "act3"
+  },
+  {
+   "id": "a3_z08",
+   "act": 3,
+   "index": 8,
+   "name": {
+    "tr": "Zaman Harabeleri",
+    "en": "Ruins of Time"
+   },
+   "level": [
+    34,
+    36
+   ],
+   "enemies": [
+    "clock_golem",
+    "time_ghost",
+    "ink_slime"
+   ],
+   "boss": "hourglass_keeper",
+   "background": "ruins",
+   "music": "act3"
+  },
+  {
+   "id": "a3_z09",
+   "act": 3,
+   "index": 9,
+   "name": {
+    "tr": "Hain Âlimin Laboratuvarı",
+    "en": "Traitor's Laboratory"
+   },
+   "level": [
+    36,
+    37
+   ],
+   "enemies": [
+    "chimera",
+    "homunculus",
+    "cursed_book"
+   ],
+   "boss": "chimera_alpha",
+   "background": "library",
+   "music": "act3"
+  },
+  {
+   "id": "a3_z10",
+   "act": 3,
+   "index": 10,
+   "name": {
+    "tr": "Güneş Sunağı",
+    "en": "Sun Altar"
+   },
+   "level": [
+    37,
+    38
+   ],
+   "enemies": [
+    "anubis_guard",
+    "fire_elemental",
+    "homunculus"
+   ],
+   "boss": "corvus",
+   "background": "temple",
+   "music": "act3"
+  },
+  {
+   "id": "a4_z01",
+   "act": 4,
+   "index": 1,
+   "name": {
+    "tr": "Kül Ovaları",
+    "en": "Ash Plains"
+   },
+   "level": [
+    38,
+    39
+   ],
+   "enemies": [
+    "demon_imp",
+    "hellhound",
+    "lava_slime"
+   ],
+   "boss": "demon_hunter",
+   "background": "ash",
+   "music": "act4"
+  },
+  {
+   "id": "a4_z02",
+   "act": 4,
+   "index": 2,
+   "name": {
+    "tr": "Kanlı Nehir",
+    "en": "Blood River"
+   },
+   "level": [
+    39,
+    41
+   ],
+   "enemies": [
+    "blood_elemental",
+    "drowned",
+    "demon_imp"
+   ],
+   "boss": "river_nightmare",
+   "background": "blood",
+   "music": "act4"
+  },
+  {
+   "id": "a4_z03",
+   "act": 4,
+   "index": 3,
+   "name": {
+    "tr": "Kemik Tarlaları",
+    "en": "Bone Fields"
+   },
+   "level": [
+    41,
+    42
+   ],
+   "enemies": [
+    "bone_drake",
+    "skeleton_archer",
+    "skeleton"
+   ],
+   "boss": "bone_colossus",
+   "background": "bones",
+   "music": "act4"
+  },
+  {
+   "id": "a4_z04",
+   "act": 4,
+   "index": 4,
+   "name": {
+    "tr": "Kara Orman",
+    "en": "Black Forest"
+   },
+   "level": [
+    42,
+    43
+   ],
+   "enemies": [
+    "cursed_ent",
+    "shadow_wolf",
+    "bat_swarm"
+   ],
+   "boss": "shadow_ent",
+   "background": "dark_forest",
+   "music": "act4"
+  },
+  {
+   "id": "a4_z05",
+   "act": 4,
+   "index": 5,
+   "name": {
+    "tr": "Kültist Tapınağı",
+    "en": "Cultist Temple"
+   },
+   "level": [
+    43,
+    45
+   ],
+   "enemies": [
+    "cultist",
+    "sacrifice_priest",
+    "skeleton"
+   ],
+   "boss": "high_cultist",
+   "background": "temple_dark",
+   "music": "act4"
+  },
+  {
+   "id": "a4_z06",
+   "act": 4,
+   "index": 6,
+   "name": {
+    "tr": "Uçurum Kenarı",
+    "en": "Abyss Edge"
+   },
+   "level": [
+    45,
+    46
+   ],
+   "enemies": [
+    "void_spawn",
+    "tentacle",
+    "shadow_wolf"
+   ],
+   "boss": "void_eye",
+   "background": "void",
+   "music": "act4"
+  },
+  {
+   "id": "a4_z07",
+   "act": 4,
+   "index": 7,
+   "name": {
+    "tr": "Kale Surları",
+    "en": "Castle Ramparts"
+   },
+   "level": [
+    46,
+    47
+   ],
+   "enemies": [
+    "dark_knight",
+    "gargoyle",
+    "skeleton_archer"
+   ],
+   "boss": "dark_commander",
+   "background": "castle",
+   "music": "act4"
+  },
+  {
+   "id": "a4_z08",
+   "act": 4,
+   "index": 8,
+   "name": {
+    "tr": "Ziyafet Salonu",
+    "en": "Banquet Hall"
+   },
+   "level": [
+    47,
+    48
+   ],
+   "enemies": [
+    "vampire",
+    "bat_swarm",
+    "dark_knight"
+   ],
+   "boss": "vampire_countess",
+   "background": "hall",
+   "music": "act4"
+  },
+  {
+   "id": "a4_z09",
+   "act": 4,
+   "index": 9,
+   "name": {
+    "tr": "Taht Odası Koridoru",
+    "en": "Throne Corridor"
+   },
+   "level": [
+    48,
+    49
+   ],
+   "enemies": [
+    "abyss_guard",
+    "gargoyle",
+    "cultist"
+   ],
+   "boss": "abyss_twins",
+   "background": "castle",
+   "music": "act4"
+  },
+  {
+   "id": "a4_z10",
+   "act": 4,
+   "index": 10,
+   "name": {
+    "tr": "Morvath'ın Tahtı",
+    "en": "Morvath's Throne"
+   },
+   "level": [
+    49,
+    50
+   ],
+   "enemies": [
+    "abyss_guard",
+    "void_spawn",
+    "dark_knight"
+   ],
+   "boss": "morvath",
+   "background": "throne",
+   "music": "act4"
+  }
+ ],
+ "difficulties": [
+  {
+   "id": "normal",
+   "name": {
+    "tr": "Normal",
+    "en": "Normal"
+   }
+  },
+  {
+   "id": "nightmare",
+   "name": {
+    "tr": "Kabus",
+    "en": "Nightmare"
+   }
+  },
+  {
+   "id": "hell",
+   "name": {
+    "tr": "Cehennem",
+    "en": "Hell"
+   }
+  }
+ ]
+}

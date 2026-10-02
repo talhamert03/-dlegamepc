@@ -1,0 +1,2864 @@
+{
+ "enemies": {
+  "slime_green": {
+   "id": "slime_green",
+   "name": {
+    "tr": "Yeşil Slime",
+    "en": "Green Slime"
+   },
+   "arch": "weak",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "blob",
+    "color": "#6CC24A"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 0.85,
+   "aps": 1.0,
+   "range": 22,
+   "target": "front"
+  },
+  "bunny": {
+   "id": "bunny",
+   "name": {
+    "tr": "Kızgın Tavşan",
+    "en": "Angry Bunny"
+   },
+   "arch": "fast",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "quad",
+    "kind": "bunny",
+    "color": "#E8DCC8"
+   },
+   "tags": [],
+   "hp": 0.65,
+   "atk": 0.75,
+   "aps": 1.6,
+   "range": 22,
+   "target": "lowest"
+  },
+  "mushroom": {
+   "id": "mushroom",
+   "name": {
+    "tr": "Mantarcık",
+    "en": "Shroomling"
+   },
+   "arch": "weak",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "mushroom",
+    "color": "#D9583A"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 0.85,
+   "aps": 1.0,
+   "range": 22,
+   "target": "front"
+  },
+  "boar": {
+   "id": "boar",
+   "name": {
+    "tr": "Yaban Domuzu",
+    "en": "Wild Boar"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "quad",
+    "kind": "boar",
+    "color": "#7A5A44"
+   },
+   "tags": [],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "goblin_apprentice": {
+   "id": "goblin_apprentice",
+   "name": {
+    "tr": "Goblin Çırak",
+    "en": "Goblin Apprentice"
+   },
+   "arch": "weak",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "goblin",
+    "weapon": "dagger",
+    "color": "#7FB84A",
+    "cloth": "#8E5B3E"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 0.85,
+   "aps": 1.0,
+   "range": 22,
+   "target": "front"
+  },
+  "goblin_warrior": {
+   "id": "goblin_warrior",
+   "name": {
+    "tr": "Goblin Savaşçı",
+    "en": "Goblin Warrior"
+   },
+   "arch": "melee",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "goblin",
+    "weapon": "sword",
+    "color": "#6FA840",
+    "cloth": "#6A4A3A",
+    "helm": true
+   },
+   "tags": [],
+   "hp": 1.0,
+   "atk": 1.0,
+   "aps": 0.95,
+   "range": 24,
+   "target": "front"
+  },
+  "goblin_archer": {
+   "id": "goblin_archer",
+   "name": {
+    "tr": "Goblin Okçu",
+    "en": "Goblin Archer"
+   },
+   "arch": "ranged",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "goblin",
+    "weapon": "bow",
+    "color": "#86B850",
+    "cloth": "#4A6A3A"
+   },
+   "tags": [],
+   "hp": 0.7,
+   "atk": 1.0,
+   "aps": 0.8,
+   "range": 130,
+   "target": "front",
+   "projectile": "arrow_enemy"
+  },
+  "goblin_shaman": {
+   "id": "goblin_shaman",
+   "name": {
+    "tr": "Goblin Şaman",
+    "en": "Goblin Shaman"
+   },
+   "arch": "caster",
+   "element": "fire",
+   "res": {},
+   "visual": {
+    "rig": "goblin",
+    "weapon": "staff",
+    "color": "#7AB070",
+    "cloth": "#8A3A5A"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 1.2,
+   "aps": 0.7,
+   "range": 120,
+   "target": "random",
+   "projectile": "bolt_enemy"
+  },
+  "wolf": {
+   "id": "wolf",
+   "name": {
+    "tr": "Orman Kurdu",
+    "en": "Forest Wolf"
+   },
+   "arch": "fast",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "quad",
+    "kind": "wolf",
+    "color": "#7A7A86"
+   },
+   "tags": [],
+   "hp": 0.65,
+   "atk": 0.75,
+   "aps": 1.6,
+   "range": 22,
+   "target": "lowest"
+  },
+  "bat": {
+   "id": "bat",
+   "name": {
+    "tr": "Yarasa",
+    "en": "Bat"
+   },
+   "arch": "swarm",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "flyer",
+    "kind": "bat",
+    "color": "#5A4A6A"
+   },
+   "tags": [],
+   "hp": 0.5,
+   "atk": 0.6,
+   "aps": 1.2,
+   "range": 20,
+   "target": "front"
+  },
+  "poison_shroom": {
+   "id": "poison_shroom",
+   "name": {
+    "tr": "Zehirli Mantar",
+    "en": "Toxic Shroom"
+   },
+   "arch": "caster",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "mushroom",
+    "color": "#8A5AC9"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 1.2,
+   "aps": 0.7,
+   "range": 120,
+   "target": "random",
+   "projectile": "bolt_enemy"
+  },
+  "skeleton": {
+   "id": "skeleton",
+   "name": {
+    "tr": "İskelet",
+    "en": "Skeleton"
+   },
+   "arch": "melee",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "skeleton",
+    "weapon": "sword",
+    "color": "#E6DDC6"
+   },
+   "tags": [
+    "undead"
+   ],
+   "hp": 1.0,
+   "atk": 1.0,
+   "aps": 0.95,
+   "range": 24,
+   "target": "front"
+  },
+  "ghost": {
+   "id": "ghost",
+   "name": {
+    "tr": "Hayalet",
+    "en": "Ghost"
+   },
+   "arch": "caster",
+   "element": "cold",
+   "res": {},
+   "visual": {
+    "rig": "flyer",
+    "kind": "ghost",
+    "color": "#BFD8F0"
+   },
+   "tags": [
+    "undead"
+   ],
+   "hp": 0.75,
+   "atk": 1.2,
+   "aps": 0.7,
+   "range": 120,
+   "target": "random",
+   "projectile": "bolt_enemy"
+  },
+  "zombie": {
+   "id": "zombie",
+   "name": {
+    "tr": "Zombi",
+    "en": "Zombie"
+   },
+   "arch": "tank",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "zombie",
+    "color": "#8FA878",
+    "cloth": "#5A5A6A"
+   },
+   "tags": [
+    "undead"
+   ],
+   "hp": 1.6,
+   "atk": 0.85,
+   "aps": 0.75,
+   "range": 24,
+   "target": "front"
+  },
+  "spider": {
+   "id": "spider",
+   "name": {
+    "tr": "Örümcek",
+    "en": "Spider"
+   },
+   "arch": "fast",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "spider",
+    "color": "#4A3A4A"
+   },
+   "tags": [],
+   "hp": 0.65,
+   "atk": 0.75,
+   "aps": 1.6,
+   "range": 22,
+   "target": "lowest"
+  },
+  "cocoon_zombie": {
+   "id": "cocoon_zombie",
+   "name": {
+    "tr": "Koza Zombi",
+    "en": "Cocoon Zombie"
+   },
+   "arch": "tank",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "zombie",
+    "color": "#D8D0C0",
+    "cloth": "#C8C0B0"
+   },
+   "tags": [
+    "undead"
+   ],
+   "hp": 1.6,
+   "atk": 0.85,
+   "aps": 0.75,
+   "range": 24,
+   "target": "front"
+  },
+  "goblin_bomber": {
+   "id": "goblin_bomber",
+   "name": {
+    "tr": "Goblin Bombacı",
+    "en": "Goblin Bomber"
+   },
+   "arch": "ranged",
+   "element": "fire",
+   "res": {},
+   "visual": {
+    "rig": "goblin",
+    "weapon": "bomb",
+    "color": "#6FA840",
+    "cloth": "#A8502E"
+   },
+   "tags": [],
+   "hp": 0.7,
+   "atk": 1.0,
+   "aps": 0.8,
+   "range": 130,
+   "target": "front",
+   "projectile": "arrow_enemy"
+  },
+  "goblin_rider": {
+   "id": "goblin_rider",
+   "name": {
+    "tr": "Kurt Binici",
+    "en": "Wolf Rider"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "quad",
+    "kind": "wolf",
+    "color": "#5A5A66",
+    "rider": "#6FA840"
+   },
+   "tags": [],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "ent_sapling": {
+   "id": "ent_sapling",
+   "name": {
+    "tr": "Ent Fidanı",
+    "en": "Ent Sapling"
+   },
+   "arch": "tank",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "ent",
+    "color": "#7A5A3A",
+    "leaf": "#6CC24A"
+   },
+   "tags": [],
+   "hp": 1.6,
+   "atk": 0.85,
+   "aps": 0.75,
+   "range": 24,
+   "target": "front"
+  },
+  "dark_fairy": {
+   "id": "dark_fairy",
+   "name": {
+    "tr": "Kötü Peri",
+    "en": "Wicked Fairy"
+   },
+   "arch": "caster",
+   "element": "lightning",
+   "res": {},
+   "visual": {
+    "rig": "flyer",
+    "kind": "fairy",
+    "color": "#FF9AC8"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 1.2,
+   "aps": 0.7,
+   "range": 120,
+   "target": "random",
+   "projectile": "bolt_enemy"
+  },
+  "forest_spirit": {
+   "id": "forest_spirit",
+   "name": {
+    "tr": "Orman Ruhu",
+    "en": "Forest Spirit"
+   },
+   "arch": "caster",
+   "element": "cold",
+   "res": {},
+   "visual": {
+    "rig": "flyer",
+    "kind": "wisp",
+    "color": "#9FE07A"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 1.2,
+   "aps": 0.7,
+   "range": 120,
+   "target": "random",
+   "projectile": "bolt_enemy"
+  },
+  "snow_wolf": {
+   "id": "snow_wolf",
+   "name": {
+    "tr": "Kar Kurdu",
+    "en": "Snow Wolf"
+   },
+   "arch": "fast",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "quad",
+    "kind": "wolf",
+    "color": "#E6EEF6"
+   },
+   "tags": [],
+   "hp": 0.65,
+   "atk": 0.75,
+   "aps": 1.6,
+   "range": 22,
+   "target": "lowest"
+  },
+  "bandit": {
+   "id": "bandit",
+   "name": {
+    "tr": "Haydut",
+    "en": "Bandit"
+   },
+   "arch": "melee",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "bandit",
+    "weapon": "sword",
+    "color": "#E2A882",
+    "cloth": "#6A4A3A"
+   },
+   "tags": [],
+   "hp": 1.0,
+   "atk": 1.0,
+   "aps": 0.95,
+   "range": 24,
+   "target": "front"
+  },
+  "bandit_archer": {
+   "id": "bandit_archer",
+   "name": {
+    "tr": "Haydut Okçu",
+    "en": "Bandit Archer"
+   },
+   "arch": "ranged",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "bandit",
+    "weapon": "bow",
+    "color": "#E2A882",
+    "cloth": "#4A5A3A"
+   },
+   "tags": [],
+   "hp": 0.7,
+   "atk": 1.0,
+   "aps": 0.8,
+   "range": 130,
+   "target": "front",
+   "projectile": "arrow_enemy"
+  },
+  "yeti_cub": {
+   "id": "yeti_cub",
+   "name": {
+    "tr": "Yeti Yavrusu",
+    "en": "Yeti Cub"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "golem",
+    "kind": "yeti",
+    "color": "#E8F0F8",
+    "scale": 0.85
+   },
+   "tags": [],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "ice_slime": {
+   "id": "ice_slime",
+   "name": {
+    "tr": "Buz Slime",
+    "en": "Ice Slime"
+   },
+   "arch": "weak",
+   "element": "cold",
+   "res": {
+    "cold": 50
+   },
+   "visual": {
+    "rig": "blob",
+    "color": "#9FDFFF"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 0.85,
+   "aps": 1.0,
+   "range": 22,
+   "target": "front"
+  },
+  "ice_elemental": {
+   "id": "ice_elemental",
+   "name": {
+    "tr": "Buz Elementali",
+    "en": "Ice Elemental"
+   },
+   "arch": "caster",
+   "element": "cold",
+   "res": {
+    "cold": 75,
+    "fire": -25
+   },
+   "visual": {
+    "rig": "golem",
+    "kind": "elemental",
+    "color": "#7FD8FF"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 1.2,
+   "aps": 0.7,
+   "range": 120,
+   "target": "random",
+   "projectile": "bolt_enemy"
+  },
+  "penguin": {
+   "id": "penguin",
+   "name": {
+    "tr": "Penguen Savaşçı",
+    "en": "Penguin Warrior"
+   },
+   "arch": "weak",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "blob",
+    "kind": "penguin",
+    "color": "#2E3240"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 0.85,
+   "aps": 1.0,
+   "range": 22,
+   "target": "front"
+  },
+  "crystal_golem": {
+   "id": "crystal_golem",
+   "name": {
+    "tr": "Kristal Golem",
+    "en": "Crystal Golem"
+   },
+   "arch": "tank",
+   "element": "physical",
+   "res": {
+    "physical": 20
+   },
+   "visual": {
+    "rig": "golem",
+    "kind": "crystal",
+    "color": "#9FB8FF"
+   },
+   "tags": [],
+   "hp": 1.6,
+   "atk": 0.85,
+   "aps": 0.75,
+   "range": 24,
+   "target": "front"
+  },
+  "ice_bat": {
+   "id": "ice_bat",
+   "name": {
+    "tr": "Buz Yarasası",
+    "en": "Ice Bat"
+   },
+   "arch": "swarm",
+   "element": "cold",
+   "res": {},
+   "visual": {
+    "rig": "flyer",
+    "kind": "bat",
+    "color": "#7FB8E0"
+   },
+   "tags": [],
+   "hp": 0.5,
+   "atk": 0.6,
+   "aps": 1.2,
+   "range": 20,
+   "target": "front"
+  },
+  "ghost_miner": {
+   "id": "ghost_miner",
+   "name": {
+    "tr": "Hortlak Madenci",
+    "en": "Ghost Miner"
+   },
+   "arch": "melee",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "skeleton",
+    "weapon": "axe",
+    "color": "#C8D8E0",
+    "helm": true
+   },
+   "tags": [
+    "undead"
+   ],
+   "hp": 1.0,
+   "atk": 1.0,
+   "aps": 0.95,
+   "range": 24,
+   "target": "front"
+  },
+  "harpy": {
+   "id": "harpy",
+   "name": {
+    "tr": "Harpi",
+    "en": "Harpy"
+   },
+   "arch": "fast",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "flyer",
+    "kind": "harpy",
+    "color": "#B88A5A"
+   },
+   "tags": [],
+   "hp": 0.65,
+   "atk": 0.75,
+   "aps": 1.6,
+   "range": 22,
+   "target": "lowest"
+  },
+  "storm_spirit": {
+   "id": "storm_spirit",
+   "name": {
+    "tr": "Yıldırım Ruhu",
+    "en": "Storm Spirit"
+   },
+   "arch": "caster",
+   "element": "lightning",
+   "res": {},
+   "visual": {
+    "rig": "flyer",
+    "kind": "wisp",
+    "color": "#FFE45C"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 1.2,
+   "aps": 0.7,
+   "range": 120,
+   "target": "random",
+   "projectile": "bolt_enemy"
+  },
+  "north_warrior": {
+   "id": "north_warrior",
+   "name": {
+    "tr": "Kuzey Savaşçısı",
+    "en": "Northern Warrior"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "bandit",
+    "weapon": "axe",
+    "color": "#E2A882",
+    "cloth": "#8A6A4A",
+    "helm": true
+   },
+   "tags": [],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "ice_guard": {
+   "id": "ice_guard",
+   "name": {
+    "tr": "Buz Muhafızı",
+    "en": "Ice Guardian"
+   },
+   "arch": "tank",
+   "element": "cold",
+   "res": {},
+   "visual": {
+    "rig": "skeleton",
+    "weapon": "sword",
+    "color": "#BFE8FF",
+    "helm": true,
+    "shield": true
+   },
+   "tags": [],
+   "hp": 1.6,
+   "atk": 0.85,
+   "aps": 0.75,
+   "range": 24,
+   "target": "front"
+  },
+  "snow_fairy": {
+   "id": "snow_fairy",
+   "name": {
+    "tr": "Kar Tanesi Perisi",
+    "en": "Snowflake Fairy"
+   },
+   "arch": "caster",
+   "element": "cold",
+   "res": {},
+   "visual": {
+    "rig": "flyer",
+    "kind": "fairy",
+    "color": "#BFE8FF"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 1.2,
+   "aps": 0.7,
+   "range": 120,
+   "target": "random",
+   "projectile": "bolt_enemy"
+  },
+  "ice_knight": {
+   "id": "ice_knight",
+   "name": {
+    "tr": "Buz Kopyası",
+    "en": "Ice Mirror"
+   },
+   "arch": "melee",
+   "element": "cold",
+   "res": {},
+   "visual": {
+    "rig": "skeleton",
+    "weapon": "sword",
+    "color": "#9FDFFF",
+    "helm": true
+   },
+   "tags": [],
+   "hp": 1.0,
+   "atk": 1.0,
+   "aps": 0.95,
+   "range": 24,
+   "target": "front"
+  },
+  "pirate": {
+   "id": "pirate",
+   "name": {
+    "tr": "Korsan",
+    "en": "Pirate"
+   },
+   "arch": "melee",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "bandit",
+    "weapon": "sword",
+    "color": "#C98A5A",
+    "cloth": "#C9414B"
+   },
+   "tags": [],
+   "hp": 1.0,
+   "atk": 1.0,
+   "aps": 0.95,
+   "range": 24,
+   "target": "front"
+  },
+  "sand_crab": {
+   "id": "sand_crab",
+   "name": {
+    "tr": "Kum Yengeci",
+    "en": "Sand Crab"
+   },
+   "arch": "tank",
+   "element": "physical",
+   "res": {
+    "physical": 15
+   },
+   "visual": {
+    "rig": "spider",
+    "kind": "crab",
+    "color": "#E8843A"
+   },
+   "tags": [],
+   "hp": 1.6,
+   "atk": 0.85,
+   "aps": 0.75,
+   "range": 24,
+   "target": "front"
+  },
+  "scorpion": {
+   "id": "scorpion",
+   "name": {
+    "tr": "Akrep",
+    "en": "Scorpion"
+   },
+   "arch": "fast",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "spider",
+    "kind": "scorpion",
+    "color": "#C99A4A"
+   },
+   "tags": [],
+   "hp": 0.65,
+   "atk": 0.75,
+   "aps": 1.6,
+   "range": 22,
+   "target": "lowest"
+  },
+  "sand_worm": {
+   "id": "sand_worm",
+   "name": {
+    "tr": "Kum Solucanı",
+    "en": "Sand Worm"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "worm",
+    "color": "#C9A06A"
+   },
+   "tags": [],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "lizardman": {
+   "id": "lizardman",
+   "name": {
+    "tr": "Kertenkele Adam",
+    "en": "Lizardman"
+   },
+   "arch": "melee",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "goblin",
+    "weapon": "spear",
+    "color": "#5AA84A",
+    "cloth": "#8E5B3E",
+    "big": true
+   },
+   "tags": [],
+   "hp": 1.0,
+   "atk": 1.0,
+   "aps": 0.95,
+   "range": 24,
+   "target": "front"
+  },
+  "mirage": {
+   "id": "mirage",
+   "name": {
+    "tr": "Serap Ruhu",
+    "en": "Mirage Spirit"
+   },
+   "arch": "caster",
+   "element": "fire",
+   "res": {},
+   "visual": {
+    "rig": "flyer",
+    "kind": "wisp",
+    "color": "#FFD98A"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 1.2,
+   "aps": 0.7,
+   "range": 120,
+   "target": "random",
+   "projectile": "bolt_enemy"
+  },
+  "cactus": {
+   "id": "cactus",
+   "name": {
+    "tr": "Kaktüs Canavarı",
+    "en": "Cactus Beast"
+   },
+   "arch": "tank",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "ent",
+    "kind": "cactus",
+    "color": "#5A9A4A",
+    "leaf": "#FF9AC8"
+   },
+   "tags": [],
+   "hp": 1.6,
+   "atk": 0.85,
+   "aps": 0.75,
+   "range": 24,
+   "target": "front"
+  },
+  "mummy": {
+   "id": "mummy",
+   "name": {
+    "tr": "Mumya",
+    "en": "Mummy"
+   },
+   "arch": "tank",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "zombie",
+    "color": "#E8DCB8",
+    "cloth": "#D8C8A0",
+    "wrap": true
+   },
+   "tags": [
+    "undead"
+   ],
+   "hp": 1.6,
+   "atk": 0.85,
+   "aps": 0.75,
+   "range": 24,
+   "target": "front"
+  },
+  "scarab": {
+   "id": "scarab",
+   "name": {
+    "tr": "Skarab",
+    "en": "Scarab"
+   },
+   "arch": "swarm",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "spider",
+    "kind": "beetle",
+    "color": "#3A6A8A"
+   },
+   "tags": [],
+   "hp": 0.5,
+   "atk": 0.6,
+   "aps": 1.2,
+   "range": 20,
+   "target": "front"
+  },
+  "anubis_guard": {
+   "id": "anubis_guard",
+   "name": {
+    "tr": "Anubis Muhafız",
+    "en": "Anubis Guard"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "bandit",
+    "weapon": "spear",
+    "color": "#2A2430",
+    "cloth": "#E8B84A",
+    "jackal": true
+   },
+   "tags": [],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "fire_elemental": {
+   "id": "fire_elemental",
+   "name": {
+    "tr": "Ateş Elementali",
+    "en": "Fire Elemental"
+   },
+   "arch": "caster",
+   "element": "fire",
+   "res": {
+    "fire": 75,
+    "cold": -25
+   },
+   "visual": {
+    "rig": "golem",
+    "kind": "elemental",
+    "color": "#FF7A33"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 1.2,
+   "aps": 0.7,
+   "range": 120,
+   "target": "random",
+   "projectile": "bolt_enemy"
+  },
+  "lava_slime": {
+   "id": "lava_slime",
+   "name": {
+    "tr": "Lav Slime",
+    "en": "Lava Slime"
+   },
+   "arch": "weak",
+   "element": "fire",
+   "res": {
+    "fire": 50
+   },
+   "visual": {
+    "rig": "blob",
+    "color": "#FF6A2A"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 0.85,
+   "aps": 1.0,
+   "range": 22,
+   "target": "front"
+  },
+  "imp": {
+   "id": "imp",
+   "name": {
+    "tr": "Ateş İmpi",
+    "en": "Fire Imp"
+   },
+   "arch": "fast",
+   "element": "fire",
+   "res": {},
+   "visual": {
+    "rig": "goblin",
+    "weapon": "trident",
+    "color": "#D9443A",
+    "cloth": "#3A2A2A",
+    "horns": true
+   },
+   "tags": [],
+   "hp": 0.65,
+   "atk": 0.75,
+   "aps": 1.6,
+   "range": 22,
+   "target": "lowest"
+  },
+  "cursed_book": {
+   "id": "cursed_book",
+   "name": {
+    "tr": "Lanetli Kitap",
+    "en": "Cursed Tome"
+   },
+   "arch": "caster",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "flyer",
+    "kind": "book",
+    "color": "#8A3A5A"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 1.2,
+   "aps": 0.7,
+   "range": 120,
+   "target": "random",
+   "projectile": "bolt_enemy"
+  },
+  "animated_armor": {
+   "id": "animated_armor",
+   "name": {
+    "tr": "Canlı Zırh",
+    "en": "Animated Armor"
+   },
+   "arch": "tank",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "skeleton",
+    "weapon": "sword",
+    "color": "#9AA2B0",
+    "helm": true,
+    "shield": true,
+    "armor": true
+   },
+   "tags": [],
+   "hp": 1.6,
+   "atk": 0.85,
+   "aps": 0.75,
+   "range": 24,
+   "target": "front"
+  },
+  "ink_slime": {
+   "id": "ink_slime",
+   "name": {
+    "tr": "Mürekkep Slime",
+    "en": "Ink Slime"
+   },
+   "arch": "weak",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "blob",
+    "color": "#2E2A46"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 0.85,
+   "aps": 1.0,
+   "range": 22,
+   "target": "front"
+  },
+  "clock_golem": {
+   "id": "clock_golem",
+   "name": {
+    "tr": "Saat Golemi",
+    "en": "Clockwork Golem"
+   },
+   "arch": "tank",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "golem",
+    "kind": "clock",
+    "color": "#C9A040"
+   },
+   "tags": [],
+   "hp": 1.6,
+   "atk": 0.85,
+   "aps": 0.75,
+   "range": 24,
+   "target": "front"
+  },
+  "time_ghost": {
+   "id": "time_ghost",
+   "name": {
+    "tr": "Zaman Hayaleti",
+    "en": "Time Wraith"
+   },
+   "arch": "caster",
+   "element": "lightning",
+   "res": {},
+   "visual": {
+    "rig": "flyer",
+    "kind": "ghost",
+    "color": "#C9B8FF"
+   },
+   "tags": [
+    "undead"
+   ],
+   "hp": 0.75,
+   "atk": 1.2,
+   "aps": 0.7,
+   "range": 120,
+   "target": "random",
+   "projectile": "bolt_enemy"
+  },
+  "chimera": {
+   "id": "chimera",
+   "name": {
+    "tr": "Kimera",
+    "en": "Chimera"
+   },
+   "arch": "brute",
+   "element": "fire",
+   "res": {},
+   "visual": {
+    "rig": "quad",
+    "kind": "chimera",
+    "color": "#C98A3A"
+   },
+   "tags": [],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "homunculus": {
+   "id": "homunculus",
+   "name": {
+    "tr": "Homunculus",
+    "en": "Homunculus"
+   },
+   "arch": "fast",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "goblin",
+    "weapon": "claw",
+    "color": "#D8A0A8",
+    "cloth": "#5A4A6A"
+   },
+   "tags": [],
+   "hp": 0.65,
+   "atk": 0.75,
+   "aps": 1.6,
+   "range": 22,
+   "target": "lowest"
+  },
+  "hellhound": {
+   "id": "hellhound",
+   "name": {
+    "tr": "Cehennem Köpeği",
+    "en": "Hellhound"
+   },
+   "arch": "fast",
+   "element": "fire",
+   "res": {},
+   "visual": {
+    "rig": "quad",
+    "kind": "wolf",
+    "color": "#8A2A2A",
+    "glow": "#FF7A33"
+   },
+   "tags": [],
+   "hp": 0.65,
+   "atk": 0.75,
+   "aps": 1.6,
+   "range": 22,
+   "target": "lowest"
+  },
+  "demon_imp": {
+   "id": "demon_imp",
+   "name": {
+    "tr": "İblis İmp",
+    "en": "Demon Imp"
+   },
+   "arch": "fast",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "goblin",
+    "weapon": "trident",
+    "color": "#8A3A6A",
+    "cloth": "#2A1A2A",
+    "horns": true
+   },
+   "tags": [],
+   "hp": 0.65,
+   "atk": 0.75,
+   "aps": 1.6,
+   "range": 22,
+   "target": "lowest"
+  },
+  "blood_elemental": {
+   "id": "blood_elemental",
+   "name": {
+    "tr": "Kan Elementali",
+    "en": "Blood Elemental"
+   },
+   "arch": "caster",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "golem",
+    "kind": "elemental",
+    "color": "#C9213A"
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 1.2,
+   "aps": 0.7,
+   "range": 120,
+   "target": "random",
+   "projectile": "bolt_enemy"
+  },
+  "drowned": {
+   "id": "drowned",
+   "name": {
+    "tr": "Boğulmuş Ölü",
+    "en": "Drowned Dead"
+   },
+   "arch": "tank",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "zombie",
+    "color": "#6A8A8A",
+    "cloth": "#3A4A5A"
+   },
+   "tags": [
+    "undead"
+   ],
+   "hp": 1.6,
+   "atk": 0.85,
+   "aps": 0.75,
+   "range": 24,
+   "target": "front"
+  },
+  "bone_drake": {
+   "id": "bone_drake",
+   "name": {
+    "tr": "Kemik Ejder Yavrusu",
+    "en": "Bone Drakeling"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "quad",
+    "kind": "drake",
+    "color": "#E6DDC6"
+   },
+   "tags": [
+    "undead"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "skeleton_archer": {
+   "id": "skeleton_archer",
+   "name": {
+    "tr": "İskelet Okçu",
+    "en": "Skeleton Archer"
+   },
+   "arch": "ranged",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "skeleton",
+    "weapon": "bow",
+    "color": "#E6DDC6"
+   },
+   "tags": [
+    "undead"
+   ],
+   "hp": 0.7,
+   "atk": 1.0,
+   "aps": 0.8,
+   "range": 130,
+   "target": "front",
+   "projectile": "arrow_enemy"
+  },
+  "cursed_ent": {
+   "id": "cursed_ent",
+   "name": {
+    "tr": "Lanetli Ent",
+    "en": "Cursed Ent"
+   },
+   "arch": "tank",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "ent",
+    "color": "#3A2A3A",
+    "leaf": "#8A5AC9"
+   },
+   "tags": [],
+   "hp": 1.6,
+   "atk": 0.85,
+   "aps": 0.75,
+   "range": 24,
+   "target": "front"
+  },
+  "shadow_wolf": {
+   "id": "shadow_wolf",
+   "name": {
+    "tr": "Gölge Kurt",
+    "en": "Shadow Wolf"
+   },
+   "arch": "fast",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "quad",
+    "kind": "wolf",
+    "color": "#2A2436",
+    "glow": "#C58CFF"
+   },
+   "tags": [],
+   "hp": 0.65,
+   "atk": 0.75,
+   "aps": 1.6,
+   "range": 22,
+   "target": "lowest"
+  },
+  "cultist": {
+   "id": "cultist",
+   "name": {
+    "tr": "Kültist",
+    "en": "Cultist"
+   },
+   "arch": "caster",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "bandit",
+    "weapon": "staff",
+    "color": "#E2C8C0",
+    "cloth": "#5C1E2E",
+    "hood": true
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 1.2,
+   "aps": 0.7,
+   "range": 120,
+   "target": "random",
+   "projectile": "bolt_enemy"
+  },
+  "sacrifice_priest": {
+   "id": "sacrifice_priest",
+   "name": {
+    "tr": "Kurban Rahibi",
+    "en": "Sacrificial Priest"
+   },
+   "arch": "caster",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "bandit",
+    "weapon": "dagger",
+    "color": "#E2C8C0",
+    "cloth": "#2A1A2A",
+    "hood": true
+   },
+   "tags": [],
+   "hp": 0.75,
+   "atk": 1.2,
+   "aps": 0.7,
+   "range": 120,
+   "target": "random",
+   "projectile": "bolt_enemy"
+  },
+  "void_spawn": {
+   "id": "void_spawn",
+   "name": {
+    "tr": "Hiçlik Yaratığı",
+    "en": "Void Spawn"
+   },
+   "arch": "melee",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "blob",
+    "kind": "void",
+    "color": "#3A2A5A"
+   },
+   "tags": [],
+   "hp": 1.0,
+   "atk": 1.0,
+   "aps": 0.95,
+   "range": 24,
+   "target": "front"
+  },
+  "tentacle": {
+   "id": "tentacle",
+   "name": {
+    "tr": "Tentakül",
+    "en": "Tentacle"
+   },
+   "arch": "brute",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "worm",
+    "kind": "tentacle",
+    "color": "#6A3A8A"
+   },
+   "tags": [],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "dark_knight": {
+   "id": "dark_knight",
+   "name": {
+    "tr": "Kara Şövalye",
+    "en": "Dark Knight"
+   },
+   "arch": "tank",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "skeleton",
+    "weapon": "sword",
+    "color": "#3A3A4A",
+    "helm": true,
+    "shield": true,
+    "armor": true
+   },
+   "tags": [],
+   "hp": 1.6,
+   "atk": 0.85,
+   "aps": 0.75,
+   "range": 24,
+   "target": "front"
+  },
+  "gargoyle": {
+   "id": "gargoyle",
+   "name": {
+    "tr": "Gargoyl",
+    "en": "Gargoyle"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {
+    "physical": 20
+   },
+   "visual": {
+    "rig": "flyer",
+    "kind": "gargoyle",
+    "color": "#6A6A7A"
+   },
+   "tags": [],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "vampire": {
+   "id": "vampire",
+   "name": {
+    "tr": "Vampir",
+    "en": "Vampire"
+   },
+   "arch": "fast",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "bandit",
+    "weapon": "claw",
+    "color": "#E8DCE0",
+    "cloth": "#2A1A2A",
+    "cape": "#8A1E2E"
+   },
+   "tags": [
+    "undead"
+   ],
+   "hp": 0.65,
+   "atk": 0.75,
+   "aps": 1.6,
+   "range": 22,
+   "target": "lowest"
+  },
+  "bat_swarm": {
+   "id": "bat_swarm",
+   "name": {
+    "tr": "Yarasa Sürüsü",
+    "en": "Bat Swarm"
+   },
+   "arch": "swarm",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "flyer",
+    "kind": "bat",
+    "color": "#3A2A3A"
+   },
+   "tags": [],
+   "hp": 0.5,
+   "atk": 0.6,
+   "aps": 1.2,
+   "range": 20,
+   "target": "front"
+  },
+  "abyss_guard": {
+   "id": "abyss_guard",
+   "name": {
+    "tr": "Uçurum Muhafızı",
+    "en": "Abyssal Guard"
+   },
+   "arch": "tank",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "skeleton",
+    "weapon": "axe",
+    "color": "#4A3A5A",
+    "helm": true,
+    "armor": true
+   },
+   "tags": [],
+   "hp": 1.6,
+   "atk": 0.85,
+   "aps": 0.75,
+   "range": 24,
+   "target": "front"
+  }
+ },
+ "bosses": {
+  "giant_slime": {
+   "id": "giant_slime",
+   "name": {
+    "tr": "Dev Slime",
+    "en": "Giant Slime"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "blob",
+    "color": "#5AB83A",
+    "scale": 2.0
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "split"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "boar_mother": {
+   "id": "boar_mother",
+   "name": {
+    "tr": "Kızgın Domuz Ana",
+    "en": "Raging Sow"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "quad",
+    "kind": "boar",
+    "color": "#6A4A34",
+    "scale": 1.6
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "charge"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "goblin_scout_chief": {
+   "id": "goblin_scout_chief",
+   "name": {
+    "tr": "Goblin Gözcü Başı",
+    "en": "Goblin Scout Chief"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "goblin",
+    "weapon": "sword",
+    "color": "#5A9A30",
+    "cloth": "#8A3A2A",
+    "helm": true,
+    "scale": 1.6
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "summon_goblins"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "king_mushroom": {
+   "id": "king_mushroom",
+   "name": {
+    "tr": "Kral Mantar",
+    "en": "King Mushroom"
+   },
+   "arch": "brute",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "mushroom",
+    "color": "#C9213A",
+    "scale": 2.0,
+    "crown": true
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "poison_cloud"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "goblin_chief": {
+   "id": "goblin_chief",
+   "name": {
+    "tr": "Goblin Şefi Grubnak",
+    "en": "Goblin Chief Grubnak"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "goblin",
+    "weapon": "axe",
+    "color": "#5A9A30",
+    "cloth": "#5A2A2A",
+    "helm": true,
+    "scale": 1.8
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "slam",
+    "summon_goblins"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "grave_keeper": {
+   "id": "grave_keeper",
+   "name": {
+    "tr": "Mezar Bekçisi",
+    "en": "Grave Keeper"
+   },
+   "arch": "brute",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "skeleton",
+    "weapon": "scythe",
+    "color": "#D8D0B8",
+    "hood": true,
+    "scale": 1.7
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "slam"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "queen_spider": {
+   "id": "queen_spider",
+   "name": {
+    "tr": "Kraliçe Örümcek Arakna",
+    "en": "Queen Spider Arachna"
+   },
+   "arch": "brute",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "spider",
+    "color": "#3A2A3A",
+    "scale": 2.0,
+    "crown": true
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "poison_cloud",
+    "summon_spiders"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "goblin_engineer": {
+   "id": "goblin_engineer",
+   "name": {
+    "tr": "Goblin Mühendis",
+    "en": "Goblin Engineer"
+   },
+   "arch": "brute",
+   "element": "fire",
+   "res": {},
+   "visual": {
+    "rig": "golem",
+    "kind": "clock",
+    "color": "#8A7A5A",
+    "scale": 1.5
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "bombard"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "rotten_ent": {
+   "id": "rotten_ent",
+   "name": {
+    "tr": "Çürük Ent",
+    "en": "Rotten Ent"
+   },
+   "arch": "brute",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "ent",
+    "color": "#5A4A3A",
+    "leaf": "#8A9A3A",
+    "scale": 1.7
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "roots"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "goblin_king": {
+   "id": "goblin_king",
+   "name": {
+    "tr": "Goblin Kralı Grizzlecrown",
+    "en": "Goblin King Grizzlecrown"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "goblin",
+    "weapon": "greatsword",
+    "color": "#5A9A30",
+    "cloth": "#C9A040",
+    "crown": true,
+    "scale": 2.1
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "actboss",
+   "mech": [
+    "gold_rain",
+    "summon_goblins",
+    "enrage"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "bandit_chief": {
+   "id": "bandit_chief",
+   "name": {
+    "tr": "Haydut Reisi",
+    "en": "Bandit Chief"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "bandit",
+    "weapon": "greatsword",
+    "color": "#E2A882",
+    "cloth": "#5A2A2A",
+    "scale": 1.6
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "slam"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "yeti": {
+   "id": "yeti",
+   "name": {
+    "tr": "Yeti",
+    "en": "Yeti"
+   },
+   "arch": "brute",
+   "element": "cold",
+   "res": {},
+   "visual": {
+    "rig": "golem",
+    "kind": "yeti",
+    "color": "#F0F4FA",
+    "scale": 1.7
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "slam",
+    "freeze"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "lake_monster": {
+   "id": "lake_monster",
+   "name": {
+    "tr": "Göl Canavarı",
+    "en": "Lake Monster"
+   },
+   "arch": "brute",
+   "element": "cold",
+   "res": {},
+   "visual": {
+    "rig": "worm",
+    "kind": "tentacle",
+    "color": "#4A7A9A",
+    "scale": 1.8
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "freeze"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "crystal_spider": {
+   "id": "crystal_spider",
+   "name": {
+    "tr": "Kristal Örümcek",
+    "en": "Crystal Spider"
+   },
+   "arch": "brute",
+   "element": "cold",
+   "res": {},
+   "visual": {
+    "rig": "spider",
+    "color": "#9FB8FF",
+    "scale": 1.9
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "summon_spiders"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "cursed_foreman": {
+   "id": "cursed_foreman",
+   "name": {
+    "tr": "Lanetli Ustabaşı",
+    "en": "Cursed Foreman"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "skeleton",
+    "weapon": "axe",
+    "color": "#C8D8E0",
+    "helm": true,
+    "scale": 1.7
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "slam"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "harpy_queen": {
+   "id": "harpy_queen",
+   "name": {
+    "tr": "Harpi Kraliçesi",
+    "en": "Harpy Queen"
+   },
+   "arch": "brute",
+   "element": "lightning",
+   "res": {},
+   "visual": {
+    "rig": "flyer",
+    "kind": "harpy",
+    "color": "#C98A4A",
+    "scale": 1.8,
+    "crown": true
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "storm"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "bjorn_duel": {
+   "id": "bjorn_duel",
+   "name": {
+    "tr": "Bjorn (Düello)",
+    "en": "Bjorn (Duel)"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "hero",
+    "hero": "bjorn",
+    "scale": 1.5
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "enrage"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "frozen_knight": {
+   "id": "frozen_knight",
+   "name": {
+    "tr": "Donmuş Şövalye",
+    "en": "Frozen Knight"
+   },
+   "arch": "brute",
+   "element": "cold",
+   "res": {},
+   "visual": {
+    "rig": "skeleton",
+    "weapon": "greatsword",
+    "color": "#9FDFFF",
+    "helm": true,
+    "armor": true,
+    "scale": 1.8
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "slam",
+    "freeze"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "mirror_party": {
+   "id": "mirror_party",
+   "name": {
+    "tr": "Ayna Partisi",
+    "en": "Mirror Party"
+   },
+   "arch": "brute",
+   "element": "cold",
+   "res": {},
+   "visual": {
+    "rig": "hero",
+    "hero": "kael",
+    "tint": "#9FDFFF",
+    "scale": 1.5
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "slam"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "ice_witch": {
+   "id": "ice_witch",
+   "name": {
+    "tr": "Buz Cadısı Isolde",
+    "en": "Ice Witch Isolde"
+   },
+   "arch": "brute",
+   "element": "cold",
+   "res": {
+    "cold": 50,
+    "fire": -25
+   },
+   "visual": {
+    "rig": "hero",
+    "hero": "isolde",
+    "scale": 2.0
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "actboss",
+   "mech": [
+    "blizzard",
+    "ice_wall",
+    "freeze"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "pirate_captain": {
+   "id": "pirate_captain",
+   "name": {
+    "tr": "Korsan Kaptan",
+    "en": "Pirate Captain"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "bandit",
+    "weapon": "sword",
+    "color": "#C98A5A",
+    "cloth": "#8A1E2E",
+    "hat": true,
+    "scale": 1.6
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "bombard"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "giant_worm": {
+   "id": "giant_worm",
+   "name": {
+    "tr": "Dev Kum Solucanı",
+    "en": "Giant Sandworm"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "worm",
+    "color": "#C9A06A",
+    "scale": 2.2
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "slam"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "mirage_queen": {
+   "id": "mirage_queen",
+   "name": {
+    "tr": "Serap Kraliçesi",
+    "en": "Mirage Queen"
+   },
+   "arch": "brute",
+   "element": "fire",
+   "res": {},
+   "visual": {
+    "rig": "flyer",
+    "kind": "fairy",
+    "color": "#FFD98A",
+    "scale": 2.0,
+    "crown": true
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "storm"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "pharaoh": {
+   "id": "pharaoh",
+   "name": {
+    "tr": "Firavun Mumyası",
+    "en": "Pharaoh Mummy"
+   },
+   "arch": "brute",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "zombie",
+    "color": "#E8DCB8",
+    "cloth": "#E8B84A",
+    "wrap": true,
+    "crown": true,
+    "scale": 1.8
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "summon_undead",
+    "curse"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "magma_golem": {
+   "id": "magma_golem",
+   "name": {
+    "tr": "Magma Golem",
+    "en": "Magma Golem"
+   },
+   "arch": "brute",
+   "element": "fire",
+   "res": {
+    "fire": 75
+   },
+   "visual": {
+    "rig": "golem",
+    "kind": "elemental",
+    "color": "#FF5A1A",
+    "scale": 2.0
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "slam",
+    "meteor"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "mad_alchemist": {
+   "id": "mad_alchemist",
+   "name": {
+    "tr": "Çılgın Simyacı",
+    "en": "Mad Alchemist"
+   },
+   "arch": "brute",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "bandit",
+    "weapon": "staff",
+    "color": "#E2C8A0",
+    "cloth": "#5A8A3A",
+    "hood": true,
+    "scale": 1.6
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "poison_cloud"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "library_guardian": {
+   "id": "library_guardian",
+   "name": {
+    "tr": "Kütüphane Muhafızı",
+    "en": "Library Guardian"
+   },
+   "arch": "brute",
+   "element": "lightning",
+   "res": {},
+   "visual": {
+    "rig": "golem",
+    "kind": "clock",
+    "color": "#8A5A3A",
+    "scale": 1.8
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "storm"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "hourglass_keeper": {
+   "id": "hourglass_keeper",
+   "name": {
+    "tr": "Kum Saati Bekçisi",
+    "en": "Hourglass Keeper"
+   },
+   "arch": "brute",
+   "element": "lightning",
+   "res": {},
+   "visual": {
+    "rig": "golem",
+    "kind": "clock",
+    "color": "#E8B84A",
+    "scale": 1.8
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "slow"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "chimera_alpha": {
+   "id": "chimera_alpha",
+   "name": {
+    "tr": "Kimera Alfa",
+    "en": "Chimera Alpha"
+   },
+   "arch": "brute",
+   "element": "fire",
+   "res": {},
+   "visual": {
+    "rig": "quad",
+    "kind": "chimera",
+    "color": "#B87A2A",
+    "scale": 1.8
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "charge",
+    "meteor"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "corvus": {
+   "id": "corvus",
+   "name": {
+    "tr": "Hain Arşmag Corvus",
+    "en": "Traitor Archmage Corvus"
+   },
+   "arch": "brute",
+   "element": "fire",
+   "res": {},
+   "visual": {
+    "rig": "hero",
+    "hero": "corvus",
+    "scale": 2.0
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "actboss",
+   "mech": [
+    "element_shift",
+    "meteor",
+    "clones"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "demon_hunter": {
+   "id": "demon_hunter",
+   "name": {
+    "tr": "İblis Avcı",
+    "en": "Demon Hunter"
+   },
+   "arch": "brute",
+   "element": "fire",
+   "res": {},
+   "visual": {
+    "rig": "bandit",
+    "weapon": "bow",
+    "color": "#9A5A6A",
+    "cloth": "#2A1A2A",
+    "horns": true,
+    "scale": 1.6
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "bombard"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "river_nightmare": {
+   "id": "river_nightmare",
+   "name": {
+    "tr": "Nehir Kâbusu",
+    "en": "River Nightmare"
+   },
+   "arch": "brute",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "worm",
+    "kind": "tentacle",
+    "color": "#8A1E2E",
+    "scale": 2.0
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "slam"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "bone_colossus": {
+   "id": "bone_colossus",
+   "name": {
+    "tr": "Kemik Kolosu",
+    "en": "Bone Colossus"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "golem",
+    "kind": "bone",
+    "color": "#E6DDC6",
+    "scale": 2.0
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "slam",
+    "summon_undead"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "shadow_ent": {
+   "id": "shadow_ent",
+   "name": {
+    "tr": "Gölge Ent",
+    "en": "Shadow Ent"
+   },
+   "arch": "brute",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "ent",
+    "color": "#2A2436",
+    "leaf": "#C58CFF",
+    "scale": 1.8
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "roots"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "high_cultist": {
+   "id": "high_cultist",
+   "name": {
+    "tr": "Yüksek Kültist",
+    "en": "High Cultist"
+   },
+   "arch": "brute",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "bandit",
+    "weapon": "staff",
+    "color": "#E2C8C0",
+    "cloth": "#8A1E2E",
+    "hood": true,
+    "scale": 1.7
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "curse",
+    "summon_undead"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "void_eye": {
+   "id": "void_eye",
+   "name": {
+    "tr": "Hiçlik Gözü",
+    "en": "Eye of the Void"
+   },
+   "arch": "brute",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "flyer",
+    "kind": "eye",
+    "color": "#6A3A8A",
+    "scale": 2.0
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "storm",
+    "curse"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "dark_commander": {
+   "id": "dark_commander",
+   "name": {
+    "tr": "Kara Şövalye Komutanı",
+    "en": "Dark Commander"
+   },
+   "arch": "brute",
+   "element": "physical",
+   "res": {},
+   "visual": {
+    "rig": "skeleton",
+    "weapon": "greatsword",
+    "color": "#2A2A36",
+    "helm": true,
+    "armor": true,
+    "scale": 1.8
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "slam",
+    "enrage"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "vampire_countess": {
+   "id": "vampire_countess",
+   "name": {
+    "tr": "Vampir Kontes",
+    "en": "Vampire Countess"
+   },
+   "arch": "brute",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "bandit",
+    "weapon": "claw",
+    "color": "#F0E0E8",
+    "cloth": "#5A1E2E",
+    "cape": "#8A1E2E",
+    "scale": 1.7,
+    "female": true
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "drain",
+    "summon_bats"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "abyss_twins": {
+   "id": "abyss_twins",
+   "name": {
+    "tr": "Uçurum İkizleri",
+    "en": "Abyssal Twins"
+   },
+   "arch": "brute",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "skeleton",
+    "weapon": "axe",
+    "color": "#5A3A6A",
+    "helm": true,
+    "armor": true,
+    "scale": 1.7
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "boss",
+   "mech": [
+    "slam",
+    "enrage"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  },
+  "morvath": {
+   "id": "morvath",
+   "name": {
+    "tr": "Uçurum Kralı Morvath",
+    "en": "Morvath, King of the Abyss"
+   },
+   "arch": "brute",
+   "element": "chaos",
+   "res": {},
+   "visual": {
+    "rig": "hero",
+    "hero": "morvath",
+    "scale": 2.2
+   },
+   "tags": [
+    "boss"
+   ],
+   "type": "actboss",
+   "mech": [
+    "dark_combo",
+    "void_prison",
+    "apocalypse",
+    "enrage"
+   ],
+   "hp": 1.3,
+   "atk": 1.35,
+   "aps": 0.7,
+   "range": 26,
+   "target": "front"
+  }
+ },
+ "villains": {
+  "isolde": {
+   "class": "mage",
+   "visual": {
+    "hair": "#E8F4FF",
+    "hair_style": "long",
+    "eye": "#7FD8FF",
+    "primary": "#5A9AD8",
+    "secondary": "#E8F4FF",
+    "accent": "#9FDFFF",
+    "skin": "#E8EEF6"
+   }
+  },
+  "corvus": {
+   "class": "mage",
+   "visual": {
+    "hair": "#2A2430",
+    "hair_style": "short",
+    "eye": "#FF7A33",
+    "primary": "#2E2A46",
+    "secondary": "#C9414B",
+    "accent": "#FF7A33",
+    "female": false,
+    "beard": true
+   }
+  },
+  "morvath": {
+   "class": "knight",
+   "visual": {
+    "hair": "#E8E8F0",
+    "hair_style": "long",
+    "eye": "#FF3B5C",
+    "primary": "#3A1E4A",
+    "secondary": "#1E1A24",
+    "metal": "#3A3446",
+    "female": false,
+    "ears": "horns",
+    "weapon": "greatsword"
+   }
+  }
+ }
+}

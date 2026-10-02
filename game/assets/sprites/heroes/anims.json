@@ -1,0 +1,55 @@
+{
+ "frame_w": 64,
+ "frame_h": 56,
+ "anims": {
+  "idle": {
+   "start": 0,
+   "count": 4,
+   "fps": 6,
+   "loop": true,
+   "impact": -1
+  },
+  "run": {
+   "start": 4,
+   "count": 6,
+   "fps": 10,
+   "loop": true,
+   "impact": -1
+  },
+  "attack": {
+   "start": 10,
+   "count": 6,
+   "fps": 12,
+   "loop": false,
+   "impact": 3
+  },
+  "skill": {
+   "start": 16,
+   "count": 6,
+   "fps": 10,
+   "loop": false,
+   "impact": 3
+  },
+  "hit": {
+   "start": 22,
+   "count": 2,
+   "fps": 10,
+   "loop": false,
+   "impact": -1
+  },
+  "death": {
+   "start": 24,
+   "count": 6,
+   "fps": 8,
+   "loop": false,
+   "impact": -1
+  },
+  "victory": {
+   "start": 30,
+   "count": 4,
+   "fps": 6,
+   "loop": true,
+   "impact": -1
+  }
+ }
+}
