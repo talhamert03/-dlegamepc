@@ -17,6 +17,13 @@ var _scale := 1.0
 var _fallback_color := Color("#6CC24A")
 var _death_t := 0.0
 var _show_bar := true
+# HD (illustrated) mode: one image + procedural animation instead of a frame sheet
+var hd: Sprite2D = null
+var _hd_k := 1.0
+var _anim_t := 0.0
+var _anim_len := 0.0
+var _facing := 1.0
+var _t := 0.0
 
 
 func setup(u: Combatant) -> void:
@@ -76,11 +83,49 @@ func setup(u: Combatant) -> void:
 	add_child(sprite)
 	if kind == "hero":
 		_head_y = -44.0
+	_setup_hd(vis)
 	z_index = 10 if kind != "enemy" else 9
 	position = Vector2(round(u.x), BattleSim.GROUND_Y)
 
 
+## Swaps the frame sheet for the HD illustration when one exists for this unit.
+func _setup_hd(vis: Dictionary) -> void:
+	var cat := "heroes" if kind == "hero" else ("enemies" if kind == "enemy" else "")
+	if cat == "":
+		return
+	var tex := SpriteLib.hd_sprite(cat, sheet_id)
+	if tex == null:
+		return
+	var m := SpriteLib.hd_meta(cat, sheet_id)
+	var h := float(m.get("h", tex.get_height()))
+	var target := 56.0
+	if kind != "hero":
+		# keep the old sheet's on-screen size for enemies (bosses stay big)
+		target = clampf(-_head_y - 5.0, 22.0, 80.0) * 1.18
+	_hd_k = target / h
+	hd = Sprite2D.new()
+	hd.texture = tex
+	hd.centered = false
+	hd.offset = Vector2(-float(m.get("foot_x", tex.get_width() / 2.0)), -h)
+	hd.scale = Vector2(_hd_k, _hd_k)
+	hd.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	hd.material = mat
+	mat.set_shader_parameter("texel_scale", 1.0 / _hd_k)
+	add_child(hd)
+	sprite.visible = false
+	sprite.sprite_frames = null
+	_facing = 1.0 if unit.is_hero_side() else -1.0
+	_head_y = -target - 5.0
+	if kind == "hero":
+		_bar_w = 18
+
+
 func _play(a: String, speed := 1.0) -> void:
+	if hd:
+		_cur_anim = a
+		_anim_t = 0.0
+		_anim_len = {"attack": 0.42 / max(0.5, speed), "skill": 0.6, "hit": 0.28}.get(a, 0.0)
+		return
 	if sprite.sprite_frames == null:
 		_cur_anim = a
 		return
@@ -107,15 +152,23 @@ func _process(delta: float) -> void:
 		want = "run"
 	elif BattleSim.phase == "victory" and unit.is_hero_side():
 		want = "victory"
-	elif (want == "attack" or want == "skill" or want == "hit") and not sprite.is_playing() and _cur_anim == want:
+	elif hd and (want == "attack" or want == "skill" or want == "hit") and _cur_anim == want and _anim_t >= _anim_len:
 		unit.anim = "idle"
 		want = "idle"
-	if want != _cur_anim or (want in ["attack", "skill", "hit"] and unit.anim_t < 0.05 and sprite.frame > 1):
+	elif not hd and (want == "attack" or want == "skill" or want == "hit") and not sprite.is_playing() and _cur_anim == want:
+		unit.anim = "idle"
+		want = "idle"
+	var restart: bool = want in ["attack", "skill", "hit"] and unit.anim_t < 0.05 and (_anim_t > 0.15 if hd else sprite.frame > 1)
+	if want != _cur_anim or restart:
 		var sp := 1.0
 		if want == "attack":
 			var aps: float = float(unit.stats.get("aps", 1.0))
 			sp = clamp(aps, 1.0, 2.25)
 		_play(want, sp)
+	if hd:
+		_t += delta
+		_anim_t += delta
+		_animate_hd()
 	mat.set_shader_parameter("flash", clamp(unit.flash_t / 0.12, 0.0, 1.0) * 0.65)
 	if not unit.alive:
 		_death_t += delta
@@ -130,14 +183,75 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 
+## Procedural animation for illustrated units (pivot = feet).
+func _animate_hd() -> void:
+	var ox := 0.0
+	var oy := 0.0
+	var rot := 0.0
+	var sx := 1.0
+	var sy := 1.0
+	var t := _t
+	var p: float = clampf(_anim_t / max(0.01, _anim_len), 0.0, 1.0)
+	match _cur_anim:
+		"run":
+			oy = -absf(sin(t * 9.0)) * 2.2
+			rot = 0.05 + 0.025 * sin(t * 9.0)
+			sy = 1.0 + 0.02 * cos(t * 18.0)
+		"attack":
+			if p < 0.4:
+				var e := p / 0.4
+				ox = -3.0 * e
+				rot = -0.10 * e
+				sx = 1.0 - 0.03 * e
+			elif p < 0.6:
+				var e2 := (p - 0.4) / 0.2
+				ox = lerpf(-3.0, 7.0, e2)
+				rot = lerpf(-0.10, 0.16, e2)
+				sx = 1.04
+			else:
+				var e3 := (p - 0.6) / 0.4
+				ox = lerpf(7.0, 0.0, e3 * e3 * (3.0 - 2.0 * e3))
+				rot = lerpf(0.16, 0.0, e3)
+		"skill":
+			oy = -7.0 * sin(PI * p)
+			sy = 1.0 + 0.06 * sin(PI * p)
+			sx = 1.0 - 0.03 * sin(PI * p)
+			modulate = Color(1.0 + 0.35 * sin(PI * p), 1.0 + 0.3 * sin(PI * p), 1.0 + 0.1 * sin(PI * p), modulate.a)
+		"hit":
+			ox = -4.0 * (1.0 - p)
+			rot = -0.12 * (1.0 - p)
+		"death":
+			var d: float = clampf(_death_t / 0.45, 0.0, 1.0)
+			rot = -1.45 * d * d
+			oy = 2.0 * d
+		"victory":
+			oy = -absf(sin(t * 6.0)) * 4.0
+			sy = 1.0 + 0.03 * absf(sin(t * 6.0))
+		_:
+			sy = 1.0 + 0.012 * sin(t * 2.6)
+			sx = 1.0 - 0.006 * sin(t * 2.6)
+	if _cur_anim != "skill":
+		modulate = Color(1, 1, 1, modulate.a)
+	hd.position = Vector2(ox * _facing, oy)
+	hd.rotation = rot * _facing
+	hd.scale = Vector2(_hd_k * sx, _hd_k * sy)
+
+
 func _draw() -> void:
 	if unit == null:
 		return
 	# soft shadow
 	var sw := 9.0 if kind == "hero" else max(7.0, root_off.x * 0.3)
-	draw_rect(Rect2(-sw, -1, sw * 2, 2), Color(0, 0, 0, 0.28))
-	draw_rect(Rect2(-sw + 2, -2, sw * 2 - 4, 1), Color(0, 0, 0, 0.18))
-	if sprite.sprite_frames == null:
+	if hd:
+		sw = clampf(-_head_y * 0.17, 7.0, 16.0)
+		draw_set_transform(Vector2(0, -0.5), 0.0, Vector2(1.0, 0.22))
+		draw_circle(Vector2.ZERO, sw, Color(0, 0, 0, 0.22))
+		draw_circle(Vector2.ZERO, sw * 0.65, Color(0, 0, 0, 0.18))
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	else:
+		draw_rect(Rect2(-sw, -1, sw * 2, 2), Color(0, 0, 0, 0.28))
+		draw_rect(Rect2(-sw + 2, -2, sw * 2 - 4, 1), Color(0, 0, 0, 0.18))
+	if sprite.sprite_frames == null and hd == null:
 		# placeholder blob
 		draw_circle(Vector2(0, -7), 7.0, _fallback_color.darkened(0.5))
 		draw_circle(Vector2(0, -7), 6.0, _fallback_color)

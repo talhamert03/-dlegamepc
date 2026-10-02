@@ -67,12 +67,49 @@ static func impact_frame(kind: String, id: String, anim: String) -> int:
 	return int(info.get("anims", {}).get(anim, {}).get("impact", 3))
 
 
+static var _hd: Dictionary = {}
+
+
+## HD (AI-illustrated) art metadata: {kind: {id: {"w","h","foot_x"}}}
+static func hd_meta(kind: String, id: String) -> Dictionary:
+	if _hd.is_empty():
+		var path := "res://assets/hd/meta.json"
+		if FileAccess.file_exists(path):
+			var p: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+			if p is Dictionary:
+				_hd = p
+		if _hd.is_empty():
+			_hd = {"_": {}}
+	return _hd.get(kind, {}).get(id, {})
+
+
+## HD battle sprite (kind: "heroes" | "enemies"), or null when only the pixel sheet exists.
+static func hd_sprite(kind: String, id: String) -> Texture2D:
+	if hd_meta(kind, id).is_empty():
+		return null
+	var p := "res://assets/hd/%s/%s.png" % [kind, id]
+	return load(p) if ResourceLoader.exists(p) else null
+
+
+static func _tag_hd(t: Texture2D, lsize: Vector2) -> Texture2D:
+	if t and not t.has_meta("hd"):
+		t.set_meta("hd", true)
+		t.set_meta("lsize", lsize)
+	return t
+
+
 static func portrait(id: String) -> Texture2D:
+	var hd := "res://assets/hd/portraits/%s.png" % id
+	if ResourceLoader.exists(hd):
+		return _tag_hd(load(hd), Vector2(96, 144))
 	var p := "res://assets/portraits/%s.png" % id
 	return load(p) if ResourceLoader.exists(p) else null
 
 
 static func hero_icon(id: String) -> Texture2D:
+	var hd := "res://assets/hd/icons/%s.png" % id
+	if ResourceLoader.exists(hd):
+		return _tag_hd(load(hd), Vector2(20, 20))
 	var p := "res://assets/sprites/heroes/icons/%s.png" % id
 	return load(p) if ResourceLoader.exists(p) else null
 

@@ -54,6 +54,12 @@ window/energy_saving/keep_screen_on=false
 ; windows, so they are disabled and WindowManager draws tooltip_text in its own passthrough window.
 timers/tooltip_delay_sec=100000.0
 
+[importer_defaults]
+
+texture={
+"mipmaps/generate": true
+}
+
 [input]
 
 boss_key={

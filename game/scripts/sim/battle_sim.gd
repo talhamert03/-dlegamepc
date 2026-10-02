@@ -3,7 +3,7 @@ extends Node
 ## from rendering. The view (StripView) only reads state and listens to EventBus signals.
 
 const TICK := 0.1
-const HERO_X := [178.0, 156.0, 134.0, 112.0, 90.0]   # slot 0 = front-most
+const HERO_X := [192.0, 163.0, 134.0, 105.0, 76.0]   # slot 0 = front-most
 const SPAWN_X := 420.0
 const GROUND_Y := 76.0
 

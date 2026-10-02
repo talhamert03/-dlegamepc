@@ -6,6 +6,8 @@ uniform vec4 tint : source_color = vec4(1.0);
 uniform vec4 outline_color : source_color = vec4(0.0);
 uniform float dissolve : hint_range(0.0, 1.0) = 0.0;
 uniform float time_offset = 0.0;
+// texels per logical pixel: HD sprites are drawn downscaled, outline/dissolve work in logical pixels
+uniform float texel_scale = 1.0;
 #include "res://assets/shaders/recolor.gdshaderinc"
 
 float hash(vec2 p) {
@@ -14,7 +16,7 @@ float hash(vec2 p) {
 
 void fragment() {
 	vec4 c = texture(TEXTURE, UV);
-	vec2 px = TEXTURE_PIXEL_SIZE;
+	vec2 px = TEXTURE_PIXEL_SIZE * texel_scale;
 	if (outline_color.a > 0.0 && c.a < 0.5) {
 		float a = texture(TEXTURE, UV + vec2(px.x, 0.0)).a + texture(TEXTURE, UV - vec2(px.x, 0.0)).a
 			+ texture(TEXTURE, UV + vec2(0.0, px.y)).a + texture(TEXTURE, UV - vec2(0.0, px.y)).a;

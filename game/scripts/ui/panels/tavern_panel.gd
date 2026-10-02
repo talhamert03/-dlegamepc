@@ -55,7 +55,7 @@ func _card(hid: String) -> Control:
 	img.custom_minimum_size = Vector2(60, 90)
 	img.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	img.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	img.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	img.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS if img.texture and img.texture.has_meta("hd") else CanvasItem.TEXTURE_FILTER_NEAREST
 	v.add_child(img)
 	var rc := {"R": UITheme.C_TEXT, "SR": UITheme.C_BLUE, "SSR": UITheme.C_ORANGE}.get(d.get("rarity", "R"), UITheme.C_TEXT)
 	var nm := UITheme.label("%s [%s]" % [d.get("name", hid), d.get("rarity", "R")], rc)

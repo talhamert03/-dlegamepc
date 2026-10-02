@@ -20,8 +20,8 @@ func build(c: Control) -> void:
 	c.add_child(_glass)
 	_img = TextureRect.new()
 	_img.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
-	_img.size = Vector2(c.size.x, 160)
-	_img.position = Vector2(0, 12)
+	_img.size = Vector2(c.size.x - 12, 150)
+	_img.position = Vector2(6, 8)
 	_img.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	c.add_child(_img)
 	_name = UITheme.title_label("")
@@ -95,6 +95,10 @@ func refresh() -> void:
 	var h: HeroState = GameState.heroes[hid]
 	set_panel_title(h.class_title())
 	_img.texture = SpriteLib.portrait(hid)
+	var is_hd: bool = _img.texture != null and _img.texture.has_meta("hd")
+	_img.expand_mode = TextureRect.EXPAND_IGNORE_SIZE if is_hd else TextureRect.EXPAND_KEEP_SIZE
+	_img.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED if is_hd else TextureRect.STRETCH_KEEP_CENTERED
+	_img.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS if is_hd else CanvasItem.TEXTURE_FILTER_PARENT_NODE
 	Costumes.apply(_img.material as ShaderMaterial, hid)
 	var cd: Dictionary = Costumes.defs().get(h.costume, {})
 	_costume.text = "%s: %s (%d/%d)" % [DataDB.t("costume"), DataDB.tx(cd.get("name", {})) if not cd.is_empty() else DataDB.t("costume_default"),
