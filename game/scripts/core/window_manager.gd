@@ -18,7 +18,6 @@ const PANELS := {
 	"dps": {"script": "res://scripts/ui/panels/dps_panel.gd", "size": Vector2i(170, 150), "title": "panel_dps"},
 	"quests": {"script": "res://scripts/ui/panels/quests_panel.gd", "size": Vector2i(200, 200), "title": "panel_quests"},
 	"codex": {"script": "res://scripts/ui/panels/codex_panel.gd", "size": Vector2i(220, 220), "title": "panel_codex"},
-	"story": {"script": "res://scripts/ui/panels/story_panel.gd", "size": Vector2i(240, 160), "title": "panel_story"},
 }
 const GROUPS := {"hero": ["stats", "hero", "portrait"], "bag": ["inventory"], "world": ["world"], "growth": ["growth"]}
 

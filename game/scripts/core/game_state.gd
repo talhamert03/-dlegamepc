@@ -29,6 +29,7 @@ var last_save_unix: int = 0
 var created_unix: int = 0
 var loaded := false
 var _autosave_t := 0.0
+var _ach_t := 0.0
 var _playtime_acc := 0.0
 var _rate_window: Array = []   # [time, xp, gold, kills] samples
 var stats_cache: Dictionary = {}  # hero_id -> computed stats (invalidated on change)
@@ -49,6 +50,10 @@ func _process(delta: float) -> void:
 	if _playtime_acc >= 1.0:
 		totals["playtime"] = float(totals.get("playtime", 0.0)) + _playtime_acc
 		_playtime_acc = 0.0
+	_ach_t += delta
+	if _ach_t >= 5.0:
+		_ach_t = 0.0
+		Quests.check_achievements()
 	if _autosave_t >= 60.0:
 		_autosave_t = 0.0
 		save_game()

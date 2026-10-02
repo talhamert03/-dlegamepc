@@ -1,1 +1,762 @@
-{"achievements": []}
+{
+ "achievements": [
+  {
+   "id": "ACH_FIRST_BLOOD",
+   "name": {
+    "tr": "İlk Kan",
+    "en": "First Blood"
+   },
+   "desc": {
+    "tr": "İlk düşmanı öldür",
+    "en": "Defeat your first enemy"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "kills",
+    "n": 1
+   },
+   "reward": {
+    "gold": 50
+   }
+  },
+  {
+   "id": "ACH_FULL_PARTY",
+   "name": {
+    "tr": "Tam Kadro",
+    "en": "Full Squad"
+   },
+   "desc": {
+    "tr": "5 kişilik partiyi tamamla",
+    "en": "Field a party of five"
+   },
+   "cond": {
+    "type": "party",
+    "n": 5
+   },
+   "reward": {
+    "tavern_seal": 1
+   }
+  },
+  {
+   "id": "ACH_GOBLIN_KING",
+   "name": {
+    "tr": "Taç Kimin?",
+    "en": "Whose Crown?"
+   },
+   "desc": {
+    "tr": "Goblin Kralı'nı yen",
+    "en": "Defeat the Goblin King"
+   },
+   "cond": {
+    "type": "boss",
+    "zone": "a1_z10"
+   },
+   "reward": {
+    "guild_badge": 1
+   }
+  },
+  {
+   "id": "ACH_ICE_WITCH",
+   "name": {
+    "tr": "Bahar Geldi",
+    "en": "Spring Has Come"
+   },
+   "desc": {
+    "tr": "Buz Cadısı'nı yen",
+    "en": "Defeat the Ice Witch"
+   },
+   "cond": {
+    "type": "boss",
+    "zone": "a2_z10"
+   },
+   "reward": {
+    "guild_badge": 2
+   }
+  },
+  {
+   "id": "ACH_TRAITOR",
+   "name": {
+    "tr": "İhanet",
+    "en": "Betrayal"
+   },
+   "desc": {
+    "tr": "Corvus'u yen",
+    "en": "Defeat Corvus"
+   },
+   "cond": {
+    "type": "boss",
+    "zone": "a3_z10"
+   },
+   "reward": {
+    "guild_badge": 2
+   }
+  },
+  {
+   "id": "ACH_MORVATH",
+   "name": {
+    "tr": "Kristal Kurtarıldı",
+    "en": "Crystal Saved"
+   },
+   "desc": {
+    "tr": "Normal'de Morvath'ı yen",
+    "en": "Defeat Morvath on Normal"
+   },
+   "cond": {
+    "type": "boss",
+    "zone": "a4_z10"
+   },
+   "reward": {
+    "guild_badge": 3
+   }
+  },
+  {
+   "id": "ACH_NIGHTMARE",
+   "name": {
+    "tr": "Kâbuslardan Uyan",
+    "en": "Wake From Nightmares"
+   },
+   "desc": {
+    "tr": "Kabus'u bitir",
+    "en": "Finish Nightmare"
+   },
+   "cond": {
+    "type": "boss",
+    "zone": "a4_z10",
+    "diff": 1
+   },
+   "reward": {
+    "guild_badge": 5
+   }
+  },
+  {
+   "id": "ACH_HELL",
+   "name": {
+    "tr": "Cehennemden Dönen",
+    "en": "Back From Hell"
+   },
+   "desc": {
+    "tr": "Cehennem'i bitir",
+    "en": "Finish Hell"
+   },
+   "cond": {
+    "type": "boss",
+    "zone": "a4_z10",
+    "diff": 2
+   },
+   "reward": {
+    "guild_badge": 8
+   }
+  },
+  {
+   "id": "ACH_LV10",
+   "name": {
+    "tr": "Seviye 10",
+    "en": "Level 10"
+   },
+   "desc": {
+    "tr": "Bir kahramanı Lv 10 yap",
+    "en": "Reach level 10"
+   },
+   "cond": {
+    "type": "level",
+    "n": 10
+   },
+   "reward": {
+    "gold": 1000
+   }
+  },
+  {
+   "id": "ACH_LV25",
+   "name": {
+    "tr": "Seviye 25",
+    "en": "Level 25"
+   },
+   "desc": {
+    "tr": "Bir kahramanı Lv 25 yap",
+    "en": "Reach level 25"
+   },
+   "cond": {
+    "type": "level",
+    "n": 25
+   },
+   "reward": {
+    "gold": 2500
+   }
+  },
+  {
+   "id": "ACH_LV50",
+   "name": {
+    "tr": "Seviye 50",
+    "en": "Level 50"
+   },
+   "desc": {
+    "tr": "Bir kahramanı Lv 50 yap",
+    "en": "Reach level 50"
+   },
+   "cond": {
+    "type": "level",
+    "n": 50
+   },
+   "reward": {
+    "gold": 5000
+   }
+  },
+  {
+   "id": "ACH_LV75",
+   "name": {
+    "tr": "Seviye 75",
+    "en": "Level 75"
+   },
+   "desc": {
+    "tr": "Bir kahramanı Lv 75 yap",
+    "en": "Reach level 75"
+   },
+   "cond": {
+    "type": "level",
+    "n": 75
+   },
+   "reward": {
+    "gold": 7500
+   }
+  },
+  {
+   "id": "ACH_LV100",
+   "name": {
+    "tr": "Seviye 100",
+    "en": "Level 100"
+   },
+   "desc": {
+    "tr": "Bir kahramanı Lv 100 yap",
+    "en": "Reach level 100"
+   },
+   "cond": {
+    "type": "level",
+    "n": 100
+   },
+   "reward": {
+    "gold": 10000
+   }
+  },
+  {
+   "id": "ACH_KILLS_1000",
+   "name": {
+    "tr": "Katliam I",
+    "en": "Slaughter I"
+   },
+   "desc": {
+    "tr": "1000 düşman öldür",
+    "en": "Defeat 1000 enemies"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "kills",
+    "n": 1000
+   },
+   "reward": {
+    "gold": 100
+   }
+  },
+  {
+   "id": "ACH_KILLS_10000",
+   "name": {
+    "tr": "Katliam II",
+    "en": "Slaughter II"
+   },
+   "desc": {
+    "tr": "10000 düşman öldür",
+    "en": "Defeat 10000 enemies"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "kills",
+    "n": 10000
+   },
+   "reward": {
+    "gold": 1000
+   }
+  },
+  {
+   "id": "ACH_KILLS_100000",
+   "name": {
+    "tr": "Katliam III",
+    "en": "Slaughter III"
+   },
+   "desc": {
+    "tr": "100000 düşman öldür",
+    "en": "Defeat 100000 enemies"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "kills",
+    "n": 100000
+   },
+   "reward": {
+    "gold": 10000
+   }
+  },
+  {
+   "id": "ACH_KILLS_1000000",
+   "name": {
+    "tr": "Katliam IV",
+    "en": "Slaughter IV"
+   },
+   "desc": {
+    "tr": "1000000 düşman öldür",
+    "en": "Defeat 1000000 enemies"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "kills",
+    "n": 1000000
+   },
+   "reward": {
+    "gold": 100000
+   }
+  },
+  {
+   "id": "ACH_GOLD_10000",
+   "name": {
+    "tr": "Hazine I",
+    "en": "Treasure I"
+   },
+   "desc": {
+    "tr": "Toplam 10000 altın kazan",
+    "en": "Earn 10000 gold"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "gold",
+    "n": 10000
+   },
+   "reward": {
+    "tavern_seal": 2
+   }
+  },
+  {
+   "id": "ACH_GOLD_1000000",
+   "name": {
+    "tr": "Hazine II",
+    "en": "Treasure II"
+   },
+   "desc": {
+    "tr": "Toplam 1000000 altın kazan",
+    "en": "Earn 1000000 gold"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "gold",
+    "n": 1000000
+   },
+   "reward": {
+    "tavern_seal": 2
+   }
+  },
+  {
+   "id": "ACH_GOLD_100000000",
+   "name": {
+    "tr": "Hazine III",
+    "en": "Treasure III"
+   },
+   "desc": {
+    "tr": "Toplam 100000000 altın kazan",
+    "en": "Earn 100000000 gold"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "gold",
+    "n": 100000000
+   },
+   "reward": {
+    "tavern_seal": 2
+   }
+  },
+  {
+   "id": "ACH_FIRST_LEGENDARY",
+   "name": {
+    "tr": "Turuncu Işık",
+    "en": "Orange Light"
+   },
+   "desc": {
+    "tr": "İlk efsanevi itemi bul",
+    "en": "Find your first legendary"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "legendaries",
+    "n": 1
+   },
+   "reward": {
+    "gold": 500
+   }
+  },
+  {
+   "id": "ACH_LEGENDARY_25",
+   "name": {
+    "tr": "Efsane Koleksiyoncusu",
+    "en": "Legend Collector"
+   },
+   "desc": {
+    "tr": "25 efsanevi bul",
+    "en": "Find 25 legendaries"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "legendaries",
+    "n": 25
+   },
+   "reward": {
+    "guild_badge": 2
+   }
+  },
+  {
+   "id": "ACH_FIRST_MYTHIC",
+   "name": {
+    "tr": "İmkânsız Şans",
+    "en": "Impossible Luck"
+   },
+   "desc": {
+    "tr": "İlk mitik itemi bul",
+    "en": "Find your first mythic"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "mythics",
+    "n": 1
+   },
+   "reward": {
+    "guild_badge": 5
+   }
+  },
+  {
+   "id": "ACH_COMBINE_1",
+   "name": {
+    "tr": "Demirci Çırağı",
+    "en": "Smith Apprentice"
+   },
+   "desc": {
+    "tr": "İlk birleştirme",
+    "en": "First combine"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "combines",
+    "n": 1
+   },
+   "reward": {
+    "iron_scrap": 20
+   }
+  },
+  {
+   "id": "ACH_COMBINE_50",
+   "name": {
+    "tr": "Usta Demirci",
+    "en": "Master Smith"
+   },
+   "desc": {
+    "tr": "50 birleştirme",
+    "en": "50 combines"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "combines",
+    "n": 50
+   },
+   "reward": {
+    "shiny_essence": 10
+   }
+  },
+  {
+   "id": "ACH_ENHANCE_10",
+   "name": {
+    "tr": "Parlak Çelik",
+    "en": "Shining Steel"
+   },
+   "desc": {
+    "tr": "Bir itemi +10 yap",
+    "en": "Enhance an item to +10"
+   },
+   "cond": {
+    "type": "enhance",
+    "n": 10
+   },
+   "reward": {
+    "star_dust": 3
+   }
+  },
+  {
+   "id": "ACH_ENHANCE_15",
+   "name": {
+    "tr": "Mükemmeliyet",
+    "en": "Perfection"
+   },
+   "desc": {
+    "tr": "Bir itemi +15 yap",
+    "en": "Enhance an item to +15"
+   },
+   "cond": {
+    "type": "enhance",
+    "n": 15
+   },
+   "reward": {
+    "guild_badge": 5
+   }
+  },
+  {
+   "id": "ACH_HEROES_10",
+   "name": {
+    "tr": "Lonca Büyüyor",
+    "en": "Growing Guild"
+   },
+   "desc": {
+    "tr": "10 kahraman topla",
+    "en": "Collect 10 heroes"
+   },
+   "cond": {
+    "type": "heroes",
+    "n": 10
+   },
+   "reward": {
+    "tavern_seal": 3
+   }
+  },
+  {
+   "id": "ACH_HEROES_25",
+   "name": {
+    "tr": "Kalabalık Lonca",
+    "en": "Crowded Guild"
+   },
+   "desc": {
+    "tr": "25 kahraman topla",
+    "en": "Collect 25 heroes"
+   },
+   "cond": {
+    "type": "heroes",
+    "n": 25
+   },
+   "reward": {
+    "tavern_seal": 5
+   }
+  },
+  {
+   "id": "ACH_ALL_HEROES",
+   "name": {
+    "tr": "Lonca Efsanesi",
+    "en": "Guild Legend"
+   },
+   "desc": {
+    "tr": "48 kahramanın hepsini topla",
+    "en": "Collect all 48 heroes"
+   },
+   "cond": {
+    "type": "heroes",
+    "n": 48
+   },
+   "reward": {
+    "guild_badge": 10
+   }
+  },
+  {
+   "id": "ACH_FACTION_FULL",
+   "name": {
+    "tr": "Sadakat",
+    "en": "Loyalty"
+   },
+   "desc": {
+    "tr": "Bir fraksiyonu 8/8 tamamla",
+    "en": "Complete a faction"
+   },
+   "cond": {
+    "type": "faction",
+    "n": 8
+   },
+   "reward": {
+    "guild_badge": 3
+   }
+  },
+  {
+   "id": "ACH_3STAR",
+   "name": {
+    "tr": "Yükselen Yıldız",
+    "en": "Rising Star"
+   },
+   "desc": {
+    "tr": "Bir kahramanı 3 yıldız yap",
+    "en": "Raise a hero to 3 stars"
+   },
+   "cond": {
+    "type": "stars",
+    "n": 3
+   },
+   "reward": {
+    "soul_shard": 10
+   }
+  },
+  {
+   "id": "ACH_6STAR",
+   "name": {
+    "tr": "Altı Yıldız",
+    "en": "Six Stars"
+   },
+   "desc": {
+    "tr": "Bir kahramanı 6 yıldız yap",
+    "en": "Raise a hero to 6 stars"
+   },
+   "cond": {
+    "type": "stars",
+    "n": 6
+   },
+   "reward": {
+    "guild_badge": 5
+   }
+  },
+  {
+   "id": "ACH_ADVANCE_1",
+   "name": {
+    "tr": "Yeni Yol",
+    "en": "New Path"
+   },
+   "desc": {
+    "tr": "İlk sınıf ilerlemesi",
+    "en": "First class advancement"
+   },
+   "cond": {
+    "type": "advance",
+    "n": 1
+   },
+   "reward": {
+    "gold": 2000
+   }
+  },
+  {
+   "id": "ACH_ADVANCE_2",
+   "name": {
+    "tr": "Uzman",
+    "en": "Specialist"
+   },
+   "desc": {
+    "tr": "İkinci sınıf ilerlemesi",
+    "en": "Second class advancement"
+   },
+   "cond": {
+    "type": "advance",
+    "n": 2
+   },
+   "reward": {
+    "guild_badge": 3
+   }
+  },
+  {
+   "id": "ACH_GUILD_20",
+   "name": {
+    "tr": "Lonca Salonu",
+    "en": "Guild Hall"
+   },
+   "desc": {
+    "tr": "Lonca Salonu'nda 20 seviye",
+    "en": "20 Guild Hall levels"
+   },
+   "cond": {
+    "type": "guild",
+    "n": 20
+   },
+   "reward": {
+    "guild_badge": 2
+   }
+  },
+  {
+   "id": "ACH_BOSSES_100",
+   "name": {
+    "tr": "Boss Avcısı",
+    "en": "Boss Hunter"
+   },
+   "desc": {
+    "tr": "100 boss yen",
+    "en": "Defeat 100 bosses"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "bosses",
+    "n": 100
+   },
+   "reward": {
+    "soul_shard": 30
+   }
+  },
+  {
+   "id": "ACH_DEATHS_100",
+   "name": {
+    "tr": "Ölümsüz Değiliz",
+    "en": "Not Immortal"
+   },
+   "desc": {
+    "tr": "100 kez düş",
+    "en": "Fall 100 times"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "deaths",
+    "n": 100
+   },
+   "reward": {
+    "gold": 1000
+   }
+  },
+  {
+   "id": "ACH_OFFLINE_12H",
+   "name": {
+    "tr": "Uyuyan Lonca",
+    "en": "Sleeping Guild"
+   },
+   "desc": {
+    "tr": "12 saat offline ilerleme",
+    "en": "12 hours of offline progress"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "offline",
+    "n": 43200
+   },
+   "reward": {
+    "tavern_seal": 2
+   }
+  },
+  {
+   "id": "ACH_PLAY_10H",
+   "name": {
+    "tr": "Sadık Lonca Başkanı",
+    "en": "Loyal Guildmaster"
+   },
+   "desc": {
+    "tr": "10 saat oyna",
+    "en": "Play for 10 hours"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "playtime",
+    "n": 36000
+   },
+   "reward": {
+    "guild_badge": 2
+   }
+  },
+  {
+   "id": "ACH_NIGHTMARE_OPEN",
+   "name": {
+    "tr": "Karanlığa Adım",
+    "en": "Step Into Darkness"
+   },
+   "desc": {
+    "tr": "Kabus zorluğunu aç",
+    "en": "Unlock Nightmare"
+   },
+   "cond": {
+    "type": "zone",
+    "n": 0,
+    "diff": 1
+   },
+   "reward": {
+    "gold": 5000
+   }
+  }
+ ]
+}

@@ -521,6 +521,13 @@ func _on_boss_spawned(u) -> void:
 
 func _on_phase(p: String) -> void:
 	_update_hud_text()
+	if p == "town":
+		_set_theme("town")
+		_show_banner(DataDB.t("town_name"), UITheme.C_TEXT)
+		AudioManager.play_music("town")
+	elif _theme == "town":
+		_set_theme(str(BattleSim.zone().get("background", "meadow")))
+		AudioManager.play_music(str(BattleSim.zone().get("music", "act1")))
 	if p == "travel" and BattleSim.is_boss_stage():
 		_show_banner(DataDB.t("boss_incoming"), Color("#FF9A6A"))
 

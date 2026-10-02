@@ -1,71 +1,1030 @@
 {
-  "btn_hero": {"tr": "Kahraman", "en": "Hero"},
-  "btn_bag": {"tr": "Çanta", "en": "Bag"},
-  "btn_growth": {"tr": "Gelişim", "en": "Growth"},
-  "btn_world": {"tr": "Dünya", "en": "World"},
-  "btn_party": {"tr": "Parti", "en": "Party"},
-  "btn_tavern": {"tr": "Taverna", "en": "Tavern"},
-  "panel_stats": {"tr": "Statlar", "en": "Stats"},
-  "panel_hero": {"tr": "Kahraman", "en": "Hero"},
-  "panel_portrait": {"tr": "Portre", "en": "Portrait"},
-  "panel_inventory": {"tr": "Envanter", "en": "Inventory"},
-  "panel_stash": {"tr": "Depo", "en": "Stash"},
-  "panel_blacksmith": {"tr": "Demirci", "en": "Blacksmith"},
-  "panel_world": {"tr": "Dünya", "en": "World"},
-  "panel_growth": {"tr": "Gelişim", "en": "Growth"},
-  "panel_party": {"tr": "Parti", "en": "Party"},
-  "panel_tavern": {"tr": "Taverna", "en": "Tavern"},
-  "panel_settings": {"tr": "Ayarlar", "en": "Settings"},
-  "panel_away": {"tr": "Sen Yokken", "en": "While You Were Away"},
-  "panel_dps": {"tr": "İstatistik", "en": "Statistics"},
-  "panel_quests": {"tr": "Görevler", "en": "Quests"},
-  "panel_codex": {"tr": "Kodeks", "en": "Codex"},
-  "panel_story": {"tr": "Hikaye", "en": "Story"},
-  "tip_auto": {"tr": "AUTO: Otomatik ilerleme", "en": "AUTO: Auto progress"},
-  "tip_town": {"tr": "Kasaba", "en": "Town"},
-  "tip_dps": {"tr": "Savaş istatistikleri", "en": "Battle statistics"},
-  "tip_codex": {"tr": "Kodeks ve başarımlar", "en": "Codex & achievements"},
-  "tip_mute": {"tr": "Sesi aç/kapat", "en": "Toggle sound"},
-  "tip_quests": {"tr": "Görevler", "en": "Quests"},
-  "tip_quit": {"tr": "Kaydet ve çık", "en": "Save & quit"},
-  "tip_settings": {"tr": "Ayarlar", "en": "Settings"},
-  "tray_show": {"tr": "Göster", "en": "Show"},
-  "tray_mute": {"tr": "Sessiz", "en": "Mute"},
-  "tray_quit": {"tr": "Çıkış", "en": "Quit"},
-  "auto_on": {"tr": "Otomatik ilerleme AÇIK", "en": "Auto progress ON"},
-  "auto_off": {"tr": "Otomatik ilerleme KAPALI (farm modu)", "en": "Auto progress OFF (farming)"},
-  "auto_equipped": {"tr": "Kuşanıldı: {name}", "en": "Equipped: {name}"},
-  "bag_full": {"tr": "Çanta dolu!", "en": "Bag is full!"},
-  "boss_appears": {"tr": "{name} geldi!", "en": "{name} appears!"},
-  "boss_defeated": {"tr": "Boss yenildi!", "en": "Boss defeated!"},
-  "boss_enraged": {"tr": "{name} öfkelendi!", "en": "{name} is enraged!"},
-  "boss_failed": {"tr": "Süre doldu! Güçlen ve tekrar dene.", "en": "Time's up! Get stronger and retry."},
-  "boss_incoming": {"tr": "Boss yaklaşıyor...", "en": "Boss incoming..."},
-  "party_wiped": {"tr": "Parti düştü...", "en": "Party wiped..."},
-  "difficulty_unlocked": {"tr": "{name} zorluğu açıldı!", "en": "{name} difficulty unlocked!"},
-  "hero_joined": {"tr": "{name} loncaya katıldı!", "en": "{name} joined the guild!"},
-  "compare_better": {"tr": "için daha iyi", "en": "upgrade"},
-  "compare_worse": {"tr": "için daha zayıf", "en": "downgrade"},
-  "locked": {"tr": "Kilitli", "en": "Locked"},
-  "mythic_power": {"tr": "Mitik Güç: +%20 hasar, +%10 HP", "en": "Mythic Power: +20% damage, +10% HP"},
-  "req_level": {"tr": "Gereken Seviye: {lv}", "en": "Requires Level {lv}"},
-  "sell_price": {"tr": "Satış: {g} altın", "en": "Sells for {g} gold"},
-  "two_handed": {"tr": "İki elli silah kuşanılı", "en": "Two-handed weapon equipped"},
-  "weapon_damage": {"tr": "Silah Hasarı", "en": "Weapon Damage"},
-  "aps": {"tr": "Saldırı/sn", "en": "Attacks/s"},
-  "weight_heavy": {"tr": "(Ağır)", "en": "(Heavy)"},
-  "weight_medium": {"tr": "(Orta)", "en": "(Medium)"},
-  "weight_light": {"tr": "(Hafif)", "en": "(Light)"},
-  "wrong_armor": {"tr": "Bu sınıf bu zırhı giyemez", "en": "This class can't wear this armor"},
-  "wrong_class": {"tr": "Bu sınıf kullanamaz", "en": "This class can't use it"},
-  "story_lyra": {"tr": "Lyra: Bu slime'lar size mi musallat? Yardım edeyim!", "en": "Lyra: Are these slimes bothering you? Let me help!"},
-  "story_pip": {"tr": "Pip: Ben de geliyorum! Ups... iyileştirme yerine şimşek attım!", "en": "Pip: Wait for me! Oops... that was lightning, not a heal!"},
-  "tut_intro": {"tr": "Kahramanlar kendi kendine savaşır. Sen sadece onları güçlendir!", "en": "Heroes fight on their own. You just make them stronger!"},
-  "tut_item": {"tr": "Bir item düştü! Daha iyiyse otomatik kuşanılır. Çanta'dan kontrol et.", "en": "Loot! Better gear is equipped automatically. Check your Bag."},
-  "tut_stats": {"tr": "Seviye atladın! Statlar otomatik dağıtılır; Kahraman panelinden değiştirebilirsin.", "en": "Level up! Stats auto-distribute; adjust them in the Hero panel."},
-  "tut_skills": {"tr": "Skill puanı kazandın! Kahraman panelinden yeni skill aç.", "en": "You earned a skill point! Unlock skills in the Hero panel."},
-  "tut_tavern": {"tr": "Taverna açıldı! 5. kahramanını oradan seç.", "en": "The Tavern is open! Recruit your 5th hero there."},
-  "tut_boss": {"tr": "Boss! 60 saniye içinde yenmelisin.", "en": "A boss! Defeat it within 60 seconds."},
-  "tut_world": {"tr": "Yeni bölge açıldı! AUTO açıkken parti kendi ilerler.", "en": "New zone unlocked! With AUTO on the party advances itself."},
-  "tut_done": {"tr": "Artık işine dönebilirsin. Biz buradayız!", "en": "You can get back to work now. We've got this!"}
+ "btn_hero": {
+  "tr": "Kahraman",
+  "en": "Hero"
+ },
+ "btn_bag": {
+  "tr": "Çanta",
+  "en": "Bag"
+ },
+ "btn_growth": {
+  "tr": "Gelişim",
+  "en": "Growth"
+ },
+ "btn_world": {
+  "tr": "Dünya",
+  "en": "World"
+ },
+ "btn_party": {
+  "tr": "Parti",
+  "en": "Party"
+ },
+ "btn_tavern": {
+  "tr": "Taverna",
+  "en": "Tavern"
+ },
+ "panel_stats": {
+  "tr": "Statlar",
+  "en": "Stats"
+ },
+ "panel_hero": {
+  "tr": "Kahraman",
+  "en": "Hero"
+ },
+ "panel_portrait": {
+  "tr": "Portre",
+  "en": "Portrait"
+ },
+ "panel_inventory": {
+  "tr": "Envanter",
+  "en": "Inventory"
+ },
+ "panel_stash": {
+  "tr": "Depo",
+  "en": "Stash"
+ },
+ "panel_blacksmith": {
+  "tr": "Demirci",
+  "en": "Blacksmith"
+ },
+ "panel_world": {
+  "tr": "Dünya",
+  "en": "World"
+ },
+ "panel_growth": {
+  "tr": "Gelişim",
+  "en": "Growth"
+ },
+ "panel_party": {
+  "tr": "Parti",
+  "en": "Party"
+ },
+ "panel_tavern": {
+  "tr": "Taverna",
+  "en": "Tavern"
+ },
+ "panel_settings": {
+  "tr": "Ayarlar",
+  "en": "Settings"
+ },
+ "panel_away": {
+  "tr": "Sen Yokken",
+  "en": "While You Were Away"
+ },
+ "panel_dps": {
+  "tr": "İstatistik",
+  "en": "Statistics"
+ },
+ "panel_quests": {
+  "tr": "Görevler",
+  "en": "Quests"
+ },
+ "panel_codex": {
+  "tr": "Kodeks",
+  "en": "Codex"
+ },
+ "panel_story": {
+  "tr": "Hikaye",
+  "en": "Story"
+ },
+ "tip_auto": {
+  "tr": "AUTO: Otomatik ilerleme",
+  "en": "AUTO: Auto progress"
+ },
+ "tip_town": {
+  "tr": "Kasaba",
+  "en": "Town"
+ },
+ "tip_dps": {
+  "tr": "Savaş istatistikleri",
+  "en": "Battle statistics"
+ },
+ "tip_codex": {
+  "tr": "Kodeks ve başarımlar",
+  "en": "Codex & achievements"
+ },
+ "tip_mute": {
+  "tr": "Sesi aç/kapat",
+  "en": "Toggle sound"
+ },
+ "tip_quests": {
+  "tr": "Görevler",
+  "en": "Quests"
+ },
+ "tip_quit": {
+  "tr": "Kaydet ve çık",
+  "en": "Save & quit"
+ },
+ "tip_settings": {
+  "tr": "Ayarlar",
+  "en": "Settings"
+ },
+ "tray_show": {
+  "tr": "Göster",
+  "en": "Show"
+ },
+ "tray_mute": {
+  "tr": "Sessiz",
+  "en": "Mute"
+ },
+ "tray_quit": {
+  "tr": "Çıkış",
+  "en": "Quit"
+ },
+ "auto_on": {
+  "tr": "Otomatik ilerleme AÇIK",
+  "en": "Auto progress ON"
+ },
+ "auto_off": {
+  "tr": "Otomatik ilerleme KAPALI (farm modu)",
+  "en": "Auto progress OFF (farming)"
+ },
+ "auto_equipped": {
+  "tr": "Kuşanıldı: {name}",
+  "en": "Equipped: {name}"
+ },
+ "bag_full": {
+  "tr": "Çanta dolu!",
+  "en": "Bag is full!"
+ },
+ "boss_appears": {
+  "tr": "{name} geldi!",
+  "en": "{name} appears!"
+ },
+ "boss_defeated": {
+  "tr": "Boss yenildi!",
+  "en": "Boss defeated!"
+ },
+ "boss_enraged": {
+  "tr": "{name} öfkelendi!",
+  "en": "{name} is enraged!"
+ },
+ "boss_failed": {
+  "tr": "Süre doldu! Güçlen ve tekrar dene.",
+  "en": "Time's up! Get stronger and retry."
+ },
+ "boss_incoming": {
+  "tr": "Boss yaklaşıyor...",
+  "en": "Boss incoming..."
+ },
+ "party_wiped": {
+  "tr": "Parti düştü...",
+  "en": "Party wiped..."
+ },
+ "difficulty_unlocked": {
+  "tr": "{name} zorluğu açıldı!",
+  "en": "{name} difficulty unlocked!"
+ },
+ "hero_joined": {
+  "tr": "{name} loncaya katıldı!",
+  "en": "{name} joined the guild!"
+ },
+ "compare_better": {
+  "tr": "için daha iyi",
+  "en": "upgrade"
+ },
+ "compare_worse": {
+  "tr": "için daha zayıf",
+  "en": "downgrade"
+ },
+ "locked": {
+  "tr": "Kilitli",
+  "en": "Locked"
+ },
+ "mythic_power": {
+  "tr": "Mitik Güç: +%20 hasar, +%10 HP",
+  "en": "Mythic Power: +20% damage, +10% HP"
+ },
+ "req_level": {
+  "tr": "Gereken Seviye: {lv}",
+  "en": "Requires Level {lv}"
+ },
+ "sell_price": {
+  "tr": "Satış: {g} altın",
+  "en": "Sells for {g} gold"
+ },
+ "two_handed": {
+  "tr": "İki elli silah kuşanılı",
+  "en": "Two-handed weapon equipped"
+ },
+ "weapon_damage": {
+  "tr": "Silah Hasarı",
+  "en": "Weapon Damage"
+ },
+ "aps": {
+  "tr": "Saldırı/sn",
+  "en": "Attacks/s"
+ },
+ "weight_heavy": {
+  "tr": "(Ağır)",
+  "en": "(Heavy)"
+ },
+ "weight_medium": {
+  "tr": "(Orta)",
+  "en": "(Medium)"
+ },
+ "weight_light": {
+  "tr": "(Hafif)",
+  "en": "(Light)"
+ },
+ "wrong_armor": {
+  "tr": "Bu sınıf bu zırhı giyemez",
+  "en": "This class can't wear this armor"
+ },
+ "wrong_class": {
+  "tr": "Bu sınıf kullanamaz",
+  "en": "This class can't use it"
+ },
+ "story_lyra": {
+  "tr": "Lyra: Bu slime'lar size mi musallat? Yardım edeyim!",
+  "en": "Lyra: Are these slimes bothering you? Let me help!"
+ },
+ "story_pip": {
+  "tr": "Pip: Ben de geliyorum! Ups... iyileştirme yerine şimşek attım!",
+  "en": "Pip: Wait for me! Oops... that was lightning, not a heal!"
+ },
+ "tut_intro": {
+  "tr": "Kahramanlar kendi kendine savaşır. Sen sadece onları güçlendir!",
+  "en": "Heroes fight on their own. You just make them stronger!"
+ },
+ "tut_item": {
+  "tr": "Bir item düştü! Daha iyiyse otomatik kuşanılır. Çanta'dan kontrol et.",
+  "en": "Loot! Better gear is equipped automatically. Check your Bag."
+ },
+ "tut_stats": {
+  "tr": "Seviye atladın! Statlar otomatik dağıtılır; Kahraman panelinden değiştirebilirsin.",
+  "en": "Level up! Stats auto-distribute; adjust them in the Hero panel."
+ },
+ "tut_skills": {
+  "tr": "Skill puanı kazandın! Kahraman panelinden yeni skill aç.",
+  "en": "You earned a skill point! Unlock skills in the Hero panel."
+ },
+ "tut_tavern": {
+  "tr": "Taverna açıldı! 5. kahramanını oradan seç.",
+  "en": "The Tavern is open! Recruit your 5th hero there."
+ },
+ "tut_boss": {
+  "tr": "Boss! 60 saniye içinde yenmelisin.",
+  "en": "A boss! Defeat it within 60 seconds."
+ },
+ "tut_world": {
+  "tr": "Yeni bölge açıldı! AUTO açıkken parti kendi ilerler.",
+  "en": "New zone unlocked! With AUTO on the party advances itself."
+ },
+ "tut_done": {
+  "tr": "Artık işine dönebilirsin. Biz buradayız!",
+  "en": "You can get back to work now. We've got this!"
+ },
+ "account_bonuses": {
+  "tr": "Hesap Bonusları",
+  "en": "Account Bonuses"
+ },
+ "achievement": {
+  "tr": "Başarım: {name}",
+  "en": "Achievement: {name}"
+ },
+ "act_n": {
+  "tr": "Perde {n}",
+  "en": "Act {n}"
+ },
+ "adv_req": {
+  "tr": "Lv {lv} ilerleme",
+  "en": "Lv {lv} advancement"
+ },
+ "advanced": {
+  "tr": "{name} artık {cls}!",
+  "en": "{name} is now a {cls}!"
+ },
+ "all": {
+  "tr": "Hepsi",
+  "en": "All"
+ },
+ "auto": {
+  "tr": "Otomatik",
+  "en": "Auto"
+ },
+ "away_best": {
+  "tr": "En iyi ganimet:",
+  "en": "Best loot:"
+ },
+ "away_eff": {
+  "tr": "Offline verim: %{p}",
+  "en": "Offline efficiency: {p}%"
+ },
+ "away_items": {
+  "tr": "Bulunan item",
+  "en": "Items found"
+ },
+ "away_kills": {
+  "tr": "Öldürülen",
+  "en": "Kills"
+ },
+ "away_level": {
+  "tr": "{name} +{n} seviye!",
+  "en": "{name} +{n} levels!"
+ },
+ "away_time": {
+  "tr": "{h} saat {m} dakika yoktun",
+  "en": "You were away {h}h {m}m"
+ },
+ "away_xp": {
+  "tr": "Kahraman XP",
+  "en": "Hero XP"
+ },
+ "boss": {
+  "tr": "Boss",
+  "en": "Boss"
+ },
+ "btn_advance": {
+  "tr": "İlerle!",
+  "en": "Advance!"
+ },
+ "btn_auto": {
+  "tr": "Oto",
+  "en": "Auto"
+ },
+ "btn_claim": {
+  "tr": "Al",
+  "en": "Claim"
+ },
+ "btn_clear": {
+  "tr": "Temizle",
+  "en": "Clear"
+ },
+ "btn_collect": {
+  "tr": "Topla",
+  "en": "Collect"
+ },
+ "btn_equip": {
+  "tr": "Kuşan",
+  "en": "Equip"
+ },
+ "btn_levelup": {
+  "tr": "Level UP",
+  "en": "Level UP"
+ },
+ "btn_refresh": {
+  "tr": "Yenile",
+  "en": "Refresh"
+ },
+ "btn_remove": {
+  "tr": "Çıkar",
+  "en": "Remove"
+ },
+ "btn_reset": {
+  "tr": "Sıfırla",
+  "en": "Reset"
+ },
+ "btn_save_now": {
+  "tr": "Şimdi kaydet",
+  "en": "Save now"
+ },
+ "btn_sell_junk": {
+  "tr": "Sat",
+  "en": "Sell"
+ },
+ "btn_to_bag": {
+  "tr": "Çantaya",
+  "en": "To Bag"
+ },
+ "btn_to_stash": {
+  "tr": "Depoya",
+  "en": "To Stash"
+ },
+ "btn_unequip": {
+  "tr": "Çıkar",
+  "en": "Unequip"
+ },
+ "buy_tab": {
+  "tr": "Sekme aç: {g}",
+  "en": "Unlock tab: {g}"
+ },
+ "choose_spec": {
+  "tr": "Uzmanlığını seç:",
+  "en": "Choose your specialization:"
+ },
+ "claimed": {
+  "tr": "Alındı",
+  "en": "Claimed"
+ },
+ "collection_bonus": {
+  "tr": "{stat} +{v} (sonraki {n})",
+  "en": "{stat} +{v} (next {n})"
+ },
+ "cooldown": {
+  "tr": "Bekleme {s}sn",
+  "en": "Cooldown {s}s"
+ },
+ "cost": {
+  "tr": "Maliyet",
+  "en": "Cost"
+ },
+ "crits": {
+  "tr": "Kritik",
+  "en": "Crits"
+ },
+ "ctx_equip": {
+  "tr": "Kuşan",
+  "en": "Equip"
+ },
+ "ctx_lock": {
+  "tr": "Kilitle",
+  "en": "Lock"
+ },
+ "ctx_salvage": {
+  "tr": "Parçala",
+  "en": "Salvage"
+ },
+ "ctx_sell": {
+  "tr": "Sat",
+  "en": "Sell"
+ },
+ "ctx_stash": {
+  "tr": "Depoya koy",
+  "en": "To stash"
+ },
+ "ctx_unlock": {
+  "tr": "Kilidi aç",
+  "en": "Unlock"
+ },
+ "daily_quests": {
+  "tr": "Günlük Görevler",
+  "en": "Daily Quests"
+ },
+ "few": {
+  "tr": "Az",
+  "en": "Few"
+ },
+ "filter_acc": {
+  "tr": "Takı",
+  "en": "Acc."
+ },
+ "filter_armor": {
+  "tr": "Zırh",
+  "en": "Armor"
+ },
+ "filter_weapon": {
+  "tr": "Silah",
+  "en": "Weapon"
+ },
+ "free": {
+  "tr": "Bedava",
+  "en": "Free"
+ },
+ "gold": {
+  "tr": "Altın",
+  "en": "Gold"
+ },
+ "gold_hour": {
+  "tr": "Altın/saat",
+  "en": "Gold/hour"
+ },
+ "guild_war": {
+  "tr": "Savaş",
+  "en": "War"
+ },
+ "guild_defense": {
+  "tr": "Savunma",
+  "en": "Defense"
+ },
+ "guild_wealth": {
+  "tr": "Servet",
+  "en": "Wealth"
+ },
+ "guild_time": {
+  "tr": "Zaman",
+  "en": "Time"
+ },
+ "guild_explore": {
+  "tr": "Keşif",
+  "en": "Explore"
+ },
+ "guild_hint": {
+  "tr": "Kalıcı hesap bonusları. Altın ve Lonca Nişanı ile yükselt.",
+  "en": "Permanent account upgrades bought with gold and Guild Badges."
+ },
+ "high": {
+  "tr": "Yüksek",
+  "en": "High"
+ },
+ "hotkeys_help": {
+  "tr": "H Kahraman, I Çanta, M Harita, G Gelişim, P Parti, T Taverna, Ctrl+Shift+H gizle",
+  "en": "H Hero, I Bag, M Map, G Growth, P Party, T Tavern, Ctrl+Shift+H hide"
+ },
+ "how_to_get_tavern": {
+  "tr": "Tavernadan alınır",
+  "en": "Recruit at the Tavern"
+ },
+ "how_to_get_story": {
+  "tr": "Hikaye ile katılır",
+  "en": "Joins through the story"
+ },
+ "keep": {
+  "tr": "Tut",
+  "en": "Keep"
+ },
+ "kills_min": {
+  "tr": "Öldürme/dk",
+  "en": "Kills/min"
+ },
+ "loot_filter_hint": {
+  "tr": "Düşen itemler için otomatik işlem. Efsanevi+ her zaman tutulur.",
+  "en": "Automatic action for drops. Legendary+ is always kept."
+ },
+ "low": {
+  "tr": "Düşük",
+  "en": "Low"
+ },
+ "materials": {
+  "tr": "Malzemeler",
+  "en": "Materials"
+ },
+ "next_level": {
+  "tr": "Sonraki",
+  "en": "Next"
+ },
+ "normal": {
+  "tr": "Normal",
+  "en": "Normal"
+ },
+ "not_enough_gold": {
+  "tr": "Yeterli altın yok!",
+  "en": "Not enough gold!"
+ },
+ "not_enough_mats": {
+  "tr": "Yeterli malzeme yok!",
+  "en": "Not enough materials!"
+ },
+ "off": {
+  "tr": "Kapalı",
+  "en": "Off"
+ },
+ "on": {
+  "tr": "Açık",
+  "en": "On"
+ },
+ "owned": {
+  "tr": "Sahipsin",
+  "en": "Owned"
+ },
+ "party_hint": {
+  "tr": "Slot seç, sonra kahramana tıkla. Sağ = en ön.",
+  "en": "Pick a slot, then a hero. Right = front."
+ },
+ "pos_free": {
+  "tr": "Serbest",
+  "en": "Free"
+ },
+ "pos_taskbar": {
+  "tr": "Görev çubuğu",
+  "en": "Taskbar"
+ },
+ "pos_top": {
+  "tr": "Üst",
+  "en": "Top"
+ },
+ "quest_kills": {
+  "tr": "{n} düşman öldür",
+  "en": "Defeat {n} enemies"
+ },
+ "quest_bosses": {
+  "tr": "{n} boss yen",
+  "en": "Defeat {n} bosses"
+ },
+ "quest_items": {
+  "tr": "{n} item bul",
+  "en": "Find {n} items"
+ },
+ "quest_combines": {
+  "tr": "{n} kez birleştir",
+  "en": "Combine {n} times"
+ },
+ "quest_enhances": {
+  "tr": "{n} kez güçlendir",
+  "en": "Enhance {n} times"
+ },
+ "quest_gold": {
+  "tr": "{n} altın kazan",
+  "en": "Earn {n} gold"
+ },
+ "refresh_in": {
+  "tr": "Yenilenme: {t}",
+  "en": "Refresh: {t}"
+ },
+ "reset_cost": {
+  "tr": "Maliyet: {g} altın",
+  "en": "Cost: {g} gold"
+ },
+ "reset_layout": {
+  "tr": "Panel düzenini sıfırla",
+  "en": "Reset panel layout"
+ },
+ "roster": {
+  "tr": "Kahramanlar",
+  "en": "Roster"
+ },
+ "salvage": {
+  "tr": "Parçala",
+  "en": "Salvage"
+ },
+ "salvaged_n": {
+  "tr": "{n} item parçalandı",
+  "en": "Salvaged {n} items"
+ },
+ "saved": {
+  "tr": "Kaydedildi",
+  "en": "Saved"
+ },
+ "seals": {
+  "tr": "Mühür: {n}",
+  "en": "Seals: {n}"
+ },
+ "sell": {
+  "tr": "Sat",
+  "en": "Sell"
+ },
+ "session_kills": {
+  "tr": "Bu oturum öldürme",
+  "en": "Session kills"
+ },
+ "set_display": {
+  "tr": "Ekran",
+  "en": "Display"
+ },
+ "set_game": {
+  "tr": "Oyun",
+  "en": "Game"
+ },
+ "set_loot": {
+  "tr": "Ganimet",
+  "en": "Loot"
+ },
+ "set_sound": {
+  "tr": "Ses",
+  "en": "Sound"
+ },
+ "set_lang": {
+  "tr": "Dil",
+  "en": "Language"
+ },
+ "set_scale": {
+  "tr": "Ölçek",
+  "en": "Scale"
+ },
+ "set_strip_pos": {
+  "tr": "Şerit konumu",
+  "en": "Strip position"
+ },
+ "set_on_top": {
+  "tr": "Her zaman üstte",
+  "en": "Always on top"
+ },
+ "set_fps_idle": {
+  "tr": "Arka plan FPS",
+  "en": "Idle FPS"
+ },
+ "set_fps_focus": {
+  "tr": "Odak FPS",
+  "en": "Focus FPS"
+ },
+ "set_dmg_numbers": {
+  "tr": "Hasar sayıları",
+  "en": "Damage numbers"
+ },
+ "set_shake": {
+  "tr": "Ekran sarsıntısı",
+  "en": "Screen shake"
+ },
+ "set_particles": {
+  "tr": "Parçacıklar",
+  "en": "Particles"
+ },
+ "set_master": {
+  "tr": "Genel ses",
+  "en": "Master"
+ },
+ "set_music": {
+  "tr": "Müzik",
+  "en": "Music"
+ },
+ "set_sfx": {
+  "tr": "Efektler",
+  "en": "Effects"
+ },
+ "set_duck": {
+  "tr": "Odak dışı kısma",
+  "en": "Unfocused duck"
+ },
+ "set_mute": {
+  "tr": "Sessiz",
+  "en": "Mute"
+ },
+ "set_auto_equip": {
+  "tr": "Otomatik kuşan",
+  "en": "Auto equip"
+ },
+ "set_auto_stats": {
+  "tr": "Otomatik stat",
+  "en": "Auto stats"
+ },
+ "set_barks": {
+  "tr": "Kahraman sözleri",
+  "en": "Hero barks"
+ },
+ "set_tutorial": {
+  "tr": "Öğretici bitti",
+  "en": "Tutorial done"
+ },
+ "skill_active": {
+  "tr": "Aktif",
+  "en": "Active"
+ },
+ "skill_passive": {
+  "tr": "Pasif",
+  "en": "Passive"
+ },
+ "skill_ult": {
+  "tr": "Nihai",
+  "en": "Ultimate"
+ },
+ "skill_points_left": {
+  "tr": "Skill puanı: {n}",
+  "en": "Skill points left {n}"
+ },
+ "smith_autofill": {
+  "tr": "Oto Doldur",
+  "en": "Auto Fill"
+ },
+ "smith_chance": {
+  "tr": "Başarı",
+  "en": "Success"
+ },
+ "smith_combine": {
+  "tr": "Birleştir",
+  "en": "Combine"
+ },
+ "smith_combine_fail": {
+  "tr": "Birleştirme başarısız... 3 item geri döndü.",
+  "en": "Combine failed... 3 items returned."
+ },
+ "smith_combine_hint": {
+  "tr": "Aynı nadirlikte 9 itemi seç (çantadan tıkla).",
+  "en": "Pick 9 items of the same rarity (click in bag)."
+ },
+ "smith_combine_ok": {
+  "tr": "Başarılı! {name}",
+  "en": "Success! {name}"
+ },
+ "smith_craft": {
+  "tr": "Üret",
+  "en": "Craft"
+ },
+ "smith_craft_hint": {
+  "tr": "Malzeme ve altınla Nadir+ item üret.",
+  "en": "Craft a Rare+ item with gold and materials."
+ },
+ "smith_crafted": {
+  "tr": "Üretildi: {name}",
+  "en": "Crafted: {name}"
+ },
+ "smith_enh_fail": {
+  "tr": "Güçlendirme başarısız!",
+  "en": "Enhance failed!"
+ },
+ "smith_enh_ok": {
+  "tr": "Güçlendirme başarılı!",
+  "en": "Enhance succeeded!"
+ },
+ "smith_enhance": {
+  "tr": "Güçlendir",
+  "en": "Enhance"
+ },
+ "smith_enhance_hint": {
+  "tr": "Kuşanılı bir item veya çantadan item seç.",
+  "en": "Pick an equipped item or one from the bag."
+ },
+ "smith_fail_down": {
+  "tr": "Başarısızlıkta -1 seviye",
+  "en": "-1 level on failure"
+ },
+ "smith_level": {
+  "tr": "Demirci seviye {lv}!",
+  "en": "Blacksmith level {lv}!"
+ },
+ "smith_lv": {
+  "tr": "Demirci Lv.{lv}",
+  "en": "Blacksmith Lv.{lv}"
+ },
+ "smith_max": {
+  "tr": "Maksimum seviye",
+  "en": "Max level"
+ },
+ "smith_next": {
+  "tr": "Sonraki",
+  "en": "Next"
+ },
+ "smith_pity": {
+  "tr": "{n}/{m} (bu sayıda başarısızlıktan sonra garanti)",
+  "en": "{n}/{m} (guaranteed after this many failures)"
+ },
+ "smith_salvage": {
+  "tr": "Parçala",
+  "en": "Salvage"
+ },
+ "smith_salvage_hint": {
+  "tr": "Itemleri malzemeye dönüştür.",
+  "en": "Turn items into materials."
+ },
+ "smith_success": {
+  "tr": "Başarı %{p}",
+  "en": "Success {p}%"
+ },
+ "smith_need9": {
+  "tr": "9 item gerekli",
+  "en": "Need 9 items"
+ },
+ "smith_locked": {
+  "tr": "Kilitli item var",
+  "en": "Contains a locked item"
+ },
+ "smith_same_rarity": {
+  "tr": "Hepsi aynı nadirlikte olmalı",
+  "en": "All must share a rarity"
+ },
+ "smith_level_low": {
+  "tr": "Demirci seviyesi yetersiz",
+  "en": "Blacksmith level too low"
+ },
+ "smith_need_mythic": {
+  "tr": "Mitik Öz gerekli",
+  "en": "Needs Mythic Essence"
+ },
+ "sold_for": {
+  "tr": "{g} altına satıldı",
+  "en": "Sold for {g} gold"
+ },
+ "star_up": {
+  "tr": "Yıldız ({s} ruh, {g})",
+  "en": "Star up ({s} shards, {g})"
+ },
+ "starred": {
+  "tr": "{name} {n} yıldız!",
+  "en": "{name} reached {n} stars!"
+ },
+ "stash_full": {
+  "tr": "Depo sekmesi dolu",
+  "en": "Stash tab full"
+ },
+ "stat_exp": {
+  "tr": "EXP",
+  "en": "EXP"
+ },
+ "stat_dps": {
+  "tr": "Tahmini DPS",
+  "en": "Estimated DPS"
+ },
+ "stat_ehp": {
+  "tr": "Etkin HP",
+  "en": "Effective HP"
+ },
+ "stat_points_left": {
+  "tr": "Stat puanı: {n}",
+  "en": "Stat points: {n}"
+ },
+ "summons": {
+  "tr": "Çağrılar",
+  "en": "Summons"
+ },
+ "tab_account": {
+  "tr": "Hesap",
+  "en": "Account"
+ },
+ "tab_achievements": {
+  "tr": "Başarımlar",
+  "en": "Achievements"
+ },
+ "tab_all": {
+  "tr": "Tümü",
+  "en": "All"
+ },
+ "tab_bestiary": {
+  "tr": "Bestiyer",
+  "en": "Bestiary"
+ },
+ "tab_combat": {
+  "tr": "Saldırı",
+  "en": "Combat"
+ },
+ "tab_defense": {
+  "tr": "Savunma",
+  "en": "Defense"
+ },
+ "tab_faction": {
+  "tr": "Fraksiyon",
+  "en": "Faction"
+ },
+ "tab_guild": {
+  "tr": "Lonca",
+  "en": "Guild"
+ },
+ "tab_locked": {
+  "tr": "Kilitli sekme",
+  "en": "Locked tab"
+ },
+ "tab_other": {
+  "tr": "Diğer",
+  "en": "Other"
+ },
+ "tavern_empty": {
+  "tr": "Şu an teklif yok.",
+  "en": "No offers right now."
+ },
+ "tavern_locked": {
+  "tr": "Taverna Lv 8'de açılır.",
+  "en": "The Tavern opens at Lv 8."
+ },
+ "tier_base": {
+  "tr": "Temel",
+  "en": "Base"
+ },
+ "tip_sell_junk": {
+  "tr": "Sıradan ve Büyülü itemleri sat",
+  "en": "Sell Common and Magic items"
+ },
+ "tip_sort": {
+  "tr": "Sırala",
+  "en": "Sort"
+ },
+ "xp_hour": {
+  "tr": "XP/saat",
+  "en": "XP/hour"
+ },
+ "acc_kills": {
+  "tr": "Toplam öldürme",
+  "en": "Total kills"
+ },
+ "acc_gold": {
+  "tr": "Toplam altın",
+  "en": "Total gold"
+ },
+ "acc_items": {
+  "tr": "Bulunan item",
+  "en": "Items found"
+ },
+ "acc_legendaries": {
+  "tr": "Efsanevi",
+  "en": "Legendaries"
+ },
+ "acc_bosses": {
+  "tr": "Yenilen boss",
+  "en": "Bosses defeated"
+ },
+ "acc_deaths": {
+  "tr": "Ölüm",
+  "en": "Deaths"
+ },
+ "acc_playtime": {
+  "tr": "Oyun süresi",
+  "en": "Playtime"
+ },
+ "acc_offline": {
+  "tr": "Offline süre",
+  "en": "Offline time"
+ },
+ "acc_heroes": {
+  "tr": "Kahramanlar",
+  "en": "Heroes"
+ },
+ "acc_codex_enemies": {
+  "tr": "Bestiyer",
+  "en": "Bestiary"
+ },
+ "acc_codex_legendaries": {
+  "tr": "Efsanevi kodeks",
+  "en": "Legendary codex"
+ },
+ "slot_0": {
+  "tr": "Ön 1",
+  "en": "Front 1"
+ },
+ "slot_1": {
+  "tr": "Ön 2",
+  "en": "Front 2"
+ },
+ "slot_2": {
+  "tr": "Orta",
+  "en": "Middle"
+ },
+ "slot_3": {
+  "tr": "Arka 2",
+  "en": "Back 2"
+ },
+ "slot_4": {
+  "tr": "Arka 1",
+  "en": "Back 1"
+ },
+ "town_name": {
+  "tr": "Taşköprü Kasabası",
+  "en": "Stonebridge Town"
+ }
 }

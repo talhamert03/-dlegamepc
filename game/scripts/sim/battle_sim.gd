@@ -29,6 +29,8 @@ var session := {"kills": 0, "xp": 0.0, "gold": 0}
 var _rate_acc := {"xp": 0.0, "gold": 0.0, "kills": 0}
 var _rate_t := 0.0
 var quiet := false           # suppress cosmetic events (offline/tests)
+var dmg_log: Dictionary = {}  # hero id -> damage dealt since reset
+var dmg_log_t := 0.0
 
 
 func _ready() -> void:
@@ -239,6 +241,7 @@ func _set_phase(p: String) -> void:
 # ------------------------------------------------------------------ main tick
 func tick(dt: float) -> void:
 	time += dt
+	dmg_log_t += dt
 	phase_t += dt
 	_rate_t += dt
 	if _rate_t >= 10.0:
@@ -1004,6 +1007,9 @@ func _apply_damage(src: Combatant, tgt: Combatant, amount: float, crit: bool, el
 				_die(src, tgt)
 	if tgt.is_hero_side() and tgt.ult_id != "":
 		tgt.ult_charge = min(100.0, tgt.ult_charge + float(DataDB.bal("combat.ult_per_taken", 0.04)) * amount / max(1.0, tgt.max_hp) * 100.0)
+	if src != null and src.is_hero_side():
+		var key: String = src.id if src.etype == "hero" else "summon"
+		dmg_log[key] = float(dmg_log.get(key, 0.0)) + amount
 	if not quiet:
 		EventBus.damage_dealt.emit(src, tgt, amount, crit, element, kind)
 	if tgt.hp <= 0.0:
