@@ -19,6 +19,8 @@ var _hover := false
 func _init() -> void:
 	custom_minimum_size = Vector2(20, 20)
 	size = Vector2(20, 20)
+	# HD frames are minified (mipmaps), pixel item icons are magnified (stay crisp)
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	mouse_entered.connect(func():
 		_hover = true
@@ -37,7 +39,7 @@ func set_item(it: Dictionary) -> void:
 
 
 func _draw() -> void:
-	draw_texture(UITheme.tex("slot_hover" if _hover else "slot_normal"), Vector2.ZERO)
+	draw_texture_rect(UITheme.tex("slot_hover" if _hover else "slot_normal"), Rect2(Vector2.ZERO, size), false)
 	if item.is_empty():
 		if placeholder:
 			draw_texture_rect(placeholder, Rect2(5, 5, 10, 10), false, Color(1, 1, 1, 0.18))
@@ -50,7 +52,7 @@ func _draw() -> void:
 	if ic:
 		draw_texture(ic, Vector2(2, 2), Color(1, 1, 1, 0.4) if dim else Color.WHITE)
 	if r != "common":
-		draw_texture(UITheme.tex("slot_" + r), Vector2.ZERO)
+		draw_texture_rect(UITheme.tex("slot_" + r), Rect2(Vector2.ZERO, size), false)
 	var enh := int(item.get("enhance", 0))
 	if enh > 0:
 		draw_string(UITheme.font_small, Vector2(1, 8), "+%d" % enh, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#9FF3C0"))

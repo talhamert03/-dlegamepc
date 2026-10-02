@@ -91,22 +91,38 @@ func setup(u: Combatant) -> void:
 ## Swaps the frame sheet for the HD illustration when one exists for this unit.
 func _setup_hd(vis: Dictionary) -> void:
 	var cat := "heroes" if kind == "hero" else ("enemies" if kind == "enemy" else "")
+	var art_id := sheet_id
+	var flip := false
+	# bosses that reuse a hero illustration, and summons that reuse an enemy one (mirrored to face their foes)
+	const ALIAS := {"bjorn_duel": ["heroes", "bjorn"], "mirror_party": ["heroes", "kael"],
+		"skeleton": ["enemies", "skeleton"], "wolf": ["enemies", "wolf"], "golem": ["enemies", "crystal_golem"]}
+	if (kind == "enemy" or kind == "summon") and ALIAS.has(sheet_id) and (kind == "summon" or SpriteLib.hd_meta("enemies", sheet_id).is_empty()):
+		cat = ALIAS[sheet_id][0]
+		art_id = ALIAS[sheet_id][1]
+		flip = (cat == "heroes") != unit.is_hero_side()
+	if kind == "summon" and sheet_id.begins_with("pet_"):
+		cat = "pets"
+		art_id = sheet_id.substr(4)
 	if cat == "":
 		return
-	var tex := SpriteLib.hd_sprite(cat, sheet_id)
+	var tex := SpriteLib.hd_sprite(cat, art_id)
 	if tex == null:
 		return
-	var m := SpriteLib.hd_meta(cat, sheet_id)
+	var m := SpriteLib.hd_meta(cat, art_id)
 	var h := float(m.get("h", tex.get_height()))
 	var target := 56.0
-	if kind != "hero":
+	if kind == "summon":
+		target = 24.0 if cat == "pets" else 34.0
+	elif kind != "hero":
 		# keep the old sheet's on-screen size for enemies (bosses stay big)
-		target = clampf(-_head_y - 5.0, 22.0, 80.0) * 1.18
+		target = clampf((-_head_y - 5.0) * 1.18, 24.0, 70.0)
 	_hd_k = target / h
 	hd = Sprite2D.new()
 	hd.texture = tex
 	hd.centered = false
-	hd.offset = Vector2(-float(m.get("foot_x", tex.get_width() / 2.0)), -h)
+	var fx := float(m.get("foot_x", tex.get_width() / 2.0))
+	hd.flip_h = flip
+	hd.offset = Vector2(-(float(tex.get_width()) - fx if flip else fx), -h)
 	hd.scale = Vector2(_hd_k, _hd_k)
 	hd.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	hd.material = mat

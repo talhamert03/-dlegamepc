@@ -26,6 +26,11 @@ func build(c: Control) -> void:
 func pet_icon(pid: String) -> Texture2D:
 	if _icons.has(pid):
 		return _icons[pid]
+	var hd := SpriteLib.hd_sprite("pets", pid)
+	if hd:
+		hd.set_meta("hd", true)
+		_icons[pid] = hd
+		return hd
 	var sf := SpriteLib.frames_for("enemy", "pet_" + pid)
 	if sf == null or not sf.has_animation("idle"):
 		return null
@@ -55,22 +60,27 @@ func refresh() -> void:
 		var b := TextureButton.new()
 		b.texture_normal = UITheme.tex("slot_normal")
 		b.texture_hover = UITheme.tex("slot_hover")
+		b.ignore_texture_size = true
+		b.stretch_mode = TextureButton.STRETCH_SCALE
+		b.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		b.custom_minimum_size = Vector2(26, 26)
 		b.ignore_texture_size = true
 		b.stretch_mode = TextureButton.STRETCH_SCALE
 		b.focus_mode = Control.FOCUS_NONE
 		var ic := TextureRect.new()
 		ic.texture = pet_icon(pid)
+		ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		ic.position = Vector2(3, 3)
 		ic.size = Vector2(20, 20)
-		ic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		ic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		ic.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		if ic.texture and ic.texture.has_meta("hd"):
+			ic.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		if lv <= 0:
 			ic.modulate = Color(0, 0, 0, 0.75)
 		b.add_child(ic)
 		if pid == active:
-			var fr := W.icon_rect(UITheme.tex("slot_legendary"))
+			var fr := W.icon_rect(UITheme.tex("slot_selected"))
 			fr.size = Vector2(26, 26)
 			fr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			fr.mouse_filter = Control.MOUSE_FILTER_IGNORE

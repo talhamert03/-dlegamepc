@@ -50,6 +50,9 @@ func refresh() -> void:
 		var b := TextureButton.new()
 		b.texture_normal = UITheme.tex("slot_normal")
 		b.texture_hover = UITheme.tex("slot_hover")
+		b.ignore_texture_size = true
+		b.stretch_mode = TextureButton.STRETCH_SCALE
+		b.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		b.custom_minimum_size = Vector2(20, 20)
 		b.focus_mode = Control.FOCUS_NONE
 		var hid: String = GameState.party[slot]
@@ -63,7 +66,7 @@ func refresh() -> void:
 			b.add_child(lk)
 			b.disabled = true
 		if slot == sel_slot:
-			var fr := W.icon_rect(UITheme.tex("slot_legendary"))
+			var fr := W.icon_rect(UITheme.tex("slot_selected"))
 			fr.size = Vector2(20, 20)
 			b.add_child(fr)
 		b.pressed.connect(func():
@@ -78,6 +81,9 @@ func refresh() -> void:
 		var b2 := TextureButton.new()
 		b2.texture_normal = UITheme.tex("slot_normal")
 		b2.texture_hover = UITheme.tex("slot_hover")
+		b2.ignore_texture_size = true
+		b2.stretch_mode = TextureButton.STRETCH_SCALE
+		b2.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		b2.custom_minimum_size = Vector2(20, 20)
 		b2.focus_mode = Control.FOCUS_NONE
 		b2.tooltip_text = "%s  Lv %d  %s" % [h.display_name(), h.level, h.class_title()]

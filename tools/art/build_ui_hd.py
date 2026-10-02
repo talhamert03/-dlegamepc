@@ -4,6 +4,7 @@
 Everything is drawn on a 0..100 design grid, supersampled 4x and downscaled with Lanczos.
 Output: game/assets/ui_hd/<name>.png  (icons 56px = 7 logical px at 8x; orbs 112px = 14 logical px)
 """
+import json
 import math
 import os
 
@@ -400,3 +401,53 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# --------------------------------------------------------------------------- slots (20 logical px -> 80 px)
+def _rr(d, box, r, fill=None, outline=None, width=1):
+    d.rounded_rectangle(box, radius=r, fill=fill, outline=outline, width=width)
+
+
+def slot(kind, color=None, size=80):
+    px = size * SS
+    img = Image.new("RGBA", (px, px), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    r = int(px * 0.14)
+    if kind in ("normal", "hover"):
+        _rr(d, [0, 0, px - 1, px - 1], r, fill=(8, 10, 16, 255))
+        # inner gradient well
+        for k in range(24):
+            t = k / 23
+            c = (int(14 + 10 * t), int(17 + 11 * t), int(26 + 14 * t), 255)
+            inset = int(px * 0.06) + k
+            _rr(d, [inset, inset, px - 1 - inset, px - 1 - inset], max(2, r - k), fill=c)
+        border = (201, 164, 92, 255) if kind == "hover" else (47, 54, 73, 255)
+        _rr(d, [0, 0, px - 1, px - 1], r, outline=border, width=int(px * 0.04))
+        _rr(d, [int(px * 0.05)] * 2 + [px - 1 - int(px * 0.05)] * 2, r, outline=(255, 255, 255, 18), width=int(px * 0.02))
+    else:
+        # rarity / selection overlay: coloured border with soft inner glow, transparent centre
+        col = tuple(int(color.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4))
+        glow = Image.new("L", (px, px), 0)
+        gd = ImageDraw.Draw(glow)
+        _rr(gd, [0, 0, px - 1, px - 1], r, outline=255, width=int(px * 0.16))
+        glow = glow.filter(ImageFilter.GaussianBlur(px * 0.05))
+        gl = Image.new("RGBA", (px, px), col + (0,))
+        gl.putalpha(glow.point(lambda v: int(v * 0.55)))
+        img = Image.alpha_composite(img, gl)
+        d = ImageDraw.Draw(img)
+        _rr(d, [0, 0, px - 1, px - 1], r, outline=col + (255,), width=int(px * 0.045))
+        _rr(d, [int(px * 0.045)] * 2 + [px - 1 - int(px * 0.045)] * 2, r, outline=(255, 255, 255, 70), width=int(px * 0.015))
+    return img.resize((size, size), Image.LANCZOS)
+
+
+def build_slots():
+    write(slot("normal"), "slot_normal")
+    write(slot("hover"), "slot_hover")
+    rc = json.load(open(os.path.join(ROOT, "game", "data", "items.json")))["rarity_colors"]
+    for r, c in rc.items():
+        write(slot("rarity", c), "slot_" + r)
+    write(slot("rarity", "#FFD978"), "slot_selected")
+
+
+if __name__ == "__main__":
+    build_slots()

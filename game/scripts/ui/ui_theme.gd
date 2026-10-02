@@ -53,6 +53,11 @@ func _font(path: String) -> FontFile:
 func tex(name: String) -> Texture2D:
 	if _tex.has(name):
 		return _tex[name]
+	if name.begins_with("slot_"):
+		var h := hd(name, Vector2(20, 20))
+		if h:
+			_tex[name] = h
+			return h
 	var path := UI + name
 	if not path.ends_with(".png"):
 		path += ".png"

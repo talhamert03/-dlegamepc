@@ -466,6 +466,393 @@
    "w": 379,
    "h": 360,
    "foot_x": 188.8
+  },
+  "lizardman": {
+   "w": 361,
+   "h": 360,
+   "foot_x": 227.0
+  },
+  "anubis_guard": {
+   "w": 331,
+   "h": 360,
+   "foot_x": 243.4
+  },
+  "fire_elemental": {
+   "w": 250,
+   "h": 360,
+   "foot_x": 165.6
+  },
+  "lava_slime": {
+   "w": 347,
+   "h": 360,
+   "foot_x": 184.1
+  },
+  "animated_armor": {
+   "w": 335,
+   "h": 360,
+   "foot_x": 293.7
+  },
+  "ink_slime": {
+   "w": 344,
+   "h": 360,
+   "foot_x": 227.0
+  },
+  "imp": {
+   "w": 366,
+   "h": 360,
+   "foot_x": 270.6
+  },
+  "time_ghost": {
+   "w": 313,
+   "h": 360,
+   "foot_x": 164.0
+  },
+  "chimera": {
+   "w": 353,
+   "h": 360,
+   "foot_x": 190.5
+  },
+  "hellhound": {
+   "w": 359,
+   "h": 360,
+   "foot_x": 150.4
+  },
+  "clock_golem": {
+   "w": 313,
+   "h": 360,
+   "foot_x": 173.6
+  },
+  "homunculus": {
+   "w": 358,
+   "h": 360,
+   "foot_x": 244.7
+  },
+  "demon_imp": {
+   "w": 363,
+   "h": 360,
+   "foot_x": 283.0
+  },
+  "blood_elemental": {
+   "w": 310,
+   "h": 360,
+   "foot_x": 213.3
+  },
+  "cursed_book": {
+   "w": 314,
+   "h": 360,
+   "foot_x": 142.3
+  },
+  "drowned": {
+   "w": 324,
+   "h": 360,
+   "foot_x": 208.5
+  },
+  "cursed_ent": {
+   "w": 301,
+   "h": 360,
+   "foot_x": 211.7
+  },
+  "shadow_wolf": {
+   "w": 348,
+   "h": 360,
+   "foot_x": 147.9
+  },
+  "bone_drake": {
+   "w": 374,
+   "h": 360,
+   "foot_x": 179.1
+  },
+  "skeleton_archer": {
+   "w": 290,
+   "h": 360,
+   "foot_x": 172.4
+  },
+  "cultist": {
+   "w": 304,
+   "h": 360,
+   "foot_x": 185.9
+  },
+  "sacrifice_priest": {
+   "w": 274,
+   "h": 360,
+   "foot_x": 188.2
+  },
+  "void_spawn": {
+   "w": 344,
+   "h": 360,
+   "foot_x": 203.8
+  },
+  "tentacle": {
+   "w": 226,
+   "h": 360,
+   "foot_x": 121.8
+  },
+  "dark_knight": {
+   "w": 355,
+   "h": 360,
+   "foot_x": 286.6
+  },
+  "gargoyle": {
+   "w": 317,
+   "h": 360,
+   "foot_x": 189.8
+  },
+  "vampire": {
+   "w": 345,
+   "h": 360,
+   "foot_x": 218.4
+  },
+  "abyss_guard": {
+   "w": 358,
+   "h": 360,
+   "foot_x": 233.1
+  },
+  "bat_swarm": {
+   "w": 357,
+   "h": 360,
+   "foot_x": 211.7
+  },
+  "giant_slime": {
+   "w": 367,
+   "h": 360,
+   "foot_x": 199.2
+  },
+  "boar_mother": {
+   "w": 365,
+   "h": 360,
+   "foot_x": 150.0
+  },
+  "goblin_scout_chief": {
+   "w": 360,
+   "h": 360,
+   "foot_x": 213.6
+  },
+  "king_mushroom": {
+   "w": 346,
+   "h": 360,
+   "foot_x": 190.6
+  },
+  "goblin_chief": {
+   "w": 362,
+   "h": 360,
+   "foot_x": 216.5
+  },
+  "queen_spider": {
+   "w": 352,
+   "h": 360,
+   "foot_x": 182.5
+  },
+  "grave_keeper": {
+   "w": 348,
+   "h": 360,
+   "foot_x": 209.1
+  },
+  "goblin_engineer": {
+   "w": 360,
+   "h": 360,
+   "foot_x": 231.5
+  },
+  "rotten_ent": {
+   "w": 345,
+   "h": 360,
+   "foot_x": 194.0
+  },
+  "goblin_king": {
+   "w": 360,
+   "h": 360,
+   "foot_x": 271.3
+  },
+  "bandit_chief": {
+   "w": 357,
+   "h": 360,
+   "foot_x": 170.1
+  },
+  "yeti": {
+   "w": 353,
+   "h": 360,
+   "foot_x": 210.9
+  },
+  "lake_monster": {
+   "w": 344,
+   "h": 360,
+   "foot_x": 166.9
+  },
+  "crystal_spider": {
+   "w": 354,
+   "h": 360,
+   "foot_x": 250.8
+  },
+  "cursed_foreman": {
+   "w": 363,
+   "h": 360,
+   "foot_x": 199.9
+  },
+  "harpy_queen": {
+   "w": 355,
+   "h": 360,
+   "foot_x": 201.5
+  },
+  "frozen_knight": {
+   "w": 298,
+   "h": 360,
+   "foot_x": 145.6
+  },
+  "pirate_captain": {
+   "w": 358,
+   "h": 360,
+   "foot_x": 210.1
+  },
+  "giant_worm": {
+   "w": 352,
+   "h": 360,
+   "foot_x": 210.9
+  },
+  "mirage_queen": {
+   "w": 346,
+   "h": 360,
+   "foot_x": 211.4
+  },
+  "pharaoh": {
+   "w": 345,
+   "h": 360,
+   "foot_x": 215.4
+  },
+  "magma_golem": {
+   "w": 337,
+   "h": 360,
+   "foot_x": 205.4
+  },
+  "mad_alchemist": {
+   "w": 353,
+   "h": 360,
+   "foot_x": 208.3
+  },
+  "library_guardian": {
+   "w": 349,
+   "h": 360,
+   "foot_x": 183.6
+  },
+  "hourglass_keeper": {
+   "w": 360,
+   "h": 360,
+   "foot_x": 176.3
+  },
+  "chimera_alpha": {
+   "w": 352,
+   "h": 360,
+   "foot_x": 126.7
+  },
+  "demon_hunter": {
+   "w": 350,
+   "h": 360,
+   "foot_x": 189.0
+  },
+  "shadow_ent": {
+   "w": 346,
+   "h": 360,
+   "foot_x": 173.4
+  },
+  "high_cultist": {
+   "w": 336,
+   "h": 360,
+   "foot_x": 174.9
+  },
+  "void_eye": {
+   "w": 362,
+   "h": 360,
+   "foot_x": 197.8
+  },
+  "ice_witch": {
+   "w": 241,
+   "h": 360,
+   "foot_x": 121.9
+  },
+  "corvus": {
+   "w": 239,
+   "h": 360,
+   "foot_x": 126.4
+  },
+  "river_nightmare": {
+   "w": 360,
+   "h": 360,
+   "foot_x": 212.0
+  },
+  "bone_colossus": {
+   "w": 345,
+   "h": 360,
+   "foot_x": 208.6
+  },
+  "dark_commander": {
+   "w": 358,
+   "h": 360,
+   "foot_x": 163.8
+  },
+  "vampire_countess": {
+   "w": 240,
+   "h": 360,
+   "foot_x": 130.8
+  },
+  "abyss_twins": {
+   "w": 359,
+   "h": 360,
+   "foot_x": 217.9
+  },
+  "morvath": {
+   "w": 242,
+   "h": 360,
+   "foot_x": 153.0
+  }
+ },
+ "pets": {
+  "jelly": {
+   "w": 233,
+   "h": 240,
+   "foot_x": 114.8
+  },
+  "cotton": {
+   "w": 191,
+   "h": 240,
+   "foot_x": 96.0
+  },
+  "ember_fox": {
+   "w": 222,
+   "h": 240,
+   "foot_x": 158.7
+  },
+  "nightwing": {
+   "w": 247,
+   "h": 240,
+   "foot_x": 115.8
+  },
+  "glimmer": {
+   "w": 258,
+   "h": 240,
+   "foot_x": 156.0
+  },
+  "pengu": {
+   "w": 179,
+   "h": 240,
+   "foot_x": 94.2
+  },
+  "pebble": {
+   "w": 218,
+   "h": 240,
+   "foot_x": 115.9
+  },
+  "pixie": {
+   "w": 250,
+   "h": 240,
+   "foot_x": 109.1
+  },
+  "drakeling": {
+   "w": 235,
+   "h": 240,
+   "foot_x": 133.8
+  },
+  "voidling": {
+   "w": 265,
+   "h": 240,
+   "foot_x": 133.9
   }
  }
 }

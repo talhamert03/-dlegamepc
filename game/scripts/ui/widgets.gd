@@ -110,6 +110,9 @@ static func hero_selector(selected: String, cb: Callable, include_roster := fals
 		var b := TextureButton.new()
 		b.texture_normal = UITheme.tex("slot_normal")
 		b.texture_hover = UITheme.tex("slot_hover")
+		b.ignore_texture_size = true
+		b.stretch_mode = TextureButton.STRETCH_SCALE
+		b.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		b.custom_minimum_size = Vector2(20, 20)
 		b.focus_mode = Control.FOCUS_NONE
 		b.tooltip_text = DataDB.hero_def(hid).get("name", hid)
@@ -118,7 +121,7 @@ static func hero_selector(selected: String, cb: Callable, include_roster := fals
 		ic.size = Vector2(20, 20)
 		b.add_child(ic)
 		if hid == selected:
-			var fr := icon_rect(UITheme.tex("slot_legendary"))
+			var fr := icon_rect(UITheme.tex("slot_selected"))
 			fr.size = Vector2(20, 20)
 			b.add_child(fr)
 		var h2: HeroState = GameState.heroes.get(hid)

@@ -21,7 +21,7 @@ from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(ROOT, "art_src")
 OUT = os.path.join(ROOT, "game", "assets", "hd")
-SPRITE_H = {"heroes": 360, "enemies": 360}
+SPRITE_H = {"heroes": 360, "enemies": 360, "pets": 240}
 
 
 def download(url, path):
