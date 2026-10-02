@@ -43,6 +43,7 @@ Yerelde: export template'lerini kurup `godot --headless --export-release "Window
 - Offline ilerleme, taverna, görevler, 41 başarım, kodeks, lonca salonu ağacı
 - **Sonsuz Kule** (Sv 50 / Kabus açılınca), **10 evcil dost** (boss ve kule düşüşleri), **6 kostüm**, hikaye girişi ve finali
 - TR/EN dil, 21 SFX + 7 müzik parçası
+- Tek şeffaf overlay penceresi: şerit + sürüklenebilir paneller, boş alanlar tıklamayı masaüstüne geçirir
 
 ## Proje yapısı
 
@@ -55,13 +56,15 @@ game/
   scripts/ui     şerit görünümü, panel pencereleri, başlık/final ekranları
   tests/         birim testleri + denge botu
 tools/
-  art/           prosedürel pixel-art üreticileri (kahraman, düşman, evcil, arka plan, UI, ikon, harita)
+  art/           yapay zeka görsel boru hattı (ai_prompts, ai_jobs, import_ai_art), HD UI üretici (build_ui_hd)
+                 ve yedek prosedürel pixel-art üreticileri
   audio/         prosedürel SFX/müzik üretici (ffmpeg ile ogg)
   data/          dünya/düşman/bölge verisi üretici
 docs/            GDD (PDF + Markdown) ve teknik kararlar
 ```
 
-Sanat varlıklarını yeniden üretmek: `python3 tools/art/build_heroes.py`, `build_enemies.py`,
+Karakter ve arka plan görselleri yapay zeka ile üretildi (`game/assets/hd/`, ayrıntı: `docs/DECISIONS.md` → Sanat).
+HD UI: `python3 tools/art/build_ui_hd.py`. Yedek prosedürel varlıklar: `python3 tools/art/build_heroes.py`, `build_enemies.py`,
 `build_backgrounds.py`, `build_ui.py`, `build_icons.py`, `build_maps.py`; ses için `python3 tools/audio/build_audio.py`.
 
 ## Dokümanlar

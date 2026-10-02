@@ -9,6 +9,8 @@ const LAYERS := [["sky", 0.0], ["far", 0.1], ["mid", 0.4], ["ground", 1.0]]
 var bg_root: Node2D
 var bg_layers: Dictionary = {}
 var fore: Sprite2D
+var hd_bg: Sprite2D           # HD illustrated panorama (replaces the pixel layers when present)
+const HD_BG_SCALE := 4.0      # panorama textures are 4x the strip's logical height
 var units_root: Node2D
 var fx_root: Node2D
 var num_root: Node2D
@@ -45,6 +47,14 @@ func _ready() -> void:
 		s.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 		bg_root.add_child(s)
 		bg_layers[l[0]] = s
+	hd_bg = Sprite2D.new()
+	hd_bg.centered = false
+	hd_bg.region_enabled = true
+	hd_bg.texture_repeat = CanvasItem.TEXTURE_REPEAT_MIRROR
+	hd_bg.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	hd_bg.scale = Vector2.ONE / HD_BG_SCALE
+	hd_bg.visible = false
+	bg_root.add_child(hd_bg)
 	units_root = Node2D.new()
 	units_root.y_sort_enabled = false
 	add_child(units_root)
@@ -197,6 +207,12 @@ func _set_theme(theme_name: String) -> void:
 		s.texture = load(path) if ResourceLoader.exists(path) else null
 	var fpath := "res://assets/backgrounds/%s/fore.png" % theme_name
 	fore.texture = load(fpath) if ResourceLoader.exists(fpath) else null
+	var hpath := "res://assets/hd/bg/%s.png" % theme_name
+	hd_bg.texture = load(hpath) if ResourceLoader.exists(hpath) else null
+	hd_bg.visible = hd_bg.texture != null
+	for l in LAYERS:
+		bg_layers[l[0]].visible = not hd_bg.visible
+	fore.visible = not hd_bg.visible
 	_weather_kind = {"snow": "snow", "ice": "snow", "storm": "rain", "forest_fog": "fog", "lava": "ember", "ash": "ember",
 		"graveyard": "fog", "dark_forest": "leaf", "forest": "leaf", "void": "ember", "blood": "ember"}.get(theme_name, "")
 	_weather.clear()
@@ -211,6 +227,9 @@ func _process(delta: float) -> void:
 		if s.texture:
 			s.region_rect = Rect2(floor(sc * float(l[1])), 0, W, H)
 			s.modulate = tint if l[0] != "ground" else tint.lerp(Color.WHITE, 0.35)
+	if hd_bg.visible:
+		hd_bg.region_rect = Rect2(sc * 0.75 * HD_BG_SCALE, 0, W * HD_BG_SCALE, H * HD_BG_SCALE)
+		hd_bg.modulate = tint.lerp(Color.WHITE, 0.25)
 	if fore.texture:
 		fore.region_rect = Rect2(floor(sc * 1.3), 0, W, H)
 		fore.modulate = Color(tint.r, tint.g, tint.b, 0.75)
@@ -245,7 +264,7 @@ func _process(delta: float) -> void:
 
 func _draw() -> void:
 	# fallback background when no art exists
-	if bg_layers["sky"].texture == null:
+	if bg_layers["sky"].texture == null and not hd_bg.visible:
 		var tint := TimeService.world_tint()
 		for i in 8:
 			var c := Color("#7FB8E8").lerp(Color("#CFE8F6"), i / 8.0) * tint

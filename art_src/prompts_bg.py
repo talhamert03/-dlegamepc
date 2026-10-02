@@ -1,0 +1,33 @@
+import json
+T = "Wide side-view 2D game background panorama for a horizontally scrolling fantasy idle RPG battle strip, high-resolution detailed anime pixel-art style matching premium modern pixel RPGs. {d} The ground runs along the very bottom of the image as a flat walkable strip. Flat horizon, no characters, no creatures, no text, no UI, no frame. The left and right edges should continue naturally so the image can be tiled horizontally."
+D = {
+ "forest": "Lush green forest with a mossy dirt path, tall oak trunks, ferns, sunbeams through the canopy.",
+ "forest_fog": "Misty forest at dawn with a damp path, pale fog between dark pine trunks, soft muted greens.",
+ "cave": "Glowing mushroom cave with a rocky floor, giant blue and purple bioluminescent mushrooms, stalactites.",
+ "camp": "Goblin war camp with trampled mud ground, crude wooden palisades, hide tents, smoking campfires, dusk sky.",
+ "graveyard": "Haunted graveyard at night with a cobbled path, crooked tombstones, dead trees, low green fog, full moon.",
+ "snow": "Snowy mountain village with a packed snow road, wooden cabins with glowing windows, pine trees, distant peaks.",
+ "ice": "Frozen lake shore with cracked blue ice ground, snow drifts, frosted pines, pale winter sky with aurora hints.",
+ "ice_cave": "Ice crystal cave with a frozen floor, huge glowing cyan crystals, icicles, cold blue light.",
+ "mine": "Dwarven mine with a rocky floor and rail tracks, wooden support beams, lanterns, glittering ore veins.",
+ "storm": "Stormy hilltop with a wet grassy path, dark thunderclouds, lightning in the distance, wind-bent trees.",
+ "harbor": "Sandy harbor with a wooden boardwalk ground, moored sailing ships, docks, warm sunset over the sea.",
+ "desert": "Desert dunes with a hard sand ground, rolling golden dunes, sandstone rock arches, blazing sky.",
+ "oasis": "Desert oasis with a sandy path, palm trees, a turquoise pool, distant dunes under a clear sky.",
+ "tomb": "Buried ancient city tomb with a sandstone tile floor, hieroglyph pillars, torches, golden sarcophagi in alcoves.",
+ "lava": "Lava canyon with a cracked basalt floor, rivers of glowing lava, volcanic spires, red smoky sky.",
+ "ruins": "Ancient overgrown ruins with a broken stone floor, crumbling marble columns, vines, soft afternoon light.",
+ "library": "Arcane library with a polished wooden floor, towering bookshelves, floating glowing books, magic candles.",
+ "temple": "Sun temple with a golden stone floor, white marble pillars, sun motifs, bright warm light.",
+ "ash": "Ash plains with a grey cinder ground, burnt dead trees, falling ash, dim orange sky.",
+ "blood": "Blood river land with a dark rocky shore, crimson river, twisted red trees, blood-red sky.",
+ "bones": "Bone fields with a dusty ground, giant ancient skeletons and ribcages, bleak pale sky.",
+ "dark_forest": "Black cursed forest with a dark root-covered path, twisted black trees, glowing purple eyes-like lights, gloom.",
+ "temple_dark": "Dark cultist temple with an obsidian floor, purple braziers, ominous statues, ritual banners.",
+ "void": "Void abyss with a floating dark stone platform ground, swirling purple and black cosmic rifts, stars.",
+ "castle": "Castle ramparts with a stone walkway floor, crenellated walls, banners, towers, cloudy sky.",
+ "hall": "Grand banquet hall with a stone floor, long tables, chandeliers, tapestries, warm candlelight.",
+ "throne": "Demon king throne room with a dark red carpet floor, black pillars, hellfire braziers, ominous throne in distance.",
+ "town": "Cozy medieval fantasy town with a cobblestone street, timber houses, market stalls, warm lanterns, friendly atmosphere.",
+}
+json.dump({k: T.format(d=v) for k, v in D.items()}, open("art_src/prompts_bg.json", "w"), indent=1)

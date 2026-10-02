@@ -98,6 +98,9 @@ def head_icon(img, size=128, center=None):
 
 def main():
     kind = sys.argv[1] if len(sys.argv) > 1 else "heroes"
+    if kind == "bg":
+        import_backgrounds()
+        return
     urls = json.load(open(os.path.join(SRC, f"urls_{kind}.json")))
     meta_path = os.path.join(OUT, "meta.json")
     meta = json.load(open(meta_path)) if os.path.exists(meta_path) else {}
@@ -123,6 +126,26 @@ def main():
             head_icon(img, center=ov.get(cid)).save(os.path.join(OUT, "icons", cid + ".png"), optimize=True)
         print("ok", cid, spr.size)
     json.dump(meta, open(meta_path, "w"), indent=1)
+
+
+
+def import_backgrounds():
+    """art_src/urls_bg.json {theme: url} -> game/assets/hd/bg/<theme>.png, a band 336 px tall (4x strip)
+    cropped from the bottom of the panorama so the painted ground lines up with the battle ground line."""
+    urls = json.load(open(os.path.join(SRC, "urls_bg.json")))
+    os.makedirs(os.path.join(OUT, "bg"), exist_ok=True)
+    for theme, url in urls.items():
+        raw = os.path.join(SRC, "raw", "bg", theme + ".png")
+        if not download(url, raw):
+            print("download failed", theme)
+            continue
+        img = Image.open(raw).convert("RGB")
+        band_h = int(img.width / 3.2)          # keep a wide band: ground + scenery, trim most of the empty sky
+        band_h = min(band_h, img.height)
+        img = img.crop((0, img.height - band_h, img.width, img.height))
+        img = img.resize((round(img.width * 336 / img.height), 336), Image.LANCZOS)
+        img.save(os.path.join(OUT, "bg", theme + ".png"), optimize=True)
+        print("ok", theme, img.size)
 
 
 if __name__ == "__main__":
