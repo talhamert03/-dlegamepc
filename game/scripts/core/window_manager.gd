@@ -8,39 +8,39 @@ extends Node
 ## drawn at native resolution.
 
 const STRIP_SIZE := Vector2i(440, 72)    # battle view 360 + control block 80
-const MAX_PANEL_H := 250
+const MAX_PANEL_H := 334
 const GAP := 2   # logical pixels between panels / strip
 const PANELS := {
-	"stats": {"script": "res://scripts/ui/panels/stats_panel.gd", "size": Vector2i(170, 250), "title": "panel_stats"},
-	"hero": {"script": "res://scripts/ui/panels/hero_panel.gd", "size": Vector2i(176, 250), "title": "panel_hero"},
+	"hero": {"script": "res://scripts/ui/panels/hero_main_panel.gd", "size": Vector2i(252, 334), "title": "panel_hero"},
+	"stats": {"script": "res://scripts/ui/panels/stats_panel.gd", "size": Vector2i(196, 334), "title": "panel_stats"},
+	"skills": {"script": "res://scripts/ui/panels/hero_panel.gd", "size": Vector2i(196, 334), "title": "panel_skills"},
 	"portrait": {"script": "res://scripts/ui/panels/portrait_panel.gd", "size": Vector2i(150, 250), "title": "panel_portrait"},
 	"inventory": {"script": "res://scripts/ui/panels/inventory_panel.gd", "size": Vector2i(176, 250), "title": "panel_inventory"},
-	"stash": {"script": "res://scripts/ui/panels/stash_panel.gd", "size": Vector2i(160, 250), "title": "panel_stash"},
-	"blacksmith": {"script": "res://scripts/ui/panels/blacksmith_panel.gd", "size": Vector2i(170, 250), "title": "panel_blacksmith"},
-	"world": {"script": "res://scripts/ui/panels/world_panel.gd", "size": Vector2i(260, 200), "title": "panel_world"},
-	"growth": {"script": "res://scripts/ui/panels/growth_panel.gd", "size": Vector2i(260, 220), "title": "panel_growth"},
+	"stash": {"script": "res://scripts/ui/panels/stash_panel.gd", "size": Vector2i(196, 334), "title": "panel_stash"},
+	"blacksmith": {"script": "res://scripts/ui/panels/blacksmith_panel.gd", "size": Vector2i(196, 334), "title": "panel_blacksmith"},
+	"world": {"script": "res://scripts/ui/panels/world_panel.gd", "size": Vector2i(240, 334), "title": "panel_world"},
+	"growth": {"script": "res://scripts/ui/panels/growth_panel.gd", "size": Vector2i(248, 260), "title": "panel_growth"},
 	"party": {"script": "res://scripts/ui/panels/party_panel.gd", "size": Vector2i(220, 200), "title": "panel_party"},
-	"tavern": {"script": "res://scripts/ui/panels/tavern_panel.gd", "size": Vector2i(220, 200), "title": "panel_tavern"},
-	"settings": {"script": "res://scripts/ui/panels/settings_panel.gd", "size": Vector2i(200, 230), "title": "panel_settings"},
-	"away": {"script": "res://scripts/ui/panels/away_panel.gd", "size": Vector2i(200, 170), "title": "panel_away"},
-	"dps": {"script": "res://scripts/ui/panels/dps_panel.gd", "size": Vector2i(170, 150), "title": "panel_dps"},
-	"quests": {"script": "res://scripts/ui/panels/quests_panel.gd", "size": Vector2i(200, 200), "title": "panel_quests"},
-	"codex": {"script": "res://scripts/ui/panels/codex_panel.gd", "size": Vector2i(220, 220), "title": "panel_codex"},
-	"ending": {"script": "res://scripts/ui/panels/ending_panel.gd", "size": Vector2i(240, 135), "title": "panel_ending"},
-	"pets": {"script": "res://scripts/ui/panels/pets_panel.gd", "size": Vector2i(200, 200), "title": "panel_pets"},
+	"tavern": {"script": "res://scripts/ui/panels/tavern_panel.gd", "size": Vector2i(232, 220), "title": "panel_tavern"},
+	"settings": {"script": "res://scripts/ui/panels/settings_panel.gd", "size": Vector2i(210, 250), "title": "panel_settings"},
+	"away": {"script": "res://scripts/ui/panels/away_panel.gd", "size": Vector2i(210, 180), "title": "panel_away"},
+	"dps": {"script": "res://scripts/ui/panels/dps_panel.gd", "size": Vector2i(180, 160), "title": "panel_dps"},
+	"quests": {"script": "res://scripts/ui/panels/quests_panel.gd", "size": Vector2i(210, 220), "title": "panel_quests"},
+	"codex": {"script": "res://scripts/ui/panels/codex_panel.gd", "size": Vector2i(232, 240), "title": "panel_codex"},
+	"ending": {"script": "res://scripts/ui/panels/ending_panel.gd", "size": Vector2i(250, 150), "title": "panel_ending"},
+	"pets": {"script": "res://scripts/ui/panels/pets_panel.gd", "size": Vector2i(210, 220), "title": "panel_pets"},
 }
-const GROUPS := {"hero": ["stats", "hero", "portrait"], "bag": ["inventory"], "world": ["world"], "growth": ["growth"]}
+const GROUPS := {"hero": ["hero"], "bag": ["hero"], "world": ["world"], "growth": ["growth"]}
 ## Default home of every panel: panels sit above the strip, bottom-aligned. Groups open side by side;
 ## a reopened panel comes back here.
 const HOME := {
-	"stats": "group", "hero": "group", "portrait": "group",
-	"inventory": "right", "world": "right", "growth": "center", "party": "right", "tavern": "right",
-	"pets": "right", "quests": "right", "codex": "center", "settings": "right", "dps": "left",
-	"away": "center", "ending": "center",
-	"stash": "left_of:inventory", "blacksmith": "left_of:inventory",
+	"hero": "center", "ending": "center",
+	"away": "left", "stats": "left", "skills": "left", "stash": "left", "blacksmith": "left", "pets": "left", "dps": "left",
+	"world": "right", "growth": "right", "tavern": "right", "quests": "right", "codex": "right", "settings": "right",
+	"party": "right", "inventory": "right", "portrait": "left",
 }
 
-var ui_scale: int = 2
+var ui_scale: float = 2.0
 var panels: Dictionary = {}
 var selected_hero: String = ""
 var tooltip: Control = null
@@ -87,8 +87,8 @@ func setup_main_window() -> void:
 	ui_scale = compute_scale()
 	var usable := _usable()
 	# window = usable area rounded down to a multiple of the scale, bottom-aligned (keeps pixel art crisp)
-	var logical := Vector2i(usable.size.x / ui_scale, usable.size.y / ui_scale)
-	var phys := logical * ui_scale
+	var logical := Vector2i(int(usable.size.x / ui_scale), int(usable.size.y / ui_scale))
+	var phys := Vector2i((Vector2(logical) * ui_scale).floor())
 	w.borderless = true
 	w.transparent = true
 	w.always_on_top = bool(Settings.get_v("always_on_top", true))
@@ -119,18 +119,19 @@ func _usable() -> Rect2i:
 
 ## Compact, taskbar-hero sized: about one integer step per 520 px of screen height
 ## (1920x1080/1200 -> 2x, 2560x1440 -> 3x, 4K -> 4x), reduced until the strip and a full panel still fit.
-func compute_scale() -> int:
+func compute_scale() -> float:
 	var s := int(Settings.get_v("scale", 0))
 	if s > 0:
-		return s
+		return float(s)
 	var usable := _usable()
-	var k := clampi(int(round(usable.size.y / 520.0)), 2, 6)
-	while k > 1:
-		var fits_w: bool = STRIP_SIZE.x * k <= int(usable.size.x * 0.8)
+	# half steps: 768p -> 1.5x, 1080p -> 2x, 1440p -> 2.5x, 4K -> 4x
+	var k := clampf(round(usable.size.y / 520.0 * 2.0) / 2.0, 1.5, 6.0)
+	while k > 1.0:
+		var fits_w: bool = STRIP_SIZE.x * k <= usable.size.x * 0.8
 		var fits_h: bool = (STRIP_SIZE.y + MAX_PANEL_H + 6) * k <= usable.size.y
 		if fits_w and fits_h:
 			break
-		k -= 1
+		k -= 0.5
 	return k
 
 
@@ -274,29 +275,17 @@ func _default_pos(id: String, size_l: Vector2i) -> Vector2:
 	var y := s.position.y - w.y - GAP if above else s.end.y + GAP
 	var x := s.end.x - w.x
 	var home: String = HOME.get(id, "right")
+	# three columns centred on the strip: side panels | hero window | side panels
+	var cx := s.position.x + s.size.x / 2.0
+	var hw := float(PANELS["hero"]["size"].x)
 	match home:
-		"group":
-			var ids: Array = GROUPS["hero"]
-			var total := 0.0
-			for pid in ids:
-				total += PANELS[pid]["size"].x + GAP
-			total -= GAP
-			x = s.position.x + (s.size.x - total) / 2.0
-			for pid in ids:
-				if pid == id:
-					break
-				x += PANELS[pid]["size"].x + GAP
-			return clamp_to_area(Vector2(x, y), w)
-		"right":
-			x = s.end.x - w.x
 		"left":
-			x = s.position.x
-		"center":
-			x = s.position.x + (s.size.x - w.x) / 2.0
+			x = cx - hw / 2.0 - GAP - w.x
+		"right":
+			x = cx + hw / 2.0 + GAP
 		_:
-			if home.begins_with("left_of:"):
-				x = s.end.x - PANELS[home.substr(8)]["size"].x - GAP - w.x
-	return _free_spot(id, Vector2(x, y), w)
+			x = cx - w.x / 2.0
+	return _free_spot(id, Vector2(round(x), y), w)
 
 
 ## Nearest spot in the same row that doesn't cover another open panel (the portrait may be covered as
@@ -584,16 +573,20 @@ func handle_hotkey(ev: InputEventKey) -> void:
 	match ev.keycode:
 		KEY_ESCAPE:
 			close_top_panel()
-		KEY_H, KEY_C:
-			toggle_group("hero")
-		KEY_I, KEY_B:
-			toggle_group("bag")
+		KEY_H, KEY_I, KEY_B:
+			toggle_panel("hero")
+		KEY_C:
+			toggle_panel("stats")
+		KEY_K:
+			toggle_panel("skills")
 		KEY_M:
 			toggle_group("world")
 		KEY_G:
 			toggle_group("growth")
 		KEY_P:
-			toggle_panel("party")
+			open_panel("hero")
+			if panels.has("hero") and is_instance_valid(panels["hero"]):
+				panels["hero"]._on_tab(1)
 		KEY_T:
 			toggle_panel("tavern")
 		KEY_J:

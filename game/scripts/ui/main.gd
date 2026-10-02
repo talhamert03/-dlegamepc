@@ -256,21 +256,21 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 	for a in cmd:
 		if a.begins_with("--burst="):
 			# strip frames at ~30 fps for checking animation timing
-			var sc0: int = WindowManager.ui_scale
+			var sc0: float = WindowManager.ui_scale
 			var sr0 := WindowManager.strip_rect()
 			for i in int(a.substr(8)):
 				await get_tree().process_frame
 				await get_tree().create_timer(0.033).timeout
 				var im := get_viewport().get_texture().get_image()
-				im.get_region(Rect2i(Vector2i(sr0.position) * sc0, Vector2i(sr0.size) * sc0)).save_png(out + "burst_%03d.png" % i)
+				im.get_region(Rect2i(Vector2i(sr0.position * sc0), Vector2i(sr0.size * sc0))).save_png(out + "burst_%03d.png" % i)
 	var img := get_viewport().get_texture().get_image()
 	img.save_png(out + "screen.png")
-	var sc: int = WindowManager.ui_scale
+	var sc: float = WindowManager.ui_scale
 	var sr := WindowManager.strip_rect()
-	img.get_region(Rect2i(Vector2i(sr.position) * sc, Vector2i(sr.size) * sc)).save_png(out + "strip.png")
+	img.get_region(Rect2i(Vector2i(sr.position * sc), Vector2i(sr.size * sc))).save_png(out + "strip.png")
 	for id in WindowManager.panels:
 		var w: Control = WindowManager.panels[id]
 		if is_instance_valid(w):
-			img.get_region(Rect2i(Vector2i(w.position) * sc, Vector2i(w.size) * sc)).save_png(out + "panel_%s.png" % id)
+			img.get_region(Rect2i(Vector2i(w.position * sc), Vector2i(w.size * sc))).save_png(out + "panel_%s.png" % id)
 	print("SCREENSHOTS_DONE ", ProjectSettings.globalize_path(out))
 	get_tree().quit()

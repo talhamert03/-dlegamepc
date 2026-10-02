@@ -16,9 +16,9 @@ var dim := false
 var _hover := false
 
 
-func _init() -> void:
-	custom_minimum_size = Vector2(20, 20)
-	size = Vector2(20, 20)
+func _init(sz := 20.0) -> void:
+	custom_minimum_size = Vector2(sz, sz)
+	size = Vector2(sz, sz)
 	# HD frames are minified (mipmaps), pixel item icons are magnified (stay crisp)
 	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -39,35 +39,51 @@ func set_item(it: Dictionary) -> void:
 
 
 func _draw() -> void:
-	draw_texture_rect(UITheme.tex("slot_hover" if _hover else "slot_normal"), Rect2(Vector2.ZERO, size), false)
+	var ci := get_canvas_item()
+	var r := Rect2(Vector2.ZERO, size)
+	var rar: String = item.get("rarity", "common")
+	UISkin.slot(ci, r, UISkin.rarity_fill(rar), not item.is_empty(), _hover)
+	var isz := 16.0
+	var o := ((size - Vector2(isz, isz)) / 2.0).round()
 	if item.is_empty():
 		if placeholder:
-			draw_texture_rect(placeholder, Rect2(5, 5, 10, 10), false, Color(1, 1, 1, 0.18))
+			draw_texture_rect(placeholder, Rect2(o + Vector2(3, 3), Vector2(10, 10)), false, Color(1, 1, 1, 0.16))
 		return
-	var r: String = item.get("rarity", "common")
-	if r != "common":
-		var bg := ItemUtil.rarity_color(r)
-		draw_rect(Rect2(2, 2, 16, 16), Color(bg, 0.12))
 	var ic := SpriteLib.item_icon(item)
 	if ic:
-		draw_texture(ic, Vector2(2, 2), Color(1, 1, 1, 0.4) if dim else Color.WHITE)
-	if r != "common":
-		draw_texture_rect(UITheme.tex("slot_" + r), Rect2(Vector2.ZERO, size), false)
+		# soft drop shadow, then the crisp pixel icon at 1:1 logical size
+		draw_texture_rect(ic, Rect2(o + Vector2(0.5, 1), Vector2(isz, isz)), false, Color(0, 0, 0, 0.35))
+		draw_texture_rect(ic, Rect2(o, Vector2(isz, isz)), false, Color(1, 1, 1, 0.4) if dim else Color.WHITE)
 	var enh := int(item.get("enhance", 0))
 	if enh > 0:
-		draw_string(UITheme.font_small, Vector2(1, 8), "+%d" % enh, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#9FF3C0"))
+		draw_string_outline(UITheme.font_body, Vector2(2, 8), "+%d" % enh, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, 2, Color(0, 0, 0, 0.8))
+		draw_string(UITheme.font_body, Vector2(2, 8), "+%d" % enh, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#B6FFC8"))
 	if item.get("locked", false):
-		draw_texture_rect(UITheme.icon("lock"), Rect2(13, 13, 6, 6), false, Color(1, 1, 1, 0.85))
+		draw_texture_rect(UITheme.icon("lock"), Rect2(size.x - 7, size.y - 7, 6, 6), false, Color(1, 1, 1, 0.9))
 	if selected:
-		draw_rect(Rect2(1, 1, 18, 18), Color("#FFE45C"), false, 1.0)
+		UISkin.stroke(ci, r.grow(-0.5), 2, Color("#FFE45C"), 1.6)
 	if compare_hero != "" and source != "equip" and GameState.heroes.has(compare_hero):
 		var h: HeroState = GameState.heroes[compare_hero]
 		if ItemUtil.can_equip(h, item):
 			var cur: Dictionary = h.equipment.get(ItemUtil.equip_slots(item)[0], {})
 			if ItemUtil.power_score(item, h.cls()) > ItemUtil.power_score(cur, h.cls()) * 1.02:
-				draw_texture(UITheme.icon("arrow_up"), Vector2(13, 1), Color("#7FE07A"))
+				_up_arrow(Vector2(size.x - 4.5, 4.0))
 		else:
-			draw_rect(Rect2(2, 2, 16, 16), Color(0.6, 0.1, 0.1, 0.25))
+			# not usable by this hero: red corner mark
+			var p := Vector2(size.x - 5, size.y - 5)
+			draw_rect(Rect2(p - Vector2(1, 1), Vector2(5, 5)), Color(0, 0, 0, 0.7))
+			draw_line(p, p + Vector2(3, 3), Color("#FF5A4A"), 1.2, true)
+			draw_line(p + Vector2(3, 0), p + Vector2(0, 3), Color("#FF5A4A"), 1.2, true)
+
+
+func _up_arrow(c: Vector2) -> void:
+	var pts := PackedVector2Array([c + Vector2(0, -3), c + Vector2(3, 0.5), c + Vector2(1.2, 0.5), c + Vector2(1.2, 3),
+		c + Vector2(-1.2, 3), c + Vector2(-1.2, 0.5), c + Vector2(-3, 0.5)])
+	var outline := PackedVector2Array()
+	for q in pts:
+		outline.append(c + (q - c) * 1.35)
+	draw_colored_polygon(outline, Color(0, 0, 0, 0.75))
+	draw_colored_polygon(pts, Color("#6FF08A"))
 
 
 func _gui_input(ev: InputEvent) -> void:

@@ -29,55 +29,41 @@ func _ready() -> void:
 		add_child(b)
 		_btns[ic[0]] = b
 		x += 14
-	# main 2x2 buttons
-	var defs := [["hero", "btn_hero", Vector2(4, 14)], ["bag", "btn_bag", Vector2(42, 14)],
-		["growth", "btn_growth", Vector2(4, 27)], ["world", "btn_world", Vector2(42, 27)]]
-	for d in defs:
-		var gid: String = d[0]
-		var b := UITheme.button(DataDB.t(d[1]), "brown", func(): WindowManager.toggle_group(gid), Vector2(36, 12))
-		b.add_theme_font_size_override("font_size", 7)
-		b.clip_text = true
-		add_child(b)
-		b.position = d[2]
-		b.size = Vector2(36, 12)
-		_btns[gid] = b
+	# main menu: two rows of bronze medallions (tooltips + hotkeys name them)
+	var defs := [["hero", "shield", "btn_hero"], ["stats", "chart", "panel_stats"], ["skills", "book", "panel_skills"],
+		["world", "map", "btn_world"], ["growth", "star", "btn_growth"], ["tavern", "town", "btn_tavern"]]
+	for i in defs.size():
+		var d: Array = defs[i]
+		var pid: String = d[0]
+		var m := UITheme.medallion(d[1], func(): WindowManager.toggle_panel(pid), DataDB.t(d[2]), 9.5)
+		m.position = Vector2(5 + (i % 3) * 24.0, 12 + (i / 3) * 20)
+		m.set_meta("panel", pid)
+		add_child(m)
+		_btns[pid] = m
 		var dot := ColorRect.new()
 		dot.color = Color("#FF5A4A")
-		dot.size = Vector2(3, 3)
-		dot.position = d[2] + Vector2(33, 0)
+		dot.size = Vector2(4, 4)
+		dot.position = m.position + Vector2(17, 1)
 		dot.visible = false
 		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(dot)
-		_dots[gid] = dot
-	# party / tavern quick buttons
-	var pb := UITheme.button(DataDB.t("btn_party"), "blue", func(): WindowManager.toggle_panel("party"), Vector2(36, 12))
-	pb.add_theme_font_size_override("font_size", 7)
-	add_child(pb)
-	pb.position = Vector2(4, 40)
-	pb.size = Vector2(36, 12)
-	_btns["party"] = pb
-	var tb := UITheme.button(DataDB.t("btn_tavern"), "gold", func(): WindowManager.toggle_panel("tavern"), Vector2(36, 12))
-	tb.add_theme_font_size_override("font_size", 7)
-	add_child(tb)
-	tb.position = Vector2(42, 40)
-	tb.size = Vector2(36, 12)
-	_btns["tavern"] = tb
+		_dots[pid] = dot
 	# gold
 	var coin: TextureRect = preload("res://scripts/ui/widgets.gd").icon_rect(UITheme.icon("gold"))
-	coin.position = Vector2(5, 55)
+	coin.position = Vector2(5, 57)
 	coin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(coin)
 	_gold = UITheme.label("0", UITheme.C_GOLD)
-	_gold.position = Vector2(14, 53)
+	_gold.position = Vector2(14, 54)
 	add_child(_gold)
 	_lvl = UITheme.label("", UITheme.C_DIM)
-	_lvl.position = Vector2(48, 53)
+	_lvl.position = Vector2(50, 54)
 	add_child(_lvl)
 	_xp_bar = UITheme.bar(60, 3, Color("#F2B33D"))
-	_xp_bar.position = Vector2(5, 65)
+	_xp_bar.position = Vector2(5, 66)
 	add_child(_xp_bar)
 	var menu := UITheme.icon_button("menu", func(): WindowManager.toggle_panel("codex"), DataDB.t("tip_codex"))
-	menu.position = Vector2(67, 61)
+	menu.position = Vector2(68, 62)
 	add_child(menu)
 	EventBus.gold_changed.connect(func(_g): _refresh())
 	EventBus.hero_leveled.connect(func(_h, _l): _refresh())
@@ -87,13 +73,24 @@ func _ready() -> void:
 
 
 func _relabel() -> void:
-	for gid in ["hero", "bag", "growth", "world"]:
-		_btns[gid].text = DataDB.t("btn_" + gid)
-	_btns["party"].text = DataDB.t("btn_party")
+	for d in [["hero", "btn_hero"], ["stats", "panel_stats"], ["skills", "panel_skills"], ["world", "btn_world"], ["growth", "btn_growth"], ["tavern", "btn_tavern"]]:
+		_btns[d[0]].tooltip_text = DataDB.t(d[1])
 	_btns["tavern"].text = DataDB.t("btn_tavern")
 
 
+var _tick := 0
+
+
 func _process(_d: float) -> void:
+	_tick += 1
+	if _tick % 30 == 0:
+		_refresh()
+	for pid in ["hero", "stats", "skills", "world", "growth", "tavern"]:
+		var m: BaseButton = _btns[pid]
+		var on := WindowManager.is_open(pid)
+		if m.get_meta("active", false) != on:
+			m.set_meta("active", on)
+			m.queue_redraw()
 	# xp bar of the highest level hero in party (cheap)
 	var ph := GameState.party_heroes()
 	if ph.size() > 0:
@@ -105,12 +102,14 @@ func _process(_d: float) -> void:
 func _refresh() -> void:
 	_gold.text = F.fmt_num(GameState.gold)
 	_lvl.text = "Lv%d" % GameState.max_hero_level()
-	var pts := false
+	var sp := false
+	var kp := false
 	for h in GameState.heroes.values():
-		if h.stat_points > 0 or h.skill_points > 0:
-			pts = true
-	_dots["hero"].visible = pts
-	_dots["bag"].visible = GameState.bag.size() >= GameState.bag_slots - 4
+		sp = sp or h.stat_points > 0
+		kp = kp or h.skill_points > 0
+	_dots["stats"].visible = sp
+	_dots["skills"].visible = kp
+	_dots["hero"].visible = GameState.bag.size() >= GameState.bag_slots - 4
 
 
 func _on_power() -> void:

@@ -86,8 +86,9 @@ func refresh() -> void:
 			_build_salvage()
 		3:
 			_build_craft()
-	if WindowManager.is_open("inventory"):
-		WindowManager.panels["inventory"].refresh()
+	for pid in ["inventory", "hero"]:
+		if WindowManager.is_open(pid):
+			WindowManager.panels[pid].refresh()
 
 
 func _build_combine() -> void:

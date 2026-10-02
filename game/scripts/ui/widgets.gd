@@ -152,6 +152,6 @@ static func current_hero() -> String:
 static func select_hero(hid: String) -> void:
 	WindowManager.selected_hero = hid
 	EventBus.hero_stats_changed.emit(hid)
-	for id in ["stats", "hero", "portrait", "inventory"]:
+	for id in ["stats", "hero", "skills", "portrait", "inventory"]:
 		if WindowManager.is_open(id):
 			WindowManager.panels[id].refresh()

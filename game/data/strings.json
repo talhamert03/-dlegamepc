@@ -1198,5 +1198,33 @@
  "set_remember_panels": {
   "tr": "Panel yerini hatırla",
   "en": "Remember panel spots"
+ },
+ "panel_skills": {
+  "tr": "Yetenekler",
+  "en": "Skills"
+ },
+ "tab_formation": {
+  "tr": "Diziliş",
+  "en": "Formation"
+ },
+ "tip_open_stats": {
+  "tr": "Statlar",
+  "en": "Stats"
+ },
+ "tip_open_skills": {
+  "tr": "Yetenekler",
+  "en": "Skills"
+ },
+ "front": {
+  "tr": "Ön",
+  "en": "Front"
+ },
+ "back": {
+  "tr": "Arka",
+  "en": "Back"
+ },
+ "cleared": {
+  "tr": "Temizlendi",
+  "en": "Cleared"
  }
 }

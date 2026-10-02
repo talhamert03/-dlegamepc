@@ -63,9 +63,8 @@ func _factions() -> void:
 		var g := W.grid(10, 1)
 		_body.add_child(g)
 		for hid in members:
-			var t := TextureRect.new()
-			t.texture = SpriteLib.hero_icon(hid)
-			t.custom_minimum_size = Vector2(20, 20)
+			var t := W.icon_rect(SpriteLib.hero_icon(hid), Vector2(20, 20))
+			t.mouse_filter = Control.MOUSE_FILTER_PASS
 			t.tooltip_text = "%s (%s)\n%s" % [DataDB.hero_def(hid)["name"], DataDB.hero_def(hid).get("rarity", "R"),
 				DataDB.t("owned") if GameState.heroes.has(hid) else DataDB.t("how_to_get_" + ("tavern" if DataDB.hero_def(hid).get("unlock", "") == "tavern" else "story"))]
 			if not GameState.heroes.has(hid):

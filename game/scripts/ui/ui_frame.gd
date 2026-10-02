@@ -3,8 +3,10 @@ extends Control
 ## Vector-drawn premium frame: dark layered panel, gold trim, optional header band and corner ornaments.
 ## Drawn at native resolution (canvas_items stretch), so it stays crisp at any UI scale.
 
-var kind := "panel"     # panel | strip | tooltip | plaque | inset
+var kind := "panel"     # panel | strip | tooltip | plaque | inset | parchment
 var header := false
+var ribbon_w := 0.0     # width of the title ribbon (panels with a header)
+const HEADER_H := 18.0
 
 
 func _init(k := "panel", with_header := false) -> void:
@@ -29,16 +31,22 @@ func _sb(bg: Color, border: Color, bw: float, radius: int, draw_center := true) 
 
 func _draw() -> void:
 	var r := Rect2(Vector2.ZERO, size)
+	var ci := get_canvas_item()
 	match kind:
 		"tooltip":
-			draw_style_box(_sb(Color(0.05, 0.06, 0.09, 0.97), Color("#C9A45C"), 1, 3), r)
-			draw_style_box(_sb(Color(0, 0, 0, 0), Color(1, 1, 1, 0.05), 1, 2, false), r.grow(-1.5))
+			UISkin.fill(ci, r, 3, Color(0.07, 0.07, 0.09, 0.97), Color(0.03, 0.03, 0.04, 0.97))
+			UISkin.stroke(ci, r, 3, Color(0, 0, 0, 1), 1.0)
+			UISkin.stroke(ci, r.grow(-1.0), 2, Color("#8C6A3A"), 1.0)
 		"plaque":
-			draw_style_box(_sb(Color("#191E2C"), Color("#B8924A"), 1, 3), r)
+			UISkin.well(ci, r)
 		"inset":
-			draw_style_box(_sb(Color(0.03, 0.04, 0.06, 0.75), Color("#2C3346"), 1, 3), r)
+			UISkin.well(ci, r)
+		"parchment":
+			UISkin.parchment(ci, r)
+		"strip":
+			UISkin.panel(ci, r)
 		_:
-			_draw_panel(r)
+			UISkin.panel(ci, r, HEADER_H if header else 0.0, ribbon_w)
 
 
 func _draw_panel(r: Rect2) -> void:

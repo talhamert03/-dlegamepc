@@ -116,30 +116,11 @@ func box(name: String, margin: int, content := -1) -> StyleBox:
 
 
 func btn_box(color: String, state: String) -> StyleBox:
-	var pal: Array = BTN.get(color, BTN["brown"])
-	var bg := Color(pal[0])
-	var border := Color(pal[1])
-	match state:
-		"hover":
-			bg = Color(pal[2])
-			border = border.lightened(0.15)
-		"pressed":
-			bg = Color(pal[3])
-		"disabled":
-			bg = Color("#1E222C")
-			border = Color("#30353F")
-	var sb := _flat(bg, border, 3)
-	# subtle bevel: lighter top edge, darker bottom edge
-	sb.border_width_top = 1
-	sb.border_width_bottom = 2 if state != "pressed" else 1
-	sb.shadow_color = Color(0, 0, 0, 0.35)
-	sb.shadow_size = 0 if state == "pressed" else 1
-	sb.shadow_offset = Vector2(0, 1)
-	sb.content_margin_left = 5
-	sb.content_margin_right = 5
-	sb.content_margin_top = 1 if state != "pressed" else 2
-	sb.content_margin_bottom = 1 if state != "pressed" else 0
-	return sb
+	return GameStyleBox.new("button", color if UISkin.BTN.has(color) else "brown", state)
+
+
+func btn_text_color(color: String) -> Color:
+	return Color(UISkin.BTN.get(color, UISkin.BTN["brown"])[3])
 
 
 func _make_theme() -> Theme:
@@ -154,9 +135,9 @@ func _make_theme() -> Theme:
 		t.set_stylebox("pressed", c, btn_box("brown", "pressed"))
 		t.set_stylebox("disabled", c, btn_box("brown", "disabled"))
 		t.set_stylebox("focus", c, StyleBoxEmpty.new())
-		t.set_color("font_color", c, C_TEXT)
+		t.set_color("font_color", c, btn_text_color("brown"))
 		t.set_color("font_hover_color", c, Color.WHITE)
-		t.set_color("font_pressed_color", c, C_GOLD)
+		t.set_color("font_pressed_color", c, btn_text_color("brown"))
 		t.set_color("font_disabled_color", c, C_DIM)
 		t.set_font("font", c, font_body)
 		t.set_font_size("font_size", c, 8)
@@ -208,11 +189,13 @@ func button(text: String, color := "brown", cb: Callable = Callable(), min_size 
 	b.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 	b.add_theme_font_override("font", font_body)
 	b.add_theme_font_size_override("font_size", 8)
-	b.add_theme_color_override("font_color", C_TEXT)
-	b.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.45))
-	b.add_theme_constant_override("shadow_offset_y", 1)
-	b.add_theme_color_override("font_hover_color", Color.WHITE)
-	b.add_theme_color_override("font_disabled_color", C_DIM)
+	var tc := btn_text_color(color)
+	b.add_theme_color_override("font_color", tc)
+	b.add_theme_color_override("font_pressed_color", tc)
+	b.add_theme_color_override("font_hover_color", tc.lightened(0.2) if tc.v < 0.5 else Color.WHITE)
+	b.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.55) if tc.v > 0.5 else Color(1, 1, 1, 0.0))
+	b.add_theme_constant_override("outline_size", 2 if tc.v > 0.5 else 0)
+	b.add_theme_color_override("font_disabled_color", Color("#7A7E8A"))
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	if cb.is_valid():
 		b.pressed.connect(cb)
@@ -223,6 +206,12 @@ func button(text: String, color := "brown", cb: Callable = Callable(), min_size 
 func set_button_color(b: Button, color: String) -> void:
 	for st in ["normal", "hover", "pressed", "disabled"]:
 		b.add_theme_stylebox_override(st, btn_box(color, st))
+	var tc := btn_text_color(color)
+	b.add_theme_color_override("font_color", tc)
+	b.add_theme_color_override("font_pressed_color", tc)
+	b.add_theme_color_override("font_hover_color", tc.lightened(0.2) if tc.v < 0.5 else Color.WHITE)
+	b.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.55) if tc.v > 0.5 else Color(1, 1, 1, 0.0))
+	b.add_theme_constant_override("outline_size", 2 if tc.v > 0.5 else 0)
 
 
 func icon_button(icon_name: String, cb: Callable, tip := "") -> TextureButton:
@@ -241,6 +230,32 @@ func icon_button(icon_name: String, cb: Callable, tip := "") -> TextureButton:
 	b.pressed.connect(cb)
 	b.pressed.connect(func(): AudioManager.play("ui_click", 0.05, 0.6))
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	return b
+
+
+## Bronze medallion button with an HD glyph (hero panel bottom bar).
+func medallion(icon_name: String, cb: Callable, tip := "", rad := 11.0) -> BaseButton:
+	var b := TextureButton.new()
+	b.custom_minimum_size = Vector2(rad * 2 + 2, rad * 2 + 3)
+	b.size = b.custom_minimum_size
+	b.focus_mode = Control.FOCUS_NONE
+	b.tooltip_text = tip
+	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	var ic := hd(icon_name)
+	b.draw.connect(func():
+		var st := "pressed" if b.button_pressed else ("hover" if b.is_hovered() else "normal")
+		var c := Vector2(rad + 1, rad + 1 + (1.0 if st == "pressed" else 0.0))
+		UISkin.medallion(b.get_canvas_item(), c, rad, st, b.has_meta("active") and b.get_meta("active"))
+		if ic:
+			var s2 := rad * 1.05
+			b.draw_texture_rect(ic, Rect2(c - Vector2(s2, s2) / 2.0, Vector2(s2, s2)), false, Color(1.0, 0.94, 0.82)))
+	b.mouse_entered.connect(b.queue_redraw)
+	b.mouse_exited.connect(b.queue_redraw)
+	b.button_down.connect(b.queue_redraw)
+	b.button_up.connect(b.queue_redraw)
+	b.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	b.pressed.connect(cb)
+	b.pressed.connect(func(): AudioManager.play("ui_click", 0.05, 0.6))
 	return b
 
 
@@ -274,21 +289,18 @@ func round_button(color: String, glyph: String) -> TextureButton:
 func close_button(cb: Callable) -> Button:
 	var b := Button.new()
 	b.focus_mode = Control.FOCUS_NONE
-	b.custom_minimum_size = Vector2(11, 11)
-	b.size = Vector2(11, 11)
+	b.custom_minimum_size = Vector2(12, 12)
+	b.size = Vector2(12, 12)
 	for st in ["normal", "hover", "pressed"]:
-		var sb := btn_box("red", st)
-		sb.content_margin_left = 1.5
-		sb.content_margin_right = 1.5
-		sb.content_margin_top = 1.5
-		sb.content_margin_bottom = 1.5
-		b.add_theme_stylebox_override(st, sb)
+		b.add_theme_stylebox_override(st, btn_box("red", st))
 	b.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
-	b.icon = hd("close")
-	b.expand_icon = true
-	b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	b.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	b.draw.connect(func():
+		var o := 1.0 if b.button_pressed else 0.0
+		var c := Vector2(6, 5.6 + o)
+		for d in [[Vector2(-2.6, -2.6), Vector2(2.6, 2.6)], [Vector2(2.6, -2.6), Vector2(-2.6, 2.6)]]:
+			b.draw_line(c + d[0], c + d[1], Color(0, 0, 0, 0.5), 2.6, true)
+			b.draw_line(c + d[0], c + d[1], Color("#FFF1E6"), 1.4, true))
 	b.pressed.connect(cb)
 	return b
 
@@ -343,6 +355,10 @@ func nine(name: String, margin: int) -> Control:
 			return UIFrame.new("plaque")
 		"strip_panel":
 			return UIFrame.new("strip")
+		"parchment":
+			return UIFrame.new("parchment")
+		"well":
+			return UIFrame.new("inset")
 	return UIFrame.new("panel")
 
 

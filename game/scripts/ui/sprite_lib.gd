@@ -85,6 +85,20 @@ static func anim_meta(kind: String, id: String) -> Dictionary:
 	return _anim.get(kind, {}).get(id, {})
 
 
+## First idle frame of a chibi sheet as a small texture (map markers, party slots); null without a sheet.
+static func chibi_frame(kind: String, id: String, frame := 0) -> Texture2D:
+	var tex := anim_sheet(kind, id)
+	if tex == null:
+		return null
+	var m := anim_meta(kind, id)
+	var cw := float(m["cw"])
+	var ch := float(m["ch"])
+	var at := AtlasTexture.new()
+	at.atlas = tex
+	at.region = Rect2((frame % 6) * cw, (frame / 6) * ch, cw, ch)
+	return at
+
+
 static func anim_sheet(kind: String, id: String) -> Texture2D:
 	if anim_meta(kind, id).is_empty():
 		return null
