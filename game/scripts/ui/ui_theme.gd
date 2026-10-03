@@ -315,28 +315,41 @@ func medallion(icon_name: String, cb: Callable, tip := "", rad := 11.0) -> BaseB
 
 
 ## Glossy orb button (strip quick actions) with an HD glyph.
-func round_button(color: String, glyph: String) -> TextureButton:
-	var oc: String = {"red": "red", "green": "green", "blue": "blue"}.get(color, "gold")
+## Jewelled quick-action button for the strip: bronze bezel with rivets, a coloured gem with a glossy
+## highlight and an embossed HD glyph. Hover brightens, press sinks.
+func round_button(color: String, glyph: String) -> BaseButton:
+	var gem: Array = {"red": [Color("#FF7A6A"), Color("#8A1A22")], "green": [Color("#8CF09A"), Color("#1E6A2E")],
+		"blue": [Color("#8CC0FF"), Color("#1E3A8A")]}.get(color, [Color("#FFD27A"), Color("#8A5A18")])
+	var ic := hd({"town": "town", "dps": "chart", "auto": "auto"}.get(glyph, glyph))
 	var b := TextureButton.new()
-	b.texture_normal = hd("orb_%s_normal" % oc, Vector2(14, 14))
-	b.texture_hover = hd("orb_%s_hover" % oc, Vector2(14, 14))
-	b.texture_pressed = hd("orb_%s_pressed" % oc, Vector2(14, 14))
-	b.ignore_texture_size = true
-	b.stretch_mode = TextureButton.STRETCH_SCALE
-	b.custom_minimum_size = Vector2(14, 14)
-	b.size = Vector2(14, 14)
-	b.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	b.custom_minimum_size = Vector2(15, 15)
+	b.size = Vector2(15, 15)
 	b.focus_mode = Control.FOCUS_NONE
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	var g := TextureRect.new()
-	g.texture = hd({"town": "town", "dps": "chart", "auto": "auto"}.get(glyph, glyph))
-	g.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	g.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	g.position = Vector2(3.5, 3.5)
-	g.size = Vector2(7, 7)
-	g.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	g.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
-	b.add_child(g)
+	b.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	b.draw.connect(func():
+		var ci := b.get_canvas_item()
+		var st := "pressed" if b.button_pressed or b.is_pressed() else ("hover" if b.is_hovered() else "normal")
+		var c := Vector2(7.5, 7.5 + (0.6 if st == "pressed" else 0.0))
+		UISkin.circle(ci, c + Vector2(0, 1.0), 7.6, Color(0, 0, 0, 0.45), Color(0, 0, 0, 0.45))
+		UISkin.circle(ci, c, 7.4, UISkin.OUTLINE, UISkin.OUTLINE)
+		UISkin.circle(ci, c, 7.0, UISkin.BRONZE_HI if st == "hover" else UISkin.BRONZE, UISkin.BRONZE_LO)
+		for k in 4:
+			var a := PI / 4.0 + k * PI / 2.0
+			UISkin.circle(ci, c + Vector2(cos(a), sin(a)) * 6.0, 0.55, UISkin.BRONZE_HI, UISkin.BRONZE_LO)
+		var g0: Color = gem[0].lightened(0.15) if st == "hover" else gem[0]
+		var g1: Color = gem[1]
+		if st == "pressed":
+			g0 = g0.darkened(0.2)
+		UISkin.circle(ci, c, 5.2, UISkin.OUTLINE, UISkin.OUTLINE)
+		UISkin.circle(ci, c, 4.8, g0, g1)
+		b.draw_circle(c + Vector2(-1.4, -1.8), 2.0, Color(1, 1, 1, 0.28))
+		if ic:
+			b.draw_texture_rect(ic, Rect2(c - Vector2(3.4, 3.4), Vector2(6.8, 6.8)), false, Color(1, 0.98, 0.92)))
+	b.mouse_entered.connect(b.queue_redraw)
+	b.mouse_exited.connect(b.queue_redraw)
+	b.button_down.connect(b.queue_redraw)
+	b.button_up.connect(b.queue_redraw)
 	b.pressed.connect(func(): AudioManager.play("ui_click", 0.05, 0.6))
 	return b
 

@@ -201,20 +201,27 @@ func invalidate_stats(_x: Variant = null) -> void:
 	stats_cache.clear()
 
 
+## Party heroes per faction.
+func faction_counts() -> Dictionary:
+	var counts: Dictionary = {}
+	for hid in party:
+		if hid != "" and heroes.has(hid):
+			var f: String = DataDB.hero_def(hid).get("faction", "")
+			counts[f] = int(counts.get(f, 0)) + 1
+	return counts
+
+
 func account_mods() -> Dictionary:
 	var out: Dictionary = {}
-	# faction collection bonuses
-	var counts: Dictionary = {}
-	for hid in heroes:
-		var f: String = DataDB.hero_def(hid).get("faction", "")
-		counts[f] = int(counts.get(f, 0)) + 1
+	# faction bonuses: only heroes fighting in the party count
+	var counts: Dictionary = faction_counts()
 	for f in DataDB.factions:
 		var fd: Dictionary = DataDB.factions[f]
 		var c := int(counts.get(f, 0))
 		var stat: String = fd.get("bonus_stat", "")
 		if stat != "" and c >= 2:
 			out[stat] = float(out.get(stat, 0.0)) + float(fd.get("bonus_per2", 0)) * float(c / 2)
-		if c >= 8:
+		if c >= 4:
 			var fb: Dictionary = fd.get("full_bonus", {})
 			if fb.has("stat"):
 				out[fb["stat"]] = float(out.get(fb["stat"], 0.0)) + float(fb["value"])

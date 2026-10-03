@@ -25,6 +25,15 @@ static func draw(n: CanvasItem, foot: Vector2, w: float, kind: String, open := 0
 	var ink := Color(0.05, 0.03, 0.04, 0.95)
 	# ground shadow
 	_ellipse(n, foot + Vector2(0, 0.5), Vector2(w * 0.62, w * 0.09), Color(0, 0, 0, 0.35))
+	# slow light rays behind the two best chests
+	if aura and r >= 3:
+		var rc: Color = p["glow"]
+		var cc := foot - Vector2(0, h * 0.85)
+		for k in 8:
+			var ang := t * 0.35 + k * TAU / 8.0
+			var d1 := Vector2(cos(ang), sin(ang))
+			var d2 := Vector2(cos(ang + 0.18), sin(ang + 0.18))
+			n.draw_colored_polygon(PackedVector2Array([cc, cc + d1 * w * 1.05, cc + d2 * w * 1.05]), Color(rc, 0.07))
 	# aura for gold and above
 	if aura and r >= 2:
 		var pulse := 0.75 + 0.25 * sin(t * 2.6)
@@ -59,11 +68,27 @@ static func draw(n: CanvasItem, foot: Vector2, w: float, kind: String, open := 0
 	# body
 	var body := PackedVector2Array([Vector2(x0, seam), Vector2(x1, seam), Vector2(x1, foot.y), Vector2(x0, foot.y)])
 	_grad_poly(n, body, p["b0"], p["b1"], seam, foot.y)
-	if kind == "wood" or kind == "gold":
+	if kind == "wood" or kind == "gold" or kind == "royal":
 		for k in 2:
 			var yy := seam + h * (0.36 + k * 0.32)
 			n.draw_line(Vector2(x0 + 1, yy), Vector2(x1 - 1, yy), Color(p["b1"].darkened(0.45), 0.8), max(1.0, w / 70.0))
 			n.draw_line(Vector2(x0 + 1, yy + 1), Vector2(x1 - 1, yy + 1), Color(p["b0"].lightened(0.25), 0.25), max(1.0, w / 90.0))
+		# wood grain: soft wavy strokes per plank
+		if w >= 30.0:
+			for k in 6:
+				var gy := seam + h * (0.12 + k * 0.15)
+				var pts := PackedVector2Array()
+				for i in 9:
+					var gxp := x0 + w * (0.04 + i * 0.115)
+					pts.append(Vector2(gxp, gy + sin(i * 1.3 + k * 2.1) * h * 0.02))
+				n.draw_polyline(pts, Color(p["b1"].darkened(0.3), 0.28), max(0.6, w / 120.0), true)
+	elif kind == "iron":
+		# riveted plates
+		for k in 2:
+			var yy2 := seam + h * (0.34 + k * 0.33)
+			n.draw_line(Vector2(x0 + 1, yy2), Vector2(x1 - 1, yy2), Color(p["b1"].darkened(0.4), 0.9), max(1.0, w / 70.0))
+			for i in 7:
+				n.draw_circle(Vector2(x0 + w * (0.08 + i * 0.14), yy2 + h * 0.06), max(0.5, w / 80.0), Color(p["m0"], 0.6))
 	elif kind == "crystal":
 		for k in 3:
 			var cx := x0 + w * (0.2 + k * 0.3)
@@ -94,7 +119,18 @@ static func draw(n: CanvasItem, foot: Vector2, w: float, kind: String, open := 0
 		var cap := PackedVector2Array([Vector2(cx, foot.y), Vector2(cx, foot.y - h * 0.32), Vector2(cx + dirx * w * 0.13, foot.y)])
 		n.draw_colored_polygon(cap, p["m1"])
 		n.draw_polyline(PackedVector2Array([cap[1], cap[2]]), p["m0"], olw * 0.6, true)
+	if r >= 2 and w >= 30.0:
+		# engraved filigree scrolls on the front panels
+		var fc: Color = p["m0"]
+		for side: float in [-1.0, 1.0]:
+			var cx3: float = foot.x + side * w * 0.15
+			var cy3: float = seam + h * 0.62
+			n.draw_arc(Vector2(cx3, cy3), h * 0.16, PI * 0.1, PI * 1.6, 12, Color(fc, 0.7), max(0.8, w / 70.0), true)
+			n.draw_arc(Vector2(cx3 + side * w * 0.03, cy3 - h * 0.02), h * 0.07, PI * 0.5, PI * 2.0, 8, Color(fc, 0.6), max(0.6, w / 90.0), true)
+			n.draw_circle(Vector2(foot.x + side * w * 0.42, seam + h * 0.5), max(0.8, w / 50.0), fc)
 	_outline(n, body, ink, olw)
+	# rim light on the top-left edge
+	n.draw_line(Vector2(x0 + 1, seam + 1), Vector2(x0 + 1, foot.y - 2), Color(1, 1, 1, 0.12), max(1.0, w / 60.0))
 	# closed / half-open lid
 	if s > 0.0:
 		var lid := _arch(x0, x1, seam, lh * s)
@@ -106,6 +142,25 @@ static func draw(n: CanvasItem, foot: Vector2, w: float, kind: String, open := 0
 		_outline(n, lid, ink, olw)
 		n.draw_line(Vector2(x0, seam), Vector2(x1, seam), p["m1"].darkened(0.3), olw * 1.6)
 		n.draw_line(Vector2(x0 + 1, seam - 1), Vector2(x1 - 1, seam - 1), Color(p["m0"], 0.55), olw * 0.7)
+		if kind == "crystal" and w >= 24.0:
+			for k in 3:
+				var cxk := foot.x + (k - 1) * w * 0.18
+				var hk := lh * s * (0.55 + 0.25 * (1 - absi(k - 1)))
+				var basey := seam - lh * s * (0.82 if k == 1 else 0.7)
+				var shard := PackedVector2Array([Vector2(cxk - w * 0.04, basey + 2), Vector2(cxk, basey - hk), Vector2(cxk + w * 0.04, basey + 2)])
+				n.draw_colored_polygon(shard, Color(p["m0"], 0.9))
+				n.draw_line(Vector2(cxk, basey - hk), Vector2(cxk + w * 0.015, basey + 1), Color(1, 1, 1, 0.7), max(0.6, w / 90.0), true)
+				_outline(n, shard, Color(ink, 0.8), olw * 0.6)
+				n.draw_circle(Vector2(cxk, basey - hk * 0.5), w * 0.06, Color(p["glow"], 0.15 + 0.1 * sin(t * 3.0 + k)))
+		if kind == "royal" and w >= 24.0:
+			# crown crest on the lid
+			var cy4 := seam - lh * s * 0.78
+			var cw4 := w * 0.12
+			var crown := PackedVector2Array([Vector2(foot.x - cw4, cy4 + cw4 * 0.5), Vector2(foot.x - cw4, cy4 - cw4 * 0.2), Vector2(foot.x - cw4 * 0.5, cy4 + cw4 * 0.1),
+				Vector2(foot.x, cy4 - cw4 * 0.45), Vector2(foot.x + cw4 * 0.5, cy4 + cw4 * 0.1), Vector2(foot.x + cw4, cy4 - cw4 * 0.2), Vector2(foot.x + cw4, cy4 + cw4 * 0.5)])
+			_grad_poly(n, crown, p["m0"], p["m1"], cy4 - cw4 * 0.45, cy4 + cw4 * 0.5)
+			_outline(n, crown, ink, olw * 0.7)
+			n.draw_circle(Vector2(foot.x, cy4 - cw4 * 0.45), max(0.7, w / 70.0), p["gem"])
 		# a glint sliding over the lid on rare+ chests
 		if r >= 2:
 			var gx := fmod(t * 0.45, 1.6) - 0.3

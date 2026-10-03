@@ -129,16 +129,28 @@ static func panel(ci: RID, r: Rect2, header_h := 0.0, ribbon_w := 0.0) -> void:
 		line(ci, Vector2(band.position.x, band.end.y + 0.5), Vector2(band.end.x, band.end.y + 0.5), Color(0, 0, 0, 0.8), 1.0)
 		if ribbon_w > 0.0:
 			ribbon(ci, Rect2(Vector2(r.position.x + (r.size.x - ribbon_w) / 2.0, band.position.y + 1.5), Vector2(ribbon_w, header_h - 3.0)))
-	# bronze corner brackets
+	# thin gold pinstripe inside the iron frame
+	stroke(ci, body.grow(2.0), 3, Color(BRONZE, 0.28), 0.8)
+	# bronze corner pieces: bracket, curled scrolls and a ruby
 	for i in 4:
 		var c: Vector2 = [r.position, Vector2(r.end.x, r.position.y), r.end, Vector2(r.position.x, r.end.y)][i]
 		var dx := 1.0 if i == 0 or i == 3 else -1.0
 		var dy := 1.0 if i < 2 else -1.0
 		var p0: Vector2 = c + Vector2(dx * 2.5, dy * 2.5)
-		var pts := PackedVector2Array([p0 + Vector2(dx * 9.0, 0), p0, p0 + Vector2(0, dy * 9.0)])
+		var pts := PackedVector2Array([p0 + Vector2(dx * 11.0, 0), p0, p0 + Vector2(0, dy * 11.0)])
 		RenderingServer.canvas_item_add_polyline(ci, pts, PackedColorArray([OUTLINE]), 3.2, true)
 		RenderingServer.canvas_item_add_polyline(ci, pts, PackedColorArray([BRONZE]), 1.6, true)
-		rivet(ci, p0 + Vector2(dx * 1.5, dy * 1.5), 1.5)
+		for k in 2:
+			var sc: Vector2 = p0 + (Vector2(dx * 13.0, dy * 2.2) if k == 0 else Vector2(dx * 2.2, dy * 13.0))
+			var a0: float = atan2(dy, dx) + (PI * 0.5 if k == 0 else -PI * 0.5)
+			var arc := PackedVector2Array()
+			for j in 7:
+				var a := a0 + j * 0.45 * (1.0 if (dx * dy > 0) == (k == 0) else -1.0)
+				arc.append(sc + Vector2(cos(a), sin(a)) * 2.0)
+			RenderingServer.canvas_item_add_polyline(ci, arc, PackedColorArray([Color(BRONZE_HI, 0.8)]), 1.0, true)
+		circle(ci, p0 + Vector2(dx * 1.6, dy * 1.6), 2.3, OUTLINE, OUTLINE)
+		circle(ci, p0 + Vector2(dx * 1.6, dy * 1.6), 1.7, Color("#FF5A5A"), Color("#8A1020"))
+		circle(ci, p0 + Vector2(dx * 1.6 - 0.5, dy * 1.6 - 0.5), 0.6, Color(1, 1, 1, 0.8), Color(1, 1, 1, 0.4))
 
 
 ## Notched red ribbon used for panel titles.

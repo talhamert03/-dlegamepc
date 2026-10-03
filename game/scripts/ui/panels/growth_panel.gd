@@ -42,34 +42,64 @@ func refresh() -> void:
 
 
 func _factions() -> void:
-	var counts := {}
-	for hid in GameState.heroes:
-		var f: String = DataDB.hero_def(hid).get("faction", "")
-		counts[f] = int(counts.get(f, 0)) + 1
+	var hint := UITheme.label(DataDB.t("faction_party_hint"), UITheme.C_DIM, 7)
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint.custom_minimum_size = Vector2(content.size.x - 8, 0)
+	_body.add_child(hint)
+	var counts := GameState.faction_counts()
 	for f in DataDB.factions:
 		var fd: Dictionary = DataDB.factions[f]
 		var members: Array = DataDB.hero_order.filter(func(h): return DataDB.hero_def(h).get("faction", "") == f)
 		var c := int(counts.get(f, 0))
-		var hdr := W.hbox(2)
-		var nm := UITheme.label(DataDB.tx(fd["name"]), Color(str(fd.get("color", "#FFFFFF"))))
+		var active := c >= 2
+		var fcol := Color(str(fd.get("color", "#FFFFFF")))
+		var hdr := W.hbox(3)
+		var nm := UITheme.label(DataDB.tx(fd["name"]), fcol.lightened(0.2), 9, UITheme.font_title)
 		nm.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		hdr.add_child(nm)
-		hdr.add_child(UITheme.label("%d / %d" % [c, members.size()], UITheme.C_TEXT))
+		# active / inactive pill
+		var pill := Control.new()
+		pill.custom_minimum_size = Vector2(52, 11)
+		var ptxt := ("✔ " + DataDB.t("faction_active")) if active else DataDB.t("faction_inactive")
+		pill.draw.connect(func():
+			var ci := pill.get_canvas_item()
+			var r := Rect2(Vector2.ZERO, pill.size)
+			UISkin.fill(ci, r, 5, Color("#3FA34D") if active else Color("#3A3640"), Color("#1F5A27") if active else Color("#1E1C22"))
+			UISkin.stroke(ci, r, 5, Color(0, 0, 0, 0.9), 1.0)
+			var fnt := UITheme.font_body
+			var tw := fnt.get_string_size(ptxt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
+			pill.draw_string(fnt, Vector2((r.size.x - tw) / 2.0, 8.5), ptxt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color.WHITE if active else UITheme.C_DIM))
+		pill.tooltip_text = DataDB.t("faction_count", {"n": c})
+		pill.mouse_filter = Control.MOUSE_FILTER_STOP
+		hdr.add_child(pill)
 		_body.add_child(hdr)
 		var stat: String = fd.get("bonus_stat", "")
 		var cur := float(fd.get("bonus_per2", 0)) * float(c / 2)
 		var nxt := float(fd.get("bonus_per2", 0)) * float(c / 2 + 1)
-		_body.add_child(UITheme.label(DataDB.t("collection_bonus", {"stat": StatNames.label(stat), "v": StatNames.fmt(stat, cur), "n": StatNames.fmt(stat, nxt)}), UITheme.C_DIM))
+		var bl := UITheme.label(DataDB.t("collection_bonus", {"stat": StatNames.label(stat), "v": StatNames.fmt(stat, cur), "n": StatNames.fmt(stat, nxt)}),
+			UITheme.C_GREEN if active else UITheme.C_DIM, 7)
+		_body.add_child(bl)
 		var g := W.grid(10, 1)
 		_body.add_child(g)
 		for hid in members:
-			var t := W.icon_rect(SpriteLib.hero_icon(hid), Vector2(20, 20))
-			t.mouse_filter = Control.MOUSE_FILTER_PASS
-			t.tooltip_text = "%s (%s)\n%s" % [DataDB.hero_def(hid)["name"], DataDB.hero_def(hid).get("rarity", "R"),
-				DataDB.t("owned") if GameState.heroes.has(hid) else DataDB.t("how_to_get_" + ("tavern" if DataDB.hero_def(hid).get("unlock", "") == "tavern" else "story"))]
-			if not GameState.heroes.has(hid):
-				t.modulate = Color(0.05, 0.05, 0.08, 0.8)
-			g.add_child(t)
+			var holder := Control.new()
+			holder.custom_minimum_size = Vector2(20, 20)
+			var in_party := GameState.party.has(hid)
+			var owned := GameState.heroes.has(hid)
+			var tex := SpriteLib.hero_icon(hid)
+			holder.draw.connect(func():
+				var ci := holder.get_canvas_item()
+				var r := Rect2(Vector2.ZERO, holder.size)
+				UISkin.fill(ci, r, 2, Color("#2A2428"), Color("#141016"))
+				if tex:
+					holder.draw_texture_rect(tex, r.grow(-1.0), false, Color.WHITE if in_party else (Color(0.55, 0.55, 0.6) if owned else Color(0.08, 0.08, 0.1)))
+				UISkin.stroke(ci, r, 2, Color(0, 0, 0, 0.9), 1.2)
+				if in_party:
+					UISkin.stroke(ci, r.grow(-0.5), 2, Color("#7CFF9A"), 1.0))
+			holder.mouse_filter = Control.MOUSE_FILTER_STOP
+			holder.tooltip_text = "%s (%s)\n%s" % [DataDB.hero_def(hid)["name"], DataDB.hero_def(hid).get("rarity", "R"),
+				DataDB.t("faction_in_party") if in_party else (DataDB.t("owned") if owned else DataDB.t("how_to_get_tavern"))]
+			g.add_child(holder)
 		_body.add_child(UITheme.hsep(int(content.size.x - 8)))
 
 

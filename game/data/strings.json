@@ -1526,5 +1526,33 @@
  "status_need_lv": {
   "tr": "(Sv. {lv})",
   "en": "(Lv {lv})"
+ },
+ "formation_hint": {
+  "tr": "Kahramanı sürükle: yerleştir, yer değiştir ya da sahadan aşağı bırakarak yedeğe al.",
+  "en": "Drag heroes to place or swap them; drop one below the stage to bench it."
+ },
+ "formation_last": {
+  "tr": "Partide en az bir kahraman kalmalı.",
+  "en": "At least one hero must stay in the party."
+ },
+ "faction_party_hint": {
+  "tr": "Grup bonusları yalnızca savaş alanındaki (partideki) kahramanlarla çalışır: aynı gruptan her 2 kahraman bir kademe verir, 4 kahraman tam bonusu açar.",
+  "en": "Faction bonuses count only heroes in the party: every 2 from the same faction give a step, 4 unlock the full bonus."
+ },
+ "faction_active": {
+  "tr": "Aktif",
+  "en": "Active"
+ },
+ "faction_inactive": {
+  "tr": "Pasif",
+  "en": "Inactive"
+ },
+ "faction_count": {
+  "tr": "Partide {n} kahraman",
+  "en": "{n} in the party"
+ },
+ "faction_in_party": {
+  "tr": "Partide · bonusa katkı veriyor",
+  "en": "In the party · counts for the bonus"
  }
 }

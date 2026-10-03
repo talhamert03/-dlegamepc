@@ -169,8 +169,8 @@ func _draw_stage() -> void:
 	# back light and pedestal
 	for k in 8:
 		_stage.draw_circle(Vector2(w / 2.0, SHOW_H * 0.49), SHOW_H * 0.55 - k * SHOW_H * 0.06, Color(col, 0.028))
-	var cw := clampf(SHOW_H * 0.5, 40.0, 64.0)
-	var ped := Rect2(w / 2.0 - cw * 0.7, SHOW_H * 0.65, cw * 1.4, 8)
+	var cw := clampf(SHOW_H * 0.52, 40.0, 66.0)
+	var ped := Rect2(w / 2.0 - cw * 0.7, SHOW_H * 0.7, cw * 1.4, 8)
 	UISkin.fill(ci, ped, 3, Color("#4A3E50"), Color("#1E1822"))
 	UISkin.stroke(ci, ped, 3, Color(0, 0, 0, 0.9), 1.0)
 	UISkin.line(ci, Vector2(ped.position.x + 4, ped.position.y + 1), Vector2(ped.end.x - 4, ped.position.y + 1), Color(col, 0.35), 1.0)
@@ -178,7 +178,7 @@ func _draw_stage() -> void:
 	UISkin.stroke(ci, r.grow(-1.5), 3, Color(UISkin.BRONZE, 0.4), 1.0)
 	if kind == "":
 		return
-	var foot := Vector2(w / 2.0, SHOW_H * 0.65 + 1)
+	var foot := Vector2(w / 2.0, SHOW_H * 0.7 + 1)
 	var open := 0.0
 	if _anim >= 0.0:
 		if _anim < 0.45:
