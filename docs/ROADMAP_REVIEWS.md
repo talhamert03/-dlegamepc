@@ -403,3 +403,37 @@ Yeni görsel üretimi gerekmiyor.
 | Sanat / piksel / karakter tasarımı | 6 | 11 |
 | Sık güncelleme, geliştiricinin oyuncuyu dinlemesi | 17 | 21 |
 | 5 kahramanın birlikte savaşması | 5 | — |
+
+---
+
+# Uygulama durumu: Büyük Güncelleme (v0.2.0)
+
+**Yapıldı:**
+
+| Madde | Uygulanan |
+|---|---|
+| A1, K1, K3 | Adil mağaza: Günlük ücretsiz hediye, ilk altın paketi 2x, tek seferlik Lonca Destekçisi (+%10 altın/XP, +2 saat offline, +20 çanta), çanta genişletmesi altınla da alınabilir. Kahramanların hepsi tavernadan da alınabilir. Offline %30 / 10 saat. Açılır pencere yok: sadece kasaba butonunda "!" ve tabelada parıltı. |
+| A2, F1 | Demircide garanti: başarısızlık şansı artırır, belli denemede kesin başarı. Gösterilen oran gerçek oran; son denemeler panelde. Birleştirme seviye düşürmez, başarısızlıkta 6/9 parça geri döner. +10..+12 başarısızlığı seviye düşürmez. |
+| F2 | Kötü şans koruması (epik 140, efsanevi 900 düşüşte garanti). |
+| I5, D3 | Ganimet %90 partideki sınıflara; partide kimsenin giyemediği eşyayı otomatik satma seçeneği. |
+| B4, G3, G4 | Yoldaşlık bonusu (ek kahraman başına +%4 hasar ve dayanıklılık); tek vuruş sınırı (%38 normal / %55 boss). |
+| G1, G2 | Yapısal olarak yok: kahramanlar dizilişte sabit, iyileştirme doğrudan hedefe gider. |
+| G5 | Stat açıklamaları ipucunda. |
+| B1-B3 | Dünya haritasında element, en düşük direnç ve hazırlık göstergesi; boss'ta takılınca ipucu. |
+| F3 | Paragon: 100'den sonra her seviyede 3 stat puanı. |
+| I4, D1 | Ücretsiz stat ve yetenek sıfırlama; yetenek setleri A/B. |
+| H1 | "Yenilikler" sekmesi (her sürümde bir kez açılır). |
+| C1 | Çıkış onayı. |
+| J2 | Monitör seçimi. |
+| D5 | Sonsuz Kule skoru Steam liderlik tablosuna gönderiliyor ("tower" tablosu Steamworks'te açılmalı). |
+| E1-E5 | Poster tarzı açılış (kendi kahraman çizimlerimiz, alevli logo, fırtına ve şimşek); daha küçük sinema penceresi; kadraj hatası düzeltildi; yeni hikâye metni. |
+
+**Sonraya kalan:**
+
+| Madde | Neden |
+|---|---|
+| C3 | Kod imzalama (sertifika satın alınmalı); Linux'ta normal pencere modu. |
+| H3 | Steam Cloud çakışma ekranı (Steam entegrasyonu ile). |
+| J1 | 24-72 saatlik bellek testi (Windows'ta). |
+| D4 | Offline özet geliştirmesi. |
+| L1/L2 | İçerik ritmi. |
