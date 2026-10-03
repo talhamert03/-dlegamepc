@@ -12,6 +12,9 @@ const SIZE := Vector2i(240, 135)          # kept for callers; the real size is t
 const BEATS := ["intro_1", "intro_2", "intro_3", "intro_4", "intro_5"]
 const BEAT_LEN := 6.0
 const SCENES := "res://assets/hd/scenes/%s.jpg"
+## poster cast: [hero, x (0..1), height (x frame h), foot y (x frame h), back row]
+const POSTER := [["nova", 0.39, 0.92, 1.0, true], ["bjorn", 0.665, 0.96, 1.03, true], ["lyra", 0.22, 1.0, 1.1, false],
+	["pip", 0.79, 0.98, 1.1, false], ["kael", 0.5, 1.16, 1.2, false]]
 
 var _frame := Rect2()
 var _view: Control
@@ -25,12 +28,15 @@ var _flash := 0.0
 var _tex: Dictionary = {}
 var _parts: Array = []
 var _rng := RandomNumberGenerator.new()
-var _buttons: VBoxContainer
+var _buttons: HBoxContainer
 var _text: Label
 var _skip: Button
 var _heroes: Array = []
 var _hint: Label
 var _logo: Control
+var _bolt: PackedVector2Array = PackedVector2Array()
+var _bolt_t := 1.5
+var _bolt_life := 0.0
 
 
 func _ready() -> void:
@@ -40,7 +46,8 @@ func _ready() -> void:
 	var area := WindowManager.area_size()
 	position = Vector2.ZERO
 	size = area
-	var fw := minf(area.x * 0.9, area.y * 0.9 * 16.0 / 9.0)
+	# a cinema window, not the whole screen
+	var fw := minf(area.x * 0.66, area.y * 0.7 * 16.0 / 9.0)
 	var fh := fw * 9.0 / 16.0
 	_frame = Rect2(((area - Vector2(fw, fh)) / 2.0).round(), Vector2(fw, fh).round())
 	_view = Control.new()
@@ -50,38 +57,24 @@ func _ready() -> void:
 	_view.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_view.draw.connect(_draw_view)
 	add_child(_view)
-	# the party around the campfire (animated chibi sheets)
-	var cast := [["lyra", -0.30, false], ["kael", -0.17, false], ["pip", 0.17, true], ["bjorn", 0.30, true]]
-	for c in cast:
-		var tex := SpriteLib.anim_sheet("heroes", c[0])
-		if tex == null:
-			continue
-		var m := SpriteLib.anim_meta("heroes", c[0])
-		var s := Sprite2D.new()
-		s.texture = tex
-		s.hframes = 6
-		s.vframes = 4
-		s.centered = false
-		s.offset = -Vector2(float(m["ax"]), float(m["ay"]))
-		s.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
-		var k := _frame.size.y * 0.2 / float(m["h"])
-		s.scale = Vector2(-k if c[2] else k, k)
-		s.position = Vector2(_frame.size.x * (0.5 + float(c[1])), _frame.size.y * 0.86)
-		s.set_meta("phase", _rng.randf() * 6.0)
-		_view.add_child(s)
-		_heroes.append(s)
-	var bw := clampf(_frame.size.x * 0.17, 110.0, 150.0)
-	_buttons = W.vbox(5)
-	_buttons.size = Vector2(bw, 80)
-	_buttons.position = Vector2(_frame.position.x + (_frame.size.x - bw) / 2.0, _frame.position.y + _frame.size.y * 0.40)
+	# key-art poster: the heroes' full illustrations, front to back
+	for h in POSTER:
+		var tex := SpriteLib.portrait(str(h[0]))
+		_tex["poster_" + str(h[0])] = tex
+		_tex["sil_" + str(h[0])] = _silhouette(tex)
+	var bw := clampf(_frame.size.x * 0.17, 84.0, 120.0)
+	_buttons = HBoxContainer.new()
+	_buttons.add_theme_constant_override("separation", 8)
+	_buttons.size = Vector2(bw * 3 + 16, 20)
+	_buttons.position = Vector2(_frame.position.x + (_frame.size.x - _buttons.size.x) / 2.0, _frame.end.y - _frame.size.y * 0.115)
 	add_child(_buttons)
 	for d in [["title_new", "orange", _start_intro], ["title_settings", "brown", func(): WindowManager.toggle_panel("settings")],
 			["tray_quit", "red", func(): WindowManager.quit_game()]]:
-		var b := UITheme.button(DataDB.t(d[0]), d[1], d[2], Vector2(bw, 22))
-		b.add_theme_font_size_override("font_size", 11)
+		var b := UITheme.button(DataDB.t(d[0]), d[1], d[2], Vector2(bw, 18))
+		b.add_theme_font_size_override("font_size", 10)
 		_buttons.add_child(b)
 	_buttons.modulate.a = 0.0
-	_text = UITheme.label("", Color("#F4EAD2"), 15, UITheme.font_title)
+	_text = UITheme.label("", Color("#F4EAD2"), int(clampf(_frame.size.y * 0.04, 10.0, 15.0)), UITheme.font_title)
 	_text.position = Vector2(_frame.position.x + _frame.size.x * 0.08, _frame.end.y - _frame.size.y * 0.13)
 	_text.size = Vector2(_frame.size.x * 0.84, _frame.size.y * 0.11)
 	_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -92,9 +85,10 @@ func _ready() -> void:
 	_text.visible = false
 	add_child(_text)
 	_hint = UITheme.label(DataDB.t("click_continue"), Color(1, 1, 1, 0.5), 8)
-	_hint.position = Vector2(_frame.end.x - 160, _frame.end.y - 14)
-	_hint.size = Vector2(150, 10)
-	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	# top-left of the letterbox, well inside the frame
+	_hint.position = Vector2(_frame.position.x + 10, _frame.position.y + 10)
+	_hint.size = Vector2(_frame.size.x * 0.5, 10)
+	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_hint.visible = false
 	add_child(_hint)
 	_skip = UITheme.button(DataDB.t("skip") + "  ›", "brown", _finish, Vector2(54, 16))
@@ -141,8 +135,14 @@ func _process(delta: float) -> void:
 	match _stage:
 		"title":
 			_fade = maxf(0.0, _fade - delta * 0.8)
-			if _t > 1.2:
+			if _t > 1.6:
 				_buttons.modulate.a = minf(1.0, _buttons.modulate.a + delta * 1.6)
+			_bolt_t -= delta
+			if _bolt_t <= 0.0:
+				_bolt_t = _rng.randf_range(3.0, 6.5)
+				_bolt = _make_bolt()
+				_bolt_life = 0.35
+			_bolt_life = maxf(0.0, _bolt_life - delta)
 			for s: Sprite2D in _heroes:
 				s.frame = posmod(int((_t + float(s.get_meta("phase"))) * 7.0), 6)
 		"intro":
@@ -253,13 +253,11 @@ func _finish() -> void:
 func _update_parts(delta: float) -> void:
 	var f := _frame.size
 	if _stage == "title":
-		# fireflies + embers from the campfire
-		while _parts.size() < 40:
-			var ember := _rng.randf() < 0.45
-			_parts.append({"k": "ember" if ember else "fly", "t": 0.0, "life": _rng.randf_range(2.0, 5.0),
-				"p": Vector2(f.x * 0.5 + _rng.randf_range(-10, 10), f.y * 0.84) if ember else Vector2(_rng.randf() * f.x, _rng.randf_range(f.y * 0.35, f.y * 0.9)),
-				"v": Vector2(_rng.randf_range(-8, 8), _rng.randf_range(-45, -25)) if ember else Vector2(_rng.randf_range(-6, 6), _rng.randf_range(-4, 4)),
-				"ph": _rng.randf() * 6.0})
+		# embers rising from the burning logo
+		while _parts.size() < 46:
+			_parts.append({"k": "ember", "t": 0.0, "life": _rng.randf_range(1.2, 3.2),
+				"p": Vector2(f.x * _rng.randf_range(0.28, 0.72), f.y * _rng.randf_range(0.7, 0.82)),
+				"v": Vector2(_rng.randf_range(-10, 10), _rng.randf_range(-60, -25)), "ph": _rng.randf() * 6.0})
 	elif _stage == "intro" and (_beat == 0 or _beat == 2):
 		while _parts.size() < 36:
 			_parts.append({"k": "mote", "t": 0.0, "life": _rng.randf_range(2.5, 5.0), "p": Vector2(_rng.randf() * f.x, f.y * _rng.randf_range(0.2, 1.0)),
@@ -280,10 +278,17 @@ func _update_parts(delta: float) -> void:
 # ------------------------------------------------------------------ drawing
 func _draw() -> void:
 	# dim the desktop behind the cinematic
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0, 0, 0, 0.92))
+	draw_rect(Rect2(Vector2.ZERO, size), Color(0.01, 0.01, 0.02, 0.62))
 	var ci := get_canvas_item()
-	UISkin.stroke(ci, _frame.grow(3.0), 4, Color(0, 0, 0, 1), 2.0)
-	UISkin.stroke(ci, _frame.grow(2.0), 4, Color(UISkin.BRONZE, 0.85), 1.0)
+	# soft drop shadow and an ornate gilded frame around the cinema window
+	for i in 6:
+		UISkin.stroke(ci, _frame.grow(6.0 + i * 3.0), 8, Color(0, 0, 0, 0.12), 3.0)
+	UISkin.fill(ci, _frame.grow(7.0), 6, Color("#3A2614"), Color("#1A0F08"))
+	UISkin.ornate(ci, _frame.grow(6.0))
+	UISkin.stroke(ci, _frame.grow(2.0), 3, Color(0, 0, 0, 1), 2.0)
+	UISkin.stroke(ci, _frame.grow(1.0), 3, Color("#E8C27A", 0.9), 1.0)
+	for c in [_frame.position, Vector2(_frame.end.x, _frame.position.y), Vector2(_frame.position.x, _frame.end.y), _frame.end]:
+		UISkin.diamond(ci, c, 5.0)
 
 
 ## Pan / zoom over a scene image so it covers the frame. pan: 0..1 across the spare width.
@@ -308,7 +313,8 @@ func _figure(tex: Texture2D, foot: Vector2, h: float, alpha := 1.0, flip := fals
 	var w := tex.get_width() * k
 	var r := Rect2(foot - Vector2(w / 2.0, h), Vector2(w, h))
 	if flip:
-		r = Rect2(Vector2(r.end.x, r.position.y), Vector2(-w, h))
+		# a negative width mirrors the texture in place (same left edge)
+		r = Rect2(r.position, Vector2(-w, h))
 	_view.draw_texture_rect(tex, r, false, Color(tint, alpha))
 
 
@@ -323,7 +329,7 @@ func _draw_view() -> void:
 	var ci := _view.get_canvas_item()
 	match _stage:
 		"title", "done":
-			_draw_camp()
+			_draw_poster()
 		_:
 			if _beat >= 0 and _beat < BEATS.size():
 				_draw_beat(_beat)
@@ -338,7 +344,9 @@ func _draw_view() -> void:
 				_view.draw_circle(pos, 3.0, Color(1.0, 0.9, 0.4, 0.12 * a * tw))
 				_view.draw_circle(pos, 1.1, Color(1.0, 0.95, 0.6, 0.85 * a * tw))
 			"ember":
-				_view.draw_circle(pos + Vector2(sin(_t * 4.0 + float(p["ph"])) * 3.0, 0), 1.0, Color(1.0, 0.6, 0.2, a))
+				var ep := pos + Vector2(sin(_t * 4.0 + float(p["ph"])) * 3.0, 0)
+				_view.draw_circle(ep, 2.6, Color(1.0, 0.5, 0.1, 0.15 * a))
+				_view.draw_circle(ep, 1.0, Color(1.0, 0.75, 0.3, a))
 			"mote":
 				_view.draw_circle(pos + Vector2(sin(_t + float(p["ph"])) * 6.0, 0), 1.3, Color(1.0, 0.92, 0.65, 0.7 * a))
 			"shard":
@@ -355,6 +363,11 @@ func _draw_view() -> void:
 		var bar := f.y * 0.115
 		_view.draw_rect(Rect2(0, 0, f.x, bar), Color(0, 0, 0, 0.92))
 		_view.draw_rect(Rect2(0, f.y - bar * 1.25, f.x, bar * 1.25), Color(0, 0, 0, 0.92))
+		# subtitle plate: a soft gilded band behind the narration
+		var sp := Rect2(f.x * 0.06, f.y - bar * 1.25 + 2.0, f.x * 0.88, bar * 1.25 - 12.0)
+		UISkin.fill(ci, sp, 4, Color(0.08, 0.05, 0.03, 0.55), Color(0.02, 0.01, 0.01, 0.7))
+		_view.draw_line(Vector2(sp.position.x + 10, sp.position.y), Vector2(sp.end.x - 10, sp.position.y), Color("#E8C27A", 0.5), 1.0)
+		UISkin.diamond(ci, Vector2(f.x / 2.0, sp.position.y), 2.5)
 		# beat dots
 		for i in BEATS.size():
 			var c := Vector2(f.x / 2.0 + (i - 2) * 12.0, f.y - 7.0)
@@ -424,26 +437,124 @@ func _draw_logo() -> void:
 	if _stage != "title":
 		return
 	var cx := _frame.position.x + _frame.size.x / 2.0
-	var y0 := _frame.position.y + _frame.size.y * 0.13
-	var sz := int(clampf(_frame.size.y * 0.115, 30.0, 64.0))
+	var sz := int(clampf(_frame.size.y * 0.17, 30.0, 80.0))
 	var f := UITheme.font_big
 	var t1 := "IDLE PARTY"
 	var w := f.get_string_size(t1, HORIZONTAL_ALIGNMENT_LEFT, -1, sz).x
-	var pos := Vector2(cx - w / 2.0, y0 + sz * 0.8)
-	var a := clampf(_t * 0.8, 0.0, 1.0)
-	_logo.draw_string_outline(f, pos + Vector2(0, 3), t1, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, 8, Color(0, 0, 0, 0.8 * a))
-	_logo.draw_string_outline(f, pos, t1, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, 5, Color("#3A1606", a))
-	_logo.draw_string(f, pos, t1, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, Color("#F2A33A", a))
-	_logo.draw_string(f, pos + Vector2(0, -sz * 0.04), t1, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, Color(1.0, 0.86, 0.5, 0.55 * a))
-	var t2 := "DESKTOP LEGENDS"
-	var s2 := int(sz * 0.36)
-	var w2 := UITheme.font_title.get_string_size(t2, HORIZONTAL_ALIGNMENT_LEFT, -1, s2).x
-	var p2 := Vector2(cx - w2 / 2.0, pos.y + s2 * 1.6)
-	_logo.draw_string_outline(UITheme.font_title, p2, t2, HORIZONTAL_ALIGNMENT_LEFT, -1, s2, 4, Color(0, 0, 0, 0.85 * a))
-	_logo.draw_string(UITheme.font_title, p2, t2, HORIZONTAL_ALIGNMENT_LEFT, -1, s2, Color("#F4EAD2", a))
+	var pos := Vector2(cx - w / 2.0, _frame.position.y + _frame.size.y * 0.76)
+	var a := clampf((_t - 0.3) * 0.9, 0.0, 1.0)
 	var ci := _logo.get_canvas_item()
-	UISkin.diamond(ci, Vector2(cx - w2 / 2.0 - 10, p2.y - s2 * 0.35), 3.0)
-	UISkin.diamond(ci, Vector2(cx + w2 / 2.0 + 10, p2.y - s2 * 0.35), 3.0)
+	# flames licking up behind the letters
+	for i in 18:
+		var fx := pos.x - sz * 0.25 + (w + sz * 0.5) * i / 17.0
+		var ph := i * 1.7
+		var h := sz * (0.55 + 0.35 * sin(_t * (5.0 + i % 4) + ph)) * (1.0 - absf(float(i) / 17.0 - 0.5) * 0.9)
+		var fw := sz * 0.22
+		var sway := sin(_t * 4.0 + ph) * sz * 0.08
+		var base := Vector2(fx, pos.y - sz * 0.45)
+		for layer in 2:
+			var k := 1.0 - layer * 0.45
+			var pts := PackedVector2Array([base + Vector2(-fw * k, 0), base + Vector2(sway, -h * k), base + Vector2(fw * k, 0)])
+			var col: Color = [Color("#E03A12"), Color("#FFB23A")][layer]
+			UISkin.poly(ci, pts, Color(col, 0.0), Color(col, 0.75 * a))
+	# thick dark rim, red, orange, then the golden face with a light top edge
+	_logo.draw_string_outline(f, pos + Vector2(0, sz * 0.06), t1, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, int(sz * 0.32), Color(0, 0, 0, 0.75 * a))
+	_logo.draw_string_outline(f, pos, t1, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, int(sz * 0.24), Color("#2A0804", a))
+	_logo.draw_string_outline(f, pos, t1, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, int(sz * 0.15), Color("#B01E10", a))
+	_logo.draw_string_outline(f, pos, t1, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, int(sz * 0.07), Color("#FF7A1A", a))
+	_logo.draw_string(f, pos, t1, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, Color("#FFB93A", a))
+	_logo.draw_string(f, pos + Vector2(0, -sz * 0.05), t1, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, Color(1.0, 0.95, 0.6, 0.55 * a))
+	var shine := fmod(_t * 0.35, 1.6) - 0.3
+	if shine > 0.0 and shine < 1.0:
+		_logo.draw_string(f, pos + Vector2(0, -sz * 0.08), t1, HORIZONTAL_ALIGNMENT_LEFT, -1, sz, Color(1, 1, 0.9, 0.25 * a * sin(shine * PI)))
+	# subtitle ribbon
+	var t2 := "DESKTOP LEGENDS"
+	var s2 := int(sz * 0.3)
+	var w2 := UITheme.font_title.get_string_size(t2, HORIZONTAL_ALIGNMENT_LEFT, -1, s2).x
+	var p2 := Vector2(cx - w2 / 2.0, pos.y + s2 * 1.45)
+	var rb := Rect2(cx - w2 / 2.0 - 16, p2.y - s2 * 0.95, w2 + 32, s2 * 1.3)
+	UISkin.fill(ci, rb, 3, Color(0.35, 0.06, 0.05, 0.9 * a), Color(0.15, 0.02, 0.02, 0.9 * a))
+	UISkin.stroke(ci, rb, 3, Color(0.9, 0.7, 0.4, 0.8 * a), 1.0)
+	_logo.draw_string_outline(UITheme.font_title, p2, t2, HORIZONTAL_ALIGNMENT_LEFT, -1, s2, 4, Color(0, 0, 0, 0.85 * a))
+	_logo.draw_string(UITheme.font_title, p2, t2, HORIZONTAL_ALIGNMENT_LEFT, -1, s2, Color("#F8E6BE", a))
+	UISkin.diamond(ci, Vector2(rb.position.x - 4, rb.get_center().y), 3.0)
+	UISkin.diamond(ci, Vector2(rb.end.x + 4, rb.get_center().y), 3.0)
+
+
+# ------------------------------------------------------------------ key art poster
+## White silhouette of an illustration (alpha kept): drawn tinted behind a hero as a rim light.
+func _silhouette(tex: Texture2D) -> Texture2D:
+	if tex == null:
+		return null
+	var img := tex.get_image()
+	if img == null:
+		return null
+	img = img.duplicate()
+	if img.is_compressed():
+		img.decompress()
+	img.convert(Image.FORMAT_RGBA8)
+	var data := img.get_data()
+	for i in range(0, data.size(), 4):
+		data[i] = 255
+		data[i + 1] = 255
+		data[i + 2] = 255
+	img = Image.create_from_data(img.get_width(), img.get_height(), false, Image.FORMAT_RGBA8, data)
+	return ImageTexture.create_from_image(img)
+
+
+func _make_bolt() -> PackedVector2Array:
+	var f := _frame.size
+	var pts := PackedVector2Array()
+	var p := Vector2(f.x * _rng.randf_range(0.1, 0.9), -4.0)
+	pts.append(p)
+	while p.y < f.y * 0.55:
+		p += Vector2(_rng.randf_range(-22, 22), _rng.randf_range(14, 30))
+		pts.append(p)
+	return pts
+
+
+func _draw_poster() -> void:
+	var f := _frame.size
+	var ci := _view.get_canvas_item()
+	var flash := _bolt_life / 0.35
+	# stormy sky over a dark forest, pushed to green-teal like an old painting
+	_scene("forest", 0.5 + 0.5 * sin(_t * 0.04), 1.08, Color(0.22, 0.34, 0.30).lerp(Color(0.6, 0.8, 0.8), flash * 0.5))
+	UISkin.fill(ci, Rect2(0, 0, f.x, f.y * 0.6), 0, Color(0.02, 0.06, 0.05, 0.75), Color(0.02, 0.06, 0.05, 0.0))
+	# drifting cloud bands
+	for i in 5:
+		var cx := fmod(_t * (6.0 + i * 2.0) + i * 140.0, f.x + 240.0) - 120.0
+		_view.draw_set_transform(Vector2(cx, f.y * (0.12 + i * 0.07)), 0.0, Vector2(1.0, 0.22))
+		_view.draw_circle(Vector2.ZERO, 120.0 + i * 20.0, Color(0.55, 0.7, 0.65, 0.05))
+		_view.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	# lightning
+	if _bolt_life > 0.0 and _bolt.size() > 1:
+		_view.draw_rect(Rect2(Vector2.ZERO, f), Color(0.7, 0.9, 1.0, 0.18 * flash))
+		_view.draw_polyline(_bolt, Color(0.6, 0.85, 1.0, 0.35 * flash), 5.0, true)
+		_view.draw_polyline(_bolt, Color(1, 1, 1, 0.9 * flash), 1.6, true)
+	# heroes: back row darker, each with a warm / cool rim light; a slow breathing parallax
+	for h in POSTER:
+		var id := str(h[0])
+		var tex: Texture2D = _tex.get("poster_" + id)
+		if tex == null:
+			continue
+		var back: bool = h[4]
+		var hh: float = f.y * float(h[2])
+		var bob := sin(_t * 0.9 + float(h[1]) * 9.0) * f.y * 0.006
+		var foot := Vector2(f.x * float(h[1]) + sin(_t * 0.3) * f.x * (0.004 if back else 0.008), f.y * float(h[3]) + bob)
+		var sil: Texture2D = _tex.get("sil_" + id)
+		var rim := Color(0.55, 0.95, 0.85, 0.5) if back else Color(1.0, 0.75, 0.4, 0.6)
+		if sil:
+			for o in [Vector2(-2, 0), Vector2(2, 0), Vector2(0, -2), Vector2(-1.5, -1.5), Vector2(1.5, -1.5)]:
+				_figure(sil, foot + o, hh, rim.a * (0.6 + 0.4 * flash), false, Color(rim.r, rim.g, rim.b))
+		_figure(tex, foot, hh, 1.0, false, Color(0.62, 0.7, 0.72) if back else Color(1, 1, 1))
+	# ground fog and a dark floor so the logo reads
+	UISkin.fill(ci, Rect2(0, f.y * 0.55, f.x, f.y * 0.45), 0, Color(0.02, 0.03, 0.03, 0.0), Color(0.02, 0.02, 0.02, 0.92))
+	for i in 4:
+		var fx := fmod(_t * 10.0 * (i + 1) + i * 200.0, f.x + 300.0) - 150.0
+		_view.draw_set_transform(Vector2(fx, f.y * (0.78 + i * 0.04)), 0.0, Vector2(1.0, 0.18))
+		_view.draw_circle(Vector2.ZERO, 160.0, Color(0.7, 0.85, 0.8, 0.045))
+		_view.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	_vignette(Color(0, 0, 0), 1.0)
 
 
 func _draw_beat(b: int) -> void:
@@ -460,8 +571,12 @@ func _draw_beat(b: int) -> void:
 			_scene("throne", 0.7 - e * 0.4, 1.04 + e * 0.05, Color(0.85, 0.55, 0.55))
 			var ci := _view.get_canvas_item()
 			UISkin.fill(ci, Rect2(Vector2.ZERO, f), 0, Color(0.25, 0.0, 0.05, 0.25), Color(0.05, 0.0, 0.0, 0.55))
-			var mx := lerpf(f.x * 1.15, f.x * 0.7, clampf(_bt / 1.6, 0.0, 1.0))
-			_figure(_tex.get("morvath"), Vector2(mx, f.y * 1.02), f.y * 0.92, 1.0, true, Color(1.0, 0.8, 0.8))
+			# Morvath strides in and stays whole inside the frame, above the subtitle band
+			var mt: Texture2D = _tex.get("morvath")
+			var mh := f.y * 0.7
+			var mw := (mt.get_width() * mh / float(mt.get_height())) if mt else 0.0
+			var mx := lerpf(f.x + mw * 0.6, f.x - mw * 0.5 - f.x * 0.04, clampf(_bt / 1.6, 0.0, 1.0))
+			_figure(mt, Vector2(mx, f.y * 0.86), mh, 1.0, true, Color(1.0, 0.8, 0.8))
 			if _bt < 2.0:
 				_crystal(Vector2(f.x * 0.3, f.y * 0.42), f.y * 0.14, 1.0, _bt * 0.5)
 			_vignette(Color(0.3, 0.0, 0.0), 1.0)
@@ -476,7 +591,11 @@ func _draw_beat(b: int) -> void:
 				_scene(keys[i], 0.3 + 0.1 * i + e * 0.2, 1.0, Color(0.85, 0.8, 0.85), appear, Rect2(r.position, Vector2(sw + 1, f.y)))
 				var rise := clampf((_bt - 1.4 - i * 0.3) / 0.9, 0.0, 1.0)
 				var tex: Texture2D = _tex.get("boss_" + bosses[i])
-				_figure(tex, Vector2(i * sw + sw * 0.5, f.y * (0.92 + (1.0 - rise) * 0.4)), f.y * 0.48, rise, true, Color(0.9, 0.75, 0.75))
+				# each boss fits its own column, feet above the subtitle band
+				var bh := f.y * 0.46
+				if tex:
+					bh = minf(bh, sw * 0.9 * tex.get_height() / float(tex.get_width()))
+				_figure(tex, Vector2(i * sw + sw * 0.5, f.y * (0.84 + (1.0 - rise) * 0.4)), bh, rise, true, Color(0.9, 0.75, 0.75))
 				# falling shard streak
 				var st := clampf((_bt - 0.4 - i * 0.35) / 0.8, 0.0, 1.0)
 				if st > 0.0 and st < 1.0:
@@ -497,7 +616,7 @@ func _draw_beat(b: int) -> void:
 				for i in cast.size():
 					var a := clampf((_bt - 1.6 - i * 0.25) / 0.6, 0.0, 1.0)
 					var tex2: Texture2D = _tex.get("hero_" + str(cast[i][0]))
-					_figure(tex2, Vector2(f.x * (0.5 + float(cast[i][1])), f.y * (0.98 + (1.0 - a) * 0.08)), f.y * 0.62, a, float(cast[i][1]) > 0.0)
+					_figure(tex2, Vector2(f.x * (0.5 + float(cast[i][1])), f.y * (0.86 + (1.0 - a) * 0.08)), f.y * 0.56, a, float(cast[i][1]) > 0.0)
 			_vignette(Color(0, 0, 0), 0.7)
 
 
