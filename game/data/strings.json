@@ -284,8 +284,8 @@
   "en": "Achievement: {name}"
  },
  "act_n": {
-  "tr": "Perde {n}",
-  "en": "Act {n}"
+  "tr": "Dünya {n}",
+  "en": "World {n}"
  },
  "adv_req": {
   "tr": "Sv. {lv} ilerlemesi",
@@ -1128,8 +1128,8 @@
   "en": "Found on every 10th floor of the Endless Tower."
  },
  "pet_src_act": {
-  "tr": "Perde {n} bosslarından düşer.",
-  "en": "Drops from Act {n} bosses."
+  "tr": "Dünya {n} bosslarından düşer.",
+  "en": "Drops from World {n} bosses."
  },
  "pet_new": {
   "tr": "Yeni evcil dost: {name}!",
@@ -1680,8 +1680,8 @@
   "en": "All owned"
  },
  "shop_bought": {
-  "tr": "Alındı",
-  "en": "Owned"
+  "tr": "Satın alındı",
+  "en": "Purchased"
  },
  "shop_confirm": {
   "tr": "{name}\n{price} karşılığında satın alınsın mı?",
@@ -1752,12 +1752,12 @@
   "en": "Rare treasures from distant lands"
  },
  "shop_starter_tip": {
-  "tr": "2 rastgele kahraman, 5 büyülü (Kristal) sandık ve 75.000 altın. Hesap başına bir kez alınabilir.",
-  "en": "2 random heroes, 5 magic (Crystal) chests and 75,000 gold. Once per account."
+  "tr": "2 rastgele kahraman, 5 büyülü (Kristal) sandık ve 75.000 altın.",
+  "en": "2 random heroes, 5 magic (Crystal) chests and 75,000 gold."
  },
  "shop_offline_boost_tip": {
-  "tr": "Oyun kapalıyken kazandığın altın, tecrübe ve eşyalar kalıcı olarak 2 katına çıkar. Hesap başına bir kez alınır.",
-  "en": "Gold, XP and items earned while the game is closed are permanently doubled. Once per account."
+  "tr": "Oyun kapalıyken kazandığın altın, tecrübe ve eşyalar kalıcı olarak 2 katına çıkar.",
+  "en": "Gold, XP and items earned while the game is closed are permanently doubled."
  },
  "smith_enh_pity": {
   "tr": "Garanti: her başarısızlık şansı artırır ({n}/{m}, {m}. denemede kesin)",
@@ -1868,8 +1868,8 @@
   "en": "Permanent perks · Details"
  },
  "shop_supporter_tip": {
-  "tr": "Geliştiriciyi destekle: kalıcı +%10 altın, +%10 tecrübe, +2 saat çevrimdışı süre ve +20 çanta yeri. Tek seferlik. Güç farkı küçüktür; oyunun tamamı ücretsiz oynanabilir.",
-  "en": "Support the developer: permanent +10% gold, +10% XP, +2 h offline cap and +20 bag slots. One time. The edge is small; the whole game is playable for free."
+  "tr": "Geliştiriciye destek paketi: kalıcı +%10 altın, +%10 tecrübe, +2 saat çevrimdışı süre ve +20 çanta yeri.",
+  "en": "Developer support pack: permanent +10% gold, +10% XP, +2 h offline cap and +20 bag slots."
  },
  "shop_bag_gold": {
   "tr": "Çanta Genişletme",
@@ -1991,18 +1991,6 @@
   "tr": "Çantaya +{n} yuva",
   "en": "+{n} bag slots"
  },
- "sd_once": {
-  "tr": "Hesap başına bir kez alınır",
-  "en": "Once per account"
- },
- "sd_fair": {
-  "tr": "Güç farkı küçüktür; oyunun tamamı ücretsiz oynanabilir.",
-  "en": "The edge is small; the whole game is playable for free."
- },
- "sd_support": {
-  "tr": "Oyunun gelişimini doğrudan destekler. Teşekkürler!",
-  "en": "Directly supports the game's development. Thank you!"
- },
  "sd_heroes": {
   "tr": "{n} rastgele kahraman (sahip olmadıkların arasından)",
   "en": "{n} random heroes (from ones you don't own)"
@@ -2064,11 +2052,51 @@
   "en": "Needed to recruit SR and SSR heroes at the tavern"
  },
  "seals_tip": {
-  "tr": "Taverna Mührü: {n}\nSR ve SSR kahramanları açmak için gerekir.\nNereden kazanılır:\n· Bölge bossları: 1 mühür\n· Perde bossları: 3 mühür\n· Günlük görevler (düşman öldürme, altın toplama): 1'er mühür\n· Altın, Kristal ve Kraliyet sandıkları\n· Mağaza: 5'li mühür paketi",
-  "en": "Tavern Seals: {n}\nNeeded to recruit SR and SSR heroes.\nWhere to get them:\n· Zone bosses: 1 seal\n· Act bosses: 3 seals\n· Daily quests (kills, gold): 1 each\n· Gold, Crystal and Royal chests\n· Store: 5-seal pack"
+  "tr": "Taverna Mührü: {n}\nSR ve SSR kahramanları açmak için gerekir.\nNereden kazanılır:\n· Bölge bossları: 1 mühür\n· Dünya bossları: 3 mühür\n· Günlük görevler (düşman öldürme, altın toplama): 1'er mühür\n· Altın, Kristal ve Kraliyet sandıkları\n· Mağaza: 5'li mühür paketi",
+  "en": "Tavern Seals: {n}\nNeeded to recruit SR and SSR heroes.\nWhere to get them:\n· Zone bosses: 1 seal\n· World bosses: 3 seals\n· Daily quests (kills, gold): 1 each\n· Gold, Crystal and Royal chests\n· Store: 5-seal pack"
  },
  "btn_replay_intro": {
   "tr": "Açılış Sinematiğini İzle",
   "en": "Watch Opening Cinematic"
+ },
+ "world_diff_tip": {
+  "tr": "Zorluk seviyesini değiştirmek için tıkla",
+  "en": "Click to change the difficulty"
+ },
+ "tower_req_short": {
+  "tr": "Sv 50 kahraman gerekli",
+  "en": "Needs a lv 50 hero"
+ },
+ "zone_physical": {
+  "tr": "Yalnızca fiziksel hasar",
+  "en": "Physical damage only"
+ },
+ "dps_gauge_tip": {
+  "tr": "Seçili aşamayı rahatça geçmek için gereken tahmini DPS ve partinin şu anki DPS'i.",
+  "en": "Estimated DPS to clear the selected stage comfortably, and your party's current DPS."
+ },
+ "dps_need_l": {
+  "tr": "Gereken DPS ~{n}",
+  "en": "DPS needed ~{n}"
+ },
+ "dps_have_r": {
+  "tr": "Partin {n}",
+  "en": "Party {n}"
+ },
+ "shop_purchased": {
+  "tr": "SATIN ALINDI",
+  "en": "PURCHASED"
+ },
+ "sd_dev_support": {
+  "tr": "Geliştiriciye destek paketi!",
+  "en": "A pack that supports the developer!"
+ },
+ "thanks_title": {
+  "tr": "Bizi desteklediğiniz için teşekkür ederiz!",
+  "en": "Thank you for supporting us!"
+ },
+ "thanks_sub": {
+  "tr": "Lonca Destekçisi bonusların artık etkin.",
+  "en": "Your Guild Supporter perks are now active."
  }
 }

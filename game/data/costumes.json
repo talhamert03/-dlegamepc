@@ -1,11 +1,11 @@
 {
   "costumes": {
     "royal": {"name": {"tr": "Kraliyet", "en": "Royal"}, "hue": 0.12, "sat": 1.0, "val": 1.08,
-      "unlock": {"type": "cleared", "key": "0_a1_z10"}, "hint": {"tr": "Perde 1'i bitir.", "en": "Finish Act 1."}},
+      "unlock": {"type": "cleared", "key": "0_a1_z10"}, "hint": {"tr": "Dünya 1'i bitir.", "en": "Finish World 1."}},
     "verdant": {"name": {"tr": "Orman Muhafızı", "en": "Verdant"}, "hue": 0.32, "sat": 0.85, "val": 0.95,
-      "unlock": {"type": "cleared", "key": "0_a2_z10"}, "hint": {"tr": "Perde 2'yi bitir.", "en": "Finish Act 2."}},
+      "unlock": {"type": "cleared", "key": "0_a2_z10"}, "hint": {"tr": "Dünya 2'yi bitir.", "en": "Finish World 2."}},
     "frost": {"name": {"tr": "Buz Kristali", "en": "Frost"}, "hue": 0.54, "sat": 0.55, "val": 1.18,
-      "unlock": {"type": "cleared", "key": "0_a3_z10"}, "hint": {"tr": "Perde 3'ü bitir.", "en": "Finish Act 3."}},
+      "unlock": {"type": "cleared", "key": "0_a3_z10"}, "hint": {"tr": "Dünya 3'ü bitir.", "en": "Finish World 3."}},
     "celestial": {"name": {"tr": "Göksel", "en": "Celestial"}, "hue": 0.47, "sat": 0.7, "val": 1.2,
       "unlock": {"type": "flag", "key": "story_done"}, "hint": {"tr": "Hikayeyi tamamla.", "en": "Complete the story."}},
     "inferno": {"name": {"tr": "Cehennem Ateşi", "en": "Inferno"}, "hue": 0.01, "sat": 1.1, "val": 0.9,

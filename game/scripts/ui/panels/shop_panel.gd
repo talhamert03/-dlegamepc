@@ -390,6 +390,8 @@ func _card(p: Dictionary, hid: String, pos: Vector2) -> void:
 	_grid.add_child(c)
 	_cards.append(c)
 	_price_plaque(c, p, hid)
+	if Shop.is_owned_once(p):
+		_owned_stamp(c)
 
 
 func _close(pts: PackedVector2Array) -> PackedVector2Array:
@@ -480,6 +482,116 @@ func _price_plaque(c: Control, p: Dictionary, hid: String, rect := Rect2(7, CARD
 	return b
 
 
+## A one-time product already bought: the niche goes grey and a "Purchased" stamp crosses it.
+func _owned_stamp(c: Control) -> void:
+	c.modulate = Color(0.62, 0.6, 0.64)
+	c.mouse_default_cursor_shape = Control.CURSOR_ARROW
+	var st := Control.new()
+	st.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	st.size = c.size
+	st.draw.connect(func():
+		var text := DataDB.t("shop_purchased")
+		var f := UITheme.font_title
+		var tw := f.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 10).x
+		st.draw_set_transform(Vector2(c.size.x / 2.0, 46), -0.22, Vector2.ONE)
+		var r := Rect2(-tw / 2.0 - 8, -9, tw + 16, 17)
+		st.draw_rect(r, Color(0.1, 0.08, 0.06, 0.82))
+		UISkin.stroke(st.get_canvas_item(), r, 2, Color("#E8E2D8"), 1.4)
+		UISkin.stroke(st.get_canvas_item(), r.grow(-2.5), 1, Color("#E8E2D8", 0.6), 0.8)
+		st.draw_string(f, Vector2(-tw / 2.0, 4), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("#F2EEE6"))
+		st.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE))
+	c.add_child(st)
+
+
+## Thank-you scene after the supporter pack: golden rays turn behind the guild crest, which drops in with a
+## bounce, sparks burst, and the message writes itself in a book serif. Click or wait to close.
+func _thank_you() -> void:
+	var veil := Control.new()
+	veil.size = _host.size
+	veil.mouse_filter = Control.MOUSE_FILTER_STOP
+	veil.z_index = 60
+	var t0 := _t
+	var sparks: Array = []
+	for i in 46:
+		var a := randf() * TAU
+		sparks.append([Vector2(cos(a), sin(a)) * randf_range(40.0, 150.0), randf_range(0.6, 1.6), [Color("#FFD978"), Color("#FFF2C2"), Color("#E3A8FF")][i % 3]])
+	veil.gui_input.connect(func(e: InputEvent):
+		if e is InputEventMouseButton and e.pressed and _t - t0 > 0.8:
+			var tw := veil.create_tween()
+			tw.tween_property(veil, "modulate:a", 0.0, 0.35)
+			tw.tween_callback(veil.queue_free))
+	veil.draw.connect(func():
+		var k := _t - t0
+		var s := veil.size
+		var ci := veil.get_canvas_item()
+		var a := clampf(k / 0.4, 0.0, 1.0)
+		veil.draw_rect(Rect2(Vector2.ZERO, s), Color(0.03, 0.01, 0.05, 0.9 * a))
+		var ctr := Vector2(s.x / 2.0, s.y * 0.36)
+		# slowly turning rays
+		for i in 16:
+			var ang := _t * 0.25 + i * TAU / 16.0
+			var len := 140.0 + 14.0 * sin(_t * 2.0 + i)
+			var w := 0.09
+			veil.draw_colored_polygon(PackedVector2Array([ctr, ctr + Vector2(cos(ang - w), sin(ang - w)) * len, ctr + Vector2(cos(ang + w), sin(ang + w)) * len]),
+				Color(1.0, 0.82, 0.45, 0.07 * a))
+		for r in 6:
+			veil.draw_circle(ctr, 58.0 - r * 9.0, Color(0.85, 0.55, 1.0, 0.05 * a))
+		# sparks burst once the crest lands
+		var sk := k - 0.55
+		if sk > 0.0:
+			for sp in sparks:
+				var life: float = sp[1]
+				if sk < life:
+					var q: float = sk / life
+					var pos: Vector2 = ctr + (sp[0] as Vector2) * (1.0 - pow(1.0 - q, 3.0)) + Vector2(0, 30.0 * q * q)
+					veil.draw_circle(pos, 1.6 * (1.0 - q) + 0.4, Color(sp[2], 1.0 - q))
+		# crest drops in with an overshoot
+		var ck := clampf((k - 0.15) / 0.5, 0.0, 1.0)
+		var sc := 1.0
+		if ck < 1.0:
+			sc = 2.2 - 1.2 * (1.0 - pow(1.0 - ck, 3.0)) + 0.18 * sin(ck * PI)
+		veil.draw_set_transform(ctr, 0.0, Vector2(sc, sc) * 1.6)
+		var cmod := clampf(ck * 1.5, 0.0, 1.0)
+		if cmod > 0.0:
+			_crest(veil, Vector2.ZERO)
+		veil.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		# the message
+		var f := UITheme.font_read
+		var line1 := DataDB.t("thanks_title")
+		var tk := clampf((k - 0.8) / 1.6, 0.0, 1.0)
+		var shown := line1.substr(0, int(round(line1.length() * tk)))
+		var fs := 15
+		while fs > 10 and f.get_string_size(line1, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > s.x - 24:
+			fs -= 1
+		var w1 := f.get_string_size(line1, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		var p1 := Vector2((s.x - w1) / 2.0, s.y * 0.66)
+		veil.draw_string_outline(f, p1, shown, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 5, Color(0.12, 0.02, 0.1, 0.95))
+		veil.draw_string(f, p1, shown, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("#FFE7A8"))
+		var shine := fmod(k * 0.6, 2.2) - 0.2
+		if tk >= 1.0 and shine > 0.0 and shine < 1.0:
+			veil.draw_string(f, p1, line1, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(1, 1, 0.9, 0.35 * sin(shine * PI)))
+		var a2 := clampf((k - 2.3) / 0.6, 0.0, 1.0)
+		if a2 > 0.0:
+			var line2 := DataDB.t("thanks_sub")
+			var fb := UITheme.font_body
+			var w2 := fb.get_string_size(line2, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
+			veil.draw_string(fb, Vector2((s.x - w2) / 2.0, s.y * 0.66 + 16), line2, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#E3D4F2", a2))
+			UISkin.diamond(ci, Vector2(s.x / 2.0 - w2 / 2.0 - 8, s.y * 0.66 + 13), 2.4)
+			UISkin.diamond(ci, Vector2(s.x / 2.0 + w2 / 2.0 + 8, s.y * 0.66 + 13), 2.4)
+			var hint := DataDB.t("click_continue")
+			var w3 := fb.get_string_size(hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
+			veil.draw_string(fb, Vector2((s.x - w3) / 2.0, s.y - 12), hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color(1, 1, 1, 0.45 * a2 * (0.7 + 0.3 * sin(_t * 4.0))))
+		if k > 9.0 and not veil.has_meta("closing"):
+			veil.set_meta("closing", true)
+			var tw := veil.create_tween()
+			tw.tween_property(veil, "modulate:a", 0.0, 0.5)
+			tw.tween_callback(veil.queue_free))
+	_host.add_child(veil)
+	_cards.append(veil)
+	WindowManager.hide_tooltip()
+	AudioManager.play("levelup", 0.0, 1.0)
+
+
 ## One line of text centred in `width`, shrunk a size or two and then cut with an ellipsis if it is long.
 func _fit_line(c: Control, f: Font, text: String, at: Vector2, width: float, fs: int, col: Color) -> void:
 	var size := fs
@@ -514,8 +626,7 @@ func _detail_lines(p: Dictionary, hid: String) -> Array:
 				out.append([DataDB.t("sd_offline_h", {"n": int(perks["offline_hours"])}), UITheme.C_BLUE])
 			if p.has("slots"):
 				out.append([DataDB.t("sd_bag", {"n": int(p["slots"])}), UITheme.C_TEXT])
-			out.append([DataDB.t("sd_support"), note])
-			out.append([DataDB.t("sd_fair"), note])
+			out.append([DataDB.t("sd_dev_support"), Color("#E3A8FF")])
 		"bundle":
 			if int(p.get("heroes", 0)) > 0:
 				out.append([DataDB.t("sd_heroes", {"n": int(p["heroes"])}), Color("#FFC94A")])
@@ -556,8 +667,6 @@ func _detail_lines(p: Dictionary, hid: String) -> Array:
 	var tip_key := "shop_%s_tip" % str(p["id"])
 	if out.is_empty() and DataDB.strings.has(tip_key):
 		out.append([DataDB.t(tip_key), UITheme.C_TEXT])
-	if p.get("once", false):
-		out.append([DataDB.t("sd_once"), UITheme.C_ORANGE])
 	return out
 
 
@@ -724,7 +833,9 @@ func _buy(p: Dictionary, hid: String) -> void:
 			AudioManager.play("ui_click", 0.05, 0.4)
 			return
 		_toast(res)
-		refresh(), hid)
+		refresh()
+		if str(p["id"]) == "supporter":
+			_thank_you(), hid)
 
 
 ## PC-style reward notice above the strip (no full-screen reveal).

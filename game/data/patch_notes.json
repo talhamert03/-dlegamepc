@@ -1,6 +1,35 @@
 {
- "current": "0.2.3",
+ "current": "0.2.4",
  "notes": [
+  {
+   "version": "0.2.4",
+   "title": {
+    "tr": "Yeni Dünya Haritası",
+    "en": "New World Map"
+   },
+   "items": [
+    {
+     "tr": "Dünya penceresi yeniden tasarlandı: zorluk arması, kule kapısı, sancak sekmeleri, oymalı harita çerçevesi, madalyon bölge noktaları ve taşmayan bölge kartı (hazırlık durumu, element dirençleri, DPS göstergesi).",
+     "en": "World window redesigned: difficulty crest, tower gate, banner tabs, carved map frame, medallion waypoints and a zone card that never overflows (readiness, resistances, DPS gauge)."
+    },
+    {
+     "tr": "\"Perde\" adları \"Dünya\" olarak değiştirildi.",
+     "en": "\"Act\" is now called \"World\"."
+    },
+    {
+     "tr": "Tek seferlik paketler satın alındıktan sonra gri görünür ve üzerinde \"Satın alındı\" yazar.",
+     "en": "One-time packs turn grey with a \"Purchased\" stamp once bought."
+    },
+    {
+     "tr": "Lonca Destekçisi alındığında animasyonlu bir teşekkür ekranı gösterilir.",
+     "en": "Buying the Guild Supporter pack plays an animated thank-you."
+    },
+    {
+     "tr": "Kraliyet Hazinesi paketi 59,99 ₺.",
+     "en": "Royal Treasure pack price lowered."
+    }
+   ]
+  },
   {
    "version": "0.2.3",
    "title": {

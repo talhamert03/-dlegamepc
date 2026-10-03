@@ -110,6 +110,13 @@ static func unowned(rarity := "") -> Array:
 
 
 ## Why a product can't be bought right now ("" = it can).
+## A one-time product (or one bought to its limit) that is already owned.
+static func is_owned_once(p: Dictionary) -> bool:
+	if p.get("once", false) and times_bought(str(p["id"])) > 0:
+		return true
+	return p.has("max_buys") and times_bought(str(p["id"])) >= int(p["max_buys"])
+
+
 static func block_reason(p: Dictionary, hero_id := "") -> String:
 	match str(p.get("kind", "")):
 		"chest":
