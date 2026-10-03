@@ -42,7 +42,7 @@ func test_enemy_scaling_monotonic() -> void:
 		prev = float(s["hp"])
 	var b := F.enemy_stats(d, 30, "boss", 0)
 	var n := F.enemy_stats(d, 30, "normal", 0)
-	runner.near(float(b["hp"]) / float(n["hp"]), 25.0, 0.5, "boss mult")
+	runner.near(float(b["hp"]) / float(n["hp"]), float(DataDB.bal("enemy.type_hp.boss", 25.0)), 0.5, "boss mult")
 
 
 func test_monster_level_difficulty() -> void:
