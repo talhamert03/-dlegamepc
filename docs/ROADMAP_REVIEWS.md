@@ -191,3 +191,145 @@ Kullanıcı onayı: kozmetik satışı ve kostüm bonusu hariç hepsi; Steam Paz
 ### Kapsam dışı (şimdilik)
 - Steam Pazarı / envanter ekonomisi.
 - Kozmetik satış ve kostüm koleksiyon bonusu.
+
+---
+
+# TBH: Task Bar Hero yorumlarından çıkarımlar
+
+**Kaynak:** Steam API, 425 dolu yorum (en çok beğeni alan 300 olumsuz + 200 olumlu). Oyunun toplamı 46.971 yorum: 25.210 olumlu, 21.761 olumsuz ("Karışık").
+
+TBH türün öncüsü. Erken oyun çok seviliyor; oyuncular onu oyun sonu, şans sistemleri ve yönetim yüzünden kaybediyor.
+
+## Sevilenler (korunacak)
+- Görev çubuğunda yaşayan, işe ve derse eşlik eden bir oyun ("ekran koruyucum", "DEHB oyunu").
+- Sevimli piksel sanat, karakter tasarımları, akıcı animasyon.
+- Lv ~70'e kadar tatmin edici ilerleme.
+- Rün yolları ve küp/inşa denemeleri.
+- Puanları ücretsiz sıfırlayıp yeni inşa denemek.
+- Offline kazançtan sonra "dönüp ganimeti toplama" anı.
+- Malzeme stack'leme gibi kolaylık güncellemeleri.
+- Bedava olması ve yayınlanan yol haritası.
+- Sunucu sorunlarının ardından cömert telafi.
+
+## En çok şikayet edilenler
+
+### 1. Birleştirme (9 → 1) kumar gibi
+- Kırmızıdan sonra %50 şans var; çoğu zaman aynı kademe ya da DAHA DÜŞÜK seviye çıkıyor (9× Lv80 → 1× Lv65).
+- Pity (garanti) sistemi yok.
+- "Gösterilen oran yalan" algısı var: "%49 diyor, gerçekte %9".
+
+### 2. Oyun sonunda ilerleme yok
+- Lv101 tavanından sonra yüzlerce saat hiçbir şey değişmiyor.
+- En üst kademeler fiilen hiç düşmüyor ("1000+ saatte tek Divine/Cosmic yok").
+- Yeni bölge (Veba Toprakları) eskisinden az ödül veriyor ve düşmanların canı %40.000 artmış.
+
+### 3. Tek sınıf meta
+- Sadece Okçu tek başına oyunu bitiriyor; ön saf anında ölüyor; savunma ve direnç hissedilmiyor.
+- Rahibe yakın dövüşçü ve öne koşup ölüyor.
+- Alan iyileştirmesi yere bırakılıyor, takım alandan çıkıyor.
+- Takım halinde oynamak tek kişiden daha kötü.
+
+### 4. Sessiz nerf'ler
+- Yama notu olmadan beceri ve eşya değerleri düşürülüyor (%200 → %30).
+- Var olan eşyalar değiştiriliyor, Discord'da eleştiri siliniyor.
+
+### 5. Kayıp ilerleme
+- Sunucu rollback'leri, bulut/yerel kayıt çakışması, bozulan kayıtlar.
+- "Açılmıyor" hataları, saatlerce ilerleme kaybı.
+
+### 6. Haksız banlar
+- AFK veya offline kaldığı için, başka oyun açtığı için ya da saat/bölge değiştirdiği için banlanma.
+
+### 7. Envanter yükü
+- Boşta çalışan bir oyunda çanta sürekli doluyor; çöp malzemeler birikiyor.
+- Otomatik imha filtresi yok, stack'lenme eksik.
+- Ek alan ücretli DLC.
+- Otomatik doldurma filtresi ayarlara uymuyor.
+
+### 8. Kaynak tüketimi
+- Bellek sızıntısı (16 GB VRAM, 32 GB RAM), saatler sonra Windows'u çökertme, yüksek GPU kullanımı.
+
+### 9. Pencere ve arayüz
+- Pencere yeniden boyutlanamıyor.
+- Ekranın yarısını kapatan, tıklanamayan büyük siyah arka plan.
+- İkinci monitöre taşınamıyor, görev çubuğuna yapışmıyor.
+- 100 puanı TEK TEK geri almak gerekiyor.
+- İstatistiklerin ne yaptığı açıklanmıyor (kritik şansı "yüzdenin yüzdesi").
+- Sağ tık davranışları kafa karıştırıcı.
+
+### 10. Parayla kilitler
+- En güçlü sınıflar ücretli.
+- DLC kahramanı almadığın sınıfların eşyaları düşüyor.
+- Bazı başarımlar parayla ya da imkânsız şansla alınabiliyor.
+
+### 11. Offline kazancı işe yaramaz
+- 8 saat sınırı ve düşük verim yüzünden "PC'yi açık bırakmak zorundayım" hissi.
+- Rakip MPIG'de tersi şikayet ediliyordu (offline daha kârlı). Doğru denge: online biraz daha iyi, ama offline da anlamlı.
+
+### 12. Yavaş ve içi boş güncellemeler
+- Altı ay bekleme; yeni mekanik ya da kahraman yok, sadece kostüm.
+
+### 13. Oyun içi pazar ve botlar
+- Ekonomi çöktü, fiyatlar dibe vurdu (şimdilik kapsam dışı; ders olarak not edildi).
+
+## Yol haritasına EK maddeler (F serisi)
+
+### F. Ödüllendirme ve şans
+- [ ] F1. Birleştirme ve güçlendirme asla geri gitmesin:
+  - Sonuç girdilerden düşük seviye ya da düşük kademe olamaz.
+  - Başarısızlıkta "ilerleme puanı" birikir (pity), N denemede garanti olur.
+  - Gösterilen oran gerçek orandır; son denemelerin geçmişi görünür.
+- [ ] F2. Kötü şans koruması: nadir düşüşler için gizli bir sayaç uzadıkça şans artar. Böylece "1000 saatte hiç çıkmadı" yaşanmaz.
+- [ ] F3. Oyun sonunda hep görünür ilerleme:
+  - Seviye tavanından sonra paragon seviyeleri (küçük ama sürekli kalıcı bonus).
+  - Hesap geneli koleksiyon ilerlemesi.
+  - Her yeni bölge eskisinden daha iyi ödül versin.
+- [ ] F4. Yeni içerik testi: yeni bir zorluk veya bölge, denge botuyla "ödül ≥ önceki" ve "takım ≥ tek kişi" testinden geçmeden çıkmaz.
+
+### G. Takım dengesi (tek sınıf metası olmasın)
+- [ ] G1. Destek ve uzak menzil sınıfları geride kalsın: rahibe/büyücü yapay zekâsı öne koşmasın.
+- [ ] G2. Alan iyileştirmeleri takımı takip etsin, yere sabitlenmesin.
+- [ ] G3. Savunma ve direnç hissedilir olsun; tek vuruşta ölüm sadece bilinçli boss mekaniğiyle (telegraf + uyarı) olsun.
+- [ ] G4. Denge botu: "5 kişilik takım her zaman tek okçudan iyi" testi.
+- [ ] G5. İstatistik formülleri anlaşılır olsun (kritik şansı düz yüzde) ve her istatistiğin ne yaptığı ipucunda yazsın.
+
+### H. Güven ve yönetim
+- [ ] H1. Oyun içi yama notları ekranı.
+- [ ] H2. Nerf olunca otomatik ücretsiz puan iadesi; sahip olunan eşyalar sessizce değiştirilmez.
+- [ ] H3. Kayıt güvenliği:
+  - Atomik yazma + çoklu yedek (zaten var).
+  - Steam Cloud çakışma ekranı ("hangisi daha ileride" gösterilir).
+  - Bozuk kayıtta otomatik yedekten açılış; asla "açılmıyor" olmaz.
+- [ ] H4. Ban yok: AFK, offline, saat değişimi, başka oyunla aynı anda çalışma asla cezalandırılmaz.
+
+### I. Envanter ve kolaylık
+- [ ] I1. Otomatik imha ve parçalama kuralları: kademe + sınıf + slot + seviye; ayarlara harfiyen uyar.
+- [ ] I2. Tüm malzemeler stack'lenir; çöp malzeme üretilmez.
+- [ ] I3. Çanta dolunca savaş durmaz: en düşük değerliler otomatik satılır, isteğe bağlı.
+- [ ] I4. Tüm puanları tek tıkla sıfırlama (hem stat hem beceri).
+- [ ] I5. Partide olmayan sınıfın eşyası (neredeyse) hiç düşmesin.
+
+### J. Performans ve pencere
+- [ ] J1. Performans bütçesi:
+  - Odakta değilken düşük FPS (var).
+  - 24-72 saatlik bellek "soak" testi: sızıntı yok, RAM sabit.
+- [ ] J2. Çoklu monitör: şeridi başka monitörün görev çubuğuna taşıma.
+- [ ] J3. Görev çubuğuna yapışma; ölçek ayarı (var), ölçek değiştirme kolaylığı.
+- [ ] J4. Siyah ekran ya da tıklanamayan alan bırakmama (Chromium düzeltmesi yapıldı, Windows'ta test edilecek).
+
+### K. Adil para kazanma
+- [ ] K1. Parayla satılan hiçbir kahraman "en güçlü" olmasın; hepsi tavernadan oyunla da alınabilsin (şu an öyle).
+- [ ] K2. Başarımların hepsi oynayarak, makul sürede alınabilsin.
+- [ ] K3. Offline dengesi: online > offline, ama offline anlamlı. Hedef ~%30-35 verim, 8-10 saat. Şu anki %20 biraz sert; bota göre ayarlanacak.
+
+### L. İçerik ritmi
+- [ ] L1. Her güncelleme yeni bir mekanik getirsin: yeni kahraman, yeni beceri, yeni düşman davranışı; sadece sayı ve kostüm değil.
+- [ ] L2. Herkese açık yol haritası; düzenli ve küçük güncellemeler.
+
+### E1'in uygulanma yolu (Higgsfield olmadan)
+Açılış posteri mevcut HD kahraman çizimlerimizden Godot içinde kurulacak:
+- Fırtınalı ve şimşekli, katmanlı arka plan.
+- Kahramanlar dinamik bir diziliş içinde; kenar ışığı, gölge ve hafif kamera kayması.
+- Prosedürel alevli logo: kalın kontur, altın-turuncu gradyan, alev parçacıkları ve kıvılcımlar.
+- Hikâye aynı yöntemle küçük bir sinema penceresinde.
+Yeni görsel üretimi gerekmiyor.
