@@ -301,17 +301,12 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 	for a in cmd:
 		if a == "--runes":
 			GameState.add_gold(5000000)
-			var lead: HeroState = GameState.party_heroes()[0]
-			for a2 in cmd:
-				if a2.begins_with("--runehero="):
-					lead = GameState.heroes[a2.substr(11)]
-					WindowManager.selected_hero = lead.id
 			var order: Array = ["core"]
-			for b in Runes.branches(lead):
-				for k in ["1", "1", "2", "2", "3", "_side"]:
-					order.append(str(b["key"]) + k)
+			for br in Runes.branches():
+				for k in ["1", "1", "2", "2", "3", "_s1"]:
+					order.append(str(br["key"]) + k)
 			for id in order:
-				Runes.buy(lead, id)
+				Runes.buy(id)
 			GameState.gold = 2715147
 	for a in cmd:
 		if a == "--chests":
@@ -356,12 +351,35 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 		if a.begins_with("--herotab=") and WindowManager.is_open("hero"):
 			WindowManager.panels["hero"]._on_tab(int(a.substr(10)))
 			await get_tree().create_timer(0.5).timeout
+		if a.begins_with("--statustab=") and WindowManager.is_open("stats"):
+			WindowManager.panels["stats"]._on_tab(int(a.substr(12)))
+			await get_tree().create_timer(0.4).timeout
 		if a == "--selldlg" and WindowManager.is_open("hero"):
 			WindowManager.panels["hero"]._sell_dialog()
 			await get_tree().create_timer(0.3).timeout
 		if a == "--chestopen" and WindowManager.is_open("chests"):
 			WindowManager.panels["chests"]._on_open()
 			await get_tree().create_timer(1.0).timeout
+	for a in cmd:
+		if a.begins_with("--fxtest="):
+			var sc1: float = WindowManager.ui_scale
+			var sr1 := WindowManager.strip_rect()
+			var kinds := a.substr(9).split(",")
+			if kinds[0] == "all":
+				kinds = PackedStringArray(SkillFx.KINDS.keys())
+			for kname in kinds:
+				var ally := kname in ["aegis", "sanctuary", "anthem"]
+				var pts: Array = [Vector2(196, 64), Vector2(166, 64), Vector2(136, 64)] if ally else [Vector2(250, 64), Vector2(285, 64), Vector2(320, 64)]
+				var fx := SkillFx.new()
+				fx.setup(kname, Vector2(166, 64), pts)
+				strip.fx_root.add_child(fx)
+				for k in 3:
+					var wait_s: float = fx.life * (0.22 if k == 0 else 0.25)
+					await get_tree().create_timer(wait_s).timeout
+					await RenderingServer.frame_post_draw
+					var im := get_viewport().get_texture().get_image()
+					im.get_region(Rect2i(Vector2i(sr1.position * sc1), Vector2i(Vector2(360, 72) * sc1))).save_png(out + "fx_%s_%d.png" % [kname, k])
+				await get_tree().create_timer(0.4).timeout
 	var img := get_viewport().get_texture().get_image()
 	img.save_png(out + "screen.png")
 	var sc: float = WindowManager.ui_scale

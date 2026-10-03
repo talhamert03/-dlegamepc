@@ -512,6 +512,21 @@ func _spawn_vfx(kind: String, pos: Vector2, color: Color, sz: float, data: Dicti
 
 func _on_vfx(vfx: String, pos: Vector2, data: Dictionary) -> void:
 	var tgts: Array = data.get("targets", [])
+	if SkillFx.handles(vfx):
+		var pts: Array = []
+		for uid in tgts:
+			var tv: UnitView = views.get(uid)
+			if tv:
+				pts.append(Vector2(tv.position.x, BattleSim.GROUND_Y))
+		pts.sort_custom(func(a, b): return a.x < b.x)
+		var sv: UnitView = views.get(data.get("src", -1))
+		var sp := Vector2(sv.position.x, BattleSim.GROUND_Y) if sv else pos
+		var fx := SkillFx.new()
+		fx.setup(vfx, sp, pts)
+		fx_root.add_child(fx)
+		if vfx in ["comet", "earth_split", "blizzard", "sun_burst", "thunder_chord", "shockwave"]:
+			_shake = maxf(_shake, 0.18)
+		return
 	var col := Color.WHITE
 	match vfx:
 		"telegraph":

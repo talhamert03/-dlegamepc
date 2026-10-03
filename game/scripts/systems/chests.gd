@@ -40,7 +40,7 @@ static func display_name(kind: String) -> String:
 
 ## Rolls a chest for a kill. Returns "" when none drops.
 static func roll(rng: RandomNumberGenerator, etype: String, luck := 0.0) -> String:
-	var chance: float = float(DROP.get(etype, 0.0)) * (1.0 + luck / 300.0 + Runes.party_average("chest_find") / 100.0)
+	var chance: float = float(DROP.get(etype, 0.0)) * (1.0 + luck / 300.0 + Runes.total("chest_find") / 100.0)
 	if rng.randf() >= chance:
 		return ""
 	var w: Array = WEIGHTS.get(etype, WEIGHTS["normal"])

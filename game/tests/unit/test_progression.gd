@@ -57,19 +57,21 @@ func test_save_load_roundtrip() -> void:
 	runner.check(GameState.heroes.has("kael"), "hero restored")
 
 
-func test_runes_are_personal() -> void:
+func test_leadership_runes() -> void:
 	GameState.new_game()
-	GameState.add_gold(100000)
-	var kael: HeroState = GameState.heroes["kael"]
-	var before := float(GameState.hero_stats("kael").get("hp_pct", 0.0))
-	runner.check(not Runes.can_buy(kael, "bulwark1"), "bulwark1 locked before the core")
-	runner.check(Runes.buy(kael, "core"), "core bought")
-	runner.check(Runes.buy(kael, "bulwark1"), "bulwark1 bought after the core")
-	runner.check(float(GameState.hero_stats("kael").get("hp_pct", 0.0)) > before, "rune raises the hero's stat")
+	GameState.add_gold(1000000)
+	GameState.unlock_hero("nova", false)
+	var before_k := float(GameState.hero_stats("kael").get("spell_pct", 0.0))
+	var before_n := float(GameState.hero_stats("nova").get("spell_pct", 0.0))
+	runner.check(not Runes.can_buy("academy1"), "academy1 locked before the core")
+	runner.check(Runes.buy("core"), "core bought")
+	runner.check(Runes.buy("academy1"), "academy1 bought after the core")
+	runner.check(float(GameState.hero_stats("nova").get("spell_pct", 0.0)) > before_n, "caster rune reaches the mage")
+	runner.check(is_equal_approx(float(GameState.hero_stats("kael").get("spell_pct", 0.0)), before_k), "caster rune skips the knight")
 	GameState.save_game(9)
 	GameState.reset_state()
 	GameState.load_game(9)
-	runner.check(Runes.rank(GameState.heroes["kael"], "bulwark1") == 1, "rune rank restored")
+	runner.check(Runes.rank("academy1") == 1, "rune rank restored")
 
 
 func test_corrupt_save_falls_back_to_backup() -> void:

@@ -1288,8 +1288,8 @@
   "en": "Taskbar mode when minimised"
  },
  "panel_runes": {
-  "tr": "Rünler",
-  "en": "Runes"
+  "tr": "Liderlik Rünleri",
+  "en": "Leadership Runes"
  },
  "rune_stat_list": {
   "tr": "İstatistik Listesi",
@@ -1312,8 +1312,8 @@
   "en": "Arcane"
  },
  "rune_none": {
-  "tr": "Bu kahramanın henüz rünü yok. Ortadaki Öz Rün ile başla; her rün yanındakilerin yolunu açar. Her sınıfın kendi ağacı vardır ve rünler yalnızca bu kahramanı güçlendirir.",
-  "en": "No runes yet. Start with the Core Rune in the middle; every rune opens its neighbours. Each class has its own tree and runes strengthen only this hero."
+  "tr": "Henüz rün yok. Bu senin, yani komutanın gelişim ağacı: ortadaki Komutan Mührü ile başla, her rün yanındakilerin yolunu açar. Bazı rünler yalnızca belirli sınıfları güçlendirir.",
+  "en": "No runes yet. This is your own tree as commander: start with the Commander's Seal; every rune opens its neighbours. Some runes empower only certain classes."
  },
  "rune_buy": {
   "tr": "Al",
@@ -1348,8 +1348,8 @@
   "en": "Needs a linked rune"
  },
  "tip_runes": {
-  "tr": "Rün Ağacı: kahramana özel gelişim (R)",
-  "en": "Rune Tree: personal growth per hero (R)"
+  "tr": "Rün Ağacı: komutan gelişimi (R)",
+  "en": "Rune Tree: commander growth (R)"
  },
  "status_more": {
   "tr": "Tüm statlar",
@@ -1506,5 +1506,25 @@
  "world_locked_zone": {
   "tr": "Önceki bölgenin bossunu yen",
   "en": "Beat the previous zone's boss"
+ },
+ "rune_all_heroes": {
+  "tr": "Tüm kahramanlar",
+  "en": "All heroes"
+ },
+ "rune_reach": {
+  "tr": "Etkiler: {who}",
+  "en": "Affects: {who}"
+ },
+ "status_tab_attr": {
+  "tr": "Özellikler",
+  "en": "Attributes"
+ },
+ "status_tab_skills": {
+  "tr": "Yetenekler",
+  "en": "Skills"
+ },
+ "status_need_lv": {
+  "tr": "(Sv. {lv})",
+  "en": "(Lv {lv})"
  }
 }

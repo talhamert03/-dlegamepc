@@ -1,7 +1,7 @@
 extends PanelWindow
-## Personal rune trees (one per hero, bought with gold): party hero tabs over a pannable board of carved rune
-## stones joined by lines, the gold plaque in the corner and, on the right, the parchment list of that hero's
-## bonuses plus the details of the hovered rune. Rune stones (square, stat glyphs) are deliberately unlike the
+## Leadership runes (the player's own tree, account-wide, bought with gold): a pannable board of carved rune
+## stones joined by lines, the gold plaque in the corner and, on the right, the parchment list of every
+## bonus learned (and whom it reaches) plus the details of the hovered rune. Rune stones (square, stat glyphs) are deliberately unlike the
 ## round class-skill medallions of the Status window.
 
 const G := 28.0          # grid step between nodes
@@ -24,14 +24,10 @@ var _detail_id := "core"
 var _t := 0.0
 var _flash := {}         # id -> remaining flash time
 var _icons := {}
-var _hid := ""
-var _tabs: Control
 
 
 func build(c: Control) -> void:
-	_hid = W.current_hero()
-	if not GameState.party.has(_hid) and GameState.party_heroes().size() > 0:
-		_hid = GameState.party_heroes()[0].id
+
 	var bw := c.size.x - SIDE_W - 4.0
 	_board = Control.new()
 	_board.size = Vector2(bw, c.size.y)
@@ -63,13 +59,6 @@ func build(c: Control) -> void:
 		var tw := f.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
 		plaque.draw_string(f, Vector2(r.size.x - tw - 5, 10), s, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, UITheme.C_TEXT))
 	c.add_child(plaque)
-	# party hero tabs over the board
-	_tabs = Control.new()
-	_tabs.position = Vector2(80, 3)
-	_tabs.size = Vector2(bw - 84, 20)
-	c.add_child(_tabs)
-	_build_tabs()
-	EventBus.party_changed.connect(_build_tabs)
 	_side = Control.new()
 	_side.position = Vector2(bw + 4.0, 0)
 	_side.size = Vector2(SIDE_W, c.size.y)
@@ -81,8 +70,6 @@ func build(c: Control) -> void:
 	EventBus.runes_changed.connect(func():
 		_refresh_list()
 		_update_detail()
-		for t in _tabs.get_children():
-			t.queue_redraw()
 		_side.get_child(0).queue_redraw())
 	_refresh_list()
 	_update_detail()
@@ -101,7 +88,7 @@ func _build_side() -> void:
 		UISkin.fill(ci, rib, 3, Color("#3A2A22"), Color("#1E1512"))
 		UISkin.stroke(ci, rib, 3, Color(0, 0, 0, 0.95), 1.0)
 		UISkin.stroke(ci, rib.grow(-1.0), 2, Color(UISkin.BRONZE, 0.8), 1.0)
-		var t := "· " + (_h().display_name() if _h() else DataDB.t("rune_stat_list")) + " ·"
+		var t := "· " + DataDB.t("rune_stat_list") + " ·"
 		var f := UITheme.font_title
 		var tw := f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
 		parch.draw_string(f, Vector2((w - tw) / 2.0, 10), t, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#F3D58F")))
@@ -125,96 +112,32 @@ func _build_side() -> void:
 	_buy.position = Vector2(6, 75)
 
 
-func _h() -> HeroState:
-	return GameState.heroes.get(_hid)
-
-
 func _icon(id: String) -> Texture2D:
-	var g := Runes.glyph(_h(), id)
+	var g := Runes.glyph(id)
 	if not _icons.has(g):
 		_icons[g] = UITheme.icon(g)
 	return _icons[g]
 
 
-## One portrait tab per party hero with the runes they have learned; the open tree is lit.
-func _build_tabs() -> void:
-	for ch in _tabs.get_children():
-		ch.queue_free()
-	var ids: Array = []
-	for h in GameState.party_heroes():
-		ids.append(h.id)
-	if not ids.has(_hid) and ids.size() > 0:
-		_hid = ids[0]
-	var tw := 22.0
-	var x := _tabs.size.x - ids.size() * (tw + 2.0)
-	for hid in ids:
-		var b := Button.new()
-		b.flat = true
-		b.focus_mode = Control.FOCUS_NONE
-		b.position = Vector2(x, 0)
-		b.size = Vector2(tw, 20)
-		var h2: HeroState = GameState.heroes[hid]
-		b.tooltip_text = "%s · %s\n%s" % [h2.display_name(), h2.class_title(), DataDB.t("rune_spent", {"n": Runes.points_spent(h2)})]
-		var tex := SpriteLib.hero_icon(hid)
-		var id2: String = hid
-		b.draw.connect(func():
-			var ci := b.get_canvas_item()
-			var r := Rect2(Vector2.ZERO, b.size)
-			var on := id2 == _hid
-			UISkin.fill(ci, r, 3, Color("#4A3A2A") if on else Color("#2A2428"), Color("#1E1612") if on else Color("#151216"))
-			if tex:
-				b.draw_texture_rect(tex, r.grow(-2.0), false, Color.WHITE if on else Color(0.6, 0.6, 0.65))
-			UISkin.stroke(ci, r, 3, Color(0, 0, 0, 0.95), 1.2)
-			UISkin.stroke(ci, r.grow(-1.0), 2, UITheme.C_GOLD if on else Color(UISkin.BRONZE, 0.5 if b.is_hovered() else 0.25), 1.2 if on else 1.0)
-			var n := Runes.points_spent(GameState.heroes[id2])
-			if n > 0:
-				var f := UITheme.font_body
-				b.draw_string_outline(f, Vector2(2, r.size.y - 2), str(n), HORIZONTAL_ALIGNMENT_LEFT, -1, 6, 2, Color(0, 0, 0, 0.95))
-				b.draw_string(f, Vector2(2, r.size.y - 2), str(n), HORIZONTAL_ALIGNMENT_LEFT, -1, 6, UITheme.C_GOLD))
-		b.mouse_entered.connect(b.queue_redraw)
-		b.mouse_exited.connect(b.queue_redraw)
-		b.pressed.connect(func():
-			_hid = id2
-			_sel = "core"
-			_hover = ""
-			_pan = Vector2.ZERO
-			W.select_hero(id2)
-			AudioManager.play("ui_click", 0.05, 0.5)
-			for t in _tabs.get_children():
-				t.queue_redraw()
-			_refresh_list()
-			_update_detail())
-		_tabs.add_child(b)
-		x += tw + 2.0
-
-
 func _refresh_list() -> void:
 	for ch in _list.get_children():
 		ch.queue_free()
-	var h := _h()
-	if h == null:
-		return
-	var cls := UITheme.label(h.class_title() + " · " + DataDB.t("rune_tree"), Color("#5A3A1A"), 7, UITheme.font_body)
-	_list.add_child(cls)
 	var any := false
-	var groups: Array = [{"key": "", "name": {"tr": "Öz", "en": "Core"}, "color": "#8A5A2A"}] + Runes.branches(h)
+	var groups: Array = [{"key": "", "name": {"tr": "Öz", "en": "Core"}, "color": "#8A5A2A"}] + Runes.branches()
 	for g in groups:
-		var sums := {}
-		var order: Array = []
-		for id in h.runes:
-			var nd := Runes.node(h, str(id))
+		var rows: Array = []
+		for id in GameState.runes:
+			var nd := Runes.node(str(id))
 			if nd.is_empty() or str(nd.get("br", "")) != str(g["key"]):
 				continue
-			var st := str(nd["stat"])
-			if not sums.has(st):
-				order.append(st)
-			sums[st] = float(sums.get(st, 0.0)) + float(nd["per"]) * int(h.runes[id])
-		if order.is_empty():
+			rows.append([str(nd["stat"]), float(nd["per"]) * int(GameState.runes[id]), Runes.reach_text(str(id)), Runes.classes(str(id)).is_empty()])
+		if rows.is_empty():
 			continue
 		any = true
 		_list.add_child(UITheme.label(DataDB.tx(g["name"]), Color(str(g["color"])).darkened(0.55), 8, UITheme.font_title))
-		for st in order:
-			var l := UITheme.label("· " + _bonus_text(st, float(sums[st])), UISkin.INK, 7, UITheme.font_body)
+		for r in rows:
+			var who: String = "" if r[3] else "  (" + str(r[2]) + ")"
+			var l := UITheme.label("· " + _bonus_text(str(r[0]), float(r[1])) + who, UISkin.INK, 7, UITheme.font_body)
 			l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			l.custom_minimum_size = Vector2(SIDE_W - 20, 0)
 			_list.add_child(l)
@@ -246,13 +169,13 @@ func _center() -> Vector2:
 
 
 func _node_pos(id: String) -> Vector2:
-	var p := Runes.pos(_h(), id)
+	var p := Runes.pos(id)
 	return _center() + Vector2(p.x, p.y) * G
 
 
 func _node_at(local: Vector2) -> String:
-	for id in Runes.nodes(_h()):
-		var half := (NS + (4.0 if id == "core" or Runes.is_cap(_h(), id) else 0.0)) / 2.0
+	for id in Runes.nodes():
+		var half := (NS + (4.0 if id == "core" or Runes.is_cap(id) else 0.0)) / 2.0
 		if Rect2(_node_pos(id) - Vector2(half, half), Vector2(half, half) * 2.0).has_point(local):
 			return id
 	return ""
@@ -279,14 +202,14 @@ func _draw_board() -> void:
 	for i in nx:
 		_board.draw_line(Vector2(off.x + (i - 1) * tile, 0), Vector2(off.x + (i - 1) * tile, r.size.y), Color(0, 0, 0, 0.22), 1.0)
 	# links
-	for id in Runes.nodes(_h()):
-		for l in Runes.links(_h(), id):
+	for id in Runes.nodes():
+		for l in Runes.links(id):
 			var a := _node_pos(str(l))
 			var b := _node_pos(id)
-			var lit := Runes.rank(_h(), id) > 0 and Runes.rank(_h(), str(l)) > 0
-			var open := Runes.rank(_h(), str(l)) > 0
+			var lit := Runes.rank(id) > 0 and Runes.rank(str(l)) > 0
+			var open := Runes.rank(str(l)) > 0
 			if lit:
-				var bc := Runes.branch_color(_h(), id)
+				var bc := Runes.branch_color(id)
 				_board.draw_line(a, b, Color(bc, 0.25), 4.0, true)
 				_board.draw_line(a, b, Color("#E9D7A8"), 1.6, true)
 			elif open:
@@ -294,45 +217,48 @@ func _draw_board() -> void:
 			else:
 				_board.draw_line(a, b, Color("#3C3842"), 1.2, true)
 	# capstone halos
-	for id in Runes.nodes(_h()):
-		if Runes.is_cap(_h(), id):
+	for id in Runes.nodes():
+		if Runes.is_cap(id):
 			var cc := _node_pos(id)
-			var bc2 := Runes.branch_color(_h(), id)
+			var bc2 := Runes.branch_color(id)
 			var pulse := 0.5 + 0.5 * sin(_t * 2.0)
 			_board.draw_circle(cc, 19.0, Color(bc2, 0.06 + 0.05 * pulse))
 			_board.draw_arc(cc, 17.0, 0, TAU, 32, Color(bc2, 0.35), 1.0, true)
 	# nodes
-	for id in Runes.nodes(_h()):
+	for id in Runes.nodes():
 		_draw_node(ci, id)
-	# branch names next to their second rune
+	# branch names on a banner just past each capstone
 	var fb := UITheme.font_title
-	for b in Runes.branches(_h()):
-		var id2: String = str(b["key"]) + "2"
-		if not Runes.nodes(_h()).has(id2):
+	for b in Runes.branches():
+		var key := str(b["key"])
+		if not Runes.nodes().has(key + "_cap"):
 			continue
-		var p1 := _node_pos(str(b["key"]) + "1")
-		var p2 := _node_pos(id2)
-		var dir := (p2 - p1).normalized()
-		var lab_off := Vector2(0, -17) if absf(dir.x) > 0.5 else Vector2(15, 3)
+		var pc := _node_pos(key + "_cap")
+		var dir := (pc - _node_pos(key + "6")).normalized()
 		var txt := DataDB.tx(b["name"])
-		var mid := (p1 + p2) / 2.0 + lab_off
 		var tw := fb.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
-		var at := mid - Vector2(tw / 2.0 if absf(dir.x) > 0.5 else 0.0, 0)
-		_board.draw_string_outline(fb, at, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, 3, Color(0, 0, 0, 0.9))
-		_board.draw_string(fb, at, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(str(b["color"])))
+		var anchor := pc + dir * 26.0
+		var at := anchor + Vector2(-tw / 2.0, 3.0)
+		if absf(dir.x) > 0.5:
+			at = anchor + Vector2(0.0 if dir.x > 0 else -tw, 3.0) + Vector2(-8.0 * dir.x, 0)
+		var col := Color(str(b["color"]))
+		var plate := Rect2(at + Vector2(-4, -9), Vector2(tw + 8, 12))
+		UISkin.fill(ci, plate, 3, Color(0.1, 0.08, 0.1, 0.85), Color(0.05, 0.04, 0.05, 0.85))
+		UISkin.stroke(ci, plate, 3, Color(col, 0.7), 1.0)
+		_board.draw_string(fb, at, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)
 
 
 func _draw_node(ci: RID, id: String) -> void:
 	var c := _node_pos(id)
-	var sz := NS + (4.0 if id == "core" or Runes.is_cap(_h(), id) else 0.0)
+	var sz := NS + (4.0 if id == "core" or Runes.is_cap(id) else 0.0)
 	var rr := Rect2(c - Vector2(sz, sz) / 2.0, Vector2(sz, sz))
 	if not rr.grow(4).intersects(Rect2(Vector2.ZERO, _board.size)):
 		return
-	var rk := Runes.rank(_h(), id)
-	var mx := Runes.max_rank(_h(), id)
-	var open := Runes.is_open(_h(), id)
-	var afford := Runes.can_buy(_h(), id)
-	var bc := Runes.branch_color(_h(), id)
+	var rk := Runes.rank(id)
+	var mx := Runes.max_rank(id)
+	var open := Runes.is_open(id)
+	var afford := Runes.can_buy(id)
+	var bc := Runes.branch_color(id)
 	# glow for affordable runes and the hovered / selected one
 	if afford:
 		var p := 0.5 + 0.5 * sin(_t * 4.0)
@@ -364,8 +290,8 @@ func _draw_node(ci: RID, id: String) -> void:
 ## A carved rune stone: bevelled grey slab, the stat glyph cut into it (dark when unlearned, glowing in the
 ## branch colour once learned) and a rim that tells its state.
 func _stone(ci: RID, rr: Rect2, id: String, rk: int, open: bool, afford: bool) -> void:
-	var bc := Runes.branch_color(_h(), id)
-	var mx := Runes.max_rank(_h(), id)
+	var bc := Runes.branch_color(id)
+	var mx := Runes.max_rank(id)
 	var pts := PackedVector2Array([rr.position + Vector2(3, 0), Vector2(rr.end.x - 3, rr.position.y), Vector2(rr.end.x, rr.position.y + 3),
 		Vector2(rr.end.x, rr.end.y - 3), Vector2(rr.end.x - 3, rr.end.y), Vector2(rr.position.x + 3, rr.end.y),
 		Vector2(rr.position.x, rr.end.y - 3), Vector2(rr.position.x, rr.position.y + 3)])
@@ -441,28 +367,29 @@ func _on_board_input(ev: InputEvent) -> void:
 
 
 func _tip(id: String) -> String:
-	var rk := Runes.rank(_h(), id)
-	var mx := Runes.max_rank(_h(), id)
-	var st := Runes.stat(_h(), id)
-	var b := Runes.branch_of(_h(), id)
-	var s := "%s  (%d/%d)\n%s%s" % [Runes.display_name(_h(), id), rk, mx, (DataDB.tx(b["name"]) + " · ") if not b.is_empty() else "",
-		_bonus_text(st, Runes.per(_h(), id)) + (" / " + DataDB.t("rune_rank") if mx > 1 else "")]
-	if Runes.is_cap(_h(), id):
+	var rk := Runes.rank(id)
+	var mx := Runes.max_rank(id)
+	var st := Runes.stat(id)
+	var b := Runes.branch_of(id)
+	var s := "%s  (%d/%d)\n%s%s" % [Runes.display_name(id), rk, mx, (DataDB.tx(b["name"]) + " · ") if not b.is_empty() else "",
+		_bonus_text(st, Runes.per(id)) + (" / " + DataDB.t("rune_rank") if mx > 1 else "")]
+	s += "\n" + DataDB.t("rune_reach", {"who": Runes.reach_text(id)})
+	if Runes.is_cap(id):
 		s += "\n" + DataDB.t("rune_capstone")
 	if rk < mx:
-		s += "\n" + (DataDB.t("rune_cost", {"g": F.fmt_num(Runes.cost(_h(), id))}) if Runes.is_open(_h(), id) else DataDB.t("rune_locked"))
+		s += "\n" + (DataDB.t("rune_cost", {"g": F.fmt_num(Runes.cost(id))}) if Runes.is_open(id) else DataDB.t("rune_locked"))
 	return s
 
 
 func _try_buy(id: String) -> void:
 	if id == "":
 		return
-	if Runes.buy(_h(), id):
+	if Runes.buy(id):
 		_flash[id] = 0.6
 		AudioManager.play("smith_success", 0.06, 0.55)
 		if _hover == id:
 			WindowManager.show_text_tooltip(_tip(id))
-	elif Runes.rank(_h(), id) < Runes.max_rank(_h(), id) and Runes.is_open(_h(), id):
+	elif Runes.rank(id) < Runes.max_rank(id) and Runes.is_open(id):
 		AudioManager.play("smith_fail", 0.05, 0.35)
 
 
@@ -471,11 +398,11 @@ func _update_detail() -> void:
 	if _detail == null:
 		return
 	var id := _hover if _hover != "" else _sel
-	var rk := Runes.rank(_h(), id)
-	var mx := Runes.max_rank(_h(), id)
+	var rk := Runes.rank(id)
+	var mx := Runes.max_rank(id)
 	_buy.visible = rk < mx
-	_buy.disabled = not Runes.can_buy(_h(), id)
-	_buy.text = DataDB.t("rune_buy") + "  " + F.fmt_num(Runes.cost(_h(), id)) if Runes.is_open(_h(), id) else DataDB.t("rune_locked")
+	_buy.disabled = not Runes.can_buy(id)
+	_buy.text = DataDB.t("rune_buy") + "  " + F.fmt_num(Runes.cost(id)) if Runes.is_open(id) else DataDB.t("rune_locked")
 	_detail_id = id
 	_detail.queue_redraw()
 
@@ -487,12 +414,12 @@ func _draw_detail() -> void:
 	UISkin.stroke(ci, r, 3, Color(0, 0, 0, 0.95), 1.0)
 	UISkin.stroke(ci, r.grow(-1.0), 2, Color(UISkin.BRONZE, 0.6), 1.0)
 	var id := _hover if _hover != "" else _sel
-	if not Runes.nodes(_h()).has(id):
+	if not Runes.nodes().has(id):
 		return
-	var rk := Runes.rank(_h(), id)
-	var mx := Runes.max_rank(_h(), id)
-	var st := Runes.stat(_h(), id)
-	var bc := Runes.branch_color(_h(), id)
+	var rk := Runes.rank(id)
+	var mx := Runes.max_rank(id)
+	var st := Runes.stat(id)
+	var bc := Runes.branch_color(id)
 	var ir := Rect2(6, 6, 22, 22)
 	UISkin.fill(ci, ir, 3, Color("#6A6672"), Color("#3A3640"))
 	var tex: Texture2D = _icon(id)
@@ -500,14 +427,14 @@ func _draw_detail() -> void:
 		_detail.draw_texture_rect(tex, ir.grow(-4.0), false, bc.lightened(0.35) if rk > 0 else Color(0.15, 0.14, 0.17))
 	UISkin.stroke(ci, ir, 3, bc, 1.2)
 	var f := UITheme.font_title
-	_detail.draw_string(f, Vector2(32, 15), Runes.display_name(_h(), id), HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 36, 9, bc.lightened(0.2))
-	_detail.draw_string(UITheme.font_body, Vector2(32, 26), StatNames.label(st) + "  ·  %d / %d" % [rk, mx], HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 36, 7, UITheme.C_DIM)
+	_detail.draw_string(f, Vector2(32, 15), Runes.display_name(id), HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 36, 9, bc.lightened(0.2))
+	_detail.draw_string(UITheme.font_body, Vector2(32, 26), "%d / %d  ·  " % [rk, mx] + Runes.reach_text(id), HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 36, 7, UITheme.C_DIM)
 	var fb := UITheme.font_body
-	var now := _bonus_text(st, Runes.per(_h(), id) * rk) if rk > 0 else "—"
+	var now := _bonus_text(st, Runes.per(id) * rk) if rk > 0 else "—"
 	_detail.draw_string(fb, Vector2(7, 42), DataDB.t("rune_now") + ": " + now, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 12, 7, UITheme.C_TEXT)
 	if rk < mx:
-		_detail.draw_string(fb, Vector2(7, 53), DataDB.t("rune_next") + ": " + _bonus_text(st, Runes.per(_h(), id) * (rk + 1)), HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 12, 7, UITheme.C_GREEN)
-		if not Runes.is_open(_h(), id):
+		_detail.draw_string(fb, Vector2(7, 53), DataDB.t("rune_next") + ": " + _bonus_text(st, Runes.per(id) * (rk + 1)), HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 12, 7, UITheme.C_GREEN)
+		if not Runes.is_open(id):
 			_detail.draw_string(fb, Vector2(7, 66), DataDB.t("rune_need_link"), HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 12, 7, UITheme.C_RED)
 	else:
 		_detail.draw_string(fb, Vector2(7, 53), DataDB.t("rune_maxed"), HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 12, 7, Color("#7CFF9A"))

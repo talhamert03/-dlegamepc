@@ -1,373 +1,4993 @@
 {
-  "_doc": "params: name -> [base, per_level, fmt]; fmt: '%' (x100 + %), 'p' (already percent), 's' seconds, 'n' number. Effects/stats reference params by name.",
-  "skills": [
-    {"id": "knight_bash", "class": "knight", "tier": 0, "type": "active", "max": 10, "cd": 8, "icon": "bash", "vfx": "slash_heavy",
-     "name": {"tr": "Kalkan Darbesi", "en": "Shield Bash"}, "desc": {"tr": "Öndeki düşmana {dmg} hasar ve {stun} sersemletme.", "en": "Deals {dmg} damage to the front enemy and stuns for {stun}."},
-     "params": {"dmg": [1.4, 0.2, "%"], "stun": [1.0, 0, "s"]}, "target": "enemy_front",
-     "effects": [{"type": "damage", "mult": "dmg"}, {"type": "status", "status": "stun", "dur": "stun"}]},
-    {"id": "knight_recovery", "class": "knight", "tier": 0, "type": "active", "max": 3, "cd": 15, "icon": "recovery", "vfx": "heal",
-     "name": {"tr": "Toparlanma", "en": "Recovery"}, "desc": {"tr": "Tüm müttefiklere max HP'nin {heal} kadar iyileşme.", "en": "Restores {heal} max HP to all allies."},
-     "params": {"heal": [0.2, 0.05, "%"]}, "target": "ally_all", "effects": [{"type": "heal_pct", "value": "heal"}]},
-    {"id": "knight_iron_skin", "class": "knight", "tier": 0, "type": "passive", "max": 10, "icon": "iron_skin",
-     "name": {"tr": "Demir Deri", "en": "Iron Skin"}, "desc": {"tr": "+{v} Savunma.", "en": "+{v} Defense."},
-     "params": {"v": [3, 3, "p"]}, "stats": {"def_pct": "v"}},
-    {"id": "knight_challenge", "class": "knight", "tier": 0, "type": "passive", "max": 6, "icon": "challenge",
-     "name": {"tr": "Meydan Okuma", "en": "Challenge"}, "desc": {"tr": "Tehdit +{t}, +{v} HP.", "en": "Threat +{t}, +{v} HP."},
-     "params": {"t": [1, 0.4, "n"], "v": [2, 2, "p"]}, "stats": {"threat": "t", "hp_pct": "v"}},
-    {"id": "knight_mastery", "class": "knight", "tier": 0, "type": "passive", "max": 5, "icon": "sword_mastery",
-     "name": {"tr": "Kılıç Ustalığı", "en": "Sword Mastery"}, "desc": {"tr": "+{v} Saldırı.", "en": "+{v} Attack."},
-     "params": {"v": [4, 4, "p"]}, "stats": {"attack_pct": "v"}},
-    {"id": "knight_last_stand", "class": "knight", "tier": 0, "type": "passive", "max": 6, "icon": "last_stand",
-     "name": {"tr": "Son Kale", "en": "Last Stand"}, "desc": {"tr": "+{v} hasar azaltma.", "en": "+{v} damage reduction."},
-     "params": {"v": [3, 2, "p"]}, "stats": {"dr": "v"}},
-    {"id": "knight_oath", "class": "knight", "tier": 1, "type": "active", "max": 10, "cd": 20, "icon": "oath", "vfx": "shield",
-     "name": {"tr": "Kutsal Yemin", "en": "Holy Oath"}, "desc": {"tr": "Partiye Saldırının {s} kadar kalkan.", "en": "Shields the party for {s} of Attack."},
-     "params": {"s": [0.5, 0.11, "%"]}, "target": "ally_all", "effects": [{"type": "shield", "mult": "s"}]},
-    {"id": "knight_justice", "class": "knight", "tier": 1, "type": "active", "max": 10, "cd": 10, "icon": "justice", "vfx": "holy_slash",
-     "name": {"tr": "Adalet Kılıcı", "en": "Blade of Justice"}, "desc": {"tr": "Öndeki 3 düşmana {dmg} Kutsal hasar.", "en": "Deals {dmg} Holy damage to 3 front enemies."},
-     "params": {"dmg": [1.8, 0.24, "%"]}, "target": "enemy_front", "max_targets": 3, "effects": [{"type": "damage", "mult": "dmg", "element": "holy"}]},
-    {"id": "knight_shield_wall", "class": "knight", "tier": 1, "type": "passive", "max": 5, "icon": "shield_wall",
-     "name": {"tr": "Kalkan Duvarı", "en": "Shield Wall"}, "desc": {"tr": "+{v} Blok şansı.", "en": "+{v} Block chance."},
-     "params": {"v": [3, 3, "p"]}, "stats": {"block": "v"}},
-    {"id": "knight_steadfast", "class": "knight", "tier": 1, "type": "passive", "max": 5, "icon": "steadfast",
-     "name": {"tr": "Sarsılmaz", "en": "Steadfast"}, "desc": {"tr": "+{v} Tüm Direnç.", "en": "+{v} All Resistance."},
-     "params": {"v": [4, 4, "p"]}, "stats": {"all_res": "v"}},
-    {"id": "knight_judgement", "class": "knight", "tier": 2, "spec": "a", "type": "active", "max": 10, "cd": 25, "icon": "judgement", "vfx": "holy_burst",
-     "name": {"tr": "Işık Hükmü", "en": "Judgement"}, "desc": {"tr": "Tüm düşmanlara {dmg} Kutsal hasar.", "en": "Deals {dmg} Holy damage to all enemies."},
-     "params": {"dmg": [3.0, 0.44, "%"]}, "target": "enemy_all", "effects": [{"type": "damage", "mult": "dmg", "element": "holy"}]},
-    {"id": "knight_valor", "class": "knight", "tier": 2, "spec": "a", "type": "passive", "max": 10, "icon": "valor",
-     "name": {"tr": "Cesaret Aurası", "en": "Aura of Valor"}, "desc": {"tr": "Partiye +{v} Saldırı.", "en": "+{v} Attack to the party."},
-     "params": {"v": [2, 2, "p"]}, "stats": {"party_attack_pct": "v"}},
-    {"id": "knight_fortress", "class": "knight", "tier": 2, "spec": "b", "type": "active", "max": 10, "cd": 30, "icon": "fortress", "vfx": "shield",
-     "name": {"tr": "Kale Formu", "en": "Fortress Form"}, "desc": {"tr": "8sn boyunca +{v} hasar azaltma ve tüm tehdit.", "en": "For 8s gain {v} damage reduction and taunt."},
-     "params": {"v": [40, 3.3, "p"]}, "target": "self", "effects": [{"type": "buff", "stat": "dr", "value": "v", "dur": 8}, {"type": "buff", "stat": "threat", "value": 10, "dur": 8}]},
-    {"id": "knight_thorns", "class": "knight", "tier": 2, "spec": "b", "type": "passive", "max": 10, "icon": "thorns",
-     "name": {"tr": "Diken Zırh", "en": "Thorn Armor"}, "desc": {"tr": "Yakın hasarın {v} kadarını yansıtır.", "en": "Reflects {v} of melee damage."},
-     "params": {"v": [10, 5.5, "p"]}, "stats": {"thorns": "v"}},
-    {"id": "knight_banner", "class": "knight", "tier": 0, "type": "ult", "max": 5, "icon": "banner", "vfx": "banner",
-     "name": {"tr": "İmparatorluk Sancağı", "en": "Imperial Banner"}, "desc": {"tr": "10sn parti +{v} hasar ve +%20 hasar azaltma.", "en": "For 10s the party gains {v} damage and 20% damage reduction."},
-     "params": {"v": [30, 7.5, "p"]}, "target": "ally_all", "effects": [{"type": "buff", "stat": "added_dmg", "value": "v", "dur": 10}, {"type": "buff", "stat": "dr", "value": 20, "dur": 10}]},
-
-    {"id": "berserker_whirl", "class": "berserker", "tier": 0, "type": "active", "max": 10, "cd": 9, "icon": "whirl", "vfx": "whirl",
-     "name": {"tr": "Kasırga", "en": "Whirlwind"}, "desc": {"tr": "Çevreye 4 kez {dmg} hasar.", "en": "Hits nearby enemies 4 times for {dmg}."},
-     "params": {"dmg": [0.7, 0.1, "%"]}, "target": "enemy_aoe", "radius": 40, "effects": [{"type": "damage", "mult": "dmg", "hits": 4}]},
-    {"id": "berserker_warcry", "class": "berserker", "tier": 0, "type": "active", "max": 5, "cd": 18, "icon": "warcry", "vfx": "roar",
-     "name": {"tr": "Savaş Çığlığı", "en": "War Cry"}, "desc": {"tr": "8sn +{v} saldırı hızı.", "en": "+{v} attack speed for 8s."},
-     "params": {"v": [15, 6.25, "p"]}, "target": "self", "effects": [{"type": "buff", "stat": "attack_speed", "value": "v", "dur": 8}]},
-    {"id": "berserker_rage", "class": "berserker", "tier": 0, "type": "passive", "max": 10, "icon": "rage",
-     "name": {"tr": "Öfke Yükselişi", "en": "Rising Rage"}, "desc": {"tr": "Eksik HP'nin her %10'u için +{v} hasar.", "en": "+{v} damage per 10% missing HP."},
-     "params": {"v": [1, 0.33, "p"]}, "stats": {"rage_dmg": "v"}},
-    {"id": "berserker_twohand", "class": "berserker", "tier": 0, "type": "passive", "max": 5, "icon": "twohand",
-     "name": {"tr": "İki El Ustalığı", "en": "Two-Hand Mastery"}, "desc": {"tr": "+{v} Saldırı.", "en": "+{v} Attack."},
-     "params": {"v": [5, 5, "p"]}, "stats": {"attack_pct": "v"}},
-    {"id": "berserker_thirst", "class": "berserker", "tier": 0, "type": "passive", "max": 6, "icon": "thirst",
-     "name": {"tr": "Kana Susamış", "en": "Bloodthirst"}, "desc": {"tr": "+{v} Can çalma.", "en": "+{v} Life steal."},
-     "params": {"v": [0.5, 0.5, "p"]}, "stats": {"lifesteal": "v"}},
-    {"id": "berserker_lacerate", "class": "berserker", "tier": 0, "type": "passive", "max": 5, "icon": "lacerate",
-     "name": {"tr": "Yaralayıcı", "en": "Lacerate"}, "desc": {"tr": "Vuruşlar {v} şansla Kanama uygular.", "en": "Hits have {v} chance to cause Bleed."},
-     "params": {"v": [10, 5, "p"]}, "stats": {"bleed_chance": "v"}},
-    {"id": "berserker_quake", "class": "berserker", "tier": 1, "type": "active", "max": 10, "cd": 12, "icon": "quake", "vfx": "quake",
-     "name": {"tr": "Yer Sarsıntısı", "en": "Earthquake"}, "desc": {"tr": "Alana {dmg} hasar ve 0.8sn sersemletme.", "en": "Deals {dmg} in an area and stuns 0.8s."},
-     "params": {"dmg": [2.0, 0.28, "%"]}, "target": "enemy_aoe", "radius": 50, "effects": [{"type": "damage", "mult": "dmg"}, {"type": "status", "status": "stun", "dur": 0.8}]},
-    {"id": "berserker_leap", "class": "berserker", "tier": 1, "type": "active", "max": 10, "cd": 10, "icon": "leap", "vfx": "slash_heavy",
-     "name": {"tr": "Atılım", "en": "Leap Strike"}, "desc": {"tr": "En arkadaki düşmana {dmg} hasar.", "en": "Deals {dmg} to the rearmost enemy."},
-     "params": {"dmg": [1.6, 0.22, "%"]}, "target": "enemy_back", "effects": [{"type": "damage", "mult": "dmg"}]},
-    {"id": "berserker_frenzy", "class": "berserker", "tier": 1, "type": "passive", "max": 5, "icon": "frenzy",
-     "name": {"tr": "Delirme", "en": "Frenzy"}, "desc": {"tr": "+{v} Kritik hasar, öfke daha hızlı dolar.", "en": "+{v} Crit damage, faster rage."},
-     "params": {"v": [10, 8, "p"]}, "stats": {"crit_dmg": "v", "ult_charge": "v"}},
-    {"id": "berserker_thick", "class": "berserker", "tier": 1, "type": "passive", "max": 5, "icon": "thick",
-     "name": {"tr": "Kalın Kafa", "en": "Thick Skull"}, "desc": {"tr": "+{v} HP.", "en": "+{v} HP."},
-     "params": {"v": [4, 4, "p"]}, "stats": {"hp_pct": "v"}},
-    {"id": "berserker_trance", "class": "berserker", "tier": 2, "spec": "a", "type": "active", "max": 10, "cd": 30, "icon": "trance", "vfx": "roar",
-     "name": {"tr": "Kızıl Trans", "en": "Crimson Trance"}, "desc": {"tr": "10sn +{v} hasar.", "en": "+{v} damage for 10s."},
-     "params": {"v": [30, 5.5, "p"]}, "target": "self", "effects": [{"type": "buff", "stat": "added_dmg", "value": "v", "dur": 10}]},
-    {"id": "berserker_undying", "class": "berserker", "tier": 2, "spec": "a", "type": "passive", "max": 5, "icon": "undying",
-     "name": {"tr": "Ölümsüz Öfke", "en": "Undying Rage"}, "desc": {"tr": "Ölümcül hasarı savaş başına 1 kez önler, +{v} can çalma.", "en": "Survives a lethal hit once per fight, +{v} life steal."},
-     "params": {"v": [1, 0.5, "p"]}, "stats": {"cheat_death": 1, "lifesteal": "v"}},
-    {"id": "berserker_thunder", "class": "berserker", "tier": 2, "spec": "b", "type": "active", "max": 10, "cd": 14, "icon": "thunder", "vfx": "lightning",
-     "name": {"tr": "Gök Gürültüsü", "en": "Thunderclap"}, "desc": {"tr": "5 hedefe {dmg} Yıldırım.", "en": "Deals {dmg} Lightning to 5 targets."},
-     "params": {"dmg": [2.2, 0.31, "%"]}, "target": "enemy_random", "max_targets": 5, "effects": [{"type": "damage", "mult": "dmg", "element": "lightning"}, {"type": "status", "status": "shock", "dur": 4, "chance": 0.5}]},
-    {"id": "berserker_storm_weapon", "class": "berserker", "tier": 2, "spec": "b", "type": "passive", "max": 10, "icon": "storm_weapon",
-     "name": {"tr": "Şimşek Silah", "en": "Storm Weapon"}, "desc": {"tr": "+{v} Yıldırım hasarı.", "en": "+{v} Lightning damage."},
-     "params": {"v": [5, 4, "p"]}, "stats": {"lightning_dmg": "v", "added_dmg": "v"}},
-    {"id": "berserker_ragnarok", "class": "berserker", "tier": 0, "type": "ult", "max": 5, "icon": "ragnarok", "vfx": "meteor",
-     "name": {"tr": "Ragnarök", "en": "Ragnarök"}, "desc": {"tr": "Gökten dev balta: tüm düşmanlara {dmg}.", "en": "A giant axe falls: {dmg} to all enemies."},
-     "params": {"dmg": [8, 3, "%"]}, "target": "enemy_all", "effects": [{"type": "damage", "mult": "dmg"}]},
-
-    {"id": "archer_multishot", "class": "archer", "tier": 0, "type": "active", "max": 10, "cd": 7, "icon": "multishot", "vfx": "arrows",
-     "name": {"tr": "Çoklu Atış", "en": "Multishot"}, "desc": {"tr": "5 ok, her biri {dmg}.", "en": "5 arrows dealing {dmg} each."},
-     "params": {"dmg": [0.6, 0.09, "%"]}, "target": "enemy_random", "max_targets": 5, "effects": [{"type": "damage", "mult": "dmg", "projectile": "arrow"}]},
-    {"id": "archer_earth_strike", "class": "archer", "tier": 0, "type": "active", "max": 5, "cd": 8.2, "icon": "earth_strike", "vfx": "earth_spike",
-     "name": {"tr": "Toprak Darbesi", "en": "Earth Strike"}, "desc": {"tr": "Yerden dikenler: {dmg} Fiziksel, en fazla 3 hedef.", "en": "Thorns pierce the ground: {dmg} Physical to up to 3 targets."},
-     "params": {"dmg": [1.3, 0.325, "%"]}, "target": "enemy_front", "max_targets": 3, "effects": [{"type": "damage", "mult": "dmg"}]},
-    {"id": "archer_keen_eye", "class": "archer", "tier": 0, "type": "passive", "max": 11, "icon": "keen_eye",
-     "name": {"tr": "Keskin Göz", "en": "Keen Eye"}, "desc": {"tr": "+{v} Kritik şansı.", "en": "+{v} Crit chance."},
-     "params": {"v": [1, 1, "p"]}, "stats": {"crit_chance": "v"}},
-    {"id": "archer_wind_step", "class": "archer", "tier": 0, "type": "passive", "max": 3, "icon": "wind_step",
-     "name": {"tr": "Rüzgâr Adımı", "en": "Wind Step"}, "desc": {"tr": "+{v} Saldırı hızı, +%5 kaçınma.", "en": "+{v} Attack speed, +5% evasion."},
-     "params": {"v": [5, 5, "p"]}, "stats": {"attack_speed": "v", "evasion": 5}},
-    {"id": "archer_pierce", "class": "archer", "tier": 0, "type": "passive", "max": 6, "icon": "pierce",
-     "name": {"tr": "Delici Oklar", "en": "Piercing Arrows"}, "desc": {"tr": "+{v} Delme.", "en": "+{v} Penetration."},
-     "params": {"v": [3, 2, "p"]}, "stats": {"penetrate": "v"}},
-    {"id": "archer_mark", "class": "archer", "tier": 0, "type": "passive", "max": 5, "icon": "mark",
-     "name": {"tr": "Avcı İşareti", "en": "Hunter's Mark"}, "desc": {"tr": "Elit/Boss'a +{v} hasar.", "en": "+{v} damage to elites and bosses."},
-     "params": {"v": [4, 4, "p"]}, "stats": {"elite_dmg": "v", "boss_dmg": "v"}},
-    {"id": "archer_rain", "class": "archer", "tier": 1, "type": "active", "max": 10, "cd": 15, "icon": "rain", "vfx": "arrow_rain",
-     "name": {"tr": "Ok Yağmuru", "en": "Arrow Rain"}, "desc": {"tr": "Tüm düşmanlara 3 kez {dmg}.", "en": "Hits all enemies 3 times for {dmg}."},
-     "params": {"dmg": [0.8, 0.11, "%"]}, "target": "enemy_all", "effects": [{"type": "damage", "mult": "dmg", "hits": 3}]},
-    {"id": "archer_vines", "class": "archer", "tier": 1, "type": "active", "max": 10, "cd": 16, "icon": "vines", "vfx": "vines",
-     "name": {"tr": "Bağlayan Sarmaşık", "en": "Binding Vines"}, "desc": {"tr": "3 düşmanı {d} köklendirir ve Kırılgan yapar.", "en": "Roots 3 enemies for {d} and makes them Vulnerable."},
-     "params": {"d": [2, 0.1, "s"]}, "target": "enemy_front", "max_targets": 3, "effects": [{"type": "status", "status": "stun", "dur": "d"}, {"type": "status", "status": "vulnerable", "dur": 5}]},
-    {"id": "archer_marksman", "class": "archer", "tier": 1, "type": "passive", "max": 5, "icon": "marksman",
-     "name": {"tr": "Nişancı", "en": "Marksman"}, "desc": {"tr": "+{v} Kritik hasar.", "en": "+{v} Crit damage."},
-     "params": {"v": [8, 8, "p"]}, "stats": {"crit_dmg": "v"}},
-    {"id": "archer_quickdraw", "class": "archer", "tier": 1, "type": "passive", "max": 5, "icon": "quickdraw",
-     "name": {"tr": "Hızlı Çekiş", "en": "Quick Draw"}, "desc": {"tr": "Bekleme süresi -{v}.", "en": "-{v} cooldowns."},
-     "params": {"v": [2, 2, "p"]}, "stats": {"cdr": "v"}},
-    {"id": "archer_storm_arrow", "class": "archer", "tier": 2, "spec": "a", "type": "active", "max": 10, "cd": 12, "icon": "storm_arrow", "vfx": "big_arrow",
-     "name": {"tr": "Fırtına Oku", "en": "Storm Arrow"}, "desc": {"tr": "Tüm hattı delen ok: {dmg}.", "en": "An arrow piercing the whole line: {dmg}."},
-     "params": {"dmg": [3.5, 0.5, "%"]}, "target": "enemy_all", "effects": [{"type": "damage", "mult": "dmg"}]},
-    {"id": "archer_trigger", "class": "archer", "tier": 2, "spec": "a", "type": "passive", "max": 10, "icon": "trigger",
-     "name": {"tr": "Tetik", "en": "Hair Trigger"}, "desc": {"tr": "+{v} Saldırı hızı.", "en": "+{v} Attack speed."},
-     "params": {"v": [4, 2, "p"]}, "stats": {"attack_speed": "v"}},
-    {"id": "archer_wolf", "class": "archer", "tier": 2, "spec": "b", "type": "active", "max": 10, "cd": 30, "icon": "wolf", "vfx": "summon",
-     "name": {"tr": "Kurt Çağır", "en": "Call Wolf"}, "desc": {"tr": "20sn kurt yoldaş (saldırının {p}).", "en": "Summons a wolf for 20s ({p} of Attack)."},
-     "params": {"p": [0.4, 0.067, "%"]}, "target": "self", "effects": [{"type": "summon", "kind": "wolf", "count": 1, "pct": "p", "dur": 20}]},
-    {"id": "archer_grace", "class": "archer", "tier": 2, "spec": "b", "type": "passive", "max": 10, "icon": "grace",
-     "name": {"tr": "Ormanın Lütfu", "en": "Forest's Grace"}, "desc": {"tr": "Partiye +{v} HP yenilenme.", "en": "+{v} HP regen to the party."},
-     "params": {"v": [0.1, 0.1, "p"]}, "stats": {"party_hp_regen_pct": "v"}},
-    {"id": "archer_starbreaker", "class": "archer", "tier": 0, "type": "ult", "max": 5, "icon": "starbreaker", "vfx": "star_rain",
-     "name": {"tr": "Yıldızkıran Ok", "en": "Starbreaker"}, "desc": {"tr": "Yıldız yağmuru: tüm düşmanlara {dmg}.", "en": "Rain of stars: {dmg} to all enemies."},
-     "params": {"dmg": [10, 3.5, "%"]}, "target": "enemy_all", "effects": [{"type": "damage", "mult": "dmg"}]},
-
-    {"id": "assassin_shadow_step", "class": "assassin", "tier": 0, "type": "active", "max": 10, "cd": 8, "icon": "shadow_step", "vfx": "shadow",
-     "name": {"tr": "Gölge Adımı", "en": "Shadow Step"}, "desc": {"tr": "En düşük HP'li düşmana {dmg}.", "en": "Deals {dmg} to the lowest-HP enemy."},
-     "params": {"dmg": [2.0, 0.28, "%"]}, "target": "enemy_lowest", "effects": [{"type": "damage", "mult": "dmg"}]},
-    {"id": "assassin_poison_blade", "class": "assassin", "tier": 0, "type": "active", "max": 5, "cd": 10, "icon": "poison_blade", "vfx": "poison",
-     "name": {"tr": "Zehirli Bıçak", "en": "Poison Blade"}, "desc": {"tr": "{dmg} hasar + 5 yığın Zehir.", "en": "{dmg} damage + 5 Poison stacks."},
-     "params": {"dmg": [1.2, 0.3, "%"]}, "target": "enemy_front", "effects": [{"type": "damage", "mult": "dmg", "element": "chaos"}, {"type": "status", "status": "poison", "dur": 5, "stacks": 5}]},
-    {"id": "assassin_dual", "class": "assassin", "tier": 0, "type": "passive", "max": 10, "icon": "dual",
-     "name": {"tr": "Çift Bıçak Ustalığı", "en": "Dual Wield"}, "desc": {"tr": "+{v} Saldırı hızı.", "en": "+{v} Attack speed."},
-     "params": {"v": [3, 3, "p"]}, "stats": {"attack_speed": "v"}},
-    {"id": "assassin_precision", "class": "assassin", "tier": 0, "type": "passive", "max": 10, "icon": "precision",
-     "name": {"tr": "Ölümcül Hassasiyet", "en": "Lethal Precision"}, "desc": {"tr": "+{v} Kritik hasar.", "en": "+{v} Crit damage."},
-     "params": {"v": [10, 5.5, "p"]}, "stats": {"crit_dmg": "v"}},
-    {"id": "assassin_sneaky", "class": "assassin", "tier": 0, "type": "passive", "max": 5, "icon": "sneaky",
-     "name": {"tr": "Sinsi", "en": "Sneaky"}, "desc": {"tr": "+{v} Kritik şansı.", "en": "+{v} Crit chance."},
-     "params": {"v": [2, 1.5, "p"]}, "stats": {"crit_chance": "v"}},
-    {"id": "assassin_weakspot", "class": "assassin", "tier": 0, "type": "passive", "max": 5, "icon": "weakspot",
-     "name": {"tr": "Zayıf Nokta", "en": "Weak Spot"}, "desc": {"tr": "+{v} Delme.", "en": "+{v} Penetration."},
-     "params": {"v": [3, 3, "p"]}, "stats": {"penetrate": "v"}},
-    {"id": "assassin_dance", "class": "assassin", "tier": 1, "type": "active", "max": 10, "cd": 12, "icon": "dance", "vfx": "slash_multi",
-     "name": {"tr": "Dans Eden Bıçaklar", "en": "Blade Dance"}, "desc": {"tr": "8 hızlı vuruş, her biri {dmg}.", "en": "8 quick hits of {dmg}."},
-     "params": {"dmg": [0.45, 0.06, "%"]}, "target": "enemy_front", "effects": [{"type": "damage", "mult": "dmg", "hits": 8}]},
-    {"id": "assassin_smoke", "class": "assassin", "tier": 1, "type": "active", "max": 10, "cd": 20, "icon": "smoke", "vfx": "smoke",
-     "name": {"tr": "Duman Bombası", "en": "Smoke Bomb"}, "desc": {"tr": "4sn partiye +{v} kaçınma.", "en": "+{v} evasion to the party for 4s."},
-     "params": {"v": [30, 2, "p"]}, "target": "ally_all", "effects": [{"type": "buff", "stat": "evasion", "value": "v", "dur": 4}]},
-    {"id": "assassin_execute", "class": "assassin", "tier": 1, "type": "passive", "max": 5, "icon": "execute",
-     "name": {"tr": "İnfaz", "en": "Execute"}, "desc": {"tr": "Düşük HP'li düşmana +{v} hasar.", "en": "+{v} damage to low-HP enemies."},
-     "params": {"v": [10, 10, "p"]}, "stats": {"execute_dmg": "v"}},
-    {"id": "assassin_cloak", "class": "assassin", "tier": 1, "type": "passive", "max": 5, "icon": "cloak",
-     "name": {"tr": "Gölge Pelerini", "en": "Shadow Cloak"}, "desc": {"tr": "+{v} kaçınma.", "en": "+{v} evasion."},
-     "params": {"v": [2, 2, "p"]}, "stats": {"evasion": "v", "threat": -1}},
-    {"id": "assassin_eclipse", "class": "assassin", "tier": 2, "spec": "a", "type": "active", "max": 10, "cd": 18, "icon": "eclipse", "vfx": "eclipse",
-     "name": {"tr": "Ay Tutulması", "en": "Eclipse"}, "desc": {"tr": "Tek hedefe {dmg}.", "en": "Deals {dmg} to a single target."},
-     "params": {"dmg": [6, 0.9, "%"]}, "target": "enemy_lowest", "effects": [{"type": "damage", "mult": "dmg"}]},
-    {"id": "assassin_night_hunter", "class": "assassin", "tier": 2, "spec": "a", "type": "passive", "max": 10, "icon": "night_hunter",
-     "name": {"tr": "Gece Avcısı", "en": "Night Hunter"}, "desc": {"tr": "Gece +{v} hasar.", "en": "+{v} damage at night."},
-     "params": {"v": [5, 2.2, "p"]}, "stats": {"night_dmg": "v"}},
-    {"id": "assassin_plague_cloud", "class": "assassin", "tier": 2, "spec": "b", "type": "active", "max": 10, "cd": 15, "icon": "plague_cloud", "vfx": "poison",
-     "name": {"tr": "Veba Bulutu", "en": "Plague Cloud"}, "desc": {"tr": "Tüm düşmanlara {n} yığın Zehir.", "en": "Applies {n} Poison stacks to all enemies."},
-     "params": {"n": [4, 0.6, "n"]}, "target": "enemy_all", "effects": [{"type": "status", "status": "poison", "dur": 6, "stacks": "n"}]},
-    {"id": "assassin_venom", "class": "assassin", "tier": 2, "spec": "b", "type": "passive", "max": 10, "icon": "venom",
-     "name": {"tr": "Zehir Patlaması", "en": "Venom Burst"}, "desc": {"tr": "+{v} Zehir hasarı.", "en": "+{v} Poison damage."},
-     "params": {"v": [10, 6, "p"]}, "stats": {"poison_dmg": "v"}},
-    {"id": "assassin_thousand", "class": "assassin", "tier": 0, "type": "ult", "max": 5, "icon": "thousand", "vfx": "slash_multi",
-     "name": {"tr": "Bin Bıçak", "en": "Thousand Blades"}, "desc": {"tr": "Gölge klonlar: {dmg} dağıtılmış hasar.", "en": "Shadow clones deal {dmg} spread damage."},
-     "params": {"dmg": [12, 4, "%"]}, "target": "enemy_all", "effects": [{"type": "damage", "mult": "dmg"}]},
-
-    {"id": "mage_fireball", "class": "mage", "tier": 0, "type": "active", "max": 10, "cd": 6, "icon": "fireball", "vfx": "fireball",
-     "name": {"tr": "Ateş Topu", "en": "Fireball"}, "desc": {"tr": "{dmg} Ateş hasarı, küçük patlama, Yanma.", "en": "{dmg} Fire damage in a small blast, Burn."},
-     "params": {"dmg": [1.5, 0.21, "%"]}, "target": "enemy_aoe", "radius": 22, "effects": [{"type": "damage", "mult": "dmg", "element": "fire", "projectile": "fireball"}, {"type": "status", "status": "burn", "dur": 3}]},
-    {"id": "mage_ice_lance", "class": "mage", "tier": 0, "type": "active", "max": 10, "cd": 7, "icon": "ice_lance", "vfx": "ice",
-     "name": {"tr": "Buz Mızrağı", "en": "Ice Lance"}, "desc": {"tr": "{dmg} Soğuk hasar, delici, Donma.", "en": "{dmg} piercing Cold damage, Chill."},
-     "params": {"dmg": [1.3, 0.19, "%"]}, "target": "enemy_front", "max_targets": 2, "effects": [{"type": "damage", "mult": "dmg", "element": "cold", "projectile": "ice"}, {"type": "status", "status": "chill", "dur": 2, "stacks": 2}]},
-    {"id": "mage_focus", "class": "mage", "tier": 0, "type": "passive", "max": 10, "icon": "focus",
-     "name": {"tr": "Arkana Odak", "en": "Arcane Focus"}, "desc": {"tr": "+{v} Büyü Gücü.", "en": "+{v} Spell Power."},
-     "params": {"v": [4, 4, "p"]}, "stats": {"spell_pct": "v"}},
-    {"id": "mage_attune", "class": "mage", "tier": 0, "type": "passive", "max": 6, "icon": "attune",
-     "name": {"tr": "Element Uyumu", "en": "Elemental Attunement"}, "desc": {"tr": "+{v} element hasarı.", "en": "+{v} elemental damage."},
-     "params": {"v": [3, 3, "p"]}, "stats": {"elem_dmg": "v"}},
-    {"id": "mage_mana_shield", "class": "mage", "tier": 0, "type": "passive", "max": 5, "icon": "mana_shield",
-     "name": {"tr": "Mana Kalkanı", "en": "Mana Shield"}, "desc": {"tr": "+{v} hasar azaltma.", "en": "+{v} damage reduction."},
-     "params": {"v": [5, 5, "p"]}, "stats": {"dr": "v"}},
-    {"id": "mage_haste", "class": "mage", "tier": 0, "type": "passive", "max": 5, "icon": "haste",
-     "name": {"tr": "Hızlı Büyü", "en": "Quick Cast"}, "desc": {"tr": "+{v} Büyü hızı.", "en": "+{v} Cast speed."},
-     "params": {"v": [4, 4, "p"]}, "stats": {"cast_speed": "v"}},
-    {"id": "mage_meteor", "class": "mage", "tier": 1, "type": "active", "max": 10, "cd": 18, "icon": "meteor", "vfx": "meteor",
-     "name": {"tr": "Meteor", "en": "Meteor"}, "desc": {"tr": "Tüm düşmanlara {dmg} Ateş.", "en": "{dmg} Fire to all enemies."},
-     "params": {"dmg": [4, 0.55, "%"]}, "target": "enemy_all", "effects": [{"type": "damage", "mult": "dmg", "element": "fire"}, {"type": "status", "status": "burn", "dur": 3}]},
-    {"id": "mage_chain", "class": "mage", "tier": 1, "type": "active", "max": 10, "cd": 11, "icon": "chain", "vfx": "lightning",
-     "name": {"tr": "Zincir Şimşek", "en": "Chain Lightning"}, "desc": {"tr": "5 hedefe sekiyor, {dmg} Yıldırım.", "en": "Bounces to 5 targets for {dmg} Lightning."},
-     "params": {"dmg": [1.4, 0.2, "%"]}, "target": "enemy_random", "max_targets": 5, "effects": [{"type": "damage", "mult": "dmg", "element": "lightning"}, {"type": "status", "status": "shock", "dur": 4, "chance": 0.4}]},
-    {"id": "mage_cycle", "class": "mage", "tier": 1, "type": "passive", "max": 5, "icon": "cycle",
-     "name": {"tr": "Element Döngüsü", "en": "Elemental Cycle"}, "desc": {"tr": "+{v} element hasarı.", "en": "+{v} elemental damage."},
-     "params": {"v": [4, 4, "p"]}, "stats": {"elem_dmg": "v"}},
-    {"id": "mage_wellspring", "class": "mage", "tier": 1, "type": "passive", "max": 5, "icon": "wellspring",
-     "name": {"tr": "Öz Pınarı", "en": "Wellspring"}, "desc": {"tr": "Bekleme süresi -{v}.", "en": "-{v} cooldowns."},
-     "params": {"v": [2, 2, "p"]}, "stats": {"cdr": "v"}},
-    {"id": "mage_inferno", "class": "mage", "tier": 2, "spec": "a", "type": "active", "max": 10, "cd": 20, "icon": "inferno", "vfx": "fire_ring",
-     "name": {"tr": "Cehennem Halkası", "en": "Ring of Inferno"}, "desc": {"tr": "Tüm düşmanlara 5 kez {dmg} Ateş.", "en": "Burns all enemies 5 times for {dmg}."},
-     "params": {"dmg": [1.5, 0.22, "%"]}, "target": "enemy_all", "effects": [{"type": "damage", "mult": "dmg", "element": "fire", "hits": 5}]},
-    {"id": "mage_ember", "class": "mage", "tier": 2, "spec": "a", "type": "passive", "max": 10, "icon": "ember",
-     "name": {"tr": "Kor Yüreği", "en": "Ember Heart"}, "desc": {"tr": "+{v} Ateş hasarı.", "en": "+{v} Fire damage."},
-     "params": {"v": [8, 5, "p"]}, "stats": {"fire_dmg": "v", "burn_dmg": "v"}},
-    {"id": "mage_zero", "class": "mage", "tier": 2, "spec": "b", "type": "active", "max": 10, "cd": 22, "icon": "zero", "vfx": "freeze",
-     "name": {"tr": "Mutlak Sıfır", "en": "Absolute Zero"}, "desc": {"tr": "Tüm düşmanları 2sn dondurur + {dmg}.", "en": "Freezes all enemies for 2s + {dmg}."},
-     "params": {"dmg": [2.5, 0.39, "%"]}, "target": "enemy_all", "effects": [{"type": "damage", "mult": "dmg", "element": "cold"}, {"type": "status", "status": "stun", "dur": 2}]},
-    {"id": "mage_crystal", "class": "mage", "tier": 2, "spec": "b", "type": "passive", "max": 10, "icon": "crystal",
-     "name": {"tr": "Kristal Zırh", "en": "Crystal Armor"}, "desc": {"tr": "Partiye +{v} hasar azaltma.", "en": "+{v} damage reduction to the party."},
-     "params": {"v": [2, 2, "p"]}, "stats": {"party_dr": "v"}},
-    {"id": "mage_storm", "class": "mage", "tier": 0, "type": "ult", "max": 5, "icon": "arcane_storm", "vfx": "arcane_storm",
-     "name": {"tr": "Arkana Fırtınası", "en": "Arcane Storm"}, "desc": {"tr": "12 büyü yağmuru, toplam {dmg}.", "en": "12 spells raining down, {dmg} total."},
-     "params": {"dmg": [15, 5, "%"]}, "target": "enemy_all", "effects": [{"type": "damage", "mult": "dmg", "element": "fire"}]},
-
-    {"id": "necro_skeletons", "class": "necromancer", "tier": 0, "type": "active", "max": 10, "cd": 14, "icon": "skeletons", "vfx": "summon",
-     "name": {"tr": "İskelet Çağır", "en": "Raise Skeletons"}, "desc": {"tr": "{n} iskelet çağırır (Büyü Gücünün {p}'i), 15sn.", "en": "Raises {n} skeletons ({p} Spell Power) for 15s."},
-     "params": {"n": [2, 0.25, "n"], "p": [0.3, 0.033, "%"]}, "target": "self", "effects": [{"type": "summon", "kind": "skeleton", "count": "n", "pct": "p", "dur": 15}]},
-    {"id": "necro_drain", "class": "necromancer", "tier": 0, "type": "active", "max": 10, "cd": 9, "icon": "drain", "vfx": "drain",
-     "name": {"tr": "Ruh Çekimi", "en": "Soul Drain"}, "desc": {"tr": "{dmg} Kaos hasarı, partiyi iyileştirir.", "en": "{dmg} Chaos damage, heals the party."},
-     "params": {"dmg": [1.4, 0.18, "%"]}, "target": "enemy_front", "effects": [{"type": "damage", "mult": "dmg", "element": "chaos", "party_heal": 0.1}]},
-    {"id": "necro_bone_armor", "class": "necromancer", "tier": 0, "type": "passive", "max": 6, "icon": "bone_armor",
-     "name": {"tr": "Kemik Zırh", "en": "Bone Armor"}, "desc": {"tr": "+{v} hasar azaltma.", "en": "+{v} damage reduction."},
-     "params": {"v": [3, 2, "p"]}, "stats": {"dr": "v"}},
-    {"id": "necro_lore", "class": "necromancer", "tier": 0, "type": "passive", "max": 10, "icon": "lore",
-     "name": {"tr": "Karanlık Bilgi", "en": "Dark Lore"}, "desc": {"tr": "+{v} Kaos hasarı.", "en": "+{v} Chaos damage."},
-     "params": {"v": [3, 3, "p"]}, "stats": {"chaos_dmg": "v"}},
-    {"id": "necro_corpse", "class": "necromancer", "tier": 0, "type": "passive", "max": 5, "icon": "corpse",
-     "name": {"tr": "Ceset Patlatma", "en": "Corpse Explosion"}, "desc": {"tr": "+{v} alan hasarı.", "en": "+{v} area damage."},
-     "params": {"v": [5, 5, "p"]}, "stats": {"aoe_dmg": "v"}},
-    {"id": "necro_curse", "class": "necromancer", "tier": 0, "type": "passive", "max": 5, "icon": "curse",
-     "name": {"tr": "Lanet", "en": "Curse"}, "desc": {"tr": "Saldırılar {v} şansla Zayıflatır.", "en": "Attacks have {v} chance to Weaken."},
-     "params": {"v": [20, 10, "p"]}, "stats": {"weaken_chance": "v"}},
-    {"id": "necro_bone_spear", "class": "necromancer", "tier": 1, "type": "active", "max": 10, "cd": 8, "icon": "bone_spear", "vfx": "bone",
-     "name": {"tr": "Kemik Mızrağı", "en": "Bone Spear"}, "desc": {"tr": "Delici, {dmg} Fiziksel.", "en": "Piercing, {dmg} Physical."},
-     "params": {"dmg": [1.8, 0.24, "%"]}, "target": "enemy_all", "effects": [{"type": "damage", "mult": "dmg", "element": "physical"}]},
-    {"id": "necro_doom", "class": "necromancer", "tier": 1, "type": "active", "max": 10, "cd": 16, "icon": "doom", "vfx": "curse",
-     "name": {"tr": "Ölüm Laneti", "en": "Doom"}, "desc": {"tr": "Hedef {d} Kırılgan.", "en": "Target is Vulnerable for {d}."},
-     "params": {"d": [6, 0.3, "s"]}, "target": "enemy_front", "max_targets": 2, "effects": [{"type": "status", "status": "vulnerable", "dur": "d"}]},
-    {"id": "necro_legion", "class": "necromancer", "tier": 1, "type": "passive", "max": 5, "icon": "legion",
-     "name": {"tr": "Lejyon", "en": "Legion"}, "desc": {"tr": "+{v} çağrı hasarı.", "en": "+{v} summon damage."},
-     "params": {"v": [10, 10, "p"]}, "stats": {"summon_dmg": "v"}},
-    {"id": "necro_harvest", "class": "necromancer", "tier": 1, "type": "passive", "max": 5, "icon": "harvest",
-     "name": {"tr": "Ruh Hasadı", "en": "Soul Harvest"}, "desc": {"tr": "Nihai bar +{v} hızlı dolar.", "en": "Ultimate charges {v} faster."},
-     "params": {"v": [6, 6, "p"]}, "stats": {"ult_charge": "v"}},
-    {"id": "necro_golem", "class": "necromancer", "tier": 2, "spec": "a", "type": "active", "max": 10, "cd": 40, "icon": "golem", "vfx": "summon",
-     "name": {"tr": "Kemik Golem", "en": "Bone Golem"}, "desc": {"tr": "30sn golem ({p} güç).", "en": "Golem for 30s ({p} power)."},
-     "params": {"p": [0.8, 0.12, "%"]}, "target": "self", "effects": [{"type": "summon", "kind": "golem", "count": 1, "pct": "p", "dur": 30}]},
-    {"id": "necro_sovereign", "class": "necromancer", "tier": 2, "spec": "a", "type": "passive", "max": 10, "icon": "sovereign",
-     "name": {"tr": "Kemik Hükümdarı", "en": "Bone Sovereign"}, "desc": {"tr": "+{v} çağrı hasarı ve HP.", "en": "+{v} summon damage and HP."},
-     "params": {"v": [5, 5, "p"]}, "stats": {"summon_dmg": "v", "summon_hp": "v"}},
-    {"id": "necro_black_death", "class": "necromancer", "tier": 2, "spec": "b", "type": "active", "max": 10, "cd": 14, "icon": "black_death", "vfx": "poison",
-     "name": {"tr": "Kara Ölüm", "en": "Black Death"}, "desc": {"tr": "Tüm düşmanlara {n} yığın Zehir.", "en": "{n} Poison stacks on all enemies."},
-     "params": {"n": [5, 0.5, "n"]}, "target": "enemy_all", "effects": [{"type": "status", "status": "poison", "dur": 6, "stacks": "n"}]},
-    {"id": "necro_rot", "class": "necromancer", "tier": 2, "spec": "b", "type": "passive", "max": 10, "icon": "rot",
-     "name": {"tr": "Çürüme", "en": "Rot"}, "desc": {"tr": "+{v} Zehir hasarı.", "en": "+{v} Poison damage."},
-     "params": {"v": [5, 6, "p"]}, "stats": {"poison_dmg": "v"}},
-    {"id": "necro_army", "class": "necromancer", "tier": 0, "type": "ult", "max": 5, "icon": "army", "vfx": "summon",
-     "name": {"tr": "Ölüler Ordusu", "en": "Army of the Dead"}, "desc": {"tr": "Hayalet askerler: tüm düşmanlara {dmg}.", "en": "Ghost soldiers: {dmg} to all enemies."},
-     "params": {"dmg": [10, 3.5, "%"]}, "target": "enemy_all", "effects": [{"type": "damage", "mult": "dmg", "element": "chaos"}]},
-
-    {"id": "cleric_heal", "class": "cleric", "tier": 0, "type": "active", "max": 10, "cd": 5, "icon": "heal", "vfx": "heal",
-     "name": {"tr": "Şifa Işığı", "en": "Healing Light"}, "desc": {"tr": "En düşük HP'li müttefik {h} Büyü Gücü kadar iyileşir.", "en": "Heals the lowest ally for {h} Spell Power."},
-     "params": {"h": [1.2, 0.2, "%"]}, "target": "ally_lowest", "effects": [{"type": "heal", "mult": "h"}]},
-    {"id": "cleric_smite", "class": "cleric", "tier": 0, "type": "active", "max": 10, "cd": 8, "icon": "smite", "vfx": "holy_bolt",
-     "name": {"tr": "Kutsal Şimşek", "en": "Smite"}, "desc": {"tr": "{dmg} Kutsal hasar.", "en": "{dmg} Holy damage."},
-     "params": {"dmg": [1.3, 0.17, "%"]}, "target": "enemy_front", "effects": [{"type": "damage", "mult": "dmg", "element": "holy"}]},
-    {"id": "cleric_wisdom", "class": "cleric", "tier": 0, "type": "passive", "max": 10, "icon": "wisdom",
-     "name": {"tr": "Kutsal Bilgelik", "en": "Holy Wisdom"}, "desc": {"tr": "+{v} İyileştirme.", "en": "+{v} Healing."},
-     "params": {"v": [3, 3, "p"]}, "stats": {"heal_bonus": "v"}},
-    {"id": "cleric_angel", "class": "cleric", "tier": 0, "type": "passive", "max": 5, "icon": "angel",
-     "name": {"tr": "Koruyucu Melek", "en": "Guardian Angel"}, "desc": {"tr": "Diriliş süresi -{v}.", "en": "-{v} revive time."},
-     "params": {"v": [10, 10, "p"]}, "stats": {"party_revive_speed": "v"}},
-    {"id": "cleric_blessing", "class": "cleric", "tier": 0, "type": "passive", "max": 6, "icon": "blessing",
-     "name": {"tr": "Kutsama", "en": "Blessing"}, "desc": {"tr": "Partiye +{v} Savunma ve direnç.", "en": "+{v} Defense and resistance to the party."},
-     "params": {"v": [1, 1, "p"]}, "stats": {"party_def_pct": "v", "party_all_res": "v"}},
-    {"id": "cleric_purify", "class": "cleric", "tier": 0, "type": "passive", "max": 3, "icon": "purify",
-     "name": {"tr": "Arınma", "en": "Purify"}, "desc": {"tr": "+{v} iyileştirme, durum direnci.", "en": "+{v} healing, status resistance."},
-     "params": {"v": [3, 3, "p"]}, "stats": {"heal_bonus": "v"}},
-    {"id": "cleric_mass_heal", "class": "cleric", "tier": 1, "type": "active", "max": 10, "cd": 15, "icon": "mass_heal", "vfx": "heal",
-     "name": {"tr": "Toplu Şifa", "en": "Mass Heal"}, "desc": {"tr": "Tüm parti {h} iyileşir.", "en": "Heals the party for {h}."},
-     "params": {"h": [0.8, 0.11, "%"]}, "target": "ally_all", "effects": [{"type": "heal", "mult": "h"}]},
-    {"id": "cleric_light_shield", "class": "cleric", "tier": 1, "type": "active", "max": 10, "cd": 12, "icon": "light_shield", "vfx": "shield",
-     "name": {"tr": "Işık Kalkanı", "en": "Light Shield"}, "desc": {"tr": "Öndekine {s} kalkan.", "en": "Shields the front ally for {s}."},
-     "params": {"s": [2, 0.33, "%"]}, "target": "ally_front", "effects": [{"type": "shield", "mult": "s"}]},
-    {"id": "cleric_resurrection", "class": "cleric", "tier": 1, "type": "passive", "max": 1, "icon": "resurrection",
-     "name": {"tr": "Diriliş", "en": "Resurrection"}, "desc": {"tr": "Diriliş çok daha hızlı.", "en": "Much faster revives."},
-     "params": {"v": [30, 0, "p"]}, "stats": {"party_revive_speed": "v"}},
-    {"id": "cleric_grace", "class": "cleric", "tier": 1, "type": "passive", "max": 5, "icon": "grace",
-     "name": {"tr": "Lütuf", "en": "Grace"}, "desc": {"tr": "Partiye +{v} hasar.", "en": "+{v} damage to the party."},
-     "params": {"v": [2, 2, "p"]}, "stats": {"party_added_dmg": "v"}},
-    {"id": "cleric_gate", "class": "cleric", "tier": 2, "spec": "a", "type": "active", "max": 10, "cd": 30, "icon": "gate", "vfx": "heal",
-     "name": {"tr": "Cennet Kapısı", "en": "Heaven's Gate"}, "desc": {"tr": "Parti max HP'nin {h} kadar iyileşir.", "en": "The party heals {h} of max HP."},
-     "params": {"h": [0.6, 0.09, "%"]}, "target": "ally_all", "effects": [{"type": "heal_pct", "value": "h"}]},
-    {"id": "cleric_miracle", "class": "cleric", "tier": 2, "spec": "a", "type": "passive", "max": 10, "icon": "miracle",
-     "name": {"tr": "Mucize", "en": "Miracle"}, "desc": {"tr": "+{v} İyileştirme.", "en": "+{v} Healing."},
-     "params": {"v": [5, 4, "p"]}, "stats": {"heal_bonus": "v"}},
-    {"id": "cleric_holy_mace", "class": "cleric", "tier": 2, "spec": "b", "type": "active", "max": 10, "cd": 9, "icon": "holy_mace", "vfx": "holy_slash",
-     "name": {"tr": "Kutsal Topuz", "en": "Holy Mace"}, "desc": {"tr": "{dmg} Kutsal, partiyi iyileştirir.", "en": "{dmg} Holy, heals the party."},
-     "params": {"dmg": [2.2, 0.31, "%"]}, "target": "enemy_front", "effects": [{"type": "damage", "mult": "dmg", "element": "holy", "party_heal": 0.2}]},
-    {"id": "cleric_faith", "class": "cleric", "tier": 2, "spec": "b", "type": "passive", "max": 10, "icon": "faith",
-     "name": {"tr": "İnanç Gücü", "en": "Power of Faith"}, "desc": {"tr": "+{v} Saldırı.", "en": "+{v} Attack."},
-     "params": {"v": [10, 5.5, "p"]}, "stats": {"attack_pct": "v"}},
-    {"id": "cleric_tear", "class": "cleric", "tier": 0, "type": "ult", "max": 5, "icon": "tear", "vfx": "heal",
-     "name": {"tr": "Tanrıçanın Gözyaşı", "en": "Goddess' Tear"}, "desc": {"tr": "Tüm parti tam iyileşir + {d} ölümsüzlük.", "en": "Fully heals the party + {d} invulnerability."},
-     "params": {"d": [3, 1, "s"]}, "target": "ally_all", "effects": [{"type": "heal_pct", "value": 1.0}, {"type": "buff", "stat": "invuln", "value": 1, "dur": "d"}]},
-
-    {"id": "bard_courage", "class": "bard", "tier": 0, "type": "active", "max": 10, "cd": 20, "icon": "courage", "vfx": "notes",
-     "name": {"tr": "Cesaret Şarkısı", "en": "Song of Courage"}, "desc": {"tr": "10sn partiye +{v} hasar.", "en": "+{v} damage to the party for 10s."},
-     "params": {"v": [10, 2.2, "p"]}, "target": "ally_all", "effects": [{"type": "buff", "stat": "added_dmg", "value": "v", "dur": 10}]},
-    {"id": "bard_discord", "class": "bard", "tier": 0, "type": "active", "max": 10, "cd": 9, "icon": "discord", "vfx": "sound",
-     "name": {"tr": "Uyumsuz Akor", "en": "Discord"}, "desc": {"tr": "{dmg} Yıldırım alan hasarı + Şok.", "en": "{dmg} Lightning area damage + Shock."},
-     "params": {"dmg": [1.2, 0.16, "%"]}, "target": "enemy_aoe", "radius": 30, "effects": [{"type": "damage", "mult": "dmg", "element": "lightning"}, {"type": "status", "status": "shock", "dur": 4}]},
-    {"id": "bard_rhythm", "class": "bard", "tier": 0, "type": "passive", "max": 10, "icon": "rhythm",
-     "name": {"tr": "Ritim", "en": "Rhythm"}, "desc": {"tr": "Partiye +{v} Saldırı hızı.", "en": "+{v} attack speed to the party."},
-     "params": {"v": [1, 1, "p"]}, "stats": {"party_attack_speed": "v"}},
-    {"id": "bard_joy", "class": "bard", "tier": 0, "type": "passive", "max": 5, "icon": "joy",
-     "name": {"tr": "Neşe", "en": "Joy"}, "desc": {"tr": "Partiye +{v} XP.", "en": "+{v} XP to the party."},
-     "params": {"v": [2, 2, "p"]}, "stats": {"party_xp_bonus": "v"}},
-    {"id": "bard_fingers", "class": "bard", "tier": 0, "type": "passive", "max": 5, "icon": "fingers",
-     "name": {"tr": "Hızlı Parmaklar", "en": "Nimble Fingers"}, "desc": {"tr": "Buff süresi +{v}.", "en": "+{v} buff duration."},
-     "params": {"v": [5, 5, "p"]}, "stats": {"buff_duration": "v"}},
-    {"id": "bard_luck", "class": "bard", "tier": 0, "type": "passive", "max": 6, "icon": "luck",
-     "name": {"tr": "Şans Melodisi", "en": "Lucky Tune"}, "desc": {"tr": "Partiye +{v} Item Bulma.", "en": "+{v} Item Find to the party."},
-     "params": {"v": [3, 3, "p"]}, "stats": {"party_item_find": "v"}},
-    {"id": "bard_lullaby", "class": "bard", "tier": 1, "type": "active", "max": 10, "cd": 18, "icon": "lullaby", "vfx": "notes",
-     "name": {"tr": "Ninni", "en": "Lullaby"}, "desc": {"tr": "3 düşmanı {d} uyutur.", "en": "Puts 3 enemies to sleep for {d}."},
-     "params": {"d": [1.5, 0.17, "s"]}, "target": "enemy_front", "max_targets": 3, "effects": [{"type": "status", "status": "stun", "dur": "d"}]},
-    {"id": "bard_epic", "class": "bard", "tier": 1, "type": "active", "max": 10, "cd": 25, "icon": "epic", "vfx": "notes",
-     "name": {"tr": "Kahramanlık Destanı", "en": "Heroic Epic"}, "desc": {"tr": "8sn parti bekleme süresi -{v}.", "en": "Party cooldowns -{v} for 8s."},
-     "params": {"v": [15, 1.7, "p"]}, "target": "ally_all", "effects": [{"type": "buff", "stat": "cdr", "value": "v", "dur": 8}]},
-    {"id": "bard_choir", "class": "bard", "tier": 1, "type": "passive", "max": 5, "icon": "choir",
-     "name": {"tr": "Koro", "en": "Choir"}, "desc": {"tr": "Partiye +{v} hasar.", "en": "+{v} party damage."},
-     "params": {"v": [2, 2, "p"]}, "stats": {"party_added_dmg": "v"}},
-    {"id": "bard_golden", "class": "bard", "tier": 1, "type": "passive", "max": 5, "icon": "golden",
-     "name": {"tr": "Altın Ses", "en": "Golden Voice"}, "desc": {"tr": "Partiye +{v} Altın Bulma.", "en": "+{v} Gold Find to the party."},
-     "params": {"v": [4, 4, "p"]}, "stats": {"party_gold_find": "v"}},
-    {"id": "bard_drums", "class": "bard", "tier": 2, "spec": "a", "type": "active", "max": 10, "cd": 20, "icon": "drums", "vfx": "notes",
-     "name": {"tr": "Davul Gürültüsü", "en": "War Drums"}, "desc": {"tr": "10sn parti +{v} kritik hasar.", "en": "+{v} party crit damage for 10s."},
-     "params": {"v": [15, 2.8, "p"]}, "target": "ally_all", "effects": [{"type": "buff", "stat": "crit_dmg", "value": "v", "dur": 10}, {"type": "buff", "stat": "attack_speed", "value": "v", "dur": 10}]},
-    {"id": "bard_march", "class": "bard", "tier": 2, "spec": "a", "type": "passive", "max": 10, "icon": "march",
-     "name": {"tr": "Marş", "en": "March"}, "desc": {"tr": "Partiye +{v} Saldırı.", "en": "+{v} party Attack."},
-     "params": {"v": [2, 1.5, "p"]}, "stats": {"party_attack_pct": "v"}},
-    {"id": "bard_serenity", "class": "bard", "tier": 2, "spec": "b", "type": "active", "max": 10, "cd": 18, "icon": "serenity", "vfx": "heal",
-     "name": {"tr": "Huzur Melodisi", "en": "Serene Melody"}, "desc": {"tr": "Parti max HP'nin {h} kadar iyileşir.", "en": "Heals the party for {h} max HP."},
-     "params": {"h": [0.18, 0.03, "%"]}, "target": "ally_all", "effects": [{"type": "heal_pct", "value": "h"}]},
-    {"id": "bard_calm", "class": "bard", "tier": 2, "spec": "b", "type": "passive", "max": 10, "icon": "calm",
-     "name": {"tr": "Sükunet", "en": "Calm"}, "desc": {"tr": "Partiye +{v} tüm direnç.", "en": "+{v} all resistance to the party."},
-     "params": {"v": [2, 1.5, "p"]}, "stats": {"party_all_res": "v"}},
-    {"id": "bard_legends", "class": "bard", "tier": 0, "type": "ult", "max": 5, "icon": "legends", "vfx": "notes",
-     "name": {"tr": "Efsanelerin Şarkısı", "en": "Song of Legends"}, "desc": {"tr": "12sn parti +{v} hasar.", "en": "+{v} party damage for 12s."},
-     "params": {"v": [40, 10, "p"]}, "target": "ally_all", "effects": [{"type": "buff", "stat": "added_dmg", "value": "v", "dur": 12}, {"type": "buff", "stat": "ult_charge", "value": 100, "dur": 12}]}
-  ]
+ "_doc": "params: name -> [base, per_level, fmt]; fmt: '%' (x100 + %), 'p' (already percent), 's' seconds, 'n' number. Effects/stats reference params by name.",
+ "skills": [
+  {
+   "id": "knight_bash",
+   "class": "knight",
+   "tier": 0,
+   "type": "active",
+   "max": 10,
+   "cd": 8,
+   "icon": "bash",
+   "vfx": "slash_heavy",
+   "name": {
+    "tr": "Kalkan Darbesi",
+    "en": "Shield Bash"
+   },
+   "desc": {
+    "tr": "Öndeki düşmana {dmg} hasar ve {stun} sersemletme.",
+    "en": "Deals {dmg} damage to the front enemy and stuns for {stun}."
+   },
+   "params": {
+    "dmg": [
+     1.4,
+     0.2,
+     "%"
+    ],
+    "stun": [
+     1.0,
+     0,
+     "s"
+    ]
+   },
+   "target": "enemy_front",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg"
+    },
+    {
+     "type": "status",
+     "status": "stun",
+     "dur": "stun"
+    }
+   ]
+  },
+  {
+   "id": "knight_recovery",
+   "class": "knight",
+   "tier": 0,
+   "type": "active",
+   "max": 3,
+   "cd": 15,
+   "icon": "recovery",
+   "vfx": "heal",
+   "name": {
+    "tr": "Toparlanma",
+    "en": "Recovery"
+   },
+   "desc": {
+    "tr": "Tüm müttefiklere max HP'nin {heal} kadar iyileşme.",
+    "en": "Restores {heal} max HP to all allies."
+   },
+   "params": {
+    "heal": [
+     0.2,
+     0.05,
+     "%"
+    ]
+   },
+   "target": "ally_all",
+   "effects": [
+    {
+     "type": "heal_pct",
+     "value": "heal"
+    }
+   ]
+  },
+  {
+   "id": "knight_iron_skin",
+   "class": "knight",
+   "tier": 0,
+   "type": "passive",
+   "max": 10,
+   "icon": "iron_skin",
+   "name": {
+    "tr": "Demir Deri",
+    "en": "Iron Skin"
+   },
+   "desc": {
+    "tr": "+{v} Savunma.",
+    "en": "+{v} Defense."
+   },
+   "params": {
+    "v": [
+     3,
+     3,
+     "p"
+    ]
+   },
+   "stats": {
+    "def_pct": "v"
+   }
+  },
+  {
+   "id": "knight_challenge",
+   "class": "knight",
+   "tier": 0,
+   "type": "passive",
+   "max": 6,
+   "icon": "challenge",
+   "name": {
+    "tr": "Meydan Okuma",
+    "en": "Challenge"
+   },
+   "desc": {
+    "tr": "Tehdit +{t}, +{v} HP.",
+    "en": "Threat +{t}, +{v} HP."
+   },
+   "params": {
+    "t": [
+     1,
+     0.4,
+     "n"
+    ],
+    "v": [
+     2,
+     2,
+     "p"
+    ]
+   },
+   "stats": {
+    "threat": "t",
+    "hp_pct": "v"
+   }
+  },
+  {
+   "id": "knight_mastery",
+   "class": "knight",
+   "tier": 0,
+   "type": "passive",
+   "max": 5,
+   "icon": "sword_mastery",
+   "name": {
+    "tr": "Kılıç Ustalığı",
+    "en": "Sword Mastery"
+   },
+   "desc": {
+    "tr": "+{v} Saldırı.",
+    "en": "+{v} Attack."
+   },
+   "params": {
+    "v": [
+     4,
+     4,
+     "p"
+    ]
+   },
+   "stats": {
+    "attack_pct": "v"
+   }
+  },
+  {
+   "id": "knight_last_stand",
+   "class": "knight",
+   "tier": 0,
+   "type": "passive",
+   "max": 6,
+   "icon": "last_stand",
+   "name": {
+    "tr": "Son Kale",
+    "en": "Last Stand"
+   },
+   "desc": {
+    "tr": "+{v} hasar azaltma.",
+    "en": "+{v} damage reduction."
+   },
+   "params": {
+    "v": [
+     3,
+     2,
+     "p"
+    ]
+   },
+   "stats": {
+    "dr": "v"
+   }
+  },
+  {
+   "id": "knight_oath",
+   "class": "knight",
+   "tier": 1,
+   "type": "active",
+   "max": 10,
+   "cd": 20,
+   "icon": "oath",
+   "vfx": "shield",
+   "name": {
+    "tr": "Kutsal Yemin",
+    "en": "Holy Oath"
+   },
+   "desc": {
+    "tr": "Partiye Saldırının {s} kadar kalkan.",
+    "en": "Shields the party for {s} of Attack."
+   },
+   "params": {
+    "s": [
+     0.5,
+     0.11,
+     "%"
+    ]
+   },
+   "target": "ally_all",
+   "effects": [
+    {
+     "type": "shield",
+     "mult": "s"
+    }
+   ]
+  },
+  {
+   "id": "knight_justice",
+   "class": "knight",
+   "tier": 1,
+   "type": "active",
+   "max": 10,
+   "cd": 10,
+   "icon": "justice",
+   "vfx": "holy_slash",
+   "name": {
+    "tr": "Adalet Kılıcı",
+    "en": "Blade of Justice"
+   },
+   "desc": {
+    "tr": "Öndeki 3 düşmana {dmg} Kutsal hasar.",
+    "en": "Deals {dmg} Holy damage to 3 front enemies."
+   },
+   "params": {
+    "dmg": [
+     1.8,
+     0.24,
+     "%"
+    ]
+   },
+   "target": "enemy_front",
+   "max_targets": 3,
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "holy"
+    }
+   ]
+  },
+  {
+   "id": "knight_shield_wall",
+   "class": "knight",
+   "tier": 1,
+   "type": "passive",
+   "max": 5,
+   "icon": "shield_wall",
+   "name": {
+    "tr": "Kalkan Duvarı",
+    "en": "Shield Wall"
+   },
+   "desc": {
+    "tr": "+{v} Blok şansı.",
+    "en": "+{v} Block chance."
+   },
+   "params": {
+    "v": [
+     3,
+     3,
+     "p"
+    ]
+   },
+   "stats": {
+    "block": "v"
+   }
+  },
+  {
+   "id": "knight_steadfast",
+   "class": "knight",
+   "tier": 1,
+   "type": "passive",
+   "max": 5,
+   "icon": "steadfast",
+   "name": {
+    "tr": "Sarsılmaz",
+    "en": "Steadfast"
+   },
+   "desc": {
+    "tr": "+{v} Tüm Direnç.",
+    "en": "+{v} All Resistance."
+   },
+   "params": {
+    "v": [
+     4,
+     4,
+     "p"
+    ]
+   },
+   "stats": {
+    "all_res": "v"
+   }
+  },
+  {
+   "id": "knight_judgement",
+   "class": "knight",
+   "tier": 2,
+   "spec": "a",
+   "type": "active",
+   "max": 10,
+   "cd": 25,
+   "icon": "judgement",
+   "vfx": "holy_burst",
+   "name": {
+    "tr": "Işık Hükmü",
+    "en": "Judgement"
+   },
+   "desc": {
+    "tr": "Tüm düşmanlara {dmg} Kutsal hasar.",
+    "en": "Deals {dmg} Holy damage to all enemies."
+   },
+   "params": {
+    "dmg": [
+     3.0,
+     0.44,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "holy"
+    }
+   ]
+  },
+  {
+   "id": "knight_valor",
+   "class": "knight",
+   "tier": 2,
+   "spec": "a",
+   "type": "passive",
+   "max": 10,
+   "icon": "valor",
+   "name": {
+    "tr": "Cesaret Aurası",
+    "en": "Aura of Valor"
+   },
+   "desc": {
+    "tr": "Partiye +{v} Saldırı.",
+    "en": "+{v} Attack to the party."
+   },
+   "params": {
+    "v": [
+     2,
+     2,
+     "p"
+    ]
+   },
+   "stats": {
+    "party_attack_pct": "v"
+   }
+  },
+  {
+   "id": "knight_fortress",
+   "class": "knight",
+   "tier": 2,
+   "spec": "b",
+   "type": "active",
+   "max": 10,
+   "cd": 30,
+   "icon": "fortress",
+   "vfx": "shield",
+   "name": {
+    "tr": "Kale Formu",
+    "en": "Fortress Form"
+   },
+   "desc": {
+    "tr": "8sn boyunca +{v} hasar azaltma ve tüm tehdit.",
+    "en": "For 8s gain {v} damage reduction and taunt."
+   },
+   "params": {
+    "v": [
+     40,
+     3.3,
+     "p"
+    ]
+   },
+   "target": "self",
+   "effects": [
+    {
+     "type": "buff",
+     "stat": "dr",
+     "value": "v",
+     "dur": 8
+    },
+    {
+     "type": "buff",
+     "stat": "threat",
+     "value": 10,
+     "dur": 8
+    }
+   ]
+  },
+  {
+   "id": "knight_thorns",
+   "class": "knight",
+   "tier": 2,
+   "spec": "b",
+   "type": "passive",
+   "max": 10,
+   "icon": "thorns",
+   "name": {
+    "tr": "Diken Zırh",
+    "en": "Thorn Armor"
+   },
+   "desc": {
+    "tr": "Yakın hasarın {v} kadarını yansıtır.",
+    "en": "Reflects {v} of melee damage."
+   },
+   "params": {
+    "v": [
+     10,
+     5.5,
+     "p"
+    ]
+   },
+   "stats": {
+    "thorns": "v"
+   }
+  },
+  {
+   "id": "knight_banner",
+   "class": "knight",
+   "tier": 0,
+   "type": "ult",
+   "max": 5,
+   "icon": "banner",
+   "vfx": "banner",
+   "name": {
+    "tr": "İmparatorluk Sancağı",
+    "en": "Imperial Banner"
+   },
+   "desc": {
+    "tr": "10sn parti +{v} hasar ve +%20 hasar azaltma.",
+    "en": "For 10s the party gains {v} damage and 20% damage reduction."
+   },
+   "params": {
+    "v": [
+     30,
+     7.5,
+     "p"
+    ]
+   },
+   "target": "ally_all",
+   "effects": [
+    {
+     "type": "buff",
+     "stat": "added_dmg",
+     "value": "v",
+     "dur": 10
+    },
+    {
+     "type": "buff",
+     "stat": "dr",
+     "value": 20,
+     "dur": 10
+    }
+   ]
+  },
+  {
+   "id": "berserker_whirl",
+   "class": "berserker",
+   "tier": 0,
+   "type": "active",
+   "max": 10,
+   "cd": 9,
+   "icon": "whirl",
+   "vfx": "whirl",
+   "name": {
+    "tr": "Kasırga",
+    "en": "Whirlwind"
+   },
+   "desc": {
+    "tr": "Çevreye 4 kez {dmg} hasar.",
+    "en": "Hits nearby enemies 4 times for {dmg}."
+   },
+   "params": {
+    "dmg": [
+     0.7,
+     0.1,
+     "%"
+    ]
+   },
+   "target": "enemy_aoe",
+   "radius": 40,
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "hits": 4
+    }
+   ]
+  },
+  {
+   "id": "berserker_warcry",
+   "class": "berserker",
+   "tier": 0,
+   "type": "active",
+   "max": 5,
+   "cd": 18,
+   "icon": "warcry",
+   "vfx": "roar",
+   "name": {
+    "tr": "Savaş Çığlığı",
+    "en": "War Cry"
+   },
+   "desc": {
+    "tr": "8sn +{v} saldırı hızı.",
+    "en": "+{v} attack speed for 8s."
+   },
+   "params": {
+    "v": [
+     15,
+     6.25,
+     "p"
+    ]
+   },
+   "target": "self",
+   "effects": [
+    {
+     "type": "buff",
+     "stat": "attack_speed",
+     "value": "v",
+     "dur": 8
+    }
+   ]
+  },
+  {
+   "id": "berserker_rage",
+   "class": "berserker",
+   "tier": 0,
+   "type": "passive",
+   "max": 10,
+   "icon": "rage",
+   "name": {
+    "tr": "Öfke Yükselişi",
+    "en": "Rising Rage"
+   },
+   "desc": {
+    "tr": "Eksik HP'nin her %10'u için +{v} hasar.",
+    "en": "+{v} damage per 10% missing HP."
+   },
+   "params": {
+    "v": [
+     1,
+     0.33,
+     "p"
+    ]
+   },
+   "stats": {
+    "rage_dmg": "v"
+   }
+  },
+  {
+   "id": "berserker_twohand",
+   "class": "berserker",
+   "tier": 0,
+   "type": "passive",
+   "max": 5,
+   "icon": "twohand",
+   "name": {
+    "tr": "İki El Ustalığı",
+    "en": "Two-Hand Mastery"
+   },
+   "desc": {
+    "tr": "+{v} Saldırı.",
+    "en": "+{v} Attack."
+   },
+   "params": {
+    "v": [
+     5,
+     5,
+     "p"
+    ]
+   },
+   "stats": {
+    "attack_pct": "v"
+   }
+  },
+  {
+   "id": "berserker_thirst",
+   "class": "berserker",
+   "tier": 0,
+   "type": "passive",
+   "max": 6,
+   "icon": "thirst",
+   "name": {
+    "tr": "Kana Susamış",
+    "en": "Bloodthirst"
+   },
+   "desc": {
+    "tr": "+{v} Can çalma.",
+    "en": "+{v} Life steal."
+   },
+   "params": {
+    "v": [
+     0.5,
+     0.5,
+     "p"
+    ]
+   },
+   "stats": {
+    "lifesteal": "v"
+   }
+  },
+  {
+   "id": "berserker_lacerate",
+   "class": "berserker",
+   "tier": 0,
+   "type": "passive",
+   "max": 5,
+   "icon": "lacerate",
+   "name": {
+    "tr": "Yaralayıcı",
+    "en": "Lacerate"
+   },
+   "desc": {
+    "tr": "Vuruşlar {v} şansla Kanama uygular.",
+    "en": "Hits have {v} chance to cause Bleed."
+   },
+   "params": {
+    "v": [
+     10,
+     5,
+     "p"
+    ]
+   },
+   "stats": {
+    "bleed_chance": "v"
+   }
+  },
+  {
+   "id": "berserker_quake",
+   "class": "berserker",
+   "tier": 1,
+   "type": "active",
+   "max": 10,
+   "cd": 12,
+   "icon": "quake",
+   "vfx": "quake",
+   "name": {
+    "tr": "Yer Sarsıntısı",
+    "en": "Earthquake"
+   },
+   "desc": {
+    "tr": "Alana {dmg} hasar ve 0.8sn sersemletme.",
+    "en": "Deals {dmg} in an area and stuns 0.8s."
+   },
+   "params": {
+    "dmg": [
+     2.0,
+     0.28,
+     "%"
+    ]
+   },
+   "target": "enemy_aoe",
+   "radius": 50,
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg"
+    },
+    {
+     "type": "status",
+     "status": "stun",
+     "dur": 0.8
+    }
+   ]
+  },
+  {
+   "id": "berserker_leap",
+   "class": "berserker",
+   "tier": 1,
+   "type": "active",
+   "max": 10,
+   "cd": 10,
+   "icon": "leap",
+   "vfx": "slash_heavy",
+   "name": {
+    "tr": "Atılım",
+    "en": "Leap Strike"
+   },
+   "desc": {
+    "tr": "En arkadaki düşmana {dmg} hasar.",
+    "en": "Deals {dmg} to the rearmost enemy."
+   },
+   "params": {
+    "dmg": [
+     1.6,
+     0.22,
+     "%"
+    ]
+   },
+   "target": "enemy_back",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg"
+    }
+   ]
+  },
+  {
+   "id": "berserker_frenzy",
+   "class": "berserker",
+   "tier": 1,
+   "type": "passive",
+   "max": 5,
+   "icon": "frenzy",
+   "name": {
+    "tr": "Delirme",
+    "en": "Frenzy"
+   },
+   "desc": {
+    "tr": "+{v} Kritik hasar, öfke daha hızlı dolar.",
+    "en": "+{v} Crit damage, faster rage."
+   },
+   "params": {
+    "v": [
+     10,
+     8,
+     "p"
+    ]
+   },
+   "stats": {
+    "crit_dmg": "v",
+    "ult_charge": "v"
+   }
+  },
+  {
+   "id": "berserker_thick",
+   "class": "berserker",
+   "tier": 1,
+   "type": "passive",
+   "max": 5,
+   "icon": "thick",
+   "name": {
+    "tr": "Kalın Kafa",
+    "en": "Thick Skull"
+   },
+   "desc": {
+    "tr": "+{v} HP.",
+    "en": "+{v} HP."
+   },
+   "params": {
+    "v": [
+     4,
+     4,
+     "p"
+    ]
+   },
+   "stats": {
+    "hp_pct": "v"
+   }
+  },
+  {
+   "id": "berserker_trance",
+   "class": "berserker",
+   "tier": 2,
+   "spec": "a",
+   "type": "active",
+   "max": 10,
+   "cd": 30,
+   "icon": "trance",
+   "vfx": "roar",
+   "name": {
+    "tr": "Kızıl Trans",
+    "en": "Crimson Trance"
+   },
+   "desc": {
+    "tr": "10sn +{v} hasar.",
+    "en": "+{v} damage for 10s."
+   },
+   "params": {
+    "v": [
+     30,
+     5.5,
+     "p"
+    ]
+   },
+   "target": "self",
+   "effects": [
+    {
+     "type": "buff",
+     "stat": "added_dmg",
+     "value": "v",
+     "dur": 10
+    }
+   ]
+  },
+  {
+   "id": "berserker_undying",
+   "class": "berserker",
+   "tier": 2,
+   "spec": "a",
+   "type": "passive",
+   "max": 5,
+   "icon": "undying",
+   "name": {
+    "tr": "Ölümsüz Öfke",
+    "en": "Undying Rage"
+   },
+   "desc": {
+    "tr": "Ölümcül hasarı savaş başına 1 kez önler, +{v} can çalma.",
+    "en": "Survives a lethal hit once per fight, +{v} life steal."
+   },
+   "params": {
+    "v": [
+     1,
+     0.5,
+     "p"
+    ]
+   },
+   "stats": {
+    "cheat_death": 1,
+    "lifesteal": "v"
+   }
+  },
+  {
+   "id": "berserker_thunder",
+   "class": "berserker",
+   "tier": 2,
+   "spec": "b",
+   "type": "active",
+   "max": 10,
+   "cd": 14,
+   "icon": "thunder",
+   "vfx": "lightning",
+   "name": {
+    "tr": "Gök Gürültüsü",
+    "en": "Thunderclap"
+   },
+   "desc": {
+    "tr": "5 hedefe {dmg} Yıldırım.",
+    "en": "Deals {dmg} Lightning to 5 targets."
+   },
+   "params": {
+    "dmg": [
+     2.2,
+     0.31,
+     "%"
+    ]
+   },
+   "target": "enemy_random",
+   "max_targets": 5,
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "lightning"
+    },
+    {
+     "type": "status",
+     "status": "shock",
+     "dur": 4,
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "id": "berserker_storm_weapon",
+   "class": "berserker",
+   "tier": 2,
+   "spec": "b",
+   "type": "passive",
+   "max": 10,
+   "icon": "storm_weapon",
+   "name": {
+    "tr": "Şimşek Silah",
+    "en": "Storm Weapon"
+   },
+   "desc": {
+    "tr": "+{v} Yıldırım hasarı.",
+    "en": "+{v} Lightning damage."
+   },
+   "params": {
+    "v": [
+     5,
+     4,
+     "p"
+    ]
+   },
+   "stats": {
+    "lightning_dmg": "v",
+    "added_dmg": "v"
+   }
+  },
+  {
+   "id": "berserker_ragnarok",
+   "class": "berserker",
+   "tier": 0,
+   "type": "ult",
+   "max": 5,
+   "icon": "ragnarok",
+   "vfx": "meteor",
+   "name": {
+    "tr": "Ragnarök",
+    "en": "Ragnarök"
+   },
+   "desc": {
+    "tr": "Gökten dev balta: tüm düşmanlara {dmg}.",
+    "en": "A giant axe falls: {dmg} to all enemies."
+   },
+   "params": {
+    "dmg": [
+     8,
+     3,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg"
+    }
+   ]
+  },
+  {
+   "id": "archer_multishot",
+   "class": "archer",
+   "tier": 0,
+   "type": "active",
+   "max": 10,
+   "cd": 7,
+   "icon": "multishot",
+   "vfx": "arrows",
+   "name": {
+    "tr": "Çoklu Atış",
+    "en": "Multishot"
+   },
+   "desc": {
+    "tr": "5 ok, her biri {dmg}.",
+    "en": "5 arrows dealing {dmg} each."
+   },
+   "params": {
+    "dmg": [
+     0.6,
+     0.09,
+     "%"
+    ]
+   },
+   "target": "enemy_random",
+   "max_targets": 5,
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "projectile": "arrow"
+    }
+   ]
+  },
+  {
+   "id": "archer_earth_strike",
+   "class": "archer",
+   "tier": 0,
+   "type": "active",
+   "max": 5,
+   "cd": 8.2,
+   "icon": "earth_strike",
+   "vfx": "earth_spike",
+   "name": {
+    "tr": "Toprak Darbesi",
+    "en": "Earth Strike"
+   },
+   "desc": {
+    "tr": "Yerden dikenler: {dmg} Fiziksel, en fazla 3 hedef.",
+    "en": "Thorns pierce the ground: {dmg} Physical to up to 3 targets."
+   },
+   "params": {
+    "dmg": [
+     1.3,
+     0.325,
+     "%"
+    ]
+   },
+   "target": "enemy_front",
+   "max_targets": 3,
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg"
+    }
+   ]
+  },
+  {
+   "id": "archer_keen_eye",
+   "class": "archer",
+   "tier": 0,
+   "type": "passive",
+   "max": 11,
+   "icon": "keen_eye",
+   "name": {
+    "tr": "Keskin Göz",
+    "en": "Keen Eye"
+   },
+   "desc": {
+    "tr": "+{v} Kritik şansı.",
+    "en": "+{v} Crit chance."
+   },
+   "params": {
+    "v": [
+     1,
+     1,
+     "p"
+    ]
+   },
+   "stats": {
+    "crit_chance": "v"
+   }
+  },
+  {
+   "id": "archer_wind_step",
+   "class": "archer",
+   "tier": 0,
+   "type": "passive",
+   "max": 3,
+   "icon": "wind_step",
+   "name": {
+    "tr": "Rüzgâr Adımı",
+    "en": "Wind Step"
+   },
+   "desc": {
+    "tr": "+{v} Saldırı hızı, +%5 kaçınma.",
+    "en": "+{v} Attack speed, +5% evasion."
+   },
+   "params": {
+    "v": [
+     5,
+     5,
+     "p"
+    ]
+   },
+   "stats": {
+    "attack_speed": "v",
+    "evasion": 5
+   }
+  },
+  {
+   "id": "archer_pierce",
+   "class": "archer",
+   "tier": 0,
+   "type": "passive",
+   "max": 6,
+   "icon": "pierce",
+   "name": {
+    "tr": "Delici Oklar",
+    "en": "Piercing Arrows"
+   },
+   "desc": {
+    "tr": "+{v} Delme.",
+    "en": "+{v} Penetration."
+   },
+   "params": {
+    "v": [
+     3,
+     2,
+     "p"
+    ]
+   },
+   "stats": {
+    "penetrate": "v"
+   }
+  },
+  {
+   "id": "archer_mark",
+   "class": "archer",
+   "tier": 0,
+   "type": "passive",
+   "max": 5,
+   "icon": "mark",
+   "name": {
+    "tr": "Avcı İşareti",
+    "en": "Hunter's Mark"
+   },
+   "desc": {
+    "tr": "Elit/Boss'a +{v} hasar.",
+    "en": "+{v} damage to elites and bosses."
+   },
+   "params": {
+    "v": [
+     4,
+     4,
+     "p"
+    ]
+   },
+   "stats": {
+    "elite_dmg": "v",
+    "boss_dmg": "v"
+   }
+  },
+  {
+   "id": "archer_rain",
+   "class": "archer",
+   "tier": 1,
+   "type": "active",
+   "max": 10,
+   "cd": 15,
+   "icon": "rain",
+   "vfx": "arrow_rain",
+   "name": {
+    "tr": "Ok Yağmuru",
+    "en": "Arrow Rain"
+   },
+   "desc": {
+    "tr": "Tüm düşmanlara 3 kez {dmg}.",
+    "en": "Hits all enemies 3 times for {dmg}."
+   },
+   "params": {
+    "dmg": [
+     0.8,
+     0.11,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "hits": 3
+    }
+   ]
+  },
+  {
+   "id": "archer_vines",
+   "class": "archer",
+   "tier": 1,
+   "type": "active",
+   "max": 10,
+   "cd": 16,
+   "icon": "vines",
+   "vfx": "vines",
+   "name": {
+    "tr": "Bağlayan Sarmaşık",
+    "en": "Binding Vines"
+   },
+   "desc": {
+    "tr": "3 düşmanı {d} köklendirir ve Kırılgan yapar.",
+    "en": "Roots 3 enemies for {d} and makes them Vulnerable."
+   },
+   "params": {
+    "d": [
+     2,
+     0.1,
+     "s"
+    ]
+   },
+   "target": "enemy_front",
+   "max_targets": 3,
+   "effects": [
+    {
+     "type": "status",
+     "status": "stun",
+     "dur": "d"
+    },
+    {
+     "type": "status",
+     "status": "vulnerable",
+     "dur": 5
+    }
+   ]
+  },
+  {
+   "id": "archer_marksman",
+   "class": "archer",
+   "tier": 1,
+   "type": "passive",
+   "max": 5,
+   "icon": "marksman",
+   "name": {
+    "tr": "Nişancı",
+    "en": "Marksman"
+   },
+   "desc": {
+    "tr": "+{v} Kritik hasar.",
+    "en": "+{v} Crit damage."
+   },
+   "params": {
+    "v": [
+     8,
+     8,
+     "p"
+    ]
+   },
+   "stats": {
+    "crit_dmg": "v"
+   }
+  },
+  {
+   "id": "archer_quickdraw",
+   "class": "archer",
+   "tier": 1,
+   "type": "passive",
+   "max": 5,
+   "icon": "quickdraw",
+   "name": {
+    "tr": "Hızlı Çekiş",
+    "en": "Quick Draw"
+   },
+   "desc": {
+    "tr": "Bekleme süresi -{v}.",
+    "en": "-{v} cooldowns."
+   },
+   "params": {
+    "v": [
+     2,
+     2,
+     "p"
+    ]
+   },
+   "stats": {
+    "cdr": "v"
+   }
+  },
+  {
+   "id": "archer_storm_arrow",
+   "class": "archer",
+   "tier": 2,
+   "spec": "a",
+   "type": "active",
+   "max": 10,
+   "cd": 12,
+   "icon": "storm_arrow",
+   "vfx": "big_arrow",
+   "name": {
+    "tr": "Fırtına Oku",
+    "en": "Storm Arrow"
+   },
+   "desc": {
+    "tr": "Tüm hattı delen ok: {dmg}.",
+    "en": "An arrow piercing the whole line: {dmg}."
+   },
+   "params": {
+    "dmg": [
+     3.5,
+     0.5,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg"
+    }
+   ]
+  },
+  {
+   "id": "archer_trigger",
+   "class": "archer",
+   "tier": 2,
+   "spec": "a",
+   "type": "passive",
+   "max": 10,
+   "icon": "trigger",
+   "name": {
+    "tr": "Tetik",
+    "en": "Hair Trigger"
+   },
+   "desc": {
+    "tr": "+{v} Saldırı hızı.",
+    "en": "+{v} Attack speed."
+   },
+   "params": {
+    "v": [
+     4,
+     2,
+     "p"
+    ]
+   },
+   "stats": {
+    "attack_speed": "v"
+   }
+  },
+  {
+   "id": "archer_wolf",
+   "class": "archer",
+   "tier": 2,
+   "spec": "b",
+   "type": "active",
+   "max": 10,
+   "cd": 30,
+   "icon": "wolf",
+   "vfx": "summon",
+   "name": {
+    "tr": "Kurt Çağır",
+    "en": "Call Wolf"
+   },
+   "desc": {
+    "tr": "20sn kurt yoldaş (saldırının {p}).",
+    "en": "Summons a wolf for 20s ({p} of Attack)."
+   },
+   "params": {
+    "p": [
+     0.4,
+     0.067,
+     "%"
+    ]
+   },
+   "target": "self",
+   "effects": [
+    {
+     "type": "summon",
+     "kind": "wolf",
+     "count": 1,
+     "pct": "p",
+     "dur": 20
+    }
+   ]
+  },
+  {
+   "id": "archer_grace",
+   "class": "archer",
+   "tier": 2,
+   "spec": "b",
+   "type": "passive",
+   "max": 10,
+   "icon": "grace",
+   "name": {
+    "tr": "Ormanın Lütfu",
+    "en": "Forest's Grace"
+   },
+   "desc": {
+    "tr": "Partiye +{v} HP yenilenme.",
+    "en": "+{v} HP regen to the party."
+   },
+   "params": {
+    "v": [
+     0.1,
+     0.1,
+     "p"
+    ]
+   },
+   "stats": {
+    "party_hp_regen_pct": "v"
+   }
+  },
+  {
+   "id": "archer_starbreaker",
+   "class": "archer",
+   "tier": 0,
+   "type": "ult",
+   "max": 5,
+   "icon": "starbreaker",
+   "vfx": "star_rain",
+   "name": {
+    "tr": "Yıldızkıran Ok",
+    "en": "Starbreaker"
+   },
+   "desc": {
+    "tr": "Yıldız yağmuru: tüm düşmanlara {dmg}.",
+    "en": "Rain of stars: {dmg} to all enemies."
+   },
+   "params": {
+    "dmg": [
+     10,
+     3.5,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg"
+    }
+   ]
+  },
+  {
+   "id": "assassin_shadow_step",
+   "class": "assassin",
+   "tier": 0,
+   "type": "active",
+   "max": 10,
+   "cd": 8,
+   "icon": "shadow_step",
+   "vfx": "shadow",
+   "name": {
+    "tr": "Gölge Adımı",
+    "en": "Shadow Step"
+   },
+   "desc": {
+    "tr": "En düşük HP'li düşmana {dmg}.",
+    "en": "Deals {dmg} to the lowest-HP enemy."
+   },
+   "params": {
+    "dmg": [
+     2.0,
+     0.28,
+     "%"
+    ]
+   },
+   "target": "enemy_lowest",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg"
+    }
+   ]
+  },
+  {
+   "id": "assassin_poison_blade",
+   "class": "assassin",
+   "tier": 0,
+   "type": "active",
+   "max": 5,
+   "cd": 10,
+   "icon": "poison_blade",
+   "vfx": "poison",
+   "name": {
+    "tr": "Zehirli Bıçak",
+    "en": "Poison Blade"
+   },
+   "desc": {
+    "tr": "{dmg} hasar + 5 yığın Zehir.",
+    "en": "{dmg} damage + 5 Poison stacks."
+   },
+   "params": {
+    "dmg": [
+     1.2,
+     0.3,
+     "%"
+    ]
+   },
+   "target": "enemy_front",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "chaos"
+    },
+    {
+     "type": "status",
+     "status": "poison",
+     "dur": 5,
+     "stacks": 5
+    }
+   ]
+  },
+  {
+   "id": "assassin_dual",
+   "class": "assassin",
+   "tier": 0,
+   "type": "passive",
+   "max": 10,
+   "icon": "dual",
+   "name": {
+    "tr": "Çift Bıçak Ustalığı",
+    "en": "Dual Wield"
+   },
+   "desc": {
+    "tr": "+{v} Saldırı hızı.",
+    "en": "+{v} Attack speed."
+   },
+   "params": {
+    "v": [
+     3,
+     3,
+     "p"
+    ]
+   },
+   "stats": {
+    "attack_speed": "v"
+   }
+  },
+  {
+   "id": "assassin_precision",
+   "class": "assassin",
+   "tier": 0,
+   "type": "passive",
+   "max": 10,
+   "icon": "precision",
+   "name": {
+    "tr": "Ölümcül Hassasiyet",
+    "en": "Lethal Precision"
+   },
+   "desc": {
+    "tr": "+{v} Kritik hasar.",
+    "en": "+{v} Crit damage."
+   },
+   "params": {
+    "v": [
+     10,
+     5.5,
+     "p"
+    ]
+   },
+   "stats": {
+    "crit_dmg": "v"
+   }
+  },
+  {
+   "id": "assassin_sneaky",
+   "class": "assassin",
+   "tier": 0,
+   "type": "passive",
+   "max": 5,
+   "icon": "sneaky",
+   "name": {
+    "tr": "Sinsi",
+    "en": "Sneaky"
+   },
+   "desc": {
+    "tr": "+{v} Kritik şansı.",
+    "en": "+{v} Crit chance."
+   },
+   "params": {
+    "v": [
+     2,
+     1.5,
+     "p"
+    ]
+   },
+   "stats": {
+    "crit_chance": "v"
+   }
+  },
+  {
+   "id": "assassin_weakspot",
+   "class": "assassin",
+   "tier": 0,
+   "type": "passive",
+   "max": 5,
+   "icon": "weakspot",
+   "name": {
+    "tr": "Zayıf Nokta",
+    "en": "Weak Spot"
+   },
+   "desc": {
+    "tr": "+{v} Delme.",
+    "en": "+{v} Penetration."
+   },
+   "params": {
+    "v": [
+     3,
+     3,
+     "p"
+    ]
+   },
+   "stats": {
+    "penetrate": "v"
+   }
+  },
+  {
+   "id": "assassin_dance",
+   "class": "assassin",
+   "tier": 1,
+   "type": "active",
+   "max": 10,
+   "cd": 12,
+   "icon": "dance",
+   "vfx": "slash_multi",
+   "name": {
+    "tr": "Dans Eden Bıçaklar",
+    "en": "Blade Dance"
+   },
+   "desc": {
+    "tr": "8 hızlı vuruş, her biri {dmg}.",
+    "en": "8 quick hits of {dmg}."
+   },
+   "params": {
+    "dmg": [
+     0.45,
+     0.06,
+     "%"
+    ]
+   },
+   "target": "enemy_front",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "hits": 8
+    }
+   ]
+  },
+  {
+   "id": "assassin_smoke",
+   "class": "assassin",
+   "tier": 1,
+   "type": "active",
+   "max": 10,
+   "cd": 20,
+   "icon": "smoke",
+   "vfx": "smoke",
+   "name": {
+    "tr": "Duman Bombası",
+    "en": "Smoke Bomb"
+   },
+   "desc": {
+    "tr": "4sn partiye +{v} kaçınma.",
+    "en": "+{v} evasion to the party for 4s."
+   },
+   "params": {
+    "v": [
+     30,
+     2,
+     "p"
+    ]
+   },
+   "target": "ally_all",
+   "effects": [
+    {
+     "type": "buff",
+     "stat": "evasion",
+     "value": "v",
+     "dur": 4
+    }
+   ]
+  },
+  {
+   "id": "assassin_execute",
+   "class": "assassin",
+   "tier": 1,
+   "type": "passive",
+   "max": 5,
+   "icon": "execute",
+   "name": {
+    "tr": "İnfaz",
+    "en": "Execute"
+   },
+   "desc": {
+    "tr": "Düşük HP'li düşmana +{v} hasar.",
+    "en": "+{v} damage to low-HP enemies."
+   },
+   "params": {
+    "v": [
+     10,
+     10,
+     "p"
+    ]
+   },
+   "stats": {
+    "execute_dmg": "v"
+   }
+  },
+  {
+   "id": "assassin_cloak",
+   "class": "assassin",
+   "tier": 1,
+   "type": "passive",
+   "max": 5,
+   "icon": "cloak",
+   "name": {
+    "tr": "Gölge Pelerini",
+    "en": "Shadow Cloak"
+   },
+   "desc": {
+    "tr": "+{v} kaçınma.",
+    "en": "+{v} evasion."
+   },
+   "params": {
+    "v": [
+     2,
+     2,
+     "p"
+    ]
+   },
+   "stats": {
+    "evasion": "v",
+    "threat": -1
+   }
+  },
+  {
+   "id": "assassin_eclipse",
+   "class": "assassin",
+   "tier": 2,
+   "spec": "a",
+   "type": "active",
+   "max": 10,
+   "cd": 18,
+   "icon": "eclipse",
+   "vfx": "eclipse",
+   "name": {
+    "tr": "Ay Tutulması",
+    "en": "Eclipse"
+   },
+   "desc": {
+    "tr": "Tek hedefe {dmg}.",
+    "en": "Deals {dmg} to a single target."
+   },
+   "params": {
+    "dmg": [
+     6,
+     0.9,
+     "%"
+    ]
+   },
+   "target": "enemy_lowest",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg"
+    }
+   ]
+  },
+  {
+   "id": "assassin_night_hunter",
+   "class": "assassin",
+   "tier": 2,
+   "spec": "a",
+   "type": "passive",
+   "max": 10,
+   "icon": "night_hunter",
+   "name": {
+    "tr": "Gece Avcısı",
+    "en": "Night Hunter"
+   },
+   "desc": {
+    "tr": "Gece +{v} hasar.",
+    "en": "+{v} damage at night."
+   },
+   "params": {
+    "v": [
+     5,
+     2.2,
+     "p"
+    ]
+   },
+   "stats": {
+    "night_dmg": "v"
+   }
+  },
+  {
+   "id": "assassin_plague_cloud",
+   "class": "assassin",
+   "tier": 2,
+   "spec": "b",
+   "type": "active",
+   "max": 10,
+   "cd": 15,
+   "icon": "plague_cloud",
+   "vfx": "poison",
+   "name": {
+    "tr": "Veba Bulutu",
+    "en": "Plague Cloud"
+   },
+   "desc": {
+    "tr": "Tüm düşmanlara {n} yığın Zehir.",
+    "en": "Applies {n} Poison stacks to all enemies."
+   },
+   "params": {
+    "n": [
+     4,
+     0.6,
+     "n"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "status",
+     "status": "poison",
+     "dur": 6,
+     "stacks": "n"
+    }
+   ]
+  },
+  {
+   "id": "assassin_venom",
+   "class": "assassin",
+   "tier": 2,
+   "spec": "b",
+   "type": "passive",
+   "max": 10,
+   "icon": "venom",
+   "name": {
+    "tr": "Zehir Patlaması",
+    "en": "Venom Burst"
+   },
+   "desc": {
+    "tr": "+{v} Zehir hasarı.",
+    "en": "+{v} Poison damage."
+   },
+   "params": {
+    "v": [
+     10,
+     6,
+     "p"
+    ]
+   },
+   "stats": {
+    "poison_dmg": "v"
+   }
+  },
+  {
+   "id": "assassin_thousand",
+   "class": "assassin",
+   "tier": 0,
+   "type": "ult",
+   "max": 5,
+   "icon": "thousand",
+   "vfx": "slash_multi",
+   "name": {
+    "tr": "Bin Bıçak",
+    "en": "Thousand Blades"
+   },
+   "desc": {
+    "tr": "Gölge klonlar: {dmg} dağıtılmış hasar.",
+    "en": "Shadow clones deal {dmg} spread damage."
+   },
+   "params": {
+    "dmg": [
+     12,
+     4,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg"
+    }
+   ]
+  },
+  {
+   "id": "mage_fireball",
+   "class": "mage",
+   "tier": 0,
+   "type": "active",
+   "max": 10,
+   "cd": 6,
+   "icon": "fireball",
+   "vfx": "fireball",
+   "name": {
+    "tr": "Ateş Topu",
+    "en": "Fireball"
+   },
+   "desc": {
+    "tr": "{dmg} Ateş hasarı, küçük patlama, Yanma.",
+    "en": "{dmg} Fire damage in a small blast, Burn."
+   },
+   "params": {
+    "dmg": [
+     1.5,
+     0.21,
+     "%"
+    ]
+   },
+   "target": "enemy_aoe",
+   "radius": 22,
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "fire",
+     "projectile": "fireball"
+    },
+    {
+     "type": "status",
+     "status": "burn",
+     "dur": 3
+    }
+   ]
+  },
+  {
+   "id": "mage_ice_lance",
+   "class": "mage",
+   "tier": 0,
+   "type": "active",
+   "max": 10,
+   "cd": 7,
+   "icon": "ice_lance",
+   "vfx": "ice",
+   "name": {
+    "tr": "Buz Mızrağı",
+    "en": "Ice Lance"
+   },
+   "desc": {
+    "tr": "{dmg} Soğuk hasar, delici, Donma.",
+    "en": "{dmg} piercing Cold damage, Chill."
+   },
+   "params": {
+    "dmg": [
+     1.3,
+     0.19,
+     "%"
+    ]
+   },
+   "target": "enemy_front",
+   "max_targets": 2,
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "cold",
+     "projectile": "ice"
+    },
+    {
+     "type": "status",
+     "status": "chill",
+     "dur": 2,
+     "stacks": 2
+    }
+   ]
+  },
+  {
+   "id": "mage_focus",
+   "class": "mage",
+   "tier": 0,
+   "type": "passive",
+   "max": 10,
+   "icon": "focus",
+   "name": {
+    "tr": "Arkana Odak",
+    "en": "Arcane Focus"
+   },
+   "desc": {
+    "tr": "+{v} Büyü Gücü.",
+    "en": "+{v} Spell Power."
+   },
+   "params": {
+    "v": [
+     4,
+     4,
+     "p"
+    ]
+   },
+   "stats": {
+    "spell_pct": "v"
+   }
+  },
+  {
+   "id": "mage_attune",
+   "class": "mage",
+   "tier": 0,
+   "type": "passive",
+   "max": 6,
+   "icon": "attune",
+   "name": {
+    "tr": "Element Uyumu",
+    "en": "Elemental Attunement"
+   },
+   "desc": {
+    "tr": "+{v} element hasarı.",
+    "en": "+{v} elemental damage."
+   },
+   "params": {
+    "v": [
+     3,
+     3,
+     "p"
+    ]
+   },
+   "stats": {
+    "elem_dmg": "v"
+   }
+  },
+  {
+   "id": "mage_mana_shield",
+   "class": "mage",
+   "tier": 0,
+   "type": "passive",
+   "max": 5,
+   "icon": "mana_shield",
+   "name": {
+    "tr": "Mana Kalkanı",
+    "en": "Mana Shield"
+   },
+   "desc": {
+    "tr": "+{v} hasar azaltma.",
+    "en": "+{v} damage reduction."
+   },
+   "params": {
+    "v": [
+     5,
+     5,
+     "p"
+    ]
+   },
+   "stats": {
+    "dr": "v"
+   }
+  },
+  {
+   "id": "mage_haste",
+   "class": "mage",
+   "tier": 0,
+   "type": "passive",
+   "max": 5,
+   "icon": "haste",
+   "name": {
+    "tr": "Hızlı Büyü",
+    "en": "Quick Cast"
+   },
+   "desc": {
+    "tr": "+{v} Büyü hızı.",
+    "en": "+{v} Cast speed."
+   },
+   "params": {
+    "v": [
+     4,
+     4,
+     "p"
+    ]
+   },
+   "stats": {
+    "cast_speed": "v"
+   }
+  },
+  {
+   "id": "mage_meteor",
+   "class": "mage",
+   "tier": 1,
+   "type": "active",
+   "max": 10,
+   "cd": 18,
+   "icon": "meteor",
+   "vfx": "meteor",
+   "name": {
+    "tr": "Meteor",
+    "en": "Meteor"
+   },
+   "desc": {
+    "tr": "Tüm düşmanlara {dmg} Ateş.",
+    "en": "{dmg} Fire to all enemies."
+   },
+   "params": {
+    "dmg": [
+     4,
+     0.55,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "fire"
+    },
+    {
+     "type": "status",
+     "status": "burn",
+     "dur": 3
+    }
+   ]
+  },
+  {
+   "id": "mage_chain",
+   "class": "mage",
+   "tier": 1,
+   "type": "active",
+   "max": 10,
+   "cd": 11,
+   "icon": "chain",
+   "vfx": "lightning",
+   "name": {
+    "tr": "Zincir Şimşek",
+    "en": "Chain Lightning"
+   },
+   "desc": {
+    "tr": "5 hedefe sekiyor, {dmg} Yıldırım.",
+    "en": "Bounces to 5 targets for {dmg} Lightning."
+   },
+   "params": {
+    "dmg": [
+     1.4,
+     0.2,
+     "%"
+    ]
+   },
+   "target": "enemy_random",
+   "max_targets": 5,
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "lightning"
+    },
+    {
+     "type": "status",
+     "status": "shock",
+     "dur": 4,
+     "chance": 0.4
+    }
+   ]
+  },
+  {
+   "id": "mage_cycle",
+   "class": "mage",
+   "tier": 1,
+   "type": "passive",
+   "max": 5,
+   "icon": "cycle",
+   "name": {
+    "tr": "Element Döngüsü",
+    "en": "Elemental Cycle"
+   },
+   "desc": {
+    "tr": "+{v} element hasarı.",
+    "en": "+{v} elemental damage."
+   },
+   "params": {
+    "v": [
+     4,
+     4,
+     "p"
+    ]
+   },
+   "stats": {
+    "elem_dmg": "v"
+   }
+  },
+  {
+   "id": "mage_wellspring",
+   "class": "mage",
+   "tier": 1,
+   "type": "passive",
+   "max": 5,
+   "icon": "wellspring",
+   "name": {
+    "tr": "Öz Pınarı",
+    "en": "Wellspring"
+   },
+   "desc": {
+    "tr": "Bekleme süresi -{v}.",
+    "en": "-{v} cooldowns."
+   },
+   "params": {
+    "v": [
+     2,
+     2,
+     "p"
+    ]
+   },
+   "stats": {
+    "cdr": "v"
+   }
+  },
+  {
+   "id": "mage_inferno",
+   "class": "mage",
+   "tier": 2,
+   "spec": "a",
+   "type": "active",
+   "max": 10,
+   "cd": 20,
+   "icon": "inferno",
+   "vfx": "fire_ring",
+   "name": {
+    "tr": "Cehennem Halkası",
+    "en": "Ring of Inferno"
+   },
+   "desc": {
+    "tr": "Tüm düşmanlara 5 kez {dmg} Ateş.",
+    "en": "Burns all enemies 5 times for {dmg}."
+   },
+   "params": {
+    "dmg": [
+     1.5,
+     0.22,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "fire",
+     "hits": 5
+    }
+   ]
+  },
+  {
+   "id": "mage_ember",
+   "class": "mage",
+   "tier": 2,
+   "spec": "a",
+   "type": "passive",
+   "max": 10,
+   "icon": "ember",
+   "name": {
+    "tr": "Kor Yüreği",
+    "en": "Ember Heart"
+   },
+   "desc": {
+    "tr": "+{v} Ateş hasarı.",
+    "en": "+{v} Fire damage."
+   },
+   "params": {
+    "v": [
+     8,
+     5,
+     "p"
+    ]
+   },
+   "stats": {
+    "fire_dmg": "v",
+    "burn_dmg": "v"
+   }
+  },
+  {
+   "id": "mage_zero",
+   "class": "mage",
+   "tier": 2,
+   "spec": "b",
+   "type": "active",
+   "max": 10,
+   "cd": 22,
+   "icon": "zero",
+   "vfx": "freeze",
+   "name": {
+    "tr": "Mutlak Sıfır",
+    "en": "Absolute Zero"
+   },
+   "desc": {
+    "tr": "Tüm düşmanları 2sn dondurur + {dmg}.",
+    "en": "Freezes all enemies for 2s + {dmg}."
+   },
+   "params": {
+    "dmg": [
+     2.5,
+     0.39,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "cold"
+    },
+    {
+     "type": "status",
+     "status": "stun",
+     "dur": 2
+    }
+   ]
+  },
+  {
+   "id": "mage_crystal",
+   "class": "mage",
+   "tier": 2,
+   "spec": "b",
+   "type": "passive",
+   "max": 10,
+   "icon": "crystal",
+   "name": {
+    "tr": "Kristal Zırh",
+    "en": "Crystal Armor"
+   },
+   "desc": {
+    "tr": "Partiye +{v} hasar azaltma.",
+    "en": "+{v} damage reduction to the party."
+   },
+   "params": {
+    "v": [
+     2,
+     2,
+     "p"
+    ]
+   },
+   "stats": {
+    "party_dr": "v"
+   }
+  },
+  {
+   "id": "mage_storm",
+   "class": "mage",
+   "tier": 0,
+   "type": "ult",
+   "max": 5,
+   "icon": "arcane_storm",
+   "vfx": "arcane_storm",
+   "name": {
+    "tr": "Arkana Fırtınası",
+    "en": "Arcane Storm"
+   },
+   "desc": {
+    "tr": "12 büyü yağmuru, toplam {dmg}.",
+    "en": "12 spells raining down, {dmg} total."
+   },
+   "params": {
+    "dmg": [
+     15,
+     5,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "fire"
+    }
+   ]
+  },
+  {
+   "id": "necro_skeletons",
+   "class": "necromancer",
+   "tier": 0,
+   "type": "active",
+   "max": 10,
+   "cd": 14,
+   "icon": "skeletons",
+   "vfx": "summon",
+   "name": {
+    "tr": "İskelet Çağır",
+    "en": "Raise Skeletons"
+   },
+   "desc": {
+    "tr": "{n} iskelet çağırır (Büyü Gücünün {p}'i), 15sn.",
+    "en": "Raises {n} skeletons ({p} Spell Power) for 15s."
+   },
+   "params": {
+    "n": [
+     2,
+     0.25,
+     "n"
+    ],
+    "p": [
+     0.3,
+     0.033,
+     "%"
+    ]
+   },
+   "target": "self",
+   "effects": [
+    {
+     "type": "summon",
+     "kind": "skeleton",
+     "count": "n",
+     "pct": "p",
+     "dur": 15
+    }
+   ]
+  },
+  {
+   "id": "necro_drain",
+   "class": "necromancer",
+   "tier": 0,
+   "type": "active",
+   "max": 10,
+   "cd": 9,
+   "icon": "drain",
+   "vfx": "drain",
+   "name": {
+    "tr": "Ruh Çekimi",
+    "en": "Soul Drain"
+   },
+   "desc": {
+    "tr": "{dmg} Kaos hasarı, partiyi iyileştirir.",
+    "en": "{dmg} Chaos damage, heals the party."
+   },
+   "params": {
+    "dmg": [
+     1.4,
+     0.18,
+     "%"
+    ]
+   },
+   "target": "enemy_front",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "chaos",
+     "party_heal": 0.1
+    }
+   ]
+  },
+  {
+   "id": "necro_bone_armor",
+   "class": "necromancer",
+   "tier": 0,
+   "type": "passive",
+   "max": 6,
+   "icon": "bone_armor",
+   "name": {
+    "tr": "Kemik Zırh",
+    "en": "Bone Armor"
+   },
+   "desc": {
+    "tr": "+{v} hasar azaltma.",
+    "en": "+{v} damage reduction."
+   },
+   "params": {
+    "v": [
+     3,
+     2,
+     "p"
+    ]
+   },
+   "stats": {
+    "dr": "v"
+   }
+  },
+  {
+   "id": "necro_lore",
+   "class": "necromancer",
+   "tier": 0,
+   "type": "passive",
+   "max": 10,
+   "icon": "lore",
+   "name": {
+    "tr": "Karanlık Bilgi",
+    "en": "Dark Lore"
+   },
+   "desc": {
+    "tr": "+{v} Kaos hasarı.",
+    "en": "+{v} Chaos damage."
+   },
+   "params": {
+    "v": [
+     3,
+     3,
+     "p"
+    ]
+   },
+   "stats": {
+    "chaos_dmg": "v"
+   }
+  },
+  {
+   "id": "necro_corpse",
+   "class": "necromancer",
+   "tier": 0,
+   "type": "passive",
+   "max": 5,
+   "icon": "corpse",
+   "name": {
+    "tr": "Ceset Patlatma",
+    "en": "Corpse Explosion"
+   },
+   "desc": {
+    "tr": "+{v} alan hasarı.",
+    "en": "+{v} area damage."
+   },
+   "params": {
+    "v": [
+     5,
+     5,
+     "p"
+    ]
+   },
+   "stats": {
+    "aoe_dmg": "v"
+   }
+  },
+  {
+   "id": "necro_curse",
+   "class": "necromancer",
+   "tier": 0,
+   "type": "passive",
+   "max": 5,
+   "icon": "curse",
+   "name": {
+    "tr": "Lanet",
+    "en": "Curse"
+   },
+   "desc": {
+    "tr": "Saldırılar {v} şansla Zayıflatır.",
+    "en": "Attacks have {v} chance to Weaken."
+   },
+   "params": {
+    "v": [
+     20,
+     10,
+     "p"
+    ]
+   },
+   "stats": {
+    "weaken_chance": "v"
+   }
+  },
+  {
+   "id": "necro_bone_spear",
+   "class": "necromancer",
+   "tier": 1,
+   "type": "active",
+   "max": 10,
+   "cd": 8,
+   "icon": "bone_spear",
+   "vfx": "bone",
+   "name": {
+    "tr": "Kemik Mızrağı",
+    "en": "Bone Spear"
+   },
+   "desc": {
+    "tr": "Delici, {dmg} Fiziksel.",
+    "en": "Piercing, {dmg} Physical."
+   },
+   "params": {
+    "dmg": [
+     1.8,
+     0.24,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "physical"
+    }
+   ]
+  },
+  {
+   "id": "necro_doom",
+   "class": "necromancer",
+   "tier": 1,
+   "type": "active",
+   "max": 10,
+   "cd": 16,
+   "icon": "doom",
+   "vfx": "curse",
+   "name": {
+    "tr": "Ölüm Laneti",
+    "en": "Doom"
+   },
+   "desc": {
+    "tr": "Hedef {d} Kırılgan.",
+    "en": "Target is Vulnerable for {d}."
+   },
+   "params": {
+    "d": [
+     6,
+     0.3,
+     "s"
+    ]
+   },
+   "target": "enemy_front",
+   "max_targets": 2,
+   "effects": [
+    {
+     "type": "status",
+     "status": "vulnerable",
+     "dur": "d"
+    }
+   ]
+  },
+  {
+   "id": "necro_legion",
+   "class": "necromancer",
+   "tier": 1,
+   "type": "passive",
+   "max": 5,
+   "icon": "legion",
+   "name": {
+    "tr": "Lejyon",
+    "en": "Legion"
+   },
+   "desc": {
+    "tr": "+{v} çağrı hasarı.",
+    "en": "+{v} summon damage."
+   },
+   "params": {
+    "v": [
+     10,
+     10,
+     "p"
+    ]
+   },
+   "stats": {
+    "summon_dmg": "v"
+   }
+  },
+  {
+   "id": "necro_harvest",
+   "class": "necromancer",
+   "tier": 1,
+   "type": "passive",
+   "max": 5,
+   "icon": "harvest",
+   "name": {
+    "tr": "Ruh Hasadı",
+    "en": "Soul Harvest"
+   },
+   "desc": {
+    "tr": "Nihai bar +{v} hızlı dolar.",
+    "en": "Ultimate charges {v} faster."
+   },
+   "params": {
+    "v": [
+     6,
+     6,
+     "p"
+    ]
+   },
+   "stats": {
+    "ult_charge": "v"
+   }
+  },
+  {
+   "id": "necro_golem",
+   "class": "necromancer",
+   "tier": 2,
+   "spec": "a",
+   "type": "active",
+   "max": 10,
+   "cd": 40,
+   "icon": "golem",
+   "vfx": "summon",
+   "name": {
+    "tr": "Kemik Golem",
+    "en": "Bone Golem"
+   },
+   "desc": {
+    "tr": "30sn golem ({p} güç).",
+    "en": "Golem for 30s ({p} power)."
+   },
+   "params": {
+    "p": [
+     0.8,
+     0.12,
+     "%"
+    ]
+   },
+   "target": "self",
+   "effects": [
+    {
+     "type": "summon",
+     "kind": "golem",
+     "count": 1,
+     "pct": "p",
+     "dur": 30
+    }
+   ]
+  },
+  {
+   "id": "necro_sovereign",
+   "class": "necromancer",
+   "tier": 2,
+   "spec": "a",
+   "type": "passive",
+   "max": 10,
+   "icon": "sovereign",
+   "name": {
+    "tr": "Kemik Hükümdarı",
+    "en": "Bone Sovereign"
+   },
+   "desc": {
+    "tr": "+{v} çağrı hasarı ve HP.",
+    "en": "+{v} summon damage and HP."
+   },
+   "params": {
+    "v": [
+     5,
+     5,
+     "p"
+    ]
+   },
+   "stats": {
+    "summon_dmg": "v",
+    "summon_hp": "v"
+   }
+  },
+  {
+   "id": "necro_black_death",
+   "class": "necromancer",
+   "tier": 2,
+   "spec": "b",
+   "type": "active",
+   "max": 10,
+   "cd": 14,
+   "icon": "black_death",
+   "vfx": "poison",
+   "name": {
+    "tr": "Kara Ölüm",
+    "en": "Black Death"
+   },
+   "desc": {
+    "tr": "Tüm düşmanlara {n} yığın Zehir.",
+    "en": "{n} Poison stacks on all enemies."
+   },
+   "params": {
+    "n": [
+     5,
+     0.5,
+     "n"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "status",
+     "status": "poison",
+     "dur": 6,
+     "stacks": "n"
+    }
+   ]
+  },
+  {
+   "id": "necro_rot",
+   "class": "necromancer",
+   "tier": 2,
+   "spec": "b",
+   "type": "passive",
+   "max": 10,
+   "icon": "rot",
+   "name": {
+    "tr": "Çürüme",
+    "en": "Rot"
+   },
+   "desc": {
+    "tr": "+{v} Zehir hasarı.",
+    "en": "+{v} Poison damage."
+   },
+   "params": {
+    "v": [
+     5,
+     6,
+     "p"
+    ]
+   },
+   "stats": {
+    "poison_dmg": "v"
+   }
+  },
+  {
+   "id": "necro_army",
+   "class": "necromancer",
+   "tier": 0,
+   "type": "ult",
+   "max": 5,
+   "icon": "army",
+   "vfx": "summon",
+   "name": {
+    "tr": "Ölüler Ordusu",
+    "en": "Army of the Dead"
+   },
+   "desc": {
+    "tr": "Hayalet askerler: tüm düşmanlara {dmg}.",
+    "en": "Ghost soldiers: {dmg} to all enemies."
+   },
+   "params": {
+    "dmg": [
+     10,
+     3.5,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "chaos"
+    }
+   ]
+  },
+  {
+   "id": "cleric_heal",
+   "class": "cleric",
+   "tier": 0,
+   "type": "active",
+   "max": 10,
+   "cd": 5,
+   "icon": "heal",
+   "vfx": "heal",
+   "name": {
+    "tr": "Şifa Işığı",
+    "en": "Healing Light"
+   },
+   "desc": {
+    "tr": "En düşük HP'li müttefik {h} Büyü Gücü kadar iyileşir.",
+    "en": "Heals the lowest ally for {h} Spell Power."
+   },
+   "params": {
+    "h": [
+     1.2,
+     0.2,
+     "%"
+    ]
+   },
+   "target": "ally_lowest",
+   "effects": [
+    {
+     "type": "heal",
+     "mult": "h"
+    }
+   ]
+  },
+  {
+   "id": "cleric_smite",
+   "class": "cleric",
+   "tier": 0,
+   "type": "active",
+   "max": 10,
+   "cd": 8,
+   "icon": "smite",
+   "vfx": "holy_bolt",
+   "name": {
+    "tr": "Kutsal Şimşek",
+    "en": "Smite"
+   },
+   "desc": {
+    "tr": "{dmg} Kutsal hasar.",
+    "en": "{dmg} Holy damage."
+   },
+   "params": {
+    "dmg": [
+     1.3,
+     0.17,
+     "%"
+    ]
+   },
+   "target": "enemy_front",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "holy"
+    }
+   ]
+  },
+  {
+   "id": "cleric_wisdom",
+   "class": "cleric",
+   "tier": 0,
+   "type": "passive",
+   "max": 10,
+   "icon": "wisdom",
+   "name": {
+    "tr": "Kutsal Bilgelik",
+    "en": "Holy Wisdom"
+   },
+   "desc": {
+    "tr": "+{v} İyileştirme.",
+    "en": "+{v} Healing."
+   },
+   "params": {
+    "v": [
+     3,
+     3,
+     "p"
+    ]
+   },
+   "stats": {
+    "heal_bonus": "v"
+   }
+  },
+  {
+   "id": "cleric_angel",
+   "class": "cleric",
+   "tier": 0,
+   "type": "passive",
+   "max": 5,
+   "icon": "angel",
+   "name": {
+    "tr": "Koruyucu Melek",
+    "en": "Guardian Angel"
+   },
+   "desc": {
+    "tr": "Diriliş süresi -{v}.",
+    "en": "-{v} revive time."
+   },
+   "params": {
+    "v": [
+     10,
+     10,
+     "p"
+    ]
+   },
+   "stats": {
+    "party_revive_speed": "v"
+   }
+  },
+  {
+   "id": "cleric_blessing",
+   "class": "cleric",
+   "tier": 0,
+   "type": "passive",
+   "max": 6,
+   "icon": "blessing",
+   "name": {
+    "tr": "Kutsama",
+    "en": "Blessing"
+   },
+   "desc": {
+    "tr": "Partiye +{v} Savunma ve direnç.",
+    "en": "+{v} Defense and resistance to the party."
+   },
+   "params": {
+    "v": [
+     1,
+     1,
+     "p"
+    ]
+   },
+   "stats": {
+    "party_def_pct": "v",
+    "party_all_res": "v"
+   }
+  },
+  {
+   "id": "cleric_purify",
+   "class": "cleric",
+   "tier": 0,
+   "type": "passive",
+   "max": 3,
+   "icon": "purify",
+   "name": {
+    "tr": "Arınma",
+    "en": "Purify"
+   },
+   "desc": {
+    "tr": "+{v} iyileştirme, durum direnci.",
+    "en": "+{v} healing, status resistance."
+   },
+   "params": {
+    "v": [
+     3,
+     3,
+     "p"
+    ]
+   },
+   "stats": {
+    "heal_bonus": "v"
+   }
+  },
+  {
+   "id": "cleric_mass_heal",
+   "class": "cleric",
+   "tier": 1,
+   "type": "active",
+   "max": 10,
+   "cd": 15,
+   "icon": "mass_heal",
+   "vfx": "heal",
+   "name": {
+    "tr": "Toplu Şifa",
+    "en": "Mass Heal"
+   },
+   "desc": {
+    "tr": "Tüm parti {h} iyileşir.",
+    "en": "Heals the party for {h}."
+   },
+   "params": {
+    "h": [
+     0.8,
+     0.11,
+     "%"
+    ]
+   },
+   "target": "ally_all",
+   "effects": [
+    {
+     "type": "heal",
+     "mult": "h"
+    }
+   ]
+  },
+  {
+   "id": "cleric_light_shield",
+   "class": "cleric",
+   "tier": 1,
+   "type": "active",
+   "max": 10,
+   "cd": 12,
+   "icon": "light_shield",
+   "vfx": "shield",
+   "name": {
+    "tr": "Işık Kalkanı",
+    "en": "Light Shield"
+   },
+   "desc": {
+    "tr": "Öndekine {s} kalkan.",
+    "en": "Shields the front ally for {s}."
+   },
+   "params": {
+    "s": [
+     2,
+     0.33,
+     "%"
+    ]
+   },
+   "target": "ally_front",
+   "effects": [
+    {
+     "type": "shield",
+     "mult": "s"
+    }
+   ]
+  },
+  {
+   "id": "cleric_resurrection",
+   "class": "cleric",
+   "tier": 1,
+   "type": "passive",
+   "max": 1,
+   "icon": "resurrection",
+   "name": {
+    "tr": "Diriliş",
+    "en": "Resurrection"
+   },
+   "desc": {
+    "tr": "Diriliş çok daha hızlı.",
+    "en": "Much faster revives."
+   },
+   "params": {
+    "v": [
+     30,
+     0,
+     "p"
+    ]
+   },
+   "stats": {
+    "party_revive_speed": "v"
+   }
+  },
+  {
+   "id": "cleric_gate",
+   "class": "cleric",
+   "tier": 2,
+   "spec": "a",
+   "type": "active",
+   "max": 10,
+   "cd": 30,
+   "icon": "gate",
+   "vfx": "heal",
+   "name": {
+    "tr": "Cennet Kapısı",
+    "en": "Heaven's Gate"
+   },
+   "desc": {
+    "tr": "Parti max HP'nin {h} kadar iyileşir.",
+    "en": "The party heals {h} of max HP."
+   },
+   "params": {
+    "h": [
+     0.6,
+     0.09,
+     "%"
+    ]
+   },
+   "target": "ally_all",
+   "effects": [
+    {
+     "type": "heal_pct",
+     "value": "h"
+    }
+   ]
+  },
+  {
+   "id": "cleric_miracle",
+   "class": "cleric",
+   "tier": 2,
+   "spec": "a",
+   "type": "passive",
+   "max": 10,
+   "icon": "miracle",
+   "name": {
+    "tr": "Mucize",
+    "en": "Miracle"
+   },
+   "desc": {
+    "tr": "+{v} İyileştirme.",
+    "en": "+{v} Healing."
+   },
+   "params": {
+    "v": [
+     5,
+     4,
+     "p"
+    ]
+   },
+   "stats": {
+    "heal_bonus": "v"
+   }
+  },
+  {
+   "id": "cleric_holy_mace",
+   "class": "cleric",
+   "tier": 2,
+   "spec": "b",
+   "type": "active",
+   "max": 10,
+   "cd": 9,
+   "icon": "holy_mace",
+   "vfx": "holy_slash",
+   "name": {
+    "tr": "Kutsal Topuz",
+    "en": "Holy Mace"
+   },
+   "desc": {
+    "tr": "{dmg} Kutsal, partiyi iyileştirir.",
+    "en": "{dmg} Holy, heals the party."
+   },
+   "params": {
+    "dmg": [
+     2.2,
+     0.31,
+     "%"
+    ]
+   },
+   "target": "enemy_front",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "holy",
+     "party_heal": 0.2
+    }
+   ]
+  },
+  {
+   "id": "cleric_faith",
+   "class": "cleric",
+   "tier": 2,
+   "spec": "b",
+   "type": "passive",
+   "max": 10,
+   "icon": "faith",
+   "name": {
+    "tr": "İnanç Gücü",
+    "en": "Power of Faith"
+   },
+   "desc": {
+    "tr": "+{v} Saldırı.",
+    "en": "+{v} Attack."
+   },
+   "params": {
+    "v": [
+     10,
+     5.5,
+     "p"
+    ]
+   },
+   "stats": {
+    "attack_pct": "v"
+   }
+  },
+  {
+   "id": "cleric_tear",
+   "class": "cleric",
+   "tier": 0,
+   "type": "ult",
+   "max": 5,
+   "icon": "tear",
+   "vfx": "heal",
+   "name": {
+    "tr": "Tanrıçanın Gözyaşı",
+    "en": "Goddess' Tear"
+   },
+   "desc": {
+    "tr": "Tüm parti tam iyileşir + {d} ölümsüzlük.",
+    "en": "Fully heals the party + {d} invulnerability."
+   },
+   "params": {
+    "d": [
+     3,
+     1,
+     "s"
+    ]
+   },
+   "target": "ally_all",
+   "effects": [
+    {
+     "type": "heal_pct",
+     "value": 1.0
+    },
+    {
+     "type": "buff",
+     "stat": "invuln",
+     "value": 1,
+     "dur": "d"
+    }
+   ]
+  },
+  {
+   "id": "bard_courage",
+   "class": "bard",
+   "tier": 0,
+   "type": "active",
+   "max": 10,
+   "cd": 20,
+   "icon": "courage",
+   "vfx": "notes",
+   "name": {
+    "tr": "Cesaret Şarkısı",
+    "en": "Song of Courage"
+   },
+   "desc": {
+    "tr": "10sn partiye +{v} hasar.",
+    "en": "+{v} damage to the party for 10s."
+   },
+   "params": {
+    "v": [
+     10,
+     2.2,
+     "p"
+    ]
+   },
+   "target": "ally_all",
+   "effects": [
+    {
+     "type": "buff",
+     "stat": "added_dmg",
+     "value": "v",
+     "dur": 10
+    }
+   ]
+  },
+  {
+   "id": "bard_discord",
+   "class": "bard",
+   "tier": 0,
+   "type": "active",
+   "max": 10,
+   "cd": 9,
+   "icon": "discord",
+   "vfx": "sound",
+   "name": {
+    "tr": "Uyumsuz Akor",
+    "en": "Discord"
+   },
+   "desc": {
+    "tr": "{dmg} Yıldırım alan hasarı + Şok.",
+    "en": "{dmg} Lightning area damage + Shock."
+   },
+   "params": {
+    "dmg": [
+     1.2,
+     0.16,
+     "%"
+    ]
+   },
+   "target": "enemy_aoe",
+   "radius": 30,
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "lightning"
+    },
+    {
+     "type": "status",
+     "status": "shock",
+     "dur": 4
+    }
+   ]
+  },
+  {
+   "id": "bard_rhythm",
+   "class": "bard",
+   "tier": 0,
+   "type": "passive",
+   "max": 10,
+   "icon": "rhythm",
+   "name": {
+    "tr": "Ritim",
+    "en": "Rhythm"
+   },
+   "desc": {
+    "tr": "Partiye +{v} Saldırı hızı.",
+    "en": "+{v} attack speed to the party."
+   },
+   "params": {
+    "v": [
+     1,
+     1,
+     "p"
+    ]
+   },
+   "stats": {
+    "party_attack_speed": "v"
+   }
+  },
+  {
+   "id": "bard_joy",
+   "class": "bard",
+   "tier": 0,
+   "type": "passive",
+   "max": 5,
+   "icon": "joy",
+   "name": {
+    "tr": "Neşe",
+    "en": "Joy"
+   },
+   "desc": {
+    "tr": "Partiye +{v} XP.",
+    "en": "+{v} XP to the party."
+   },
+   "params": {
+    "v": [
+     2,
+     2,
+     "p"
+    ]
+   },
+   "stats": {
+    "party_xp_bonus": "v"
+   }
+  },
+  {
+   "id": "bard_fingers",
+   "class": "bard",
+   "tier": 0,
+   "type": "passive",
+   "max": 5,
+   "icon": "fingers",
+   "name": {
+    "tr": "Hızlı Parmaklar",
+    "en": "Nimble Fingers"
+   },
+   "desc": {
+    "tr": "Buff süresi +{v}.",
+    "en": "+{v} buff duration."
+   },
+   "params": {
+    "v": [
+     5,
+     5,
+     "p"
+    ]
+   },
+   "stats": {
+    "buff_duration": "v"
+   }
+  },
+  {
+   "id": "bard_luck",
+   "class": "bard",
+   "tier": 0,
+   "type": "passive",
+   "max": 6,
+   "icon": "luck",
+   "name": {
+    "tr": "Şans Melodisi",
+    "en": "Lucky Tune"
+   },
+   "desc": {
+    "tr": "Partiye +{v} Item Bulma.",
+    "en": "+{v} Item Find to the party."
+   },
+   "params": {
+    "v": [
+     3,
+     3,
+     "p"
+    ]
+   },
+   "stats": {
+    "party_item_find": "v"
+   }
+  },
+  {
+   "id": "bard_lullaby",
+   "class": "bard",
+   "tier": 1,
+   "type": "active",
+   "max": 10,
+   "cd": 18,
+   "icon": "lullaby",
+   "vfx": "notes",
+   "name": {
+    "tr": "Ninni",
+    "en": "Lullaby"
+   },
+   "desc": {
+    "tr": "3 düşmanı {d} uyutur.",
+    "en": "Puts 3 enemies to sleep for {d}."
+   },
+   "params": {
+    "d": [
+     1.5,
+     0.17,
+     "s"
+    ]
+   },
+   "target": "enemy_front",
+   "max_targets": 3,
+   "effects": [
+    {
+     "type": "status",
+     "status": "stun",
+     "dur": "d"
+    }
+   ]
+  },
+  {
+   "id": "bard_epic",
+   "class": "bard",
+   "tier": 1,
+   "type": "active",
+   "max": 10,
+   "cd": 25,
+   "icon": "epic",
+   "vfx": "notes",
+   "name": {
+    "tr": "Kahramanlık Destanı",
+    "en": "Heroic Epic"
+   },
+   "desc": {
+    "tr": "8sn parti bekleme süresi -{v}.",
+    "en": "Party cooldowns -{v} for 8s."
+   },
+   "params": {
+    "v": [
+     15,
+     1.7,
+     "p"
+    ]
+   },
+   "target": "ally_all",
+   "effects": [
+    {
+     "type": "buff",
+     "stat": "cdr",
+     "value": "v",
+     "dur": 8
+    }
+   ]
+  },
+  {
+   "id": "bard_choir",
+   "class": "bard",
+   "tier": 1,
+   "type": "passive",
+   "max": 5,
+   "icon": "choir",
+   "name": {
+    "tr": "Koro",
+    "en": "Choir"
+   },
+   "desc": {
+    "tr": "Partiye +{v} hasar.",
+    "en": "+{v} party damage."
+   },
+   "params": {
+    "v": [
+     2,
+     2,
+     "p"
+    ]
+   },
+   "stats": {
+    "party_added_dmg": "v"
+   }
+  },
+  {
+   "id": "bard_golden",
+   "class": "bard",
+   "tier": 1,
+   "type": "passive",
+   "max": 5,
+   "icon": "golden",
+   "name": {
+    "tr": "Altın Ses",
+    "en": "Golden Voice"
+   },
+   "desc": {
+    "tr": "Partiye +{v} Altın Bulma.",
+    "en": "+{v} Gold Find to the party."
+   },
+   "params": {
+    "v": [
+     4,
+     4,
+     "p"
+    ]
+   },
+   "stats": {
+    "party_gold_find": "v"
+   }
+  },
+  {
+   "id": "bard_drums",
+   "class": "bard",
+   "tier": 2,
+   "spec": "a",
+   "type": "active",
+   "max": 10,
+   "cd": 20,
+   "icon": "drums",
+   "vfx": "notes",
+   "name": {
+    "tr": "Davul Gürültüsü",
+    "en": "War Drums"
+   },
+   "desc": {
+    "tr": "10sn parti +{v} kritik hasar.",
+    "en": "+{v} party crit damage for 10s."
+   },
+   "params": {
+    "v": [
+     15,
+     2.8,
+     "p"
+    ]
+   },
+   "target": "ally_all",
+   "effects": [
+    {
+     "type": "buff",
+     "stat": "crit_dmg",
+     "value": "v",
+     "dur": 10
+    },
+    {
+     "type": "buff",
+     "stat": "attack_speed",
+     "value": "v",
+     "dur": 10
+    }
+   ]
+  },
+  {
+   "id": "bard_march",
+   "class": "bard",
+   "tier": 2,
+   "spec": "a",
+   "type": "passive",
+   "max": 10,
+   "icon": "march",
+   "name": {
+    "tr": "Marş",
+    "en": "March"
+   },
+   "desc": {
+    "tr": "Partiye +{v} Saldırı.",
+    "en": "+{v} party Attack."
+   },
+   "params": {
+    "v": [
+     2,
+     1.5,
+     "p"
+    ]
+   },
+   "stats": {
+    "party_attack_pct": "v"
+   }
+  },
+  {
+   "id": "bard_serenity",
+   "class": "bard",
+   "tier": 2,
+   "spec": "b",
+   "type": "active",
+   "max": 10,
+   "cd": 18,
+   "icon": "serenity",
+   "vfx": "heal",
+   "name": {
+    "tr": "Huzur Melodisi",
+    "en": "Serene Melody"
+   },
+   "desc": {
+    "tr": "Parti max HP'nin {h} kadar iyileşir.",
+    "en": "Heals the party for {h} max HP."
+   },
+   "params": {
+    "h": [
+     0.18,
+     0.03,
+     "%"
+    ]
+   },
+   "target": "ally_all",
+   "effects": [
+    {
+     "type": "heal_pct",
+     "value": "h"
+    }
+   ]
+  },
+  {
+   "id": "bard_calm",
+   "class": "bard",
+   "tier": 2,
+   "spec": "b",
+   "type": "passive",
+   "max": 10,
+   "icon": "calm",
+   "name": {
+    "tr": "Sükunet",
+    "en": "Calm"
+   },
+   "desc": {
+    "tr": "Partiye +{v} tüm direnç.",
+    "en": "+{v} all resistance to the party."
+   },
+   "params": {
+    "v": [
+     2,
+     1.5,
+     "p"
+    ]
+   },
+   "stats": {
+    "party_all_res": "v"
+   }
+  },
+  {
+   "id": "bard_legends",
+   "class": "bard",
+   "tier": 0,
+   "type": "ult",
+   "max": 5,
+   "icon": "legends",
+   "vfx": "notes",
+   "name": {
+    "tr": "Efsanelerin Şarkısı",
+    "en": "Song of Legends"
+   },
+   "desc": {
+    "tr": "12sn parti +{v} hasar.",
+    "en": "+{v} party damage for 12s."
+   },
+   "params": {
+    "v": [
+     40,
+     10,
+     "p"
+    ]
+   },
+   "target": "ally_all",
+   "effects": [
+    {
+     "type": "buff",
+     "stat": "added_dmg",
+     "value": "v",
+     "dur": 12
+    },
+    {
+     "type": "buff",
+     "stat": "ult_charge",
+     "value": 100,
+     "dur": 12
+    }
+   ]
+  },
+  {
+   "id": "knight_sword_rain",
+   "class": "knight",
+   "tier": 0,
+   "req_lv": 10,
+   "type": "active",
+   "max": 10,
+   "cd": 14,
+   "icon": "sword_mastery",
+   "vfx": "sword_rain",
+   "name": {
+    "tr": "Kılıç Yağmuru",
+    "en": "Rain of Blades"
+   },
+   "desc": {
+    "tr": "Gökten kılıçlar yağar: tüm düşmanlara {dmg}.",
+    "en": "Blades fall from the sky: {dmg} to all enemies."
+   },
+   "params": {
+    "dmg": [
+     0.9,
+     0.12,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg"
+    }
+   ]
+  },
+  {
+   "id": "knight_guardian",
+   "class": "knight",
+   "tier": 0,
+   "req_lv": 10,
+   "type": "passive",
+   "max": 10,
+   "icon": "shield_wall",
+   "name": {
+    "tr": "Muhafız",
+    "en": "Guardian"
+   },
+   "desc": {
+    "tr": "+{v} Savunma",
+    "en": "+{v} Defense"
+   },
+   "params": {
+    "v": [
+     6,
+     3,
+     "p"
+    ]
+   },
+   "stats": {
+    "def_pct": "v"
+   }
+  },
+  {
+   "id": "knight_holy_charge",
+   "class": "knight",
+   "tier": 0,
+   "req_lv": 20,
+   "type": "active",
+   "max": 10,
+   "cd": 12,
+   "icon": "judgement",
+   "vfx": "holy_beam",
+   "name": {
+    "tr": "Kutsal Hücum",
+    "en": "Holy Charge"
+   },
+   "desc": {
+    "tr": "Işıkla hücum: {dmg} Kutsal hasar ve 1.5sn sersemletme.",
+    "en": "Charge in light: {dmg} Holy damage and a 1.5s stun."
+   },
+   "params": {
+    "dmg": [
+     3.0,
+     0.4,
+     "%"
+    ]
+   },
+   "target": "enemy_front",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "holy"
+    },
+    {
+     "type": "status",
+     "status": "stun",
+     "dur": 1.5,
+     "stacks": 1,
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "id": "knight_vigor",
+   "class": "knight",
+   "tier": 0,
+   "req_lv": 20,
+   "type": "passive",
+   "max": 10,
+   "icon": "recovery",
+   "name": {
+    "tr": "Dinç Beden",
+    "en": "Vigor"
+   },
+   "desc": {
+    "tr": "+{v} HP Yenilenme %/sn",
+    "en": "+{v} HP Regen %/s"
+   },
+   "params": {
+    "v": [
+     0.3,
+     0.15,
+     "p"
+    ]
+   },
+   "stats": {
+    "hp_regen_pct": "v"
+   }
+  },
+  {
+   "id": "knight_aegis",
+   "class": "knight",
+   "tier": 0,
+   "req_lv": 50,
+   "type": "active",
+   "max": 10,
+   "cd": 25,
+   "icon": "fortress",
+   "vfx": "aegis",
+   "name": {
+    "tr": "Ebedi Kalkan",
+    "en": "Eternal Aegis"
+   },
+   "desc": {
+    "tr": "Partiye can kadar {s} kalkan ve 5sn %15 hasar azaltma.",
+    "en": "Shields the party for {s} of HP and 15% damage reduction for 5s."
+   },
+   "params": {
+    "s": [
+     0.15,
+     0.02,
+     "%"
+    ]
+   },
+   "target": "ally_all",
+   "effects": [
+    {
+     "type": "shield",
+     "pct": "s"
+    },
+    {
+     "type": "buff",
+     "stat": "dr",
+     "value": 15,
+     "dur": 5
+    }
+   ]
+  },
+  {
+   "id": "berserker_shockwave",
+   "class": "berserker",
+   "tier": 0,
+   "req_lv": 10,
+   "type": "active",
+   "max": 10,
+   "cd": 12,
+   "icon": "quake",
+   "vfx": "shockwave",
+   "name": {
+    "tr": "Şok Dalgası",
+    "en": "Shockwave"
+   },
+   "desc": {
+    "tr": "Yeri döver: tüm düşmanlara {dmg}, %30 sersemletme.",
+    "en": "Slams the ground: {dmg} to all enemies, 30% stun."
+   },
+   "params": {
+    "dmg": [
+     1.1,
+     0.15,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg"
+    },
+    {
+     "type": "status",
+     "status": "stun",
+     "dur": 1.0,
+     "stacks": 1,
+     "chance": 0.3
+    }
+   ]
+  },
+  {
+   "id": "berserker_bloodlust",
+   "class": "berserker",
+   "tier": 0,
+   "req_lv": 10,
+   "type": "passive",
+   "max": 10,
+   "icon": "thirst",
+   "name": {
+    "tr": "Kan Hırsı",
+    "en": "Bloodlust"
+   },
+   "desc": {
+    "tr": "+{v} Can Çalma",
+    "en": "+{v} Life Steal"
+   },
+   "params": {
+    "v": [
+     1,
+     0.5,
+     "p"
+    ]
+   },
+   "stats": {
+    "lifesteal": "v"
+   }
+  },
+  {
+   "id": "berserker_blade_storm",
+   "class": "berserker",
+   "tier": 0,
+   "req_lv": 20,
+   "type": "active",
+   "max": 10,
+   "cd": 15,
+   "icon": "whirl",
+   "vfx": "blade_storm",
+   "name": {
+    "tr": "Kılıç Fırtınası",
+    "en": "Blade Storm"
+   },
+   "desc": {
+    "tr": "Dönerek öndekilere 6 kez {dmg}.",
+    "en": "Spins through the front line: 6 hits of {dmg}."
+   },
+   "params": {
+    "dmg": [
+     0.5,
+     0.07,
+     "%"
+    ]
+   },
+   "target": "enemy_aoe",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "hits": 6
+    }
+   ],
+   "radius": 60
+  },
+  {
+   "id": "berserker_titan",
+   "class": "berserker",
+   "tier": 0,
+   "req_lv": 20,
+   "type": "passive",
+   "max": 10,
+   "icon": "twohand",
+   "name": {
+    "tr": "Titan Kolu",
+    "en": "Titan's Arm"
+   },
+   "desc": {
+    "tr": "+{v} Kritik Hasarı",
+    "en": "+{v} Crit Damage"
+   },
+   "params": {
+    "v": [
+     10,
+     5,
+     "p"
+    ]
+   },
+   "stats": {
+    "crit_dmg": "v"
+   }
+  },
+  {
+   "id": "berserker_earthsplitter",
+   "class": "berserker",
+   "tier": 0,
+   "req_lv": 50,
+   "type": "active",
+   "max": 10,
+   "cd": 22,
+   "icon": "ragnarok",
+   "vfx": "earth_split",
+   "name": {
+    "tr": "Yer Yaran",
+    "en": "Earthsplitter"
+   },
+   "desc": {
+    "tr": "Toprağı yarar: tüm düşmanlara {dmg} ve Savunmasız.",
+    "en": "Splits the earth: {dmg} to all enemies and Vulnerable."
+   },
+   "params": {
+    "dmg": [
+     4.0,
+     0.5,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg"
+    },
+    {
+     "type": "status",
+     "status": "vulnerable",
+     "dur": 4,
+     "stacks": 1,
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "id": "archer_volley",
+   "class": "archer",
+   "tier": 0,
+   "req_lv": 10,
+   "type": "active",
+   "max": 10,
+   "cd": 12,
+   "icon": "rain",
+   "vfx": "arrow_volley",
+   "name": {
+    "tr": "Ok Yağdırma",
+    "en": "Volley"
+   },
+   "desc": {
+    "tr": "Ok bulutu: tüm düşmanlara 2 kez {dmg}.",
+    "en": "A cloud of arrows: 2 hits of {dmg} to all enemies."
+   },
+   "params": {
+    "dmg": [
+     0.7,
+     0.1,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "hits": 2
+    }
+   ]
+  },
+  {
+   "id": "archer_eagle",
+   "class": "archer",
+   "tier": 0,
+   "req_lv": 10,
+   "type": "passive",
+   "max": 10,
+   "icon": "keen_eye",
+   "name": {
+    "tr": "Kartal Bakışı",
+    "en": "Eagle Gaze"
+   },
+   "desc": {
+    "tr": "+{v} Kritik Şansı",
+    "en": "+{v} Crit Chance"
+   },
+   "params": {
+    "v": [
+     2,
+     1,
+     "p"
+    ]
+   },
+   "stats": {
+    "crit_chance": "v"
+   }
+  },
+  {
+   "id": "archer_frost_arrow",
+   "class": "archer",
+   "tier": 0,
+   "req_lv": 20,
+   "type": "active",
+   "max": 10,
+   "cd": 9,
+   "icon": "ice_lance",
+   "vfx": "frost_arrow",
+   "name": {
+    "tr": "Ayaz Oku",
+    "en": "Frost Arrow"
+   },
+   "desc": {
+    "tr": "{dmg} Soğuk hasar ve 3 yığın Üşüme.",
+    "en": "{dmg} Cold damage and 3 Chill stacks."
+   },
+   "params": {
+    "dmg": [
+     2.6,
+     0.35,
+     "%"
+    ]
+   },
+   "target": "enemy_front",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "cold"
+    },
+    {
+     "type": "status",
+     "status": "chill",
+     "dur": 3,
+     "stacks": 3,
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "id": "archer_hunter",
+   "class": "archer",
+   "tier": 0,
+   "req_lv": 20,
+   "type": "passive",
+   "max": 10,
+   "icon": "mark",
+   "name": {
+    "tr": "Usta Avcı",
+    "en": "Master Hunter"
+   },
+   "desc": {
+    "tr": "+{v} Elit Hasarı",
+    "en": "+{v} Elite Damage"
+   },
+   "params": {
+    "v": [
+     8,
+     4,
+     "p"
+    ]
+   },
+   "stats": {
+    "elite_dmg": "v"
+   }
+  },
+  {
+   "id": "archer_comet",
+   "class": "archer",
+   "tier": 0,
+   "req_lv": 50,
+   "type": "active",
+   "max": 10,
+   "cd": 24,
+   "icon": "starbreaker",
+   "vfx": "comet",
+   "name": {
+    "tr": "Kuyrukluyıldız Oku",
+    "en": "Comet Arrow"
+   },
+   "desc": {
+    "tr": "Gökten inen ok: bölgeye {dmg} Yıldırım hasarı.",
+    "en": "An arrow from the sky: {dmg} Lightning damage in an area."
+   },
+   "params": {
+    "dmg": [
+     5.0,
+     0.6,
+     "%"
+    ]
+   },
+   "target": "enemy_aoe",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "lightning"
+    }
+   ],
+   "radius": 50
+  },
+  {
+   "id": "assassin_fan",
+   "class": "assassin",
+   "tier": 0,
+   "req_lv": 10,
+   "type": "active",
+   "max": 10,
+   "cd": 11,
+   "icon": "thousand",
+   "vfx": "blade_fan",
+   "name": {
+    "tr": "Bıçak Yelpazesi",
+    "en": "Fan of Knives"
+   },
+   "desc": {
+    "tr": "Tüm düşmanlara {dmg} ve Kanama.",
+    "en": "{dmg} to all enemies and Bleed."
+   },
+   "params": {
+    "dmg": [
+     0.8,
+     0.11,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg"
+    },
+    {
+     "type": "status",
+     "status": "bleed",
+     "dur": 4,
+     "stacks": 2,
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "id": "assassin_ghost",
+   "class": "assassin",
+   "tier": 0,
+   "req_lv": 10,
+   "type": "passive",
+   "max": 10,
+   "icon": "cloak",
+   "name": {
+    "tr": "Hayalet",
+    "en": "Ghost"
+   },
+   "desc": {
+    "tr": "+{v} Kaçınma",
+    "en": "+{v} Evasion"
+   },
+   "params": {
+    "v": [
+     3,
+     1.5,
+     "p"
+    ]
+   },
+   "stats": {
+    "evasion": "v"
+   }
+  },
+  {
+   "id": "assassin_shadow_clone",
+   "class": "assassin",
+   "tier": 0,
+   "req_lv": 20,
+   "type": "active",
+   "max": 10,
+   "cd": 13,
+   "icon": "shadow_step",
+   "vfx": "shadow_strike",
+   "name": {
+    "tr": "Gölge İkizi",
+    "en": "Shadow Twin"
+   },
+   "desc": {
+    "tr": "Gölgesi en zayıf düşmana 3 kez {dmg} Kaos hasarı vurur.",
+    "en": "Its shadow strikes the weakest foe 3 times for {dmg} Chaos damage."
+   },
+   "params": {
+    "dmg": [
+     1.4,
+     0.2,
+     "%"
+    ]
+   },
+   "target": "enemy_lowest",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "hits": 3,
+     "element": "chaos"
+    }
+   ]
+  },
+  {
+   "id": "assassin_lethal",
+   "class": "assassin",
+   "tier": 0,
+   "req_lv": 20,
+   "type": "passive",
+   "max": 10,
+   "icon": "execute",
+   "name": {
+    "tr": "Ölümcül",
+    "en": "Lethal"
+   },
+   "desc": {
+    "tr": "+{v} İnfaz Hasarı",
+    "en": "+{v} Execute Damage"
+   },
+   "params": {
+    "v": [
+     10,
+     5,
+     "p"
+    ]
+   },
+   "stats": {
+    "execute_dmg": "v"
+   }
+  },
+  {
+   "id": "assassin_death_mark",
+   "class": "assassin",
+   "tier": 0,
+   "req_lv": 50,
+   "type": "active",
+   "max": 10,
+   "cd": 25,
+   "icon": "eclipse",
+   "vfx": "death_mark",
+   "name": {
+    "tr": "Ölüm İşareti",
+    "en": "Mark of Death"
+   },
+   "desc": {
+    "tr": "Arkadaki düşmana {dmg} ve Savunmasız.",
+    "en": "{dmg} to the rearmost foe and Vulnerable."
+   },
+   "params": {
+    "dmg": [
+     7.0,
+     0.8,
+     "%"
+    ]
+   },
+   "target": "enemy_back",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg"
+    },
+    {
+     "type": "status",
+     "status": "vulnerable",
+     "dur": 5,
+     "stacks": 1,
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "id": "mage_ice_rain",
+   "class": "mage",
+   "tier": 0,
+   "req_lv": 10,
+   "type": "active",
+   "max": 10,
+   "cd": 14,
+   "icon": "zero",
+   "vfx": "ice_rain",
+   "name": {
+    "tr": "Buz Yağmuru",
+    "en": "Ice Rain"
+   },
+   "desc": {
+    "tr": "Düşmanların üstüne buz yağar: herkese 2 kez {dmg} Soğuk hasar, Üşüme.",
+    "en": "Ice rains on the foes: 2 hits of {dmg} Cold damage, Chill."
+   },
+   "params": {
+    "dmg": [
+     1.0,
+     0.14,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "hits": 2,
+     "element": "cold"
+    },
+    {
+     "type": "status",
+     "status": "chill",
+     "dur": 3,
+     "stacks": 2,
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "id": "mage_frostbite",
+   "class": "mage",
+   "tier": 0,
+   "req_lv": 10,
+   "type": "passive",
+   "max": 10,
+   "icon": "crystal",
+   "name": {
+    "tr": "Ayaz Isırığı",
+    "en": "Frostbite"
+   },
+   "desc": {
+    "tr": "+{v} Soğuk Hasarı",
+    "en": "+{v} Cold Damage"
+   },
+   "params": {
+    "v": [
+     8,
+     4,
+     "p"
+    ]
+   },
+   "stats": {
+    "cold_dmg": "v"
+   }
+  },
+  {
+   "id": "mage_arcane_orb",
+   "class": "mage",
+   "tier": 0,
+   "req_lv": 20,
+   "type": "active",
+   "max": 10,
+   "cd": 11,
+   "icon": "focus",
+   "vfx": "arcane_orb",
+   "name": {
+    "tr": "Arkana Küresi",
+    "en": "Arcane Orb"
+   },
+   "desc": {
+    "tr": "Patlayan küre: bölgeye {dmg} Yıldırım hasarı.",
+    "en": "An exploding orb: {dmg} Lightning damage in an area."
+   },
+   "params": {
+    "dmg": [
+     2.4,
+     0.3,
+     "%"
+    ]
+   },
+   "target": "enemy_aoe",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "lightning"
+    }
+   ],
+   "radius": 50
+  },
+  {
+   "id": "mage_mana_flow",
+   "class": "mage",
+   "tier": 0,
+   "req_lv": 20,
+   "type": "passive",
+   "max": 10,
+   "icon": "wellspring",
+   "name": {
+    "tr": "Mana Akışı",
+    "en": "Mana Flow"
+   },
+   "desc": {
+    "tr": "+{v} Bekleme Azaltma",
+    "en": "+{v} Cooldown Reduction"
+   },
+   "params": {
+    "v": [
+     2,
+     1,
+     "p"
+    ]
+   },
+   "stats": {
+    "cdr": "v"
+   }
+  },
+  {
+   "id": "mage_blizzard",
+   "class": "mage",
+   "tier": 0,
+   "req_lv": 50,
+   "type": "active",
+   "max": 10,
+   "cd": 26,
+   "icon": "zero",
+   "vfx": "blizzard",
+   "name": {
+    "tr": "Kar Fırtınası",
+    "en": "Blizzard"
+   },
+   "desc": {
+    "tr": "Dondurucu fırtına: herkese 5 kez {dmg} Soğuk hasar, %30 Donma.",
+    "en": "A freezing storm: 5 hits of {dmg} Cold damage to all, 30% Freeze."
+   },
+   "params": {
+    "dmg": [
+     0.8,
+     0.1,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "hits": 5,
+     "element": "cold"
+    },
+    {
+     "type": "status",
+     "status": "stun",
+     "dur": 1.5,
+     "stacks": 1,
+     "chance": 0.3
+    }
+   ]
+  },
+  {
+   "id": "necro_skull_storm",
+   "class": "necromancer",
+   "tier": 0,
+   "req_lv": 10,
+   "type": "active",
+   "max": 10,
+   "cd": 12,
+   "icon": "doom",
+   "vfx": "skull_storm",
+   "name": {
+    "tr": "Kafatası Fırtınası",
+    "en": "Skull Storm"
+   },
+   "desc": {
+    "tr": "Rastgele 4 düşmana {dmg} Kaos hasarı.",
+    "en": "{dmg} Chaos damage to 4 random foes."
+   },
+   "params": {
+    "dmg": [
+     1.3,
+     0.18,
+     "%"
+    ]
+   },
+   "target": "enemy_random",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "chaos"
+    }
+   ],
+   "max_targets": 4
+  },
+  {
+   "id": "necro_dark_pact",
+   "class": "necromancer",
+   "tier": 0,
+   "req_lv": 10,
+   "type": "passive",
+   "max": 10,
+   "icon": "lore",
+   "name": {
+    "tr": "Karanlık Ant",
+    "en": "Dark Pact"
+   },
+   "desc": {
+    "tr": "+{v} Kaos Hasarı",
+    "en": "+{v} Chaos Damage"
+   },
+   "params": {
+    "v": [
+     8,
+     4,
+     "p"
+    ]
+   },
+   "stats": {
+    "chaos_dmg": "v"
+   }
+  },
+  {
+   "id": "necro_soul_siphon",
+   "class": "necromancer",
+   "tier": 0,
+   "req_lv": 20,
+   "type": "active",
+   "max": 10,
+   "cd": 12,
+   "icon": "drain",
+   "vfx": "soul_siphon",
+   "name": {
+    "tr": "Ruh Emme",
+    "en": "Soul Siphon"
+   },
+   "desc": {
+    "tr": "{dmg} Kaos hasarı; hasarın %30'u partiyi iyileştirir.",
+    "en": "{dmg} Chaos damage; 30% of it heals the party."
+   },
+   "params": {
+    "dmg": [
+     2.5,
+     0.32,
+     "%"
+    ]
+   },
+   "target": "enemy_front",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "chaos",
+     "party_heal": 0.3
+    }
+   ]
+  },
+  {
+   "id": "necro_grave_lord",
+   "class": "necromancer",
+   "tier": 0,
+   "req_lv": 20,
+   "type": "passive",
+   "max": 10,
+   "icon": "sovereign",
+   "name": {
+    "tr": "Mezar Lordu",
+    "en": "Grave Lord"
+   },
+   "desc": {
+    "tr": "+{v} Çağrı Hasarı",
+    "en": "+{v} Summon Damage"
+   },
+   "params": {
+    "v": [
+     10,
+     5,
+     "p"
+    ]
+   },
+   "stats": {
+    "summon_dmg": "v"
+   }
+  },
+  {
+   "id": "necro_bone_prison",
+   "class": "necromancer",
+   "tier": 0,
+   "req_lv": 50,
+   "type": "active",
+   "max": 10,
+   "cd": 24,
+   "icon": "bone_armor",
+   "vfx": "bone_prison",
+   "name": {
+    "tr": "Kemik Hapsi",
+    "en": "Bone Prison"
+   },
+   "desc": {
+    "tr": "Tüm düşmanlara {dmg} Kaos hasarı, %50 sersemletme.",
+    "en": "{dmg} Chaos damage to all foes, 50% stun."
+   },
+   "params": {
+    "dmg": [
+     2.0,
+     0.26,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "chaos"
+    },
+    {
+     "type": "status",
+     "status": "stun",
+     "dur": 2.0,
+     "stacks": 1,
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "id": "cleric_holy_beam",
+   "class": "cleric",
+   "tier": 0,
+   "req_lv": 10,
+   "type": "active",
+   "max": 10,
+   "cd": 9,
+   "icon": "smite",
+   "vfx": "holy_beam",
+   "name": {
+    "tr": "Kutsal Işın",
+    "en": "Holy Beam"
+   },
+   "desc": {
+    "tr": "Gökten inen ışın: {dmg} Kutsal hasar.",
+    "en": "A beam from the heavens: {dmg} Holy damage."
+   },
+   "params": {
+    "dmg": [
+     2.8,
+     0.35,
+     "%"
+    ]
+   },
+   "target": "enemy_front",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "holy"
+    }
+   ]
+  },
+  {
+   "id": "cleric_grace",
+   "class": "cleric",
+   "tier": 0,
+   "req_lv": 10,
+   "type": "passive",
+   "max": 10,
+   "icon": "blessing",
+   "name": {
+    "tr": "Lütuf",
+    "en": "Grace"
+   },
+   "desc": {
+    "tr": "+{v} İyileştirme",
+    "en": "+{v} Healing"
+   },
+   "params": {
+    "v": [
+     6,
+     3,
+     "p"
+    ]
+   },
+   "stats": {
+    "heal_bonus": "v"
+   }
+  },
+  {
+   "id": "cleric_sanctuary",
+   "class": "cleric",
+   "tier": 0,
+   "req_lv": 20,
+   "type": "active",
+   "max": 10,
+   "cd": 18,
+   "icon": "light_shield",
+   "vfx": "sanctuary",
+   "name": {
+    "tr": "Sığınak",
+    "en": "Sanctuary"
+   },
+   "desc": {
+    "tr": "Partiye canının {h}'i kadar şifa ve 5sn %10 hasar azaltma.",
+    "en": "Heals the party for {h} of HP and 10% damage reduction for 5s."
+   },
+   "params": {
+    "h": [
+     0.12,
+     0.015,
+     "%"
+    ]
+   },
+   "target": "ally_all",
+   "effects": [
+    {
+     "type": "heal_pct",
+     "value": "h"
+    },
+    {
+     "type": "buff",
+     "stat": "dr",
+     "value": 10,
+     "dur": 5
+    }
+   ]
+  },
+  {
+   "id": "cleric_devotion",
+   "class": "cleric",
+   "tier": 0,
+   "req_lv": 20,
+   "type": "passive",
+   "max": 10,
+   "icon": "faith",
+   "name": {
+    "tr": "Adanmışlık",
+    "en": "Devotion"
+   },
+   "desc": {
+    "tr": "+{v} Kutsal Hasar",
+    "en": "+{v} Holy Damage"
+   },
+   "params": {
+    "v": [
+     8,
+     4,
+     "p"
+    ]
+   },
+   "stats": {
+    "holy_dmg": "v"
+   }
+  },
+  {
+   "id": "cleric_sun_burst",
+   "class": "cleric",
+   "tier": 0,
+   "req_lv": 50,
+   "type": "active",
+   "max": 10,
+   "cd": 24,
+   "icon": "gate",
+   "vfx": "sun_burst",
+   "name": {
+    "tr": "Güneş Patlaması",
+    "en": "Sunburst"
+   },
+   "desc": {
+    "tr": "Tüm düşmanlara {dmg} Kutsal hasar, %30 sersemletme.",
+    "en": "{dmg} Holy damage to all foes, 30% stun."
+   },
+   "params": {
+    "dmg": [
+     3.5,
+     0.45,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "holy"
+    },
+    {
+     "type": "status",
+     "status": "stun",
+     "dur": 1.5,
+     "stacks": 1,
+     "chance": 0.3
+    }
+   ]
+  },
+  {
+   "id": "bard_sonic_wave",
+   "class": "bard",
+   "tier": 0,
+   "req_lv": 10,
+   "type": "active",
+   "max": 10,
+   "cd": 11,
+   "icon": "discord",
+   "vfx": "sonic_wave",
+   "name": {
+    "tr": "Ses Dalgası",
+    "en": "Sonic Wave"
+   },
+   "desc": {
+    "tr": "Tüm düşmanlara {dmg} Yıldırım hasarı ve Şok.",
+    "en": "{dmg} Lightning damage to all foes and Shock."
+   },
+   "params": {
+    "dmg": [
+     0.9,
+     0.12,
+     "%"
+    ]
+   },
+   "target": "enemy_all",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "lightning"
+    },
+    {
+     "type": "status",
+     "status": "shock",
+     "dur": 3,
+     "stacks": 1,
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "id": "bard_tempo",
+   "class": "bard",
+   "tier": 0,
+   "req_lv": 10,
+   "type": "passive",
+   "max": 10,
+   "icon": "rhythm",
+   "name": {
+    "tr": "Tempo",
+    "en": "Tempo"
+   },
+   "desc": {
+    "tr": "+{v} Saldırı Hızı",
+    "en": "+{v} Attack Speed"
+   },
+   "params": {
+    "v": [
+     3,
+     1.5,
+     "p"
+    ]
+   },
+   "stats": {
+    "attack_speed": "v"
+   }
+  },
+  {
+   "id": "bard_anthem",
+   "class": "bard",
+   "tier": 0,
+   "req_lv": 20,
+   "type": "active",
+   "max": 10,
+   "cd": 16,
+   "icon": "march",
+   "vfx": "anthem",
+   "name": {
+    "tr": "Zafer Marşı",
+    "en": "Victory Anthem"
+   },
+   "desc": {
+    "tr": "Partiye 6sn +{v} Eklenen Hasar.",
+    "en": "+{v} Added Damage to the party for 6s."
+   },
+   "params": {
+    "v": [
+     10,
+     1.5,
+     "p"
+    ]
+   },
+   "target": "ally_all",
+   "effects": [
+    {
+     "type": "buff",
+     "stat": "added_dmg",
+     "value": "v",
+     "dur": 6
+    }
+   ]
+  },
+  {
+   "id": "bard_harmony",
+   "class": "bard",
+   "tier": 0,
+   "req_lv": 20,
+   "type": "passive",
+   "max": 10,
+   "icon": "serenity",
+   "name": {
+    "tr": "Ahenk",
+    "en": "Harmony"
+   },
+   "desc": {
+    "tr": "+{v} Buff Süresi",
+    "en": "+{v} Buff Duration"
+   },
+   "params": {
+    "v": [
+     8,
+     4,
+     "p"
+    ]
+   },
+   "stats": {
+    "buff_duration": "v"
+   }
+  },
+  {
+   "id": "bard_thunder_chord",
+   "class": "bard",
+   "tier": 0,
+   "req_lv": 50,
+   "type": "active",
+   "max": 10,
+   "cd": 22,
+   "icon": "legends",
+   "vfx": "thunder_chord",
+   "name": {
+    "tr": "Gök Akoru",
+    "en": "Thunder Chord"
+   },
+   "desc": {
+    "tr": "Bölgeye {dmg} Yıldırım hasarı, %40 sersemletme.",
+    "en": "{dmg} Lightning damage in an area, 40% stun."
+   },
+   "params": {
+    "dmg": [
+     4.0,
+     0.5,
+     "%"
+    ]
+   },
+   "target": "enemy_aoe",
+   "effects": [
+    {
+     "type": "damage",
+     "mult": "dmg",
+     "element": "lightning"
+    },
+    {
+     "type": "status",
+     "status": "stun",
+     "dur": 1.5,
+     "stacks": 1,
+     "chance": 0.4
+    }
+   ],
+   "radius": 70
+  }
+ ]
 }

@@ -123,10 +123,7 @@ func _refresh() -> void:
 		sp = sp or h.stat_points > 0
 		kp = kp or h.skill_points > 0
 	_dots["stats"].visible = sp or kp
-	var few := false
-	for h in GameState.party_heroes():
-		few = few or Runes.points_spent(h) < 3
-	_dots["runes"].visible = few and Runes.any_affordable() and not WindowManager.is_open("runes")
+	_dots["runes"].visible = Runes.points_spent() < 3 and Runes.any_affordable() and not WindowManager.is_open("runes")
 	_dots["hero"].visible = GameState.bag.size() >= GameState.bag_slots - 4
 	_dots["quest"].visible = Quests.claimable() > 0
 

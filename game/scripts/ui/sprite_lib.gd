@@ -143,11 +143,18 @@ static func portrait(id: String) -> Texture2D:
 
 
 static func hero_icon(id: String) -> Texture2D:
+	var key := "icon:" + id
+	if _cache.has(key):
+		return _cache[key]
+	var t: Texture2D = null
 	var hd := "res://assets/hd/icons/%s.png" % id
 	if ResourceLoader.exists(hd):
-		return _tag_hd(load(hd), Vector2(20, 20))
-	var p := "res://assets/sprites/heroes/icons/%s.png" % id
-	return load(p) if ResourceLoader.exists(p) else null
+		t = _tag_hd(load(hd), Vector2(20, 20))
+	else:
+		var p := "res://assets/sprites/heroes/icons/%s.png" % id
+		t = load(p) if ResourceLoader.exists(p) else null
+	_cache[key] = t
+	return t
 
 
 static func item_icon(item: Dictionary) -> Texture2D:
@@ -195,6 +202,13 @@ static func _crisp(t: Texture2D) -> Texture2D:
 
 
 static func skill_icon(sid: String) -> Texture2D:
+	var hp := "res://assets/hd/skills/%s.png" % sid
+	if _cache.has(hp):
+		return _cache[hp]
+	if ResourceLoader.exists(hp):
+		var ht := _tag_hd(load(hp), Vector2(20, 20))
+		_cache[hp] = ht
+		return ht
 	var p := "res://assets/sprites/skills/%s.png" % sid
 	if _cache.has(p):
 		return _cache[p]

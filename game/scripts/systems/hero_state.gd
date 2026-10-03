@@ -20,7 +20,6 @@ var advancement: int = 0
 var spec: String = ""
 var resets: int = 0
 var costume: String = ""
-var runes: Dictionary = {}        # personal rune tree: node id -> rank
 
 
 static func create(hero_id: String) -> HeroState:
@@ -77,6 +76,8 @@ func skill_available(sid: String) -> bool:
 		return false
 	var tier := int(s.get("tier", 0))
 	if tier > advancement:
+		return false
+	if level < int(s.get("req_lv", 1)):
 		return false
 	if tier == 2 and s.has("spec") and spec != "" and s["spec"] != spec:
 		return false
@@ -199,7 +200,7 @@ func to_dict() -> Dictionary:
 		"stat_points": stat_points, "skill_points": skill_points, "skill_levels": skill_levels.duplicate(),
 		"equipped_skills": equipped_skills.duplicate(), "equipment": equipment.duplicate(true),
 		"stars": stars, "shards": shards, "advancement": advancement, "spec": spec, "resets": resets,
-		"costume": costume, "runes": runes.duplicate()}
+		"costume": costume}
 
 
 static func from_dict(d: Dictionary) -> HeroState:
@@ -227,7 +228,4 @@ static func from_dict(d: Dictionary) -> HeroState:
 	h.spec = str(d.get("spec", ""))
 	h.resets = int(d.get("resets", 0))
 	h.costume = str(d.get("costume", ""))
-	var rn: Dictionary = d.get("runes", {})
-	for k in rn:
-		h.runes[k] = int(rn[k])
 	return h
