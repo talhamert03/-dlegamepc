@@ -315,6 +315,8 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			get_tree().create_timer(secs - 1.2).timeout.connect(func():
 				EventBus.chest_dropped.emit("gold", Vector2(250, BattleSim.GROUND_Y)))
 	await get_tree().create_timer(0.5).timeout
+	if cmd.has("--town"):
+		BattleSim.enter_town()
 	if cmd.has("--awaytest"):
 		var items: Array = []
 		for i in 5:
@@ -378,6 +380,36 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 					mv.button_mask = MOUSE_BUTTON_MASK_LEFT
 					Input.warp_mouse(q)
 					Input.parse_input_event(mv)
+				await get_tree().create_timer(0.3).timeout
+		if a.begins_with("--shoptab=") and WindowManager.is_open("shop"):
+			WindowManager.panels["shop"]._tab = a.substr(10)
+			WindowManager.panels["shop"].refresh()
+			await get_tree().create_timer(0.4).timeout
+		if a == "--bagdrag" and WindowManager.is_open("hero"):
+			var slots: Array = []
+			for n in WindowManager.panels["hero"].find_children("*", "ItemSlot", true, false):
+				if n.source == "bag" and n.is_visible_in_tree():
+					slots.append(n)
+			if slots.size() > 8:
+				var sc2: float = WindowManager.ui_scale
+				var q0: Vector2 = slots[0].get_global_transform_with_canvas() * (slots[0].size * 0.3)
+				var q1: Vector2 = slots[8].get_global_transform_with_canvas() * (slots[8].size * 0.5)
+				var pe := InputEventMouseButton.new()
+				pe.button_index = MOUSE_BUTTON_LEFT
+				pe.pressed = true
+				pe.position = q0 * sc2
+				pe.global_position = q0 * sc2
+				Input.warp_mouse(q0 * sc2)
+				Input.parse_input_event(pe)
+				for k in 10:
+					await get_tree().process_frame
+					var mv2 := InputEventMouseMotion.new()
+					var q: Vector2 = q0.lerp(q1, (k + 1) / 10.0) * sc2
+					mv2.position = q
+					mv2.global_position = q
+					mv2.button_mask = MOUSE_BUTTON_MASK_LEFT
+					Input.warp_mouse(q)
+					Input.parse_input_event(mv2)
 				await get_tree().create_timer(0.3).timeout
 		if a == "--selldlg" and WindowManager.is_open("hero"):
 			WindowManager.panels["hero"]._sell_dialog()

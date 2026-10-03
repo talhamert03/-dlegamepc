@@ -36,6 +36,7 @@ const PANELS := {
 	"pets": {"script": "res://scripts/ui/panels/pets_panel.gd", "size": Vector2i(210, 190), "title": "panel_pets"},
 	"runes": {"script": "res://scripts/ui/panels/runes_panel.gd", "size": Vector2i(440, 300), "title": "panel_runes"},
 	"chests": {"script": "res://scripts/ui/panels/chests_panel.gd", "size": Vector2i(236, 222), "title": "panel_chests"},
+	"shop": {"script": "res://scripts/ui/panels/shop_panel.gd", "size": Vector2i(332, 300), "title": "panel_shop"},
 }
 const GROUPS := {"hero": ["hero"], "bag": ["hero"], "world": ["world"], "growth": ["growth"]}
 ## Default home of every panel: panels sit above the strip, bottom-aligned. Groups open side by side;
@@ -44,7 +45,7 @@ const HOME := {
 	"hero": "center", "ending": "center", "runes": "center",
 	"away": "left", "stats": "left", "skills": "left", "stash": "left", "blacksmith": "left", "pets": "left", "dps": "left",
 	"world": "right", "growth": "right", "tavern": "right", "quests": "right", "codex": "right", "settings": "right",
-	"party": "right", "inventory": "right", "portrait": "left", "chests": "right",
+	"party": "right", "inventory": "right", "portrait": "left", "chests": "right", "shop": "center",
 }
 
 var ui_scale: float = 2.0

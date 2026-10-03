@@ -1,0 +1,19 @@
+{
+ "_note": "Store catalogue. price.gold_kills = paid in gold, scaled to the party level (that many normal kills' gold). price.try / price.usd = real money; steam_item is the item id sent to Steam's InitTxn.",
+ "tabs": ["chests", "gold", "heroes", "packs"],
+ "products": [
+  {"id": "chest_iron", "tab": "chests", "kind": "chest", "chest": "iron", "count": 1, "price": {"gold_kills": 180}},
+  {"id": "chest_gold", "tab": "chests", "kind": "chest", "chest": "gold", "count": 1, "price": {"gold_kills": 650}},
+  {"id": "chest_crystal_3", "tab": "chests", "kind": "chest", "chest": "crystal", "count": 3, "price": {"try": 34.99, "usd": 1.49}, "steam_item": 101},
+  {"id": "chest_royal_5", "tab": "chests", "kind": "chest", "chest": "royal", "count": 5, "price": {"try": 89.99, "usd": 3.99}, "steam_item": 102, "badge": "best"},
+  {"id": "gold_s", "tab": "gold", "kind": "gold", "kills": 1500, "min": 5000, "price": {"try": 19.99, "usd": 0.99}, "steam_item": 201},
+  {"id": "gold_m", "tab": "gold", "kind": "gold", "kills": 5000, "min": 20000, "price": {"try": 49.99, "usd": 2.49}, "steam_item": 202, "badge": "popular"},
+  {"id": "gold_l", "tab": "gold", "kind": "gold", "kills": 14000, "min": 60000, "price": {"try": 109.99, "usd": 4.99}, "steam_item": 203, "badge": "best"},
+  {"id": "hero_random", "tab": "heroes", "kind": "hero_random", "weights": {"R": 70, "SR": 25, "SSR": 5}, "price": {"try": 50.0, "usd": 2.49}, "steam_item": 301},
+  {"id": "hero_pick_SR", "tab": "heroes", "kind": "hero_pick", "rarity": "SR", "price": {"try": 79.99, "usd": 3.49}, "steam_item": 302},
+  {"id": "hero_pick_SSR", "tab": "heroes", "kind": "hero_pick", "rarity": "SSR", "price": {"try": 129.99, "usd": 5.99}, "steam_item": 303},
+  {"id": "starter", "tab": "packs", "kind": "bundle", "once": true, "chests": {"gold": 3}, "mats": {"tavern_seal": 3}, "kills": 2500, "min": 8000, "price": {"try": 29.99, "usd": 1.29}, "steam_item": 401, "badge": "once"},
+  {"id": "bag_20", "tab": "packs", "kind": "bag", "slots": 20, "max_buys": 3, "price": {"try": 24.99, "usd": 0.99}, "steam_item": 402},
+  {"id": "seals_5", "tab": "packs", "kind": "mats", "mats": {"tavern_seal": 5}, "price": {"try": 39.99, "usd": 1.79}, "steam_item": 403}
+ ]
+}

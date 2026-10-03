@@ -106,3 +106,26 @@ func test_pets() -> void:
 	BattleSim.quiet = false
 	GameState.set_active_pet("")
 	runner.check(GameState.pets["active"] == "", "pet dismissed")
+
+
+func test_shop_purchases() -> void:
+	GameState.new_game()
+	var was_loaded: bool = GameState.loaded
+	GameState.loaded = false   # keep the test from writing the player's save
+	var chest := Shop.product("chest_iron")
+	runner.check(Shop.block_reason(chest) != "", "gold chest needs gold")
+	GameState.add_gold(Shop.gold_price(chest))
+	var box := {}
+	Shop.buy("chest_iron", func(r): box["r"] = r)
+	var got: Dictionary = box["r"]
+	runner.check(got.get("chest", "") == "iron" and Chests.count() == 1 and GameState.gold == 0, "gold chest bought")
+	var before := GameState.heroes.size()
+	Shop.buy("hero_random", func(r): box["r"] = r)
+	got = box["r"]
+	var hid := str(got.get("hero", ""))
+	runner.check(hid != "" and GameState.heroes.has(hid) and GameState.heroes.size() == before + 1, "random hero granted")
+	var order: String = GameState.purchases.keys()[GameState.purchases.size() - 1]
+	runner.check(Shop.grant(Shop.product("hero_random"), order).is_empty(), "an order is granted only once")
+	Shop.buy("starter", func(r): box["r"] = r)
+	runner.check(Shop.block_reason(Shop.product("starter")) != "", "starter pack is one time")
+	GameState.loaded = was_loaded

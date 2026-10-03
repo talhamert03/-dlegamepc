@@ -19,6 +19,7 @@ var stash_tabs: int = 1
 var progress: Dictionary = {}
 var totals: Dictionary = {}
 var flags: Dictionary = {}
+var purchases: Dictionary = {}   # store orders: order_id -> {p: product id, t: unix, x: extra}
 var blacksmith: Dictionary = {"level": 1, "xp": 0, "pity": 0}
 var tavern: Dictionary = {"offers": [], "refresh_at": 0}
 var guild: Dictionary = {}
@@ -75,6 +76,7 @@ func reset_state() -> void:
 	materials = {}
 	chests = []
 	runes = {}
+	purchases = {}
 	bag = []
 	bag_slots = int(DataDB.bal("inventory.base_slots", 60))
 	stash = [[], [], [], [], [], [], []]
@@ -586,7 +588,7 @@ func to_dict() -> Dictionary:
 	var hd: Dictionary = {}
 	for k in heroes:
 		hd[k] = heroes[k].to_dict()
-	return {"heroes": hd, "party": party, "gold": gold, "materials": materials, "chests": chests, "runes": runes, "bag": bag, "bag_slots": bag_slots,
+	return {"heroes": hd, "party": party, "gold": gold, "materials": materials, "chests": chests, "runes": runes, "purchases": purchases, "bag": bag, "bag_slots": bag_slots,
 		"stash": stash, "stash_tabs": stash_tabs, "progress": progress, "totals": totals, "flags": flags,
 		"blacksmith": blacksmith, "tavern": tavern, "guild": guild, "codex": codex, "achievements": achievements,
 		"pets": pets, "rates": rates, "uid_counter": uid_counter, "created": created_unix,
@@ -608,6 +610,7 @@ func from_dict(d: Dictionary) -> void:
 	for rid in rd:
 		if Runes.nodes().has(rid):
 			runes[rid] = int(rd[rid])
+	purchases = d.get("purchases", {})
 	bag = d.get("bag", [])
 	bag_slots = int(d.get("bag_slots", bag_slots))
 	stash = d.get("stash", stash)

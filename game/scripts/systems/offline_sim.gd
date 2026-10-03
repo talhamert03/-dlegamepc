@@ -14,7 +14,7 @@ static func apply() -> Dictionary:
 	var secs: float = min(float(now - last), max_h * 3600.0)
 	if secs < 60:
 		return report
-	var eff: float = min(0.9, float(DataDB.bal("offline.efficiency", 0.4)) + float(acc.get("offline_eff", 0.0)) / 100.0)
+	var eff: float = min(0.45, float(DataDB.bal("offline.efficiency", 0.2)) + float(acc.get("offline_eff", 0.0)) / 100.0)
 	for h in GameState.party_heroes():
 		for slot in h.equipment:
 			var it: Dictionary = h.equipment[slot]

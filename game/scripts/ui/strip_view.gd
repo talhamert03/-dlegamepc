@@ -151,6 +151,12 @@ func _build_hud() -> void:
 	_town_overlay.size = Vector2(W, H)
 	_town_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(_town_overlay)
+	var sx := 150.0
+	for d in [["tavern", "btn_tavern_town", "town"], ["shop", "btn_shop", "gem"]]:
+		var sign := _town_sign(str(d[0]), DataDB.t(str(d[1])), str(d[2]))
+		sign.position = Vector2(sx, 3)
+		_town_overlay.add_child(sign)
+		sx += sign.size.x + 6.0
 
 
 func _draw_wave_dots() -> void:
@@ -632,6 +638,7 @@ func _on_boss_spawned(u) -> void:
 
 func _on_phase(p: String) -> void:
 	_update_hud_text()
+	_town_overlay.visible = p == "town"
 	if p == "town":
 		_set_theme("town")
 		_show_banner(DataDB.t("town_name"), UITheme.C_TEXT)
@@ -641,6 +648,58 @@ func _on_phase(p: String) -> void:
 		AudioManager.play_music(str(BattleSim.zone().get("music", "act1")))
 	if p == "travel" and BattleSim.is_boss_stage():
 		_show_banner(DataDB.t("boss_incoming"), Color("#FF9A6A"))
+
+
+## Hanging wooden signboard in town (tavern, store): swings a little, glows on hover.
+func _town_sign(panel_id: String, text: String, icon_name: String) -> Button:
+	var b := Button.new()
+	b.flat = true
+	b.focus_mode = Control.FOCUS_NONE
+	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	var f := UITheme.font_title
+	var tw := f.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 9).x
+	b.size = Vector2(tw + 26.0, 20)
+	b.tooltip_text = text
+	b.pressed.connect(func():
+		AudioManager.play("ui_click", 0.05, 0.6)
+		WindowManager.toggle_panel(panel_id))
+	var ic := UITheme.icon(icon_name)
+	var phase := randf() * TAU
+	b.draw.connect(func():
+		var ci := b.get_canvas_item()
+		var hov := b.is_hovered()
+		var t := Time.get_ticks_msec() / 1000.0
+		var sway := sin(t * 1.6 + phase) * 0.035
+		var open := WindowManager.is_open(panel_id)
+		b.draw_set_transform(Vector2(b.size.x / 2.0, 0), sway, Vector2.ONE)
+		var r := Rect2(Vector2(-b.size.x / 2.0, 4), Vector2(b.size.x, 15))
+		# chains
+		for cx in [r.position.x + 5.0, r.end.x - 5.0]:
+			b.draw_line(Vector2(cx, 0), Vector2(cx, 5), Color("#2A1E16"), 1.4)
+			b.draw_line(Vector2(cx, 0), Vector2(cx, 5), Color("#B79868"), 0.6)
+		if hov or open:
+			UISkin.stroke(ci, r.grow(1.5), 4, Color(1.0, 0.85, 0.4, 0.55), 2.0)
+		UISkin.fill(ci, r, 3, Color("#7A4E2E") if not hov else Color("#93613A"), Color("#3C2414"))
+		for k in 3:
+			var gy := r.position.y + 4.0 + k * 4.0
+			b.draw_line(Vector2(r.position.x + 2, gy), Vector2(r.end.x - 2, gy), Color(0, 0, 0, 0.18), 0.6)
+		UISkin.stroke(ci, r, 3, Color("#1A0E08"), 1.0)
+		UISkin.stroke(ci, r.grow(-1.0), 2, Color("#D8A85A", 0.7), 0.8)
+		UISkin.rivet(ci, r.position + Vector2(3, 3), 1.1)
+		UISkin.rivet(ci, Vector2(r.end.x - 3, r.position.y + 3), 1.1)
+		b.draw_texture_rect(ic, Rect2(r.position + Vector2(4, 2.5), Vector2(10, 10)), false)
+		var tp := r.position + Vector2(17, 11)
+		b.draw_string_outline(f, tp, text, HORIZONTAL_ALIGNMENT_LEFT, -1, 9, 3, Color(0, 0, 0, 0.85))
+		b.draw_string(f, tp, text, HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("#FFE7B0") if not hov else Color("#FFF6D8"))
+		b.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE))
+	var tm := Timer.new()
+	tm.wait_time = 1.0 / 20.0
+	tm.autostart = true
+	tm.timeout.connect(func():
+		if b.is_visible_in_tree():
+			b.queue_redraw())
+	b.add_child(tm)
+	return b
 
 
 func _show_banner(text: String, color: Color) -> void:

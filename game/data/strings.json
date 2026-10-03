@@ -1574,5 +1574,153 @@
  "item_hint_dbl": {
   "tr": "Çift tık: kuşan / çıkar · Sağ tık: menü",
   "en": "Double-click: equip / unequip · Right-click: menu"
+ },
+ "panel_shop": {
+  "tr": "Mağaza",
+  "en": "Store"
+ },
+ "btn_shop": {
+  "tr": "Mağaza",
+  "en": "Store"
+ },
+ "btn_tavern_town": {
+  "tr": "Taverna",
+  "en": "Tavern"
+ },
+ "shop_tab_chests": {
+  "tr": "Sandıklar",
+  "en": "Chests"
+ },
+ "shop_tab_gold": {
+  "tr": "Altın",
+  "en": "Gold"
+ },
+ "shop_tab_heroes": {
+  "tr": "Kahramanlar",
+  "en": "Heroes"
+ },
+ "shop_tab_packs": {
+  "tr": "Paketler",
+  "en": "Packs"
+ },
+ "shop_chest_iron": {
+  "tr": "Demir Sandık",
+  "en": "Iron Chest"
+ },
+ "shop_chest_gold": {
+  "tr": "Altın Sandık",
+  "en": "Gold Chest"
+ },
+ "shop_chest_crystal_3": {
+  "tr": "Kristal Üçlüsü",
+  "en": "Crystal Trio"
+ },
+ "shop_chest_royal_5": {
+  "tr": "Kraliyet Hazinesi",
+  "en": "Royal Hoard"
+ },
+ "shop_gold_s": {
+  "tr": "Altın Kesesi",
+  "en": "Pouch of Gold"
+ },
+ "shop_gold_m": {
+  "tr": "Altın Sandığı",
+  "en": "Coffer of Gold"
+ },
+ "shop_gold_l": {
+  "tr": "Ejder Hazinesi",
+  "en": "Dragon's Hoard"
+ },
+ "shop_hero_random": {
+  "tr": "Rastgele Kahraman",
+  "en": "Random Hero"
+ },
+ "shop_starter": {
+  "tr": "Başlangıç Paketi",
+  "en": "Starter Pack"
+ },
+ "shop_bag_20": {
+  "tr": "Büyük Çanta",
+  "en": "Bigger Bag"
+ },
+ "shop_seals_5": {
+  "tr": "Taverna Mühürleri",
+  "en": "Tavern Seals"
+ },
+ "shop_random_odds": {
+  "tr": "SSR %{ssr} · SR %{sr}",
+  "en": "SSR {ssr}% · SR {sr}%"
+ },
+ "shop_starter_desc": {
+  "tr": "3 sandık · 3 mühür · {g} altın",
+  "en": "3 chests · 3 seals · {g} gold"
+ },
+ "shop_bag_desc": {
+  "tr": "+{n} çanta yeri ({left} kaldı)",
+  "en": "+{n} bag slots ({left} left)"
+ },
+ "shop_badge_popular": {
+  "tr": "Popüler",
+  "en": "Popular"
+ },
+ "shop_badge_best": {
+  "tr": "En iyi değer",
+  "en": "Best value"
+ },
+ "shop_badge_once": {
+  "tr": "Tek sefer",
+  "en": "One time"
+ },
+ "shop_chests_full": {
+  "tr": "Sandık yeri dolu",
+  "en": "Chest space full"
+ },
+ "shop_all_heroes": {
+  "tr": "Hepsi sende",
+  "en": "All owned"
+ },
+ "shop_bought": {
+  "tr": "Alındı",
+  "en": "Owned"
+ },
+ "shop_confirm": {
+  "tr": "{name}\n{price} karşılığında satın alınsın mı?",
+  "en": "Buy {name}\nfor {price}?"
+ },
+ "shop_test_note": {
+  "tr": "(Test modu: ödeme alınmaz)",
+  "en": "(Test mode: no payment is taken)"
+ },
+ "shop_test_mode": {
+  "tr": "Test modu: Steam ödemesi henüz bağlı değil, ürünler direkt verilir.",
+  "en": "Test mode: Steam payments not connected yet, products are granted directly."
+ },
+ "shop_hint": {
+  "tr": "Ödemeler Steam üzerinden güvenle alınır.",
+  "en": "Payments are handled securely by Steam."
+ },
+ "shop_buy": {
+  "tr": "Satın Al",
+  "en": "Buy"
+ },
+ "shop_failed": {
+  "tr": "Satın alma tamamlanmadı.",
+  "en": "Purchase was not completed."
+ },
+ "shop_new_hero": {
+  "tr": "{name} partiye katıldı!",
+  "en": "{name} joined the party!"
+ },
+ "shop_thanks": {
+  "tr": "Satın aldığın için teşekkürler!",
+  "en": "Thanks for your purchase!"
+ },
+ "tip_shop": {
+  "tr": "Mağaza",
+  "en": "Store"
+ },
+ "btn_ok": {
+  "tr": "Tamam",
+  "en": "OK"
  }
 }
