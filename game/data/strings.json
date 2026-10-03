@@ -1482,5 +1482,29 @@
  "btn_close": {
   "tr": "Kapat",
   "en": "Close"
+ },
+ "world_stage_pick": {
+  "tr": "Aşama seç",
+  "en": "Choose stage"
+ },
+ "world_stage_n": {
+  "tr": "Aşama {n}",
+  "en": "Stage {n}"
+ },
+ "world_play": {
+  "tr": "▶  Oyna",
+  "en": "▶  Play"
+ },
+ "world_playing": {
+  "tr": "Şu an burada savaşıyorsun",
+  "en": "You are fighting here"
+ },
+ "world_resume": {
+  "tr": "Kaldığın yer: Aşama {n}",
+  "en": "Last played: stage {n}"
+ },
+ "world_locked_zone": {
+  "tr": "Önceki bölgenin bossunu yen",
+  "en": "Beat the previous zone's boss"
  }
 }

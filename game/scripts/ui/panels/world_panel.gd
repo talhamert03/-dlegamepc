@@ -63,6 +63,8 @@ func build(c: Control) -> void:
 
 
 var _card: Control
+var _sel_zone := -1
+var _sel_stage := 1
 
 
 func _show_card(zi: int) -> void:
@@ -116,10 +118,78 @@ func _show_card(zi: int) -> void:
 			b.add_child(sk)
 		row.add_child(b)
 	var desc := UITheme.label(DataDB.t("boss") + ": " + DataDB.tx(DataDB.enemy_def(str(z.get("boss", ""))).get("name", {})), Color("#FF9A8A"), 8)
-	desc.position = Vector2(6, 60)
+	desc.position = Vector2(6, 58)
 	desc.size = Vector2(w - 12, 10)
 	desc.clip_text = true
 	_card.add_child(desc)
+	_stage_picker(zi)
+
+
+## Stage pills (1-9, 10 = boss) up to the furthest stage reached in the zone, and the Play button.
+func _stage_picker(zi: int) -> void:
+	var w := _card.size.x
+	var unlocked: bool = zi <= int(GameState.progress["max_zone"][_diff])
+	var rec: Dictionary = BattleSim.zone_record(_diff, zi)
+	var playing: bool = BattleSim.mode == "zone" and zi == BattleSim.zone_idx and _diff == BattleSim.difficulty
+	if zi != _sel_zone:
+		_sel_zone = zi
+		_sel_stage = BattleSim.stage if playing else int(rec["last"])
+	var n := BattleSim.stages_per_zone()
+	var pw := (w - 12.0 - (n - 1) * 2.0) / n
+	for i in n:
+		var st := i + 1
+		var open: bool = unlocked and st <= int(rec["max"])
+		var boss: bool = st == n
+		var b := Button.new()
+		b.focus_mode = Control.FOCUS_NONE
+		b.position = Vector2(6 + i * (pw + 2.0), 73)
+		b.size = Vector2(pw, 16)
+		b.disabled = not open
+		b.tooltip_text = (DataDB.t("boss") if boss else DataDB.t("world_stage_n", {"n": st})) + ("" if open else "  🔒")
+		b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		b.draw.connect(func():
+			var ci := b.get_canvas_item()
+			var r := Rect2(Vector2.ZERO, b.size)
+			var sel := st == _sel_stage
+			var here := playing and st == BattleSim.stage
+			var top := Color("#7A2E22") if boss else Color("#4A3E36")
+			if sel:
+				top = Color("#C8913F")
+			if not open:
+				top = Color("#24222A")
+			UISkin.fill(ci, r, 3, top.lightened(0.15 if b.is_hovered() and open else 0.0), top.darkened(0.45))
+			UISkin.stroke(ci, r, 3, Color(0, 0, 0, 0.95), 1.0)
+			if here:
+				UISkin.stroke(ci, r.grow(-1.0), 2, Color("#7CFF9A"), 1.0)
+			var f := UITheme.font_body
+			var txt := "☠" if boss else str(st)
+			var tw := f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
+			b.draw_string(f, Vector2((r.size.x - tw) / 2.0, 11.5), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 8,
+				Color("#1A1208") if sel else (UITheme.C_TEXT if open else Color("#5A5560"))))
+		b.mouse_entered.connect(b.queue_redraw)
+		b.mouse_exited.connect(b.queue_redraw)
+		b.pressed.connect(func():
+			_sel_stage = st
+			AudioManager.play("ui_click", 0.05, 0.5)
+			for ch in b.get_parent().get_children():
+				if ch is Button:
+					ch.queue_redraw())
+		_card.add_child(b)
+	var info := UITheme.label(DataDB.t("world_playing") if playing else (DataDB.t("world_resume", {"n": int(rec["last"])}) if unlocked else DataDB.t("world_locked_zone")),
+		UITheme.C_GREEN if playing else UITheme.C_DIM, 7, UITheme.font_body)
+	info.position = Vector2(6, 95)
+	info.size = Vector2(w - 100, 10)
+	info.clip_text = true
+	_card.add_child(info)
+	var play := UITheme.button(DataDB.t("world_play"), "gold", func():
+		BattleSim.mode = "zone"
+		BattleSim.go_to_zone(zi, _diff, _sel_stage)
+		AudioManager.play("ui_travel")
+		refresh(), Vector2(84, 18))
+	_card.add_child(play)
+	play.size = Vector2(84, 18)
+	play.position = Vector2(w - 90, 92)
+	play.disabled = not unlocked
 
 
 func _cycle_diff() -> void:
@@ -166,15 +236,17 @@ func refresh() -> void:
 		b.custom_minimum_size = Vector2(12, 12)
 		b.size = Vector2(12, 12)
 		var zi3 := zi
-		b.mouse_entered.connect(func(): _show_card(zi3))
-		b.mouse_exited.connect(func(): _show_card(int(GameState.progress.get("zone", 0))))
+		b.tooltip_text = ""
 		b.position = Vector2(float(p[0]) - 6, float(p[1]) - 6)
 		b.disabled = not unlocked
 		var lv: Array = z.get("level", [1, 1])
 		var lvtxt := "Lv %d-%d" % [F.monster_level(z, 1, _diff), F.monster_level(z, 10, _diff)]
 		b.tooltip_text = "%s\n%s\n%s: %s" % [DataDB.tx(z["name"]), lvtxt, DataDB.t("boss"), DataDB.tx(DataDB.enemy_def(z["boss"]).get("name", {}))]
 		var zi2 := zi
-		b.pressed.connect(func(): _travel(zi2))
+		b.pressed.connect(func():
+			AudioManager.play("ui_click", 0.05, 0.6)
+			_show_card(zi2)
+			refresh_nodes_highlight())
 		_nodes_root.add_child(b)
 		var num := UITheme.label(str(i + 1), UITheme.C_TEXT)
 		num.position = b.position + Vector2(3 if i < 9 else 1, 0)
@@ -193,7 +265,29 @@ func refresh() -> void:
 	var nm := UITheme.label(DataDB.tx(DataDB.acts[act - 1]["name"]) if act - 1 < DataDB.acts.size() else "", Color("#3A2A22"), 8, UITheme.font_title)
 	nm.position = Vector2(8, 4)
 	_nodes_root.add_child(nm)
-	_show_card(cur)
+	_show_card(_sel_zone if _sel_zone >= 0 and int(DataDB.zone(_sel_zone).get("act", 0)) == act else cur)
+	refresh_nodes_highlight()
+
+
+## Gold ring around the zone picked on the map.
+func refresh_nodes_highlight() -> void:
+	for ch in _nodes_root.get_children():
+		if ch.has_meta("sel_ring"):
+			ch.queue_free()
+	var nodes_data: Dictionary = DataDB._load("res://data/map_nodes.json")
+	var pts: Array = nodes_data.get(str(act), [])
+	var i := _sel_zone - (act - 1) * 10
+	if i < 0 or i >= pts.size():
+		return
+	var ring := Control.new()
+	ring.set_meta("sel_ring", true)
+	ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	ring.position = Vector2(float(pts[i][0]) - 9, float(pts[i][1]) - 9)
+	ring.size = Vector2(18, 18)
+	ring.draw.connect(func():
+		ring.draw_arc(Vector2(9, 9), 8.0, 0, TAU, 24, Color(0, 0, 0, 0.8), 2.4, true)
+		ring.draw_arc(Vector2(9, 9), 8.0, 0, TAU, 24, Color("#FFD35A"), 1.2, true))
+	_nodes_root.add_child(ring)
 
 
 func _travel(zi: int) -> void:

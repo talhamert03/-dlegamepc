@@ -76,6 +76,26 @@ func stop() -> void:
 	running = false
 
 
+## Stage bookkeeping per zone and difficulty: {last: stage played last, max: furthest stage reached}.
+func zone_record(diff: int, zi: int) -> Dictionary:
+	var all: Dictionary = GameState.progress.get("zone_stage", {})
+	var rec: Dictionary = all.get("%d_%d" % [diff, zi], {})
+	var cleared: bool = GameState.progress.get("cleared", {}).has("%d_%s" % [diff, str(DataDB.zone(zi).get("id", ""))])
+	var mx := maxi(int(rec.get("max", 1)), stages_per_zone() if cleared else 1)
+	return {"last": clampi(int(rec.get("last", 1)), 1, mx), "max": mx}
+
+
+func _save_stage() -> void:
+	GameState.progress["stage"] = stage
+	if mode != "zone":
+		return
+	if not GameState.progress.has("zone_stage"):
+		GameState.progress["zone_stage"] = {}
+	var key := "%d_%d" % [difficulty, zone_idx]
+	var rec: Dictionary = GameState.progress["zone_stage"].get(key, {})
+	GameState.progress["zone_stage"][key] = {"last": stage, "max": maxi(int(rec.get("max", 1)), stage)}
+
+
 func stages_per_zone() -> int:
 	return int(DataDB.bal("stage.stages_per_zone", 10))
 
@@ -222,14 +242,17 @@ func _on_party_changed() -> void:
 
 
 # ------------------------------------------------------------------ zone control
-func go_to_zone(idx: int, diff: int = -1) -> void:
+## Travels to a zone. at_stage < 0 resumes the stage last played there (stage 1 for a new zone).
+func go_to_zone(idx: int, diff: int = -1, at_stage: int = -1) -> void:
 	if diff >= 0:
 		difficulty = diff
 		GameState.progress["difficulty"] = diff
 	zone_idx = clamp(idx, 0, DataDB.zones.size() - 1)
-	stage = 1
+	var rec := zone_record(difficulty, zone_idx)
+	stage = int(rec["last"]) if at_stage < 0 else clampi(at_stage, 1, int(rec["max"]))
+	stage = clampi(stage, 1, stages_per_zone())
 	GameState.progress["zone"] = zone_idx
-	GameState.progress["stage"] = 1
+	_save_stage()
 	GameState.invalidate_stats()
 	_clear_enemies()
 	_revive_all()
@@ -1206,7 +1229,7 @@ func _stage_cleared() -> void:
 		# boss gate: auto mode tries the boss, retrying after failures every 2 clears
 		if auto and (boss_fail_count == 0 or rng.randf() < 0.5):
 			stage = stages_per_zone()
-	GameState.progress["stage"] = stage
+	_save_stage()
 	GameState.progress["max_stage"] = max(int(GameState.progress.get("max_stage", 1)), stage)
 	EventBus.stage_changed.emit(stage)
 	_set_phase("travel")
@@ -1270,7 +1293,7 @@ func _after_boss_victory() -> void:
 		go_to_zone(0, difficulty + 1)
 	else:
 		stage = stages_per_zone() - 1
-		GameState.progress["stage"] = stage
+		_save_stage()
 		EventBus.stage_changed.emit(stage)
 		_set_phase("travel")
 
@@ -1284,7 +1307,7 @@ func _boss_timeout() -> void:
 	EventBus.notify.emit(DataDB.t("boss_failed"), Color("#FF6A5A"))
 	_clear_enemies()
 	stage = stages_per_zone() - 1
-	GameState.progress["stage"] = stage
+	_save_stage()
 	EventBus.stage_changed.emit(stage)
 	_set_phase("travel")
 
@@ -1305,7 +1328,7 @@ func _after_wipe() -> void:
 		boss_fail_count += 1
 	stage = max(1, stage - 2)
 	wave = 0
-	GameState.progress["stage"] = stage
+	_save_stage()
 	EventBus.stage_changed.emit(stage)
 	_set_phase("travel")
 
