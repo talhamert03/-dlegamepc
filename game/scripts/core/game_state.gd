@@ -11,6 +11,7 @@ var party: Array = ["", "", "", "", ""]  # index 0 = front-most slot
 var gold: int = 0
 var materials: Dictionary = {}
 var chests: Array = []          # held treasure chests [{k, lv, t}]
+var runes: Dictionary = {}      # rune id -> rank
 var bag: Array = []
 var bag_slots: int = 60
 var stash: Array = [[], [], [], [], [], [], []]
@@ -73,6 +74,7 @@ func reset_state() -> void:
 	gold = 0
 	materials = {}
 	chests = []
+	runes = {}
 	bag = []
 	bag_slots = int(DataDB.bal("inventory.base_slots", 60))
 	stash = [[], [], [], [], [], [], []]
@@ -227,6 +229,10 @@ func account_mods() -> Dictionary:
 		var bon: Dictionary = pet_def(act_pet).get("bonus", {})
 		for st in bon:
 			out[st] = float(out.get(st, 0.0)) + float(bon[st]) * pet_level(act_pet)
+	# rune tree
+	var rt := Runes.totals()
+	for st in rt:
+		out[st] = float(out.get(st, 0.0)) + float(rt[st])
 	# guild hall
 	for node_id in guild:
 		var nd: Dictionary = GuildHall.node_def(node_id)
@@ -574,7 +580,7 @@ func to_dict() -> Dictionary:
 	var hd: Dictionary = {}
 	for k in heroes:
 		hd[k] = heroes[k].to_dict()
-	return {"heroes": hd, "party": party, "gold": gold, "materials": materials, "chests": chests, "bag": bag, "bag_slots": bag_slots,
+	return {"heroes": hd, "party": party, "gold": gold, "materials": materials, "chests": chests, "runes": runes, "bag": bag, "bag_slots": bag_slots,
 		"stash": stash, "stash_tabs": stash_tabs, "progress": progress, "totals": totals, "flags": flags,
 		"blacksmith": blacksmith, "tavern": tavern, "guild": guild, "codex": codex, "achievements": achievements,
 		"pets": pets, "rates": rates, "uid_counter": uid_counter, "created": created_unix,
@@ -591,6 +597,7 @@ func from_dict(d: Dictionary) -> void:
 	gold = int(d.get("gold", 0))
 	materials = d.get("materials", {})
 	chests = d.get("chests", [])
+	runes = d.get("runes", {})
 	bag = d.get("bag", [])
 	bag_slots = int(d.get("bag_slots", bag_slots))
 	stash = d.get("stash", stash)

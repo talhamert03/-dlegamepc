@@ -9,6 +9,7 @@ var values: Dictionary = {
 	"strip_pos": "taskbar",   # taskbar | top | free
 	"strip_x": -1, "strip_y": -1, "strip_screen": -1,
 	"always_on_top": true,
+	"mini_mode": true,
 	"hide_fullscreen": true,
 	"fps_focus": 60, "fps_idle": 15,
 	"vol_master": 0.4, "vol_music": 0.7, "vol_sfx": 0.8, "unfocus_duck": 0.6, "mute": false,

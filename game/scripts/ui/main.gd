@@ -296,6 +296,12 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 				GameState.bag.append(it)
 			EventBus.inventory_changed.emit()
 	for a in cmd:
+		if a == "--runes":
+			GameState.add_gold(5000000)
+			for id in ["core", "w1", "w1", "w2", "w2", "w3", "w3a", "d1", "d1", "d2", "e1", "e2", "e2", "e3", "a1", "a2", "a2", "a2", "a2", "a2"]:
+				Runes.buy(id)
+			GameState.gold = 2715147
+	for a in cmd:
 		if a == "--chests":
 			for k in ["wood", "wood", "iron", "gold", "crystal", "royal", "iron"]:
 				Chests.add(k, 20)

@@ -35,6 +35,7 @@ func refresh() -> void:
 			_choice("set_strip_pos", "strip_pos", ["taskbar", "top", "free"], [DataDB.t("pos_taskbar"), DataDB.t("pos_top"), DataDB.t("pos_free")],
 				func(_v): WindowManager.place_strip())
 			_toggle("set_on_top", "always_on_top", func(v): WindowManager.set_always_on_top(v))
+			_toggle("set_mini_mode", "mini_mode")
 			_toggle("set_remember_panels", "remember_panels")
 			_choice("set_fps_idle", "fps_idle", [5, 10, 15, 30], ["5", "10", "15", "30"])
 			_choice("set_fps_focus", "fps_focus", [30, 60, 144], ["30", "60", "144"])

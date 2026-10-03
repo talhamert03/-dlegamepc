@@ -60,3 +60,16 @@ yapay zeka) projeye katılmadan önce bu dosyayı okumalı.
 - Yalnızca TR/EN dil desteği.
 - **Animasyon sheet'i eksik birimler:** 27/48 kahraman ve 16/112 düşman-boss sheet'li (kredi sınırı). Kalanlar
   `ai_sheets.py batch` + `import_sheets.py` ile aynı boru hattından üretilebilir (~0.25 kredi/sheet).
+
+## Taskbar mode, chests, runes, status (TBH parity round)
+- Minimising never pauses: the overlay window is restored at once as a slim framed battle bar sitting on
+  the taskbar left of the tray (offset ~300 px * DPI, draggable along the taskbar, remembered). The window is
+  re-raised above the taskbar every 1.5 s; the click-through region keeps only the bar (and the chest bubble)
+  visible. Toggle: Settings → "Taskbar mode when minimised".
+- Chests: five vector-drawn rarities (wood, iron, gold, crystal, royal). Drop chance per kill by enemy type
+  (normal 0.45 %, elite 6 %, boss 60 %, act boss 100 %), rarity table by type, "Chest Find" from runes.
+  Rewards scale with the kill level: gold worth N normal kills, items with a guaranteed minimum rarity, mats.
+- Rune tree: account-wide gold sink (46 nodes, 4 branches) on a pannable board; a node opens when a linked
+  node has a rank. Costs grow 2.3x per ring and 1.6x per rank. Bonuses feed account_mods.
+- Status panel replaces the separate skills window: parchment stat sheet + skill tiers on a red level rail
+  at the real unlock levels (1 / 30 advancement / 70 specialisation).

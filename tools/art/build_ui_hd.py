@@ -333,6 +333,19 @@ def g_dps(c):
     c.poly([(58, 4), (20, 56), (46, 56), (38, 96), (82, 40), (54, 40)])
 
 
+def g_rune(c):
+    # the Mannaz rune: two staves joined by a cross at the top
+    c.line([(26, 12), (26, 90)], 12)
+    c.line([(74, 12), (74, 90)], 12)
+    c.line([(26, 14), (74, 52)], 11)
+    c.line([(74, 14), (26, 52)], 11)
+
+
+def g_cross(c):
+    # cross pattée (status)
+    c.poly([(40, 8), (60, 8), (56, 40), (88, 36), (88, 64), (56, 60), (60, 92), (40, 92), (44, 60), (12, 64), (12, 36), (44, 40)])
+
+
 ICONS = {k[2:]: v for k, v in globals().items() if k.startswith("g_")}
 
 

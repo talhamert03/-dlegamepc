@@ -17,7 +17,7 @@ const MINI_BUBBLE_H := 36.0
 signal mini_changed(on: bool)
 const PANELS := {
 	"hero": {"script": "res://scripts/ui/panels/hero_main_panel.gd", "size": Vector2i(252, 334), "title": "panel_hero"},
-	"stats": {"script": "res://scripts/ui/panels/stats_panel.gd", "size": Vector2i(196, 334), "title": "panel_stats"},
+	"stats": {"script": "res://scripts/ui/panels/stats_panel.gd", "size": Vector2i(214, 334), "title": "panel_stats"},
 	"skills": {"script": "res://scripts/ui/panels/hero_panel.gd", "size": Vector2i(196, 334), "title": "panel_skills"},
 	"portrait": {"script": "res://scripts/ui/panels/portrait_panel.gd", "size": Vector2i(150, 250), "title": "panel_portrait"},
 	"inventory": {"script": "res://scripts/ui/panels/inventory_panel.gd", "size": Vector2i(176, 250), "title": "panel_inventory"},
@@ -34,13 +34,14 @@ const PANELS := {
 	"codex": {"script": "res://scripts/ui/panels/codex_panel.gd", "size": Vector2i(232, 240), "title": "panel_codex"},
 	"ending": {"script": "res://scripts/ui/panels/ending_panel.gd", "size": Vector2i(250, 150), "title": "panel_ending"},
 	"pets": {"script": "res://scripts/ui/panels/pets_panel.gd", "size": Vector2i(210, 190), "title": "panel_pets"},
+	"runes": {"script": "res://scripts/ui/panels/runes_panel.gd", "size": Vector2i(440, 300), "title": "panel_runes"},
 	"chests": {"script": "res://scripts/ui/panels/chests_panel.gd", "size": Vector2i(236, 222), "title": "panel_chests"},
 }
 const GROUPS := {"hero": ["hero"], "bag": ["hero"], "world": ["world"], "growth": ["growth"]}
 ## Default home of every panel: panels sit above the strip, bottom-aligned. Groups open side by side;
 ## a reopened panel comes back here.
 const HOME := {
-	"hero": "center", "ending": "center",
+	"hero": "center", "ending": "center", "runes": "center",
 	"away": "left", "stats": "left", "skills": "left", "stash": "left", "blacksmith": "left", "pets": "left", "dps": "left",
 	"world": "right", "growth": "right", "tavern": "right", "quests": "right", "codex": "right", "settings": "right",
 	"party": "right", "inventory": "right", "portrait": "left", "chests": "right",
@@ -773,7 +774,9 @@ func handle_hotkey(ev: InputEventKey) -> void:
 		KEY_C:
 			toggle_panel("stats")
 		KEY_K:
-			toggle_panel("skills")
+			toggle_panel("stats")
+		KEY_R:
+			toggle_panel("runes")
 		KEY_M:
 			toggle_group("world")
 		KEY_G:

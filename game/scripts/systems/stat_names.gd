@@ -37,7 +37,7 @@ const L := {
 	"cheat_death": ["Ölümden Dönüş", "Cheat Death"], "multishot": ["Ek Ok", "Extra Arrows"], "offline_eff": ["Offline Verim", "Offline Efficiency"],
 	"legendary_find": ["Efsanevi Şansı", "Legendary Chance"], "mythic_find": ["Mitik Şansı", "Mythic Chance"],
 	"move_speed": ["Hareket Hızı", "Move Speed"], "enemy_weaken": ["Düşman Zayıflatma", "Enemy Weaken"], "triple_cast": ["Üçlü Büyü", "Triple Cast"],
-	"aps": ["Saldırı/sn", "Attacks/s"], "invuln": ["Ölümsüzlük", "Invulnerable"],
+	"aps": ["Saldırı/sn", "Attacks/s"], "chest_find": ["Sandık Bulma", "Chest Find"], "invuln": ["Ölümsüzlük", "Invulnerable"],
 }
 
 

@@ -33,9 +33,14 @@ var _gold: Label
 func build(c: Control) -> void:
 	var w := c.size.x
 	# ---------------------------------------------------------------- parchment: equipment + portrait
-	var parch := UITheme.nine("parchment", 4)
+	var parch := Control.new()
 	parch.position = Vector2(0, 0)
 	parch.size = Vector2(w, 100)
+	parch.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parch.draw.connect(func():
+		var ci := parch.get_canvas_item()
+		UISkin.parchment(ci, Rect2(Vector2(1, 1), parch.size - Vector2(2, 2)))
+		UISkin.ornate(ci, Rect2(Vector2(1, 1), parch.size - Vector2(2, 2))))
 	c.add_child(parch)
 	for i in 6:
 		var col := i % 2
@@ -126,9 +131,14 @@ func build(c: Control) -> void:
 	sell.add_theme_font_size_override("font_size", 7)
 	tools.add_child(sell)
 	# ---------------------------------------------------------------- page (bag grid / formation)
-	var well := UITheme.nine("well", 2)
+	var well := Control.new()
 	well.position = Vector2(0, 120)
 	well.size = Vector2(w, 150)
+	well.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	well.draw.connect(func():
+		var ci := well.get_canvas_item()
+		UISkin.well(ci, Rect2(Vector2.ZERO, well.size))
+		UISkin.ornate(ci, Rect2(Vector2(1, 1), well.size - Vector2(2, 2))))
 	c.add_child(well)
 	_page = Control.new()
 	_page.position = Vector2(2, 122)
@@ -138,7 +148,7 @@ func build(c: Control) -> void:
 	_bottom = W.hbox(5)
 	_bottom.position = Vector2(2, 273)
 	c.add_child(_bottom)
-	for d in [["chart", "stats", "tip_open_stats"], ["book", "skills", "tip_open_skills"], ["hammer", "blacksmith", "panel_blacksmith"],
+	for d in [["cross", "stats", "tip_open_stats"], ["rune", "runes", "tip_runes"], ["hammer", "blacksmith", "panel_blacksmith"],
 			["chest", "stash", "panel_stash"], ["heart", "pets", "panel_pets"]]:
 		var pid: String = d[1]
 		var m := UITheme.medallion(d[0], func(): WindowManager.toggle_panel(pid), DataDB.t(d[2]), 11.0)

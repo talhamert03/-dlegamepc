@@ -89,7 +89,7 @@ func _on_level(hid: String, lv: int) -> void:
 	if lv == 2:
 		_hint("stats", "tut_stats")
 	elif lv == 3:
-		_hint("skills", "tut_skills")
+		_hint("skills_pts", "tut_skills")
 	elif lv == 8:
 		_hint("tavern", "tut_tavern")
 	Barks.trigger(hid, "level_up")

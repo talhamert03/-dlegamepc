@@ -24,8 +24,8 @@
   "en": "Tavern"
  },
  "panel_stats": {
-  "tr": "Statlar",
-  "en": "Stats"
+  "tr": "Durum",
+  "en": "Status"
  },
  "panel_hero": {
   "tr": "Kahraman",
@@ -256,8 +256,8 @@
   "en": "Level up! Stats auto-distribute; adjust them in the Hero panel."
  },
  "tut_skills": {
-  "tr": "Skill puanı kazandın! Kahraman panelinden yeni skill aç.",
-  "en": "You earned a skill point! Unlock skills in the Hero panel."
+  "tr": "Skill puanı kazandın! Durum panelinden (C) yeni skill aç.",
+  "en": "You earned a skill point! Unlock skills in the Status panel (C)."
  },
  "tut_tavern": {
   "tr": "Taverna açıldı! 5. kahramanını oradan seç.",
@@ -1286,5 +1286,81 @@
  "set_mini_mode": {
   "tr": "Küçültünce görev çubuğu modu",
   "en": "Taskbar mode when minimised"
+ },
+ "panel_runes": {
+  "tr": "Rünler",
+  "en": "Runes"
+ },
+ "rune_stat_list": {
+  "tr": "İstatistik Listesi",
+  "en": "Stat List"
+ },
+ "rune_g_discovery": {
+  "tr": "Keşif",
+  "en": "Discovery"
+ },
+ "rune_g_war": {
+  "tr": "Savaş",
+  "en": "War"
+ },
+ "rune_g_defense": {
+  "tr": "Savunma",
+  "en": "Defense"
+ },
+ "rune_g_arcane": {
+  "tr": "Gizem",
+  "en": "Arcane"
+ },
+ "rune_none": {
+  "tr": "Henüz rün yok. Merkezdeki rünle başla; her rün yanındaki rünlerin yolunu açar.",
+  "en": "No runes yet. Start with the central rune; every rune opens the way to its neighbours."
+ },
+ "rune_buy": {
+  "tr": "Al",
+  "en": "Buy"
+ },
+ "rune_rank": {
+  "tr": "Kademe",
+  "en": "Rank"
+ },
+ "rune_cost": {
+  "tr": "Bedel: {g} altın",
+  "en": "Cost: {g} gold"
+ },
+ "rune_locked": {
+  "tr": "Kilitli",
+  "en": "Locked"
+ },
+ "rune_now": {
+  "tr": "Şu an",
+  "en": "Now"
+ },
+ "rune_next": {
+  "tr": "Sonraki",
+  "en": "Next"
+ },
+ "rune_maxed": {
+  "tr": "Tamamlandı",
+  "en": "Mastered"
+ },
+ "rune_need_link": {
+  "tr": "Bağlı bir rün gerekli",
+  "en": "Needs a linked rune"
+ },
+ "tip_runes": {
+  "tr": "Rün Ağacı (R)",
+  "en": "Rune Tree (R)"
+ },
+ "status_more": {
+  "tr": "Tüm statlar",
+  "en": "All stats"
+ },
+ "status_advance": {
+  "tr": "Sınıf Yükselt",
+  "en": "Advance"
+ },
+ "status_pick_spec": {
+  "tr": "Yolunu Seç",
+  "en": "Choose Path"
  }
 }

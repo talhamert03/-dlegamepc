@@ -162,9 +162,42 @@ static func ribbon(ci: RID, r: Rect2) -> void:
 
 static func parchment(ci: RID, r: Rect2) -> void:
 	fill(ci, r, 2, PARCH_TOP, PARCH_BOT)
-	stroke(ci, r.grow(-1.5), 2, Color(0.42, 0.28, 0.13, 0.35), 2.0)
+	# age stains and a darker, burnt rim
+	var seed := int(r.size.x * 7.0 + r.size.y * 13.0)
+	for k in 7:
+		var u := fposmod(sin(float(seed + k * 37)) * 43758.55, 1.0)
+		var v := fposmod(sin(float(seed + k * 91)) * 24634.63, 1.0)
+		var rad := minf(r.size.x, r.size.y) * (0.12 + 0.18 * fposmod(u * 7.3, 1.0))
+		var c := r.position + Vector2(r.size.x * (0.1 + 0.8 * u), r.size.y * (0.1 + 0.8 * v))
+		RenderingServer.canvas_item_add_circle(ci, c, rad, Color(0.45, 0.3, 0.12, 0.025))
+		RenderingServer.canvas_item_add_circle(ci, c, rad * 0.6, Color(0.45, 0.3, 0.12, 0.02))
+	for k in 3:
+		stroke(ci, r.grow(-1.0 - k * 1.5), 2, Color(0.42, 0.26, 0.1, 0.22 - k * 0.06), 1.6)
 	stroke(ci, r, 2, PARCH_EDGE, 1.0)
 	stroke(ci, r.grow(1.0), 3, Color(0, 0, 0, 0.7), 1.0)
+
+
+## TBH-style carved frame around a section: iron band, bronze inlay, knot ornaments in the corners and
+## small diamonds at the middle of the long edges.
+static func ornate(ci: RID, r: Rect2) -> void:
+	var o := r.grow(3.0)
+	stroke(ci, o.grow(0.5), 3, OUTLINE, 1.0)
+	stroke(ci, o.grow(-1.0), 3, Color("#4A4652"), 2.0)
+	stroke(ci, o.grow(-2.2), 2, Color(1, 1, 1, 0.08), 0.8)
+	stroke(ci, r.grow(0.5), 2, Color(BRONZE, 0.55), 0.8)
+	for i in 4:
+		var c: Vector2 = [o.position, Vector2(o.end.x, o.position.y), o.end, Vector2(o.position.x, o.end.y)][i]
+		var dx := 1.0 if i == 0 or i == 3 else -1.0
+		var dy := 1.0 if i < 2 else -1.0
+		var k := c + Vector2(dx * 2.0, dy * 2.0)
+		var sq := Rect2(k - Vector2(3.5, 3.5), Vector2(7, 7))
+		fill(ci, sq, 1, IRON_TOP.lightened(0.15), IRON_BOT)
+		stroke(ci, sq, 1, OUTLINE, 1.0)
+		stroke(ci, sq.grow(-2.0), 0, Color(BRONZE, 0.85), 0.8)
+		line(ci, k + Vector2(dx * 4.0, 0), k + Vector2(dx * 9.0, 0), Color(BRONZE, 0.7), 1.0)
+		line(ci, k + Vector2(0, dy * 4.0), k + Vector2(0, dy * 9.0), Color(BRONZE, 0.7), 1.0)
+	for y in [o.position.y, o.end.y]:
+		diamond(ci, Vector2(o.get_center().x, y), 2.6)
 
 
 static func well(ci: RID, r: Rect2) -> void:

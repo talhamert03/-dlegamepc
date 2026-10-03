@@ -30,7 +30,7 @@ func _ready() -> void:
 		_btns[ic[0]] = b
 		x += 14
 	# main menu: two rows of bronze medallions (tooltips + hotkeys name them)
-	var defs := [["hero", "shield", "btn_hero"], ["stats", "chart", "panel_stats"], ["skills", "item:tome_b", "panel_skills"],
+	var defs := [["hero", "shield", "btn_hero"], ["stats", "cross", "panel_stats"], ["runes", "rune", "tip_runes"],
 		["world", "map", "btn_world"], ["growth", "star", "btn_growth"], ["tavern", "town", "btn_tavern"]]
 	for i in defs.size():
 		var d: Array = defs[i]
@@ -86,7 +86,7 @@ func _ready() -> void:
 
 
 func _relabel() -> void:
-	for d in [["hero", "btn_hero"], ["stats", "panel_stats"], ["skills", "panel_skills"], ["world", "btn_world"], ["growth", "btn_growth"], ["tavern", "btn_tavern"]]:
+	for d in [["hero", "btn_hero"], ["stats", "panel_stats"], ["runes", "tip_runes"], ["world", "btn_world"], ["growth", "btn_growth"], ["tavern", "btn_tavern"]]:
 		_btns[d[0]].tooltip_text = DataDB.t(d[1])
 	_btns["tavern"].text = DataDB.t("btn_tavern")
 
@@ -99,7 +99,7 @@ func _process(_d: float) -> void:
 	_tick += 1
 	if _tick % 30 == 0:
 		_refresh()
-	for pid in ["hero", "stats", "skills", "world", "growth", "tavern"]:
+	for pid in ["hero", "stats", "runes", "world", "growth", "tavern"]:
 		var m: BaseButton = _btns[pid]
 		var on := WindowManager.is_open(pid)
 		if m.get_meta("active", false) != on:
@@ -121,8 +121,8 @@ func _refresh() -> void:
 	for h in GameState.heroes.values():
 		sp = sp or h.stat_points > 0
 		kp = kp or h.skill_points > 0
-	_dots["stats"].visible = sp
-	_dots["skills"].visible = kp
+	_dots["stats"].visible = sp or kp
+	_dots["runes"].visible = Runes.any_affordable() and not WindowManager.is_open("runes") and GameState.runes.size() < 3
 	_dots["hero"].visible = GameState.bag.size() >= GameState.bag_slots - 4
 	_dots["quest"].visible = Quests.claimable() > 0
 
