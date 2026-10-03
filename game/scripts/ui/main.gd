@@ -100,6 +100,7 @@ func _run_title() -> void:
 	else:
 		await t.finished
 	WindowManager.title_mode = false
+	_show_patch_notes()
 	WindowManager.title_control = null
 	WindowManager.close_panel("settings")
 	strip_root.visible = true
@@ -457,3 +458,20 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			img.get_region(Rect2i(Vector2i(w.position * sc), Vector2i(w.size * sc))).save_png(out + "panel_%s.png" % id)
 	print("SCREENSHOTS_DONE ", ProjectSettings.globalize_path(out))
 	get_tree().quit()
+
+
+## New version since the player last looked: open the codex on the patch notes once.
+func _show_patch_notes() -> void:
+	var cur := str(DataDB.patch_notes.get("current", ""))
+	var seen := str(Settings.get_v("seen_version", ""))
+	if cur == "" or cur == seen:
+		return
+	Settings.set_v("seen_version", cur)
+	if seen == "" and GameState.totals.get("kills", 0) == 0:
+		return   # brand new player: nothing to compare with
+	get_tree().create_timer(2.0).timeout.connect(func():
+		var p = WindowManager.open_panel("codex")
+		if p:
+			p.tab = 2
+			W.set_tab_active(p._tabs, 2)
+			p.refresh())

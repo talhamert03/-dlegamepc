@@ -36,7 +36,8 @@
   "stat_bonus": 5,
   "skill_per_level": 1,
   "skill_bonus_every": 10,
-  "skill_bonus": 1
+  "skill_bonus": 1,
+  "paragon": 3
  },
  "primary": {
   "str": {
@@ -120,7 +121,10 @@
   "ult_passive": 0.6,
   "projectile_speed": 260,
   "enemy_walk_speed": 34,
-  "travel_time": 2.2
+  "travel_time": 2.2,
+  "hit_cap": 0.38,
+  "hit_cap_boss": 0.55,
+  "fellowship": 0.04
  },
  "enemy": {
   "def_base": 10,
@@ -208,14 +212,16 @@
    "set": 0.35,
    "mythic": 0.35
   },
-  "class_bias": 0.6,
-  "material_chance": 0.05
+  "class_bias": 0.9,
+  "material_chance": 0.05,
+  "dry_epic": 140,
+  "dry_legendary": 900
  },
  "offline": {
-  "max_hours": 8,
-  "efficiency": 0.2,
-  "item_factor": 0.25,
-  "max_items": 25
+  "max_hours": 10,
+  "efficiency": 0.3,
+  "item_factor": 0.3,
+  "max_items": 30
  },
  "enhance": [
   {
@@ -268,21 +274,21 @@
    "chance": 0.4,
    "cost": 400,
    "mat": "shiny_essence",
-   "fail_down": true
+   "fail_down": false
   },
   {
    "lv": 11,
    "chance": 0.32,
    "cost": 400,
    "mat": "shiny_essence",
-   "fail_down": true
+   "fail_down": false
   },
   {
    "lv": 12,
    "chance": 0.25,
    "cost": 400,
    "mat": "shiny_essence",
-   "fail_down": true
+   "fail_down": false
   },
   {
    "lv": 13,
@@ -351,7 +357,7 @@
  "stat_reset_cost": {
   "coef": 100,
   "exp": 1.5,
-  "free": 2
+  "free": 1000000
  },
  "inventory": {
   "base_slots": 60,
@@ -457,5 +463,6 @@
    "mythic": 1.4
   }
  },
- "start_stats": 5
+ "start_stats": 5,
+ "enhance_pity": 6
 }

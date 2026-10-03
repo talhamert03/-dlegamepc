@@ -13,6 +13,9 @@ var stat_points: int = 0
 var skill_points: int = 0
 var skill_levels: Dictionary = {}
 var equipped_skills: Array = ["", "", ""]
+## two saved skill bars (e.g. farming / boss) and which one is in use
+var skill_sets: Array = [[], []]
+var active_set: int = 0
 var equipment: Dictionary = {}
 var stars: int = 1
 var shards: int = 0
@@ -195,12 +198,29 @@ func auto_allocate() -> void:
 		stat_points -= 1
 
 
+## Swap to skill bar `i`: the current bar is remembered, the other one is put back (skills not learned
+## any more are dropped).
+func use_skill_set(i: int) -> void:
+	if i == active_set or i < 0 or i > 1:
+		return
+	skill_sets[active_set] = equipped_skills.duplicate()
+	var next: Array = skill_sets[i]
+	active_set = i
+	if next.is_empty():
+		return
+	equipped_skills = ["", "", ""]
+	for k in mini(3, next.size()):
+		var sid := str(next[k])
+		if sid != "" and int(skill_levels.get(sid, 0)) > 0:
+			equipped_skills[k] = sid
+
+
 func to_dict() -> Dictionary:
 	return {"id": id, "level": level, "xp": xp, "paragon": paragon, "alloc": alloc.duplicate(),
 		"stat_points": stat_points, "skill_points": skill_points, "skill_levels": skill_levels.duplicate(),
 		"equipped_skills": equipped_skills.duplicate(), "equipment": equipment.duplicate(true),
 		"stars": stars, "shards": shards, "advancement": advancement, "spec": spec, "resets": resets,
-		"costume": costume}
+		"costume": costume, "skill_sets": skill_sets.duplicate(true), "active_set": active_set}
 
 
 static func from_dict(d: Dictionary) -> HeroState:
@@ -209,6 +229,9 @@ static func from_dict(d: Dictionary) -> HeroState:
 	h.level = int(d.get("level", 1))
 	h.xp = float(d.get("xp", 0.0))
 	h.paragon = int(d.get("paragon", 0))
+	var ss: Array = d.get("skill_sets", [[], []])
+	h.skill_sets = [Array(ss[0]) if ss.size() > 0 else [], Array(ss[1]) if ss.size() > 1 else []]
+	h.active_set = clampi(int(d.get("active_set", 0)), 0, 1)
 	var a: Dictionary = d.get("alloc", {})
 	for k in PRIMARY:
 		h.alloc[k] = int(a.get(k, 0))

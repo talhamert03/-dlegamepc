@@ -1,0 +1,20 @@
+{
+ "current": "0.2.0",
+ "notes": [
+  {"version": "0.2.0", "title": {"tr": "Büyük Güncelleme: Adil Şans ve Güçlü Takım", "en": "Big Update: Fair Odds, Strong Party"},
+   "items": [
+    {"tr": "Demircide garanti sistemi: her başarısızlık sonraki denemenin şansını artırır, belirli denemede başarı kesindir. Gösterilen oran = gerçek oran; son denemeler panelde listelenir.", "en": "Blacksmith pity: every failure raises the next chance until success is certain. Shown odds = real odds; recent rolls are listed."},
+    {"tr": "Birleştirme asla geri gitmez: sonuç en iyi parçanın seviyesinden düşük olmaz; başarısızlıkta 9 parçanın 6'sı geri döner.", "en": "Combining never goes backwards: the result is never below the best input; a failure returns 6 of the 9 items."},
+    {"tr": "+10 ile +12 arası güçlendirmede başarısızlık artık seviye düşürmez.", "en": "Failed enhancements from +10 to +12 no longer drop a level."},
+    {"tr": "Kötü şans koruması: uzun süre epik/efsanevi düşmezse bir sonraki düşüş garanti olur.", "en": "Bad-luck protection: a long dry streak guarantees the next epic / legendary."},
+    {"tr": "Yoldaşlık: partideki her ek kahraman herkese +%4 hasar ve dayanıklılık verir. Tam takım her zaman tek kahramandan güçlü.", "en": "Fellowship: every extra hero gives the whole party +4% damage and toughness."},
+    {"tr": "Tek vuruşta ölüm yok: normal düşmanlar bir vuruşta canın en fazla %38'ini, boss'lar %55'ini alabilir.", "en": "No one-shots: a normal hit takes at most 38% of a hero's life, a boss hit 55%."},
+    {"tr": "Dünya haritasında bölgenin elementleri, partinin en düşük direnci ve 'Hazırsın / Zorlayıcı / Çok zor' göstergesi. Boss'ta takılınca ipucu.", "en": "World map shows each zone's elements, your weakest resistance and a readiness verdict; hints when stuck on a boss."},
+    {"tr": "Paragon: 100. seviyeden sonra her seviye 3 stat puanı verir. İlerleme hiç durmaz.", "en": "Paragon: past level 100 every level grants 3 stat points."},
+    {"tr": "Stat ve yetenek sıfırlama ücretsiz. Yetenek setleri A/B (farm / boss).", "en": "Free stat and skill respec. Skill bars A/B (farming / bosses)."},
+    {"tr": "Statların ne işe yaradığı üzerine gelince yazıyor.", "en": "Hover a stat to see what it does."},
+    {"tr": "Ganimet: partide kimsenin giyemeyeceği eşyalar istenirse otomatik satılır; eşyalar çoğunlukla partindeki sınıflar için düşer.", "en": "Loot: gear nobody can wear can be auto-sold; drops favour your party's classes."},
+    {"tr": "Offline verim %30, süre 10 saat. Monitör seçimi, çıkış onayı.", "en": "Offline efficiency 30%, 10 hours. Monitor choice, quit confirmation."}
+   ]}
+ ]
+}

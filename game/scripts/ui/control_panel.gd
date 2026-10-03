@@ -129,7 +129,7 @@ func _refresh() -> void:
 
 
 func _on_power() -> void:
-	WindowManager.quit_game()
+	WindowManager.ask_quit()
 
 
 func _on_mute() -> void:

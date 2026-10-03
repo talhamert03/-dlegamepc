@@ -320,7 +320,11 @@ func add_hero_xp(h: HeroState, amount: float) -> void:
 	while h.xp >= F.xp_required(h.level):
 		h.xp -= F.xp_required(h.level)
 		if h.level >= max_lv:
+			# past the cap progress never stops: every paragon level hands out stat points to spend
 			h.paragon += 1
+			h.stat_points += int(DataDB.bal("points.paragon", 3))
+			EventBus.notify.emit(DataDB.t("paragon_up", {"name": h.display_name(), "n": h.paragon}), Color("#FFD36A"))
+			invalidate_stats()
 			continue
 		h.level += 1
 		h.stat_points += int(DataDB.bal("points.stat_per_level", 5))
@@ -393,6 +397,15 @@ func receive_item(item: Dictionary) -> String:
 	if r == "mythic":
 		totals["mythics"] = int(totals.get("mythics", 0)) + 1
 	var action: String = Settings.loot_action(r)
+	# gear nobody in the party can wear goes straight to gold (optional, never legendaries)
+	if action == "keep" and Settings.get_v("loot_offclass_sell", true) and ItemUtil.rarity_rank(r) < ItemUtil.rarity_rank("legendary"):
+		var usable := false
+		for h in party_heroes():
+			if ItemUtil.can_equip(h, item):
+				usable = true
+				break
+		if not usable and party_count() > 0:
+			action = "sell"
 	if bag.size() >= bag_slots and action == "keep" and ItemUtil.rarity_rank(r) < ItemUtil.rarity_rank("legendary"):
 		action = "sell"
 	if action == "keep" and Settings.get_v("auto_equip", false):

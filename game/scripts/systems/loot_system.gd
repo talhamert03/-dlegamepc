@@ -261,6 +261,23 @@ static func roll_affix_value(id: String, ilvl: int, rng: RandomNumberGenerator) 
 
 
 ## Rolls drops for a killed enemy. Returns {"items": [...], "materials": {id: n}}.
+## Bad-luck protection: a long dry streak turns the next drop into the rarity that has been missing
+## (epic after `loot.dry_epic` drops, legendary after `loot.dry_legendary`), so nobody farms forever empty-handed.
+static func _bad_luck(r: String) -> String:
+	var p: Dictionary = GameState.progress
+	var rank := ItemUtil.rarity_rank(r)
+	var de := int(p.get("dry_epic", 0)) + 1
+	var dl := int(p.get("dry_leg", 0)) + 1
+	if rank < ItemUtil.rarity_rank("legendary") and dl >= int(DataDB.bal("loot.dry_legendary", 900)):
+		r = "legendary"
+	elif rank < ItemUtil.rarity_rank("epic") and de >= int(DataDB.bal("loot.dry_epic", 140)):
+		r = "epic"
+	rank = ItemUtil.rarity_rank(r)
+	p["dry_epic"] = 0 if rank >= ItemUtil.rarity_rank("epic") else de
+	p["dry_leg"] = 0 if rank >= ItemUtil.rarity_rank("legendary") else dl
+	return r
+
+
 static func roll_drops(rng: RandomNumberGenerator, level: int, etype: String, item_find: float, difficulty: int, party_classes: Array, legendary_find: float = 0.0) -> Dictionary:
 	var out := {"items": [], "materials": {}}
 	var chance: float = float(DataDB.bal("loot.drop_chance", {}).get(etype, 0.08))
@@ -279,6 +296,7 @@ static func roll_drops(rng: RandomNumberGenerator, level: int, etype: String, it
 			elif etype == "actboss":
 				min_r = "epic"
 		var r := roll_rarity(rng, item_find, difficulty, min_r, legendary_find)
+		r = _bad_luck(r)
 		var cls := ""
 		if party_classes.size() > 0 and rng.randf() < float(DataDB.bal("loot.class_bias", 0.6)):
 			cls = party_classes[rng.randi() % party_classes.size()]

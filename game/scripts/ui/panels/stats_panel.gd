@@ -107,6 +107,38 @@ func _build_skill_page(c: Control) -> void:
 	_pts_plaque.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_pts_plaque.draw.connect(_draw_plaque)
 	c.add_child(_pts_plaque)
+	# free skill respec: try builds without fear
+	var rs := UITheme.button(DataDB.t("btn_reset_free"), "red", func():
+		var hh := _hero()
+		if hh == null:
+			return
+		W.confirm(_host_ctl(), DataDB.t("skills_reset_confirm"), func():
+			hh.reset_skills()
+			GameState.invalidate_stats()
+			BattleSim.refresh_hero_stats()
+			_changed(hh), DataDB.t("btn_reset_free"), true), Vector2(40, 10))
+	rs.position = Vector2(w * 0.42, 1.5)
+	rs.size = Vector2(40, 10)
+	rs.add_theme_font_size_override("font_size", 7)
+	c.add_child(rs)
+	# two skill bars (farming / boss), one click to swap
+	for i in 2:
+		var idx := i
+		var sb := UITheme.button(["A", "B"][i], "brown", func():
+			var hh := _hero()
+			if hh:
+				hh.use_skill_set(idx)
+				BattleSim.refresh_hero_stats()
+				_changed(hh)
+				_paint_sets(), Vector2(12, 10))
+		sb.position = Vector2(w * 0.42 + 43 + i * 13, 1.5)
+		sb.size = Vector2(12, 10)
+		sb.add_theme_font_size_override("font_size", 7)
+		sb.tooltip_text = DataDB.t("skill_set_tip")
+		sb.set_meta("set", i)
+		c.add_child(sb)
+		_set_btns.append(sb)
+	_paint_sets()
 	_tier_top = 16.0
 	_tiers = Control.new()
 	_tiers.position = Vector2(0, _tier_top)
@@ -243,6 +275,7 @@ func _cycle_hero(d: int) -> void:
 func refresh() -> void:
 	if _list == null:
 		return
+	_paint_sets()
 	var h := _hero()
 	for ch in _list.get_children():
 		ch.queue_free()
@@ -273,8 +306,11 @@ func _draw_parch() -> void:
 	UISkin.ornate(ci, r)
 
 
-func _row(label: String, value: String, vcol: Color = UISkin.INK, plus_cb: Callable = Callable()) -> void:
+func _row(label: String, value: String, vcol: Color = UISkin.INK, plus_cb: Callable = Callable(), key := "") -> void:
 	var r := W.hbox(2)
+	if key != "":
+		r.tooltip_text = label + "\n" + StatNames.describe(key) if StatNames.describe(key) != "" else ""
+		r.mouse_filter = Control.MOUSE_FILTER_PASS
 	r.custom_minimum_size = Vector2(_list.custom_minimum_size.x, 10)
 	var l := UITheme.label(label, Color("#4A2E16"), 8, UITheme.font_body)
 	l.clip_text = true
@@ -311,20 +347,20 @@ func _build_stats(h: HeroState, s: Dictionary) -> void:
 	_section(DataDB.t("status_summary"))
 	_row(StatNames.label("level"), str(h.level))
 	_row(DataDB.t("stat_exp"), "%s / %s" % [F.fmt_num(h.xp), F.fmt_num(F.xp_required(h.level))])
-	_row(StatNames.label("aps"), "%.2f" % float(s["aps"]))
-	_row(StatNames.label("crit_chance"), "%.1f%%" % float(s["crit_chance"]))
-	_row(StatNames.label("crit_dmg"), "%d%%" % int(s["crit_dmg"]))
+	_row(StatNames.label("aps"), "%.2f" % float(s["aps"]), UISkin.INK, Callable(), "aps")
+	_row(StatNames.label("crit_chance"), "%.1f%%" % float(s["crit_chance"]), UISkin.INK, Callable(), "crit_chance")
+	_row(StatNames.label("crit_dmg"), "%d%%" % int(s["crit_dmg"]), UISkin.INK, Callable(), "crit_dmg")
 	_section(DataDB.t("tab_combat"))
 	for k in ["spell", "added_dmg", "elem_dmg", "penetrate", "attack_speed", "cast_speed", "skill_dmg", "phys_dmg", "fire_dmg",
 			"cold_dmg", "lightning_dmg", "chaos_dmg", "holy_dmg", "elite_dmg", "boss_dmg"]:
-		_row(StatNames.label(k), F.fmt_num(s[k]) if StatNames.is_flat(k) else _p(s, k))
+		_row(StatNames.label(k), F.fmt_num(s[k]) if StatNames.is_flat(k) else _p(s, k), UISkin.INK, Callable(), k)
 	_section(DataDB.t("tab_defense"))
 	for k in ["dr", "crit_res", "evasion", "block", "fire_res", "cold_res", "lightning_res", "chaos_res", "lifesteal", "thorns"]:
-		_row(StatNames.label(k), _p(s, k))
-	_row(StatNames.label("hp_regen"), F.fmt_num(s["hp_regen"]) + "/s")
+		_row(StatNames.label(k), _p(s, k), UISkin.INK, Callable(), k)
+	_row(StatNames.label("hp_regen"), F.fmt_num(s["hp_regen"]) + "/s", UISkin.INK, Callable(), "hp_regen")
 	_section(DataDB.t("tab_other"))
 	for k in ["item_find", "gold_find", "xp_bonus", "cdr", "heal_bonus", "buff_duration", "ult_charge", "summon_dmg"]:
-		_row(StatNames.label(k), _p(s, k))
+		_row(StatNames.label(k), _p(s, k), UISkin.INK, Callable(), k)
 	_row(DataDB.t("stat_ehp"), F.fmt_num(StatCalc.ehp_estimate(s, h.level)))
 	var rb := UITheme.button(DataDB.t("btn_reset") + "  " + F.fmt_num(F.stat_reset_cost(h.level, h.resets)), "red", func():
 		if GameState.spend_gold(F.stat_reset_cost(h.level, h.resets)):
@@ -797,3 +833,17 @@ func _changed(h: HeroState) -> void:
 	BattleSim.refresh_hero_stats()
 	EventBus.hero_stats_changed.emit(h.id)
 	WindowManager.refresh_all()
+
+
+var _set_btns: Array = []
+
+
+func _paint_sets() -> void:
+	var h := _hero()
+	for b in _set_btns:
+		if is_instance_valid(b):
+			UITheme.set_button_color(b, "gold" if h and int(b.get_meta("set")) == h.active_set else "brown")
+
+
+func _host_ctl() -> Control:
+	return content

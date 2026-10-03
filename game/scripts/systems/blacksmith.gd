@@ -35,9 +35,18 @@ static func next_rarity(r: String) -> String:
 	return ""
 
 
-static func combine_chance(r: String) -> float:
+static func combine_base_chance(r: String) -> float:
 	var base: float = float(DataDB.bal("combine", {}).get(r, 0.0))
 	return min(1.0, base + level() * 0.004)
+
+
+## Chance shown and rolled: every failed combine moves the odds a step closer to 100%, which is reached
+## on the pity count. What the panel shows is exactly what is rolled.
+static func combine_chance(r: String) -> float:
+	var base := combine_base_chance(r)
+	var maxp := maxi(1, int(DataDB.bal("combine.pity", 10)))
+	var pity := int(GameState.blacksmith.get("pity", 0))
+	return min(1.0, base + (1.0 - base) * float(pity) / float(maxp))
 
 
 static func combine_unlock_level(r: String) -> int:
@@ -89,6 +98,7 @@ static func combine(uids: Array, cls: String) -> Dictionary:
 	var pity := int(GameState.blacksmith.get("pity", 0))
 	var guaranteed := pity >= int(DataDB.bal("combine.pity", 10))
 	var success := guaranteed or GameState.rng.randf() < combine_chance(r)
+	_log_roll("combine", combine_chance(r), success)
 	for u in uids:
 		GameState.bag.remove_at(GameState.find_bag_index(u))
 	add_xp(10 * (ItemUtil.rarity_rank(r) + 1))
@@ -97,13 +107,18 @@ static func combine(uids: Array, cls: String) -> Dictionary:
 	if success:
 		if nr == "mythic":
 			GameState.spend_material("mythic_essence", 1)
-		var ilvl := int(round(float(ilvl_sum) / 9.0)) + 2
+		# never a step back: at least the best input's level, usually a bit above the average
+		var best := 1
+		for it in items:
+			best = maxi(best, int(it.get("ilvl", 1)))
+		var ilvl := maxi(best, int(round(float(ilvl_sum) / 9.0)) + 2)
 		result = LootSystem.generate(GameState.rng, ilvl, nr, cls)
 		GameState.bag.append(result)
 		GameState.blacksmith["pity"] = 0
 	else:
-		items.shuffle()
-		for i in 3:
+		# a failed combine keeps the best two thirds of the items and builds up pity
+		items.sort_custom(func(a, b): return int(a.get("ilvl", 1)) > int(b.get("ilvl", 1)))
+		for i in 6:
 			GameState.bag.append(items[i])
 		GameState.blacksmith["pity"] = pity + 1
 	EventBus.inventory_changed.emit()
@@ -119,7 +134,12 @@ static func enhance_info(item: Dictionary) -> Dictionary:
 	var acc := GameState.account_mods()
 	var disc := 1.0 - float(acc.get("smith_discount", 0.0)) / 100.0
 	var cost := int(float(row["cost"]) * max(1, int(item.get("ilvl", 1))) * disc)
-	return {"next": e + 1, "chance": min(1.0, float(row["chance"]) + level() * 0.003), "cost": cost,
+	var base: float = min(1.0, float(row["chance"]) + level() * 0.003)
+	# pity: every failure on this item adds a share of the missing chance; guaranteed on the pity count
+	var fails := int(item.get("enh_fail", 0))
+	var maxp := maxi(1, int(DataDB.bal("enhance_pity", 6)))
+	var chance: float = 1.0 if fails >= maxp else min(1.0, base + (1.0 - base) * float(fails) / float(maxp))
+	return {"next": e + 1, "chance": chance, "base": base, "fails": fails, "pity": maxp, "cost": cost,
 		"mat": row.get("mat", "iron_scrap" if e >= 5 else ""), "mat_n": 1 + e / 5, "fail_down": bool(row.get("fail_down", false))}
 
 
@@ -138,16 +158,29 @@ static func enhance(item: Dictionary) -> String:
 		GameState.spend_material(m, int(info["mat_n"]))
 	add_xp(5 + int(item.get("enhance", 0)) * 2)
 	GameState.totals["enhances"] = int(GameState.totals.get("enhances", 0)) + 1
-	if GameState.rng.randf() < float(info["chance"]):
+	var ok := GameState.rng.randf() < float(info["chance"])
+	_log_roll("enhance", float(info["chance"]), ok)
+	if ok:
 		item["enhance"] = int(info["next"])
+		item.erase("enh_fail")
 		GameState.invalidate_stats()
 		EventBus.inventory_changed.emit()
 		return "success"
+	item["enh_fail"] = int(item.get("enh_fail", 0)) + 1
 	if info["fail_down"] and int(item.get("enhance", 0)) > 0:
 		item["enhance"] = int(item["enhance"]) - 1
 	GameState.invalidate_stats()
 	EventBus.inventory_changed.emit()
 	return "fail"
+
+
+## Last rolls, newest first ({k, c: chance, ok}): shown in the panel so odds can be checked.
+static func _log_roll(kind: String, chance: float, ok: bool) -> void:
+	var log: Array = GameState.blacksmith.get("log", [])
+	log.push_front({"k": kind, "c": snappedf(chance, 0.001), "ok": ok})
+	if log.size() > 20:
+		log.resize(20)
+	GameState.blacksmith["log"] = log
 
 
 static func salvage_rarities(rarities: Array) -> int:

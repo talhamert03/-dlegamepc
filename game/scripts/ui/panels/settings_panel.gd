@@ -34,6 +34,14 @@ func refresh() -> void:
 			_choice("set_scale", "scale", [0, 2, 3, 4, 5], [DataDB.t("auto"), "2x", "3x", "4x", "5x"], func(v): WindowManager.set_scale(int(v)))
 			_choice("set_strip_pos", "strip_pos", ["taskbar", "top", "free"], [DataDB.t("pos_taskbar"), DataDB.t("pos_top"), DataDB.t("pos_free")],
 				func(_v): WindowManager.place_strip())
+			var nscr := DisplayServer.get_screen_count()
+			if nscr > 1:
+				var vals: Array = [-1]
+				var names: Array = [DataDB.t("auto")]
+				for i in nscr:
+					vals.append(i)
+					names.append(str(i + 1))
+				_choice("set_screen", "screen", vals, names, func(v): WindowManager.set_screen(int(v)))
 			_toggle("set_on_top", "always_on_top", func(v): WindowManager.set_always_on_top(v))
 			_toggle("set_mini_mode", "mini_mode")
 			_toggle("set_remember_panels", "remember_panels")
@@ -57,7 +65,7 @@ func refresh() -> void:
 				GameState.save_game()
 				EventBus.notify.emit(DataDB.t("saved"), UITheme.C_GREEN))
 			_body.add_child(save_b)
-			_body.add_child(UITheme.button(DataDB.t("tip_quit"), "red", func(): WindowManager.quit_game()))
+			_body.add_child(UITheme.button(DataDB.t("tip_quit"), "red", func(): WindowManager.ask_quit()))
 
 
 func _row(label: String, color: Color = UITheme.C_TEXT) -> HBoxContainer:

@@ -132,9 +132,32 @@ func _show_card(zi: int) -> void:
 		row.add_child(b)
 	var desc := UITheme.label(DataDB.t("boss") + ": " + DataDB.tx(DataDB.enemy_def(str(z.get("boss", ""))).get("name", {})), Color("#FF9A8A"), 8)
 	desc.position = Vector2(6, 58)
-	desc.size = Vector2(w - 12, 10)
+	desc.size = Vector2(w * 0.5 - 8, 10)
 	desc.clip_text = true
 	_card.add_child(desc)
+	# threats and readiness: which elements hit here, the party's weakest resistance, and a verdict
+	var els := ZoneInfo.elements(z)
+	var parts: Array = []
+	for el in els:
+		parts.append("%s %d%%" % [ZoneInfo.ELEMENT_ICON.get(el, ""), int(ZoneInfo.party_res(el, _diff))])
+	var ready := ZoneInfo.readiness(z, _diff)
+	var rcol: Color = {"ok": UITheme.C_GREEN, "hard": Color("#FFC94A"), "very_hard": Color("#FF6A5A")}[ready]
+	var thr := UITheme.label(DataDB.t("ready_" + ready) + ("   " + "  ".join(parts) if parts.size() > 0 else ""), rcol, 7, UITheme.font_body)
+	thr.position = Vector2(w * 0.5, 58)
+	thr.size = Vector2(w * 0.5 - 6, 10)
+	thr.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	thr.clip_text = true
+	thr.mouse_filter = Control.MOUSE_FILTER_STOP
+	var tip := DataDB.t("ready_tip_" + ready)
+	if els.size() > 0:
+		var names: Array = []
+		for el in els:
+			names.append(ZoneInfo.element_name(el))
+		tip += "\n" + DataDB.t("zone_elements", {"list": ", ".join(names), "want": int(ZoneInfo.TARGET_RES)})
+	if ready != "ok":
+		tip += "\n" + ZoneInfo.hint(z, _diff)
+	thr.tooltip_text = tip
+	_card.add_child(thr)
 	_stage_picker(zi)
 
 

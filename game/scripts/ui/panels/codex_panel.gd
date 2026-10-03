@@ -10,7 +10,7 @@ func build(c: Control) -> void:
 	var v := W.vbox(2)
 	v.size = c.size
 	c.add_child(v)
-	_tabs = W.tabs([DataDB.t("tab_achievements"), DataDB.t("tab_bestiary")], tab, func(i):
+	_tabs = W.tabs([DataDB.t("tab_achievements"), DataDB.t("tab_bestiary"), DataDB.t("tab_news")], tab, func(i):
 		tab = i
 		W.set_tab_active(_tabs, i)
 		refresh())
@@ -46,6 +46,18 @@ func refresh() -> void:
 			d.custom_minimum_size = Vector2(110, 0)
 			row.add_child(d)
 			_body.add_child(row)
+	elif tab == 2:
+		# patch notes: what changed, newest first
+		for n in DataDB.patch_notes.get("notes", []):
+			var head := UITheme.label("v%s  %s" % [str(n.get("version", "")), DataDB.tx(n.get("title", {}))], UITheme.C_GOLD, 8, UITheme.font_title)
+			head.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			head.custom_minimum_size = Vector2(_body.custom_minimum_size.x, 0)
+			_body.add_child(head)
+			for it in n.get("items", []):
+				var l := UITheme.label("• " + DataDB.tx(it), UITheme.C_TEXT, 7, UITheme.font_body)
+				l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+				l.custom_minimum_size = Vector2(_body.custom_minimum_size.x, 0)
+				_body.add_child(l)
 	else:
 		var seen: Dictionary = GameState.codex.get("enemies", {})
 		_body.add_child(UITheme.label("%d / %d" % [seen.size(), DataDB.enemies.size() + DataDB.bosses.size()], UITheme.C_GOLD))

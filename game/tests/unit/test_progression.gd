@@ -136,7 +136,7 @@ func test_shop_purchases() -> void:
 func test_bag_grid_move() -> void:
 	GameState.new_game()
 	for i in 3:
-		GameState.receive_item(LootSystem.generate(GameState.rng, 5, "magic", "knight"))
+		GameState.bag.append(LootSystem.generate(GameState.rng, 5, "magic", "knight"))
 	var uid := str(GameState.bag[0]["uid"])
 	GameState.move_in_bag(uid, 10)
 	var grid := GameState.bag_layout()
@@ -146,3 +146,49 @@ func test_bag_grid_move() -> void:
 	GameState.move_in_bag(other, 10)
 	grid = GameState.bag_layout()
 	runner.check(str(grid[10]["uid"]) == other and str(grid[at]["uid"]) == uid, "items swap cells")
+
+
+func test_luck_safety() -> void:
+	GameState.new_game()
+	var was_loaded: bool = GameState.loaded
+	GameState.loaded = false
+	# enhance pity: certain after the pity count of failures
+	var it := LootSystem.generate(GameState.rng, 20, "rare", "knight")
+	it["enhance"] = 14
+	it["enh_fail"] = int(DataDB.bal("enhance_pity", 6))
+	runner.check(is_equal_approx(float(Blacksmith.enhance_info(it)["chance"]), 1.0), "enhance pity reaches 100%")
+	# combine odds rise with pity and what is shown is what is rolled
+	GameState.blacksmith["pity"] = 0
+	var c0 := Blacksmith.combine_chance("legendary")
+	GameState.blacksmith["pity"] = 5
+	runner.check(Blacksmith.combine_chance("legendary") > c0, "combine odds rise after failures")
+	# a successful combine never returns a lower item level than the best input
+	GameState.blacksmith["pity"] = 99
+	GameState.blacksmith["level"] = 50
+	var uids: Array = []
+	for i in 9:
+		var x := LootSystem.generate(GameState.rng, 30 + i, "magic", "knight")
+		GameState.bag.append(x)
+		uids.append(x["uid"])
+	var res := Blacksmith.combine(uids, "knight")
+	runner.check(res.get("success", false) and int(res["item"].get("ilvl", 0)) >= 38, "combine keeps the best input level")
+	# bad luck protection turns a long dry streak into an epic
+	GameState.progress["dry_epic"] = 500
+	runner.check(ItemUtil.rarity_rank(LootSystem._bad_luck("common")) >= ItemUtil.rarity_rank("epic"), "dry streak gives an epic")
+	GameState.loaded = was_loaded
+
+
+func test_one_shot_cap() -> void:
+	GameState.new_game()
+	var src := Combatant.new()
+	src.side = Combatant.Side.ENEMY
+	src.etype = "normal"
+	src.level = 50
+	src.stats = {"power": 1e7, "crit_chance": 0.0}
+	var tgt := Combatant.new()
+	tgt.side = Combatant.Side.HERO
+	tgt.max_hp = 1000.0
+	tgt.hp = 1000.0
+	tgt.stats = {"def": 0.0}
+	var dmg := float(BattleSim.calc_damage(src, tgt, 1.0, "physical", false)["amount"])
+	runner.check(dmg <= 1000.0 * 0.45, "a normal enemy can't one-shot (%d)" % int(dmg))

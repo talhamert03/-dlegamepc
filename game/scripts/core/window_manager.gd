@@ -143,7 +143,25 @@ func setup_main_window() -> void:
 
 
 func _usable() -> Rect2i:
-	return DisplayServer.screen_get_usable_rect(DisplayServer.window_get_current_screen())
+	return DisplayServer.screen_get_usable_rect(game_screen())
+
+
+## The monitor the game lives on: the one picked in the settings, else the one the window is on.
+func game_screen() -> int:
+	var want := int(Settings.get_v("screen", -1))
+	if want >= 0 and want < DisplayServer.get_screen_count():
+		return want
+	return DisplayServer.window_get_current_screen()
+
+
+func set_screen(idx: int) -> void:
+	Settings.set_v("screen", idx)
+	Settings.set_v("strip_lx", -1)
+	Settings.set_v("strip_ly", -1)
+	Settings.set_v("panel_lpos", {})
+	if mini_mode:
+		exit_mini()
+	setup_main_window()
 
 
 ## Compact, taskbar-hero sized: about one integer step per 520 px of screen height
@@ -695,7 +713,7 @@ func _mini_watch(delta: float) -> void:
 
 
 func _taskbar_rect() -> Rect2i:
-	var scr := DisplayServer.window_get_current_screen()
+	var scr := game_screen()
 	var full := Rect2i(DisplayServer.screen_get_position(scr), DisplayServer.screen_get_size(scr))
 	var usable := DisplayServer.screen_get_usable_rect(scr)
 	var dpi := maxf(1.0, DisplayServer.screen_get_dpi(scr) / 96.0)
@@ -720,7 +738,7 @@ func enter_mini() -> void:
 	top_layer.visible = false
 	var tb := _taskbar_rect()
 	_mini_rect = tb
-	var dpi := maxf(1.0, DisplayServer.screen_get_dpi(DisplayServer.window_get_current_screen()) / 96.0)
+	var dpi := maxf(1.0, DisplayServer.screen_get_dpi(game_screen()) / 96.0)
 	var bar_px := maxf(24.0, tb.size.y - 4.0 * dpi)
 	var k := bar_px / MINI_CROP.size.y
 	var logical := Vector2i(int(MINI_CROP.size.x), int(MINI_CROP.size.y + MINI_BUBBLE_H))
@@ -894,6 +912,18 @@ func _on_tray_menu(id: int) -> void:
 
 func _on_root_close() -> void:
 	quit_game()
+
+
+## Quit with a confirmation over the battle strip (progress is saved either way).
+func ask_quit() -> void:
+	if strip == null or mini_mode:
+		quit_game()
+		return
+	if strip.has_node("QuitAsk"):
+		return
+	var v := W.confirm(strip, DataDB.t("quit_confirm"), quit_game, DataDB.t("tip_quit"), true)
+	v.name = "QuitAsk"
+	v.z_index = 200
 
 
 func quit_game() -> void:

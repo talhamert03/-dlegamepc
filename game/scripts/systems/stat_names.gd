@@ -41,6 +41,49 @@ const L := {
 }
 
 
+## What a stat does, in one plain sentence (shown on hover in the status panel).
+const DESC := {
+	"aps": ["Saniyedeki temel saldırı sayısı.", "Basic attacks per second."],
+	"crit_chance": ["Bir vuruşun kritik olma ihtimali (düz yüzde: %20 = her 5 vuruştan 1'i).", "Chance for a hit to crit (flat percent: 20% = 1 hit in 5)."],
+	"crit_dmg": ["Kritik vuruşun normal hasara oranı (%150 = 1,5 kat).", "Critical hit damage relative to a normal hit (150% = 1.5x)."],
+	"spell": ["Büyülerin ve iyileştirmelerin gücü.", "Strength of spells and heals."],
+	"added_dmg": ["Her vuruşa eklenen düz hasar.", "Flat damage added to every hit."],
+	"elem_dmg": ["Tüm elemental (ateş, soğuk, yıldırım, kaos) hasarını artırır.", "Raises all elemental damage (fire, cold, lightning, chaos)."],
+	"penetrate": ["Düşman savunmasının bu yüzdesini yok sayar.", "Ignores this share of enemy defense."],
+	"attack_speed": ["Saldırı hızını yüzde olarak artırır.", "Raises attack speed by this percent."],
+	"cast_speed": ["Yetenek bekleme sürelerini kısaltır.", "Shortens skill cooldowns."],
+	"skill_dmg": ["Yeteneklerin hasarını artırır.", "Raises skill damage."],
+	"elite_dmg": ["Elit düşmanlara karşı ek hasar.", "Extra damage against elites."],
+	"boss_dmg": ["Boss'lara karşı ek hasar.", "Extra damage against bosses."],
+	"dr": ["Alınan tüm hasarı bu yüzde kadar azaltır (en fazla %75).", "Cuts all damage taken by this percent (max 75%)."],
+	"crit_res": ["Düşman kritiklerinin ek hasarını azaltır.", "Reduces the extra damage of enemy crits."],
+	"evasion": ["Bir saldırıdan tamamen kaçma ihtimali.", "Chance to dodge an attack entirely."],
+	"block": ["Bloklanan vuruşun hasarı %60 azalır (en fazla %50 blok şansı).", "A blocked hit deals 60% less (block chance caps at 50%)."],
+	"fire_res": ["Ateş hasarını azaltır (en fazla %75). Ateş saldıran bölgelerde önemli.", "Reduces fire damage (max 75%). Key in zones whose enemies use fire."],
+	"cold_res": ["Soğuk hasarını azaltır (en fazla %75).", "Reduces cold damage (max 75%)."],
+	"lightning_res": ["Yıldırım hasarını azaltır (en fazla %75).", "Reduces lightning damage (max 75%)."],
+	"chaos_res": ["Kaos hasarını azaltır (en fazla %75).", "Reduces chaos damage (max 75%)."],
+	"lifesteal": ["Verilen hasarın bu yüzdesi kadar can kazanılır.", "Heals for this share of damage dealt."],
+	"thorns": ["Yakın dövüşte vurana, alınan hasarın bu yüzdesi geri yansır.", "Reflects this share of melee damage taken back to the attacker."],
+	"hp_regen": ["Her saniye yenilenen can.", "Life regenerated every second."],
+	"item_find": ["Eşya düşme şansı ve nadirliği.", "Item drop chance and rarity."],
+	"gold_find": ["Kazanılan altını artırır.", "Raises gold earned."],
+	"xp_bonus": ["Kazanılan tecrübeyi artırır.", "Raises experience earned."],
+	"cdr": ["Yetenek bekleme sürelerini azaltır.", "Reduces skill cooldowns."],
+	"heal_bonus": ["Yapılan iyileştirmeleri güçlendirir.", "Strengthens healing done."],
+	"buff_duration": ["Destek etkilerinin süresini uzatır.", "Extends buff durations."],
+	"ult_charge": ["Nihai yeteneğin daha hızlı dolmasını sağlar.", "Charges the ultimate faster."],
+	"summon_dmg": ["Çağrılan yaratıkların hasarını artırır.", "Raises summon damage."],
+}
+
+
+static func describe(key: String) -> String:
+	var d: Array = DESC.get(key, [])
+	if d.is_empty():
+		return ""
+	return d[0] if DataDB.lang == "tr" else d[1]
+
+
 static func label(key: String) -> String:
 	var k := key
 	var party := false

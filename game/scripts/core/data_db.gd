@@ -20,6 +20,7 @@ var strings: Dictionary = {}
 var achievements: Array = []
 var runes: Dictionary = {}       # class -> {branches, nodes} (tools/data/gen_runes.py)
 var shop: Dictionary = {}
+var patch_notes: Dictionary = {}
 var pets: Dictionary = {}
 var hero_anims: Dictionary = {}
 var lang: String = "tr"
@@ -67,6 +68,7 @@ func load_all() -> void:
 	pets = _load("res://data/pets.json")
 	runes = _load("res://data/runes.json")
 	shop = _load("res://data/shop.json")
+	patch_notes = _load("res://data/patch_notes.json")
 	hero_anims = _load("res://assets/sprites/heroes/anims.json")
 	loaded = true
 

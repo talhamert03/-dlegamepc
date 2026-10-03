@@ -21,6 +21,7 @@ func test_defense_reduction_reference() -> void:
 	# GDD 8.2: Lv 50 attacker vs DEF 276 -> 44.1%
 	var src := Combatant.new()
 	src.level = 50
+	src.side = Combatant.Side.ENEMY   # neutral attacker: no party fellowship bonus in the reference number
 	src.stats = {"power": 1000.0, "crit_chance": 0.0}
 	var tgt := Combatant.new()
 	tgt.side = Combatant.Side.ENEMY

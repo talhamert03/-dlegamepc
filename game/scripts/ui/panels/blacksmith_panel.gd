@@ -121,6 +121,7 @@ func _build_combine() -> void:
 	var chance := Blacksmith.combine_chance(r if r != "" else _auto_rarity)
 	_body.add_child(W.stat_row("%d/9" % picks.size(), DataDB.t("smith_success", {"p": int(round(chance * 100))}), UITheme.C_GREEN, UITheme.C_TEXT, int(content.size.x)))
 	_body.add_child(UITheme.label(DataDB.t("smith_pity", {"n": pity, "m": maxp}), UITheme.C_DIM))
+	_body.add_child(_roll_log("combine"))
 	var row := W.hbox(2)
 	_body.add_child(row)
 	var rar_btn := UITheme.button(ItemUtil.rarity_name(_auto_rarity), "brown", Callable(), Vector2(40, 12))
@@ -202,8 +203,10 @@ func _build_enhance() -> void:
 	if info["mat"] != "":
 		_body.add_child(W.stat_row(ItemUtil.material_name(info["mat"]), "%d / %d" % [int(info["mat_n"]), int(GameState.materials.get(info["mat"], 0))],
 			UITheme.C_TEXT, UITheme.C_TEXT, int(content.size.x)))
+	_body.add_child(UITheme.label(DataDB.t("smith_enh_pity", {"n": int(info["fails"]), "m": int(info["pity"])}), UITheme.C_DIM))
 	if info["fail_down"]:
 		_body.add_child(UITheme.label(DataDB.t("smith_fail_down"), UITheme.C_RED))
+	_body.add_child(_roll_log("enhance"))
 	var b := UITheme.button(DataDB.t("smith_enhance"), "gold", func():
 		var r := Blacksmith.enhance(_item_for_target())
 		if r == "success":
@@ -295,3 +298,15 @@ func _build_craft() -> void:
 			EventBus.notify.emit(DataDB.t("smith_crafted", {"name": ItemUtil.display_name(it)}), ItemUtil.rarity_color(it["rarity"]))
 		refresh(), Vector2(content.size.x, 13))
 	_body.add_child(b2)
+
+
+## Last rolls of a kind with the chance they had: "✓ 75%  ✗ 40%  ✓ 52%".
+func _roll_log(kind: String) -> Label:
+	var parts: Array = []
+	for e in GameState.blacksmith.get("log", []):
+		if str(e.get("k", "")) == kind and parts.size() < 6:
+			parts.append(("✓ " if e.get("ok", false) else "✗ ") + "%d%%" % int(round(float(e.get("c", 0)) * 100)))
+	var l := UITheme.label(DataDB.t("smith_log") + " " + ("  ".join(parts) if parts.size() > 0 else "—"), UITheme.C_DIM, 7, UITheme.font_body)
+	l.clip_text = true
+	l.custom_minimum_size = Vector2(content.size.x - 4, 9)
+	return l

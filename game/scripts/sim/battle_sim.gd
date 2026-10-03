@@ -1079,11 +1079,25 @@ func calc_damage(src: Combatant, tgt: Combatant, mult: float, element: String, i
 	if not is_dot and rng.randf() * 100.0 < min(50.0, tgt.st("block")):
 		raw *= 1.0 - float(DataDB.bal("combat.block_reduction", 0.6))
 		out["blocked"] = true
+	# fellowship: every extra hero in the party adds a little damage and toughness to all, so a full
+	# party always beats one carried hero
+	var mates: int = maxi(0, GameState.party_count() - 1)
+	var fellow: float = float(DataDB.bal("combat.fellowship", 0.04)) * mates
+	if src != null and src.is_hero_side():
+		raw *= 1.0 + fellow
+	if tgt.is_hero_side():
+		raw *= 1.0 / (1.0 + fellow)
 	# a lone hero (before the first recruit) takes less punishment
 	if tgt.is_hero_side() and GameState.party_count() <= 1:
 		raw *= float(DataDB.bal("combat.solo_damage_taken", 0.5))
 	var v: float = float(DataDB.bal("combat.dmg_variance", 0.05))
 	raw *= rng.randf_range(1.0 - v, 1.0 + v)
+	# no out-of-nowhere one-shots: a single enemy hit takes at most a share of a hero's life
+	# (bosses hit harder, but still need two blows); defence and resistances stay meaningful below the cap
+	if tgt.is_hero_side() and src != null and not src.is_hero_side() and not is_dot:
+		var boss: bool = src.etype == "boss" or src.etype == "actboss"
+		var cap: float = tgt.max_hp * float(DataDB.bal("combat.hit_cap_boss" if boss else "combat.hit_cap", 0.55 if boss else 0.38))
+		raw = minf(raw, cap)
 	out["amount"] = max(1.0, round(raw))
 	return out
 
@@ -1305,11 +1319,18 @@ func _boss_timeout() -> void:
 	boss_fail_count += 1
 	EventBus.boss_failed.emit(zone_id())
 	EventBus.notify.emit(DataDB.t("boss_failed"), Color("#FF6A5A"))
+	_stuck_hint()
 	_clear_enemies()
 	stage = stages_per_zone() - 1
 	_save_stage()
 	EventBus.stage_changed.emit(stage)
 	_set_phase("travel")
+
+
+## After repeated boss failures, say why and what to do (resistance, levels or gear).
+func _stuck_hint() -> void:
+	if boss_fail_count >= 2 and boss_fail_count % 2 == 0 and mode == "zone" and not quiet:
+		EventBus.notify.emit(DataDB.t("stuck_hint", {"n": boss_fail_count, "hint": ZoneInfo.hint(zone(), difficulty)}), Color("#FFD36A"))
 
 
 func _wipe() -> void:
@@ -1326,6 +1347,7 @@ func _after_wipe() -> void:
 		return
 	if is_boss_stage():
 		boss_fail_count += 1
+		_stuck_hint()
 	stage = max(1, stage - 2)
 	wave = 0
 	_save_stage()

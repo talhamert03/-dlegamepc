@@ -804,8 +804,8 @@
   "en": "Pick an equipped item or one from the bag."
  },
  "smith_fail_down": {
-  "tr": "Başarısızlıkta -1 seviye",
-  "en": "-1 level on failure"
+  "tr": "Başarısızlıkta +1 seviye düşer (yalnızca +13 ve üstü)",
+  "en": "A failure drops one level (only +13 and above)"
  },
  "smith_level": {
   "tr": "Demirci seviye {lv}!",
@@ -824,8 +824,8 @@
   "en": "Next"
  },
  "smith_pity": {
-  "tr": "{n}/{m} (bu sayıda başarısızlıktan sonra garanti)",
-  "en": "{n}/{m} (guaranteed after this many failures)"
+  "tr": "Garanti: her başarısızlık şansı artırır ({n}/{m})",
+  "en": "Pity: each failure raises the odds ({n}/{m})"
  },
  "smith_salvage": {
   "tr": "Parçala",
@@ -1758,5 +1758,89 @@
  "shop_offline_boost_tip": {
   "tr": "Kalıcı olarak offline kazanç verimini %15 artırır ve offline süre sınırını 4 saat uzatır.",
   "en": "Permanently raises offline efficiency by 15% and the offline time cap by 4 hours."
+ },
+ "smith_enh_pity": {
+  "tr": "Garanti: her başarısızlık şansı artırır ({n}/{m}, {m}. denemede kesin)",
+  "en": "Pity: each failure raises the odds ({n}/{m}, certain on try {m})"
+ },
+ "smith_log": {
+  "tr": "Son denemeler:",
+  "en": "Last rolls:"
+ },
+ "btn_reset_free": {
+  "tr": "Sıfırla",
+  "en": "Reset"
+ },
+ "skills_reset_confirm": {
+  "tr": "Tüm yetenek puanları ücretsiz geri verilsin mi?",
+  "en": "Refund all skill points for free?"
+ },
+ "ready_ok": {
+  "tr": "✓ Hazırsın",
+  "en": "✓ Ready"
+ },
+ "ready_hard": {
+  "tr": "▲ Zorlayıcı",
+  "en": "▲ Tough"
+ },
+ "ready_very_hard": {
+  "tr": "✖ Çok zor",
+  "en": "✖ Very hard"
+ },
+ "ready_tip_ok": {
+  "tr": "Partin bu bölge için hazır görünüyor.",
+  "en": "Your party looks ready for this zone."
+ },
+ "ready_tip_hard": {
+  "tr": "Zorlayıcı olabilir: seviye ya da direnç biraz eksik.",
+  "en": "Could be tough: a little short on level or resistance."
+ },
+ "ready_tip_very_hard": {
+  "tr": "Şu an çok zor: önce bir önceki bölgede güçlen.",
+  "en": "Very hard for now: grow stronger in the previous zone first."
+ },
+ "zone_elements": {
+  "tr": "Buradaki düşmanlar şu elementleri kullanıyor: {list}. Önerilen etkin direnç: %{want}+ (listedeki sayı partideki en düşük direnç).",
+  "en": "Enemies here use: {list}. Recommended effective resistance: {want}%+ (the number shown is the party's lowest)."
+ },
+ "hint_res": {
+  "tr": "İpucu: {el} direncin düşük (%{now}). %{want}+ için direnç eşyası, rün veya kolye/yüzük dene.",
+  "en": "Tip: your {el} resistance is low ({now}%). Aim for {want}%+ with resistance gear, runes or jewelry."
+ },
+ "hint_level": {
+  "tr": "İpucu: bölge senden yaklaşık {n} seviye yukarıda. Bir önceki bölümde biraz kas, sonra tekrar dene.",
+  "en": "Tip: the zone is about {n} levels above you. Farm the previous stage a little, then try again."
+ },
+ "hint_gear": {
+  "tr": "İpucu: demircide eşyalarını güçlendir, yeteneklerini ve rünlerini gözden geçir.",
+  "en": "Tip: enhance your gear at the blacksmith and review skills and runes."
+ },
+ "stuck_hint": {
+  "tr": "Boss'u {n}. kez geçemedin. {hint}",
+  "en": "Failed the boss {n} times. {hint}"
+ },
+ "paragon_up": {
+  "tr": "{name} Paragon {n}! +3 stat puanı",
+  "en": "{name} Paragon {n}! +3 stat points"
+ },
+ "loot_offclass": {
+  "tr": "Partide kimsenin giyemediği eşyaları sat",
+  "en": "Sell gear nobody in the party can wear"
+ },
+ "set_screen": {
+  "tr": "Monitör",
+  "en": "Monitor"
+ },
+ "quit_confirm": {
+  "tr": "Oyundan çıkılsın mı? İlerlemen kaydedildi; kapalıyken de offline kazanırsın.",
+  "en": "Quit the game? Progress is saved and you keep earning offline."
+ },
+ "skill_set_tip": {
+  "tr": "Yetenek seti A / B: örn. A = farm, B = boss. Tıklayınca o sete geçer, mevcut seçim saklanır.",
+  "en": "Skill bar A / B: e.g. A = farming, B = bosses. Click to switch; the current bar is kept."
+ },
+ "tab_news": {
+  "tr": "Yenilikler",
+  "en": "What's New"
  }
 }

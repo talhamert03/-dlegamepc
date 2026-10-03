@@ -280,7 +280,7 @@ func refresh() -> void:
 	if h:
 		set_panel_title(DataDB.t("panel_hero"))
 		_cls.text = "%s · %s" % [h.display_name(), h.class_title()]
-		_lvl.text = "Lv.%d" % h.level
+		_lvl.text = ("Lv.%d" % h.level) + ("  ✦P%d" % h.paragon if h.paragon > 0 else "")
 		_stars.text = "★".repeat(h.stars)
 		var tex := SpriteLib.portrait(hid)
 		if tex:
@@ -527,7 +527,7 @@ func _loot_filter_dialog() -> void:
 	veil.draw.connect(func(): veil.draw_rect(Rect2(Vector2.ZERO, veil.size), Color(0.02, 0.01, 0.03, 0.72)))
 	_host.add_child(veil)
 	var card := Control.new()
-	card.size = Vector2(212, 128)
+	card.size = Vector2(212, 146)
 	card.position = ((veil.size - card.size) / 2.0).round()
 	card.draw.connect(func():
 		var ci := card.get_canvas_item()
@@ -565,10 +565,22 @@ func _loot_filter_dialog() -> void:
 				for j in btns.size():
 					UITheme.set_button_color(btns[j], "gold" if j == i else "brown"))
 		y += 17.0
+	var oc := UITheme.button("", "brown", Callable(), Vector2(192, 13))
+	oc.toggle_mode = true
+	oc.button_pressed = bool(Settings.get_v("loot_offclass_sell", true))
+	var oc_txt := func(on: bool) -> String:
+		return ("☑  " if on else "☐  ") + DataDB.t("loot_offclass")
+	oc.text = oc_txt.call(oc.button_pressed)
+	oc.toggled.connect(func(on: bool):
+		Settings.set_v("loot_offclass_sell", on)
+		oc.text = oc_txt.call(on))
+	card.add_child(oc)
+	oc.size = Vector2(192, 13)
+	oc.position = Vector2(10, y + 1)
 	var ok := UITheme.button(DataDB.t("btn_close"), "brown", func(): veil.queue_free(), Vector2(80, 14))
 	card.add_child(ok)
 	ok.size = Vector2(80, 14)
-	ok.position = Vector2(66, 104)
+	ok.position = Vector2(66, y + 19)
 
 
 func _build_formation() -> void:
