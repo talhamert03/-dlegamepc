@@ -28,7 +28,7 @@ const PANELS := {
 	"party": {"script": "res://scripts/ui/panels/party_panel.gd", "size": Vector2i(220, 200), "title": "panel_party"},
 	"tavern": {"script": "res://scripts/ui/panels/tavern_panel.gd", "size": Vector2i(300, 236), "title": "panel_tavern"},
 	"settings": {"script": "res://scripts/ui/panels/settings_panel.gd", "size": Vector2i(236, 250), "title": "panel_settings"},
-	"away": {"script": "res://scripts/ui/panels/away_panel.gd", "size": Vector2i(210, 180), "title": "panel_away"},
+	"away": {"script": "res://scripts/ui/panels/away_panel.gd", "size": Vector2i(220, 214), "title": "panel_away"},
 	"dps": {"script": "res://scripts/ui/panels/dps_panel.gd", "size": Vector2i(180, 160), "title": "panel_dps"},
 	"quests": {"script": "res://scripts/ui/panels/quests_panel.gd", "size": Vector2i(210, 220), "title": "panel_quests"},
 	"codex": {"script": "res://scripts/ui/panels/codex_panel.gd", "size": Vector2i(232, 240), "title": "panel_codex"},
@@ -84,11 +84,12 @@ func setup_overlay(desk: Control, strip_root: Control) -> void:
 	panels_layer = Control.new()
 	panels_layer.name = "Panels"
 	panels_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panels_layer.z_index = 100       # windows always draw over the battle strip (its effects use z up to 50)
 	desk.add_child(panels_layer)
 	top_layer = Control.new()
 	top_layer.name = "Top"
 	top_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	top_layer.z_index = 90
+	top_layer.z_index = 120
 	desk.add_child(top_layer)
 	tooltip = load("res://scripts/ui/tooltip_window.gd").new()
 	top_layer.add_child(tooltip)
@@ -760,7 +761,7 @@ func _ensure_mini_bar() -> void:
 	if mini_bar and is_instance_valid(mini_bar):
 		return
 	mini_bar = MiniBar.new()
-	mini_bar.z_index = 95
+	mini_bar.z_index = 130
 	desktop.add_child(mini_bar)
 	mini_bar.restore_requested.connect(func(): exit_mini())
 	mini_bar.bubble_clicked.connect(func(): exit_mini("chests"))

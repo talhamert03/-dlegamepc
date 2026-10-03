@@ -14,12 +14,12 @@ static func apply() -> Dictionary:
 	var secs: float = min(float(now - last), max_h * 3600.0)
 	if secs < 60:
 		return report
-	var eff: float = min(1.0, float(DataDB.bal("offline.efficiency", 0.6)) + float(acc.get("offline_eff", 0.0)) / 100.0)
+	var eff: float = min(0.9, float(DataDB.bal("offline.efficiency", 0.4)) + float(acc.get("offline_eff", 0.0)) / 100.0)
 	for h in GameState.party_heroes():
 		for slot in h.equipment:
 			var it: Dictionary = h.equipment[slot]
 			if it.get("leg", "") == "leg_hourglass":
-				eff = min(1.0, eff + 0.2)
+				eff = min(0.9, eff + 0.15)
 	var minutes := secs / 60.0
 	var rates: Dictionary = GameState.rates
 	# fall back to a conservative estimate if no rates were recorded yet
@@ -56,7 +56,7 @@ static func apply() -> Dictionary:
 		iff += float(GameState.hero_stats(h.id).get("item_find", 0.0))
 	iff /= max(1, ph.size())
 	var drop_p: float = float(DataDB.bal("loot.drop_chance", {}).get("normal", 0.08)) * (1.0 + iff / 400.0)
-	var expected := int(kills * drop_p)
+	var expected := int(kills * drop_p * float(DataDB.bal("offline.item_factor", 0.35)))
 	var max_items := int(DataDB.bal("offline.max_items", 200))
 	var gen: int = min(expected, max_items)
 	var found: Array = []
@@ -74,7 +74,7 @@ static func apply() -> Dictionary:
 		found.append(it)
 	# remaining expected drops are converted into gold
 	if expected > gen:
-		var extra := int((expected - gen) * (5.0 + lv * 1.5) * 2.0)
+		var extra := int((expected - gen) * (5.0 + lv * 1.5))
 		GameState.add_gold(extra)
 		sold_gold += extra
 	found.sort_custom(func(a, b): return ItemUtil.rarity_rank(a["rarity"]) > ItemUtil.rarity_rank(b["rarity"]))

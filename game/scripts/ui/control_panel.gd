@@ -58,8 +58,8 @@ func _ready() -> void:
 	slash.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	slash.draw.connect(func():
 		if Settings.get_v("mute", false):
-			slash.draw_line(Vector2(0, 8), Vector2(8, 0), Color(0, 0, 0, 0.8), 2.6, true)
-			slash.draw_line(Vector2(0, 8), Vector2(8, 0), Color("#FF5A4A"), 1.4, true))
+			slash.draw_line(Vector2(2.5, 7.5), Vector2(7.5, 2.5), Color(0, 0, 0, 0.75), 1.6, true)
+			slash.draw_line(Vector2(2.5, 7.5), Vector2(7.5, 2.5), Color("#FF5A4A"), 0.8, true))
 	add_child(slash)
 	_slash = slash
 	# gold

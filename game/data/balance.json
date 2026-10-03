@@ -207,9 +207,10 @@
   "material_chance": 0.05
  },
  "offline": {
-  "max_hours": 12,
-  "efficiency": 0.6,
-  "max_items": 200
+  "max_hours": 10,
+  "efficiency": 0.4,
+  "item_factor": 0.35,
+  "max_items": 40
  },
  "enhance": [
   {

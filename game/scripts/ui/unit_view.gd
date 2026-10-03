@@ -173,7 +173,8 @@ func _setup_hd() -> void:
 	mat.set_shader_parameter("texel_scale", 1.0 / _k)
 	body.add_child(spr)
 	# HD illustrations face right for heroes, left for monsters
-	_hd_flip = (ref[0] == "heroes") != unit.is_hero_side()
+	# (pets are painted facing right, like heroes)
+	_hd_flip = (ref[0] == "heroes" or ref[0] == "pets") != unit.is_hero_side()
 
 
 var _hd_flip := false

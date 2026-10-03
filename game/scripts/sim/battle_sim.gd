@@ -3,6 +3,7 @@ extends Node
 ## from rendering. The view (StripView) only reads state and listens to EventBus signals.
 
 const TICK := 0.1
+const VISIBLE_X := 350.0     # ranged heroes hit anything that has walked into view
 const HERO_X := [196.0, 166.0, 136.0, 106.0, 76.0]   # slot 0 = front-most
 const SPAWN_X := 420.0
 const GROUND_Y := 64.0
@@ -276,6 +277,10 @@ func _revive_all() -> void:
 			u.statuses.clear()
 			u.buffs.clear()
 			u.revive_t = 0
+	if not quiet:
+		for u in heroes:
+			if u.etype != "hero":
+				EventBus.unit_died.emit(u)     # pets / summons leave with their views
 	heroes = heroes.filter(func(u): return u.etype == "hero")
 	if had_dead and not quiet:
 		for u in heroes:
@@ -575,7 +580,8 @@ func _basic_target(u: Combatant) -> Combatant:
 		if not e.alive:
 			continue
 		var dist: float = (e.x - fx) if melee else (e.x - u.x)
-		if dist <= rng_ + 8.0:
+		var ok: bool = dist <= rng_ + 8.0 or (not melee and u.is_hero_side() and e.x <= VISIBLE_X)
+		if ok:
 			if best == null or e.x < best.x:
 				best = e
 	return best
@@ -699,7 +705,8 @@ func _select_targets(u: Combatant, sdef: Dictionary) -> Array:
 	var allies: Array = (heroes if u.is_hero_side() else enemies).filter(func(e): return e.alive and e.etype != "pet")
 	var reach: float = float(u.stats.get("range", 26)) + 30.0
 	var fx := front_hero_x()
-	var in_range: Array = foes.filter(func(e): return (e.x - (fx if bool(u.stats.get("melee", true)) else u.x)) <= reach + 40.0)
+	var ranged_hero: bool = u.is_hero_side() and not bool(u.stats.get("melee", true))
+	var in_range: Array = foes.filter(func(e): return (e.x - (fx if bool(u.stats.get("melee", true)) else u.x)) <= reach + 40.0 or (ranged_hero and e.x <= VISIBLE_X))
 	match mode:
 		"enemy_front":
 			in_range.sort_custom(func(a, b): return a.x < b.x)

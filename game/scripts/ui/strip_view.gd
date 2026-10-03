@@ -353,7 +353,7 @@ func _on_unit_died(u: Combatant) -> void:
 		return
 	views.erase(u.uid)
 	var tw := create_tween()
-	tw.tween_interval(1.2 if u.side == Combatant.Side.ENEMY else 0.3)
+	tw.tween_interval(1.2 if u.side == Combatant.Side.ENEMY else (0.0 if u.etype == "pet" else 0.3))
 	tw.tween_callback(v.queue_free)
 	if u.side == Combatant.Side.ENEMY:
 		AudioManager.play("death", 0.12, 0.45)

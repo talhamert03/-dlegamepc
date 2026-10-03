@@ -125,11 +125,13 @@ static func fmt_num(v: float) -> String:
 	var a: float = abs(v)
 	var sgn := "-" if v < 0 else ""
 	if a >= 1e9:
-		return sgn + "%.2fB" % (a / 1e9)
+		return sgn + ("%.2f" % (a / 1e9)).rstrip("0").trim_suffix(".") + "B"
 	if a >= 1e6:
-		return sgn + "%.2fM" % (a / 1e6)
-	if a >= 1e4:
-		return sgn + "%.1fK" % (a / 1e3)
+		return sgn + ("%.2f" % (a / 1e6)).rstrip("0").trim_suffix(".") + "M"
+	if a >= 1e3:
+		var k := a / 1e3
+		var ks := ("%.1f" % k).trim_suffix(".0") if k < 100.0 else str(int(k))
+		return sgn + ks + "k"
 	if a >= 100 or is_equal_approx(a, round(a)):
 		return sgn + str(int(round(a)))
 	return sgn + "%.1f" % a

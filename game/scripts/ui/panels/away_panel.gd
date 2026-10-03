@@ -6,9 +6,17 @@ var _body: VBoxContainer
 
 
 func build(c: Control) -> void:
+	var sc := W.scroll(Vector2(c.size.x, c.size.y - 18))
+	c.add_child(sc)
 	_body = W.vbox(2)
-	_body.size = c.size
-	c.add_child(_body)
+	_body.custom_minimum_size = Vector2(c.size.x - 6, 0)
+	sc.add_child(_body)
+	var b := UITheme.button(DataDB.t("btn_collect"), "gold", func():
+		AudioManager.play("coins")
+		WindowManager.close_panel("away"), Vector2(c.size.x, 15))
+	c.add_child(b)
+	b.size = Vector2(c.size.x, 15)
+	b.position = Vector2(0, c.size.y - 15)
 	refresh()
 
 
@@ -33,18 +41,20 @@ func refresh() -> void:
 	_body.add_child(W.stat_row(DataDB.t("gold"), F.fmt_num(int(report.get("gold", 0))), UITheme.C_GOLD, Color("#E8C98A"), w))
 	_body.add_child(W.stat_row(DataDB.t("away_items"), str(int(report.get("item_count", 0))), UITheme.C_TEXT, Color("#E8C98A"), w))
 	var lv: Dictionary = report.get("levels", {})
+	var parts: Array = []
 	for hid in lv:
-		_body.add_child(UITheme.label(DataDB.t("away_level", {"name": DataDB.hero_def(hid).get("name", hid), "n": lv[hid]}), UITheme.C_GOLD))
+		parts.append(DataDB.t("away_level", {"name": DataDB.hero_def(hid).get("name", hid), "n": lv[hid]}))
+	if parts.size() > 0:
+		var ll := UITheme.label("  ".join(parts), UITheme.C_GOLD)
+		ll.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		ll.custom_minimum_size = Vector2(content.size.x - 6, 0)
+		_body.add_child(ll)
 	var items: Array = report.get("items", [])
 	if items.size() > 0:
 		_body.add_child(UITheme.label(DataDB.t("away_best"), Color("#E8C98A")))
 		var row := W.hbox(2)
 		_body.add_child(row)
 		for it in items:
-			var sl := ItemSlot.new()
+			var sl := ItemSlot.new(26.0)
 			sl.set_item(it)
 			row.add_child(sl)
-	var b := UITheme.button(DataDB.t("btn_collect"), "gold", func():
-		AudioManager.play("coins")
-		WindowManager.close_panel("away"), Vector2(content.size.x, 13))
-	_body.add_child(b)

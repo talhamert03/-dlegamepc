@@ -317,6 +317,13 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			get_tree().create_timer(secs - 1.2).timeout.connect(func():
 				EventBus.chest_dropped.emit("gold", Vector2(250, BattleSim.GROUND_Y)))
 	await get_tree().create_timer(0.5).timeout
+	if cmd.has("--awaytest"):
+		var items: Array = []
+		for i in 5:
+			items.append(LootSystem.generate(GameState.rng, 10, ["rare", "epic", "magic", "rare", "common"][i], "mage"))
+		var ap := WindowManager.open_panel("away")
+		ap.set_report({"seconds": 1500, "eff": 0.4, "kills": 250, "xp": 3200.0, "gold": 1800, "item_count": 6,
+			"levels": {"lyra": 1, "nova": 1, "pip": 1, "kael": 1}, "items": items})
 	for p in panels:
 		if p != "":
 			WindowManager.open_panel(p)
