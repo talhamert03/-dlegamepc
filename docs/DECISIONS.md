@@ -61,15 +61,18 @@ yapay zeka) projeye katılmadan önce bu dosyayı okumalı.
 - **Animasyon sheet'i eksik birimler:** 27/48 kahraman ve 16/112 düşman-boss sheet'li (kredi sınırı). Kalanlar
   `ai_sheets.py batch` + `import_sheets.py` ile aynı boru hattından üretilebilir (~0.25 kredi/sheet).
 
-## Taskbar mode, chests, runes, status (TBH parity round)
-- Minimising never pauses: the overlay window is restored at once as a slim framed battle bar sitting on
-  the taskbar left of the tray (offset ~300 px * DPI, draggable along the taskbar, remembered). The window is
-  re-raised above the taskbar every 1.5 s; the click-through region keeps only the bar (and the chest bubble)
-  visible. Toggle: Settings → "Taskbar mode when minimised".
-- Chests: five vector-drawn rarities (wood, iron, gold, crystal, royal). Drop chance per kill by enemy type
-  (normal 0.45 %, elite 6 %, boss 60 %, act boss 100 %), rarity table by type, "Chest Find" from runes.
-  Rewards scale with the kill level: gold worth N normal kills, items with a guaranteed minimum rarity, mats.
-- Rune tree: account-wide gold sink (46 nodes, 4 branches) on a pannable board; a node opens when a linked
-  node has a rank. Costs grow 2.3x per ring and 1.6x per rank. Bonuses feed account_mods.
-- Status panel replaces the separate skills window: parchment stat sheet + skill tiers on a red level rail
-  at the real unlock levels (1 / 30 advancement / 70 specialisation).
+## Görev çubuğu modu, sandıklar, rünler, durum (TBH turu)
+- Küçültmek oyunu hiç durdurmaz: pencere hemen görev çubuğunun üstünde, bildirim alanının solunda
+  (~300 px x DPI uzaklıkta; görev çubuğu boyunca sürüklenebilir ve konumu hatırlanır) çerçeveli ince bir
+  savaş şeridi olarak geri gelir. Pencere görev çubuğunun üstünde kalsın diye 1,5 sn'de bir yeniden öne
+  alınır. Tıklamayı geçiren bölge yalnızca şeridi (ve sandık baloncuğunu) görünür bırakır.
+  Ayar: "Küçültünce görev çubuğu modu".
+- Sandıklar: vektörle çizilmiş beş nadirlik (ahşap, demir, altın, kristal, kraliyet). Öldürme başına düşme
+  şansı düşman türüne göre değişir: normal %0,45, elit %6, boss %60, perde bossu %100. Nadirlik tablosu da
+  türe göre belirlenir; rünlerden gelen "Sandık Bulma" şansı artırır. Ödüller öldürmenin seviyesine göre
+  ölçeklenir: N normal öldürme değerinde altın, en az belirli nadirlikte itemler ve malzemeler.
+- Rün ağacı: hesap genelinde altın harcanan ağaç (46 düğüm, 4 dal), kaydırılabilir bir tahta üzerinde. Bir
+  düğüm, bağlı düğümlerden biri en az bir kademe alınca açılır. Maliyet halka başına x2,3, kademe başına
+  x1,6 artar. Bonuslar account_mods'a eklenir.
+- Durum paneli ayrı skill penceresinin yerini alır: parşömen stat sayfası ve kırmızı seviye çubuğuna bağlı
+  skill kademeleri, gerçek açılma seviyelerinde: 1 / 30 (sınıf yükseltme) / 70 (yol seçimi).
