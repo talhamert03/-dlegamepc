@@ -60,6 +60,10 @@ func refresh() -> void:
 		2:
 			_choice("set_barks", "barks", [0, 1, 2], [DataDB.t("off"), DataDB.t("few"), DataDB.t("normal")])
 			_toggle("set_tutorial", "tutorial_done")
+			_body.add_child(UITheme.button(DataDB.t("btn_replay_intro"), "orange", func():
+				var m := get_tree().current_scene
+				if m and m.has_method("replay_intro"):
+					m.replay_intro()))
 			_body.add_child(UITheme.label(DataDB.t("hotkeys_help"), UITheme.C_DIM))
 			var save_b := UITheme.button(DataDB.t("btn_save_now"), "blue", func():
 				GameState.save_game()

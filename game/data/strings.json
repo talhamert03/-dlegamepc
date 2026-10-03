@@ -2066,5 +2066,9 @@
  "seals_tip": {
   "tr": "Taverna Mührü: {n}\nSR ve SSR kahramanları açmak için gerekir.\nNereden kazanılır:\n· Bölge bossları: 1 mühür\n· Perde bossları: 3 mühür\n· Günlük görevler (düşman öldürme, altın toplama): 1'er mühür\n· Altın, Kristal ve Kraliyet sandıkları\n· Mağaza: 5'li mühür paketi",
   "en": "Tavern Seals: {n}\nNeeded to recruit SR and SSR heroes.\nWhere to get them:\n· Zone bosses: 1 seal\n· Act bosses: 3 seals\n· Daily quests (kills, gold): 1 each\n· Gold, Crystal and Royal chests\n· Store: 5-seal pack"
+ },
+ "btn_replay_intro": {
+  "tr": "Açılış Sinematiğini İzle",
+  "en": "Watch Opening Cinematic"
  }
 }

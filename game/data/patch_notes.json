@@ -27,6 +27,10 @@
     {
      "tr": "Taverna Mührü simgesinin üzerine gelince nereden kazanıldığı yazar.",
      "en": "Hovering the Tavern Seal counter explains where seals come from."
+    },
+    {
+     "tr": "Ayarlar > Diğer sekmesine \"Açılış Sinematiğini İzle\" butonu eklendi; savaş izlerken duraklar.",
+     "en": "Settings > Other: \"Watch Opening Cinematic\" button; the battle pauses while it plays."
     }
    ]
   },

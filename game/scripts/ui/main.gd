@@ -111,6 +111,36 @@ func _run_title() -> void:
 	WindowManager.layout_changed()
 
 
+## Replays the opening cinematic from the settings (the battle pauses while it runs, panels close).
+func replay_intro() -> void:
+	if WindowManager.title_mode:
+		return
+	for id in WindowManager.panels.keys():
+		WindowManager.close_panel(id)
+	WindowManager.hide_tooltip()
+	var was_running := BattleSim.running
+	BattleSim.running = false
+	WindowManager.title_mode = true
+	strip_root.visible = false
+	var t := TitleScreen.new()
+	add_child(t)
+	move_child(t, strip_root.get_index() + 1)
+	WindowManager.title_control = t
+	WindowManager.layout_changed()
+	await get_tree().process_frame
+	t._start_intro()
+	await t.finished
+	WindowManager.title_mode = false
+	WindowManager.title_control = null
+	BattleSim.running = was_running
+	strip_root.visible = true
+	strip_root.modulate.a = 0.0
+	WindowManager.place_strip()
+	create_tween().tween_property(strip_root, "modulate:a", 1.0, 0.5)
+	AudioManager.play_music("town" if BattleSim.phase == "town" else str(BattleSim.zone().get("music", "act1")))
+	WindowManager.layout_changed()
+
+
 var _gift_dot: Control
 
 
@@ -413,6 +443,10 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 		if a.begins_with("--shopdetail=") and WindowManager.is_open("shop"):
 			WindowManager.panels["shop"]._details(Shop.product(a.substr(13)), "")
 			await get_tree().create_timer(0.4).timeout
+		if a == "--replayintro":
+			replay_intro()
+			await get_tree().create_timer(4.0).timeout
+			get_viewport().get_texture().get_image().save_png("user://screenshots/replay.png")
 		if a == "--bagdrag" and WindowManager.is_open("hero"):
 			var slots: Array = []
 			for n in WindowManager.panels["hero"].find_children("*", "ItemSlot", true, false):
