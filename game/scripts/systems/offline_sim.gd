@@ -21,6 +21,8 @@ static func apply() -> Dictionary:
 			var it: Dictionary = h.equipment[slot]
 			if it.get("leg", "") == "leg_hourglass":
 				eff = min(0.9, eff + 0.15)
+	# Hourglass of Ages (store): everything earned while away counts twice
+	eff = minf(1.0, eff * float(boost.get("mult", 1.0)))
 	var minutes := secs / 60.0
 	var rates: Dictionary = GameState.rates
 	# fall back to a conservative estimate if no rates were recorded yet

@@ -1,6 +1,35 @@
 {
- "current": "0.2.2",
+ "current": "0.2.3",
  "notes": [
+  {
+   "version": "0.2.3",
+   "title": {
+    "tr": "Taverna Ekonomisi ve Okunaklı Metinler",
+    "en": "Tavern Economy and Readable Text"
+   },
+   "items": [
+    {
+     "tr": "Taverna fiyatları yeniden dengelendi: ilk yoldaşlar 1k, 5k, 10k ve 20k altın; diğer kahramanlar 70k'dan, SR 220k'dan, SSR 1,2M'den başlar. Parti dolduktan sonra her yeni kahraman fiyatları %12 artırır. Taverna listesi en ucuzdan pahalıya sıralanır.",
+     "en": "Tavern prices rebalanced: first companions cost 1k, 5k, 10k and 20k gold; other heroes start at 70k, SR at 220k, SSR at 1.2M. Each hero past a full party raises prices by 12%. The tavern lists heroes cheapest first."
+    },
+    {
+     "tr": "Mağazada bir ürüne tıklayınca inceleme ekranı açılır: paketin tüm içeriği tek tek listelenir ve oradan satın alınabilir.",
+     "en": "Clicking a store product opens a details view listing everything it contains, with a buy button."
+    },
+    {
+     "tr": "Zaman Kum Saati artık çevrimdışı kazançları (altın, tecrübe, eşya) kalıcı olarak 2 katına çıkarır.",
+     "en": "The Hourglass of Ages now permanently doubles offline gains (gold, XP, items)."
+    },
+    {
+     "tr": "Hikâye ve son anlatımı okunaklı bir kitap yazı tipiyle yazılır; uzun ipuçları artık satır satır kaydırılır.",
+     "en": "Story and epilogue use a readable book typeface; long tooltips now wrap."
+    },
+    {
+     "tr": "Taverna Mührü simgesinin üzerine gelince nereden kazanıldığı yazar.",
+     "en": "Hovering the Tavern Seal counter explains where seals come from."
+    }
+   ]
+  },
   {
    "version": "0.2.2",
    "title": {

@@ -63,13 +63,13 @@ func refresh() -> void:
 		if rr[Tavern.rarity(a)] != rr[Tavern.rarity(b)]:
 			return rr[Tavern.rarity(a)] < rr[Tavern.rarity(b)]
 		return GameState.heroes[a].level > GameState.heroes[b].level)
-	# not yet recruited: by rarity (low to high), then required level, then price
+	# not yet recruited: cheapest first (the starter companions, then plain heroes, SR, SSR)
 	locked.sort_custom(func(a, b):
-		if rr[Tavern.rarity(a)] != rr[Tavern.rarity(b)]:
-			return rr[Tavern.rarity(a)] < rr[Tavern.rarity(b)]
-		if Tavern.level_req(a) != Tavern.level_req(b):
-			return Tavern.level_req(a) < Tavern.level_req(b)
-		return int(Tavern.cost(a)["gold"]) < int(Tavern.cost(b)["gold"]))
+		var ca := int(Tavern.cost(a)["gold"])
+		var cb := int(Tavern.cost(b)["gold"])
+		if ca != cb:
+			return ca < cb
+		return rr[Tavern.rarity(a)] < rr[Tavern.rarity(b)])
 	var gap := (_grid.get_parent_control().size.x - 6.0 - COLS * CARD.x) / (COLS - 1)
 	var y := 0.0
 	for sec in [[owned, DataDB.t("tavern_sec_owned")], [locked, DataDB.t("tavern_sec_locked")]]:
@@ -121,7 +121,9 @@ func _build_top() -> void:
 	_top.add_child(seal)
 	var sl := UITheme.label(str(int(GameState.materials.get("tavern_seal", 0))), UITheme.C_GOLD, 8, UITheme.font_body)
 	sl.position = Vector2(_top.size.x - 19, 1)
-	sl.tooltip_text = DataDB.t("seals", {"n": int(GameState.materials.get("tavern_seal", 0))})
+	sl.tooltip_text = DataDB.t("seals_tip", {"n": int(GameState.materials.get("tavern_seal", 0))})
+	seal.tooltip_text = sl.tooltip_text
+	seal.mouse_filter = Control.MOUSE_FILTER_PASS
 	sl.mouse_filter = Control.MOUSE_FILTER_STOP
 	_top.add_child(sl)
 	var hint := UITheme.label(DataDB.t("tavern_hint"), UITheme.C_DIM, 7, UITheme.font_body)

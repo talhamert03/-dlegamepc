@@ -31,7 +31,7 @@ func build(c: Control) -> void:
 		s.visible = false
 		_stage.add_child(s)
 		_heroes.append(s)
-	_text = UITheme.label("", UITheme.C_TEXT, 13, UITheme.font_title)
+	_text = UITheme.label("", UITheme.C_TEXT, 13, UITheme.font_read)
 	_text.position = Vector2(8, 6)
 	_text.size = Vector2(c.size.x - 16, 40)
 	_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

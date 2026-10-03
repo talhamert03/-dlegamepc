@@ -32,10 +32,23 @@ func _line(text: String, color: Color = UITheme.C_TEXT, font: Font = null, fsize
 	return l
 
 
+const WRAP_W := 176.0
+
+
+## Plain tooltip: the first line of a multi-line tip reads as its heading, long lines wrap instead of
+## stretching the tooltip across the screen.
 func show_text(text: String) -> void:
 	_clear()
-	for ln in text.split("\n"):
-		_line(ln)
+	var lines := text.split("\n")
+	for i in lines.size():
+		var ln: String = lines[i]
+		var head := i == 0 and lines.size() > 1 and ln.length() < 40
+		var l := _line(ln, UITheme.C_TITLE if head else UITheme.C_TEXT, UITheme.font_body if head else null, 9 if head else 8)
+		var w := UITheme.font_small.get_string_size(ln, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
+		if w > WRAP_W:
+			l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			l.custom_minimum_size.x = WRAP_W
+			l.add_theme_constant_override("line_spacing", 2)
 	_present()
 
 

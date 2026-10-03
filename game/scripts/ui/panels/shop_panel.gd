@@ -278,7 +278,7 @@ func _subtitle(p: Dictionary, hid: String) -> String:
 		"bundle":
 			return DataDB.t("shop_starter_desc", {"g": F.fmt_num(int(p.get("gold", Shop.gold_amount(p))))})
 		"offline":
-			return DataDB.t("shop_offline_desc", {"e": int(round(float(p.get("eff", 0)) * 100.0)), "h": int(p.get("hours", 0))})
+			return DataDB.t("shop_offline_desc", {"m": int(p.get("mult", 2))})
 		"bag":
 			var left := int(p.get("max_buys", 1)) - Shop.times_bought(str(p["id"]))
 			return DataDB.t("shop_bag_desc", {"n": int(p.get("slots", 20)), "left": left})
@@ -314,8 +314,14 @@ func _card(p: Dictionary, hid: String, pos: Vector2) -> void:
 	c.size = CARD
 	c.clip_contents = true
 	c.mouse_filter = Control.MOUSE_FILTER_PASS
-	var tip_key := "shop_%s_tip" % str(p["id"])
-	c.tooltip_text = title + "\n" + (DataDB.t(tip_key) if DataDB.strings.has(tip_key) else sub)
+	c.tooltip_text = title + "\n" + DataDB.t("shop_inspect_hint")
+	c.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	c.mouse_entered.connect(func(): c.set_meta("hover", true))
+	c.mouse_exited.connect(func(): c.set_meta("hover", false))
+	c.gui_input.connect(func(e: InputEvent):
+		if e is InputEventMouseButton and e.button_index == MOUSE_BUTTON_LEFT and not e.pressed:
+			AudioManager.play("ui_click", 0.05, 0.6)
+			_details(p, hid))
 	var seed := randf() * 10.0
 	c.draw.connect(func():
 		var ci := c.get_canvas_item()
@@ -361,9 +367,15 @@ func _card(p: Dictionary, hid: String, pos: Vector2) -> void:
 		# ribbon banner with the name
 		_ribbon(c, Rect2(4, 76, c.size.x - 8, 13), title, glow)
 		var fb := UITheme.font_body
-		var sw := minf(fb.get_string_size(sub, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x, c.size.x - 8)
-		c.draw_string_outline(fb, Vector2((c.size.x - sw) / 2.0, 97), sub, HORIZONTAL_ALIGNMENT_LEFT, c.size.x - 8, 7, 2, Color(0, 0, 0, 0.8))
-		c.draw_string(fb, Vector2((c.size.x - sw) / 2.0, 97), sub, HORIZONTAL_ALIGNMENT_LEFT, c.size.x - 8, 7, Color("#EADFC8"))
+		_fit_line(c, fb, sub, Vector2(4, 97), c.size.x - 8, 7, Color("#EADFC8"))
+		if c.get_meta("hover", false):
+			UISkin.stroke(ci, outer.grow(-1.0), 3, Color(1.0, 0.88, 0.5, 0.35 + 0.15 * sin(_t * 5.0)), 1.5)
+			var hint := DataDB.t("shop_inspect") + "  ›"
+			var hw := fb.get_string_size(hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x + 10.0
+			var hr := Rect2((c.size.x - hw) / 2.0, 62, hw, 11)
+			UISkin.fill(ci, hr, 3, Color(0.08, 0.05, 0.03, 0.85), Color(0.08, 0.05, 0.03, 0.85))
+			UISkin.stroke(ci, hr, 3, Color("#C9A46A"), 1.0)
+			c.draw_string(fb, hr.position + Vector2(5, 8.4), hint, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#FFE7A8"))
 		if hid != "":
 			var rar := Tavern.rarity(hid)
 			var tag := Rect2(8, 16, 21 if rar == "SSR" else 16, 9)
@@ -423,13 +435,13 @@ func _sash(c: Control, text: String, col: Color) -> void:
 
 
 ## Gold price plaque with a wax seal; shows the reason instead when the product can't be bought.
-func _price_plaque(c: Control, p: Dictionary, hid: String) -> void:
+func _price_plaque(c: Control, p: Dictionary, hid: String, rect := Rect2(7, CARD.y - 18, CARD.x - 14, 15)) -> Button:
 	var b := Button.new()
 	b.flat = true
 	b.focus_mode = Control.FOCUS_NONE
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	b.size = Vector2(CARD.x - 14, 15)
-	b.position = Vector2(7, CARD.y - 18)
+	b.size = rect.size
+	b.position = rect.position
 	b.set_meta("pid", str(p["id"]))
 	b.set_meta("hid", hid)
 	b.disabled = Shop.block_reason(p, hid) != ""
@@ -465,6 +477,165 @@ func _price_plaque(c: Control, p: Dictionary, hid: String) -> void:
 		b.draw_string(f, tp + Vector2(0, 0.8), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(1, 1, 1, 0.3))
 		b.draw_string(f, tp, txt, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("#3A1C06") if not off else Color("#D8D0DC")))
 	c.add_child(b)
+	return b
+
+
+## One line of text centred in `width`, shrunk a size or two and then cut with an ellipsis if it is long.
+func _fit_line(c: Control, f: Font, text: String, at: Vector2, width: float, fs: int, col: Color) -> void:
+	var size := fs
+	while size > fs - 1 and f.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x > width:
+		size -= 1
+	var t := text
+	var cut := text.length()
+	while cut > 3 and f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x > width:
+		cut -= 1
+		t = text.substr(0, cut).strip_edges() + "…"
+	var w := f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
+	var pos := Vector2(at.x + (width - w) / 2.0, at.y)
+	c.draw_string_outline(f, pos, t, HORIZONTAL_ALIGNMENT_LEFT, -1, size, 2, Color(0, 0, 0, 0.8))
+	c.draw_string(f, pos, t, HORIZONTAL_ALIGNMENT_LEFT, -1, size, col)
+
+
+# ------------------------------------------------------------------ details
+## What a product contains, line by line: [text, color].
+func _detail_lines(p: Dictionary, hid: String) -> Array:
+	var out: Array = []
+	var good := Color("#9EE6A0")
+	var gold := UITheme.C_GOLD
+	var note := UITheme.C_DIM
+	match str(p.get("kind", "")):
+		"supporter":
+			var perks: Dictionary = p.get("perks", {})
+			if perks.has("gold_find"):
+				out.append([DataDB.t("sd_gold_find", {"n": int(perks["gold_find"])}), gold])
+			if perks.has("xp_bonus"):
+				out.append([DataDB.t("sd_xp", {"n": int(perks["xp_bonus"])}), good])
+			if perks.has("offline_hours"):
+				out.append([DataDB.t("sd_offline_h", {"n": int(perks["offline_hours"])}), UITheme.C_BLUE])
+			if p.has("slots"):
+				out.append([DataDB.t("sd_bag", {"n": int(p["slots"])}), UITheme.C_TEXT])
+			out.append([DataDB.t("sd_support"), note])
+			out.append([DataDB.t("sd_fair"), note])
+		"bundle":
+			if int(p.get("heroes", 0)) > 0:
+				out.append([DataDB.t("sd_heroes", {"n": int(p["heroes"])}), Color("#FFC94A")])
+			var ch: Dictionary = p.get("chests", {})
+			for k in ch:
+				out.append([DataDB.t("sd_chests", {"n": int(ch[k]), "chest": Chests.display_name(str(k))}), Chests.COLORS.get(k, UITheme.C_TEXT)])
+			if p.has("gold"):
+				out.append([DataDB.t("sd_gold", {"g": F.fmt_int_grouped(int(p["gold"]))}), gold])
+		"offline":
+			out.append([DataDB.t("sd_offline_x", {"m": int(p.get("mult", 2))}), gold])
+			out.append([DataDB.t("sd_permanent"), good])
+		"chest", "daily":
+			var kind := str(p.get("chest", Shop.daily_chest()))
+			var def: Dictionary = Chests.DEF.get(kind, {})
+			out.append([DataDB.t("sd_chests", {"n": int(p.get("count", 1)), "chest": Chests.display_name(kind)}), Chests.COLORS.get(kind, UITheme.C_TEXT)])
+			if not def.is_empty():
+				var it: Array = def["items"]
+				out.append([DataDB.t("sd_chest_items", {"a": int(it[0]), "b": int(it[1]), "r": ItemUtil.rarity_name(str(def["min_r"]))}), UITheme.C_TEXT])
+				out.append([DataDB.t("sd_chest_bonus"), note])
+				if def.get("mats", {}).has("tavern_seal"):
+					out.append([DataDB.t("sd_chest_seal"), Color("#FFC94A")])
+		"gold":
+			out.append([DataDB.t("sd_gold", {"g": F.fmt_int_grouped(Shop.gold_amount(p) * (2 if Shop.first_double(p) else 1))}), gold])
+			out.append([DataDB.t("sd_gold_scale"), note])
+			if Shop.first_double(p):
+				out.append([DataDB.t("sd_first_double"), Color("#FF8A9A")])
+		"hero_random":
+			var w: Dictionary = p.get("weights", {})
+			out.append([DataDB.t("sd_odds", {"ssr": int(w.get("SSR", 0)), "sr": int(w.get("SR", 0)), "r": int(w.get("R", 0))}), UITheme.C_TEXT])
+			out.append([DataDB.t("sd_join"), good])
+		"hero_pick":
+			var d := DataDB.hero_def(hid)
+			out.append([DataDB.t("sd_hero_pick", {"rar": str(d.get("rarity", "")), "cls": DataDB.tx(DataDB.class_def(str(d["class"])).get("name", {}))}), RARITY_COL.get(str(d.get("rarity", "")), UITheme.C_TEXT)])
+			out.append([DataDB.t("sd_join"), good])
+		"mats":
+			out.append([DataDB.t("sd_seals", {"n": int(p["mats"].get("tavern_seal", 0))}), Color("#FFC94A")])
+			out.append([DataDB.t("sd_seals_use"), note])
+	var tip_key := "shop_%s_tip" % str(p["id"])
+	if out.is_empty() and DataDB.strings.has(tip_key):
+		out.append([DataDB.t(tip_key), UITheme.C_TEXT])
+	if p.get("once", false):
+		out.append([DataDB.t("sd_once"), UITheme.C_ORANGE])
+	return out
+
+
+## Inspection card laid over the shop: the product's art large on a velvet niche, everything it contains
+## as a list, and the price plaque to buy it right there.
+func _details(p: Dictionary, hid: String) -> void:
+	var veil := Control.new()
+	veil.size = _host.size
+	veil.mouse_filter = Control.MOUSE_FILTER_STOP
+	veil.z_index = 40
+	veil.draw.connect(func(): veil.draw_rect(Rect2(Vector2.ZERO, veil.size), Color(0.02, 0.01, 0.03, 0.74)))
+	veil.gui_input.connect(func(e: InputEvent):
+		if e is InputEventMouseButton and e.pressed:
+			veil.queue_free())
+	_host.add_child(veil)
+	var vel: Array = VELVET.get(_tab, VELVET["chests"])
+	var glow: Color = RARITY_COL.get(Tavern.rarity(hid), vel[2]) if hid != "" else vel[2]
+	var title := _title(p, hid)
+	var cw := minf(_host.size.x - 20.0, 300.0)
+	var card := Control.new()
+	card.size = Vector2(cw, minf(_host.size.y - 20.0, 196.0))
+	card.position = ((_host.size - card.size) / 2.0).round()
+	card.mouse_filter = Control.MOUSE_FILTER_STOP
+	veil.add_child(card)
+	var niche := Rect2(8, 26, 108, card.size.y - 34)
+	card.draw.connect(func():
+		var ci := card.get_canvas_item()
+		var r := Rect2(Vector2.ZERO, card.size)
+		UISkin.fill(ci, r.grow(1.0), 5, Color(0, 0, 0, 0.7), Color(0, 0, 0, 0.7))
+		UISkin.fill(ci, r, 5, Color("#3A2A22"), Color("#17100D"))
+		UISkin.ornate(ci, r.grow(-3.0))
+		var po := _arch(niche, 22.0)
+		UISkin.poly(ci, po, Color("#E2B866"), Color("#6A4320"))
+		var pin := _arch(niche.grow(-4.0), 19.0)
+		UISkin.poly(ci, pin, vel[0], vel[1])
+		var ctr := niche.get_center() + Vector2(0, -12)
+		for k in 6:
+			card.draw_circle(ctr, 46.0 - k * 7.0, Color(glow, 0.04))
+		card.draw_polyline(_close(pin), Color("#FFE3A0", 0.5), 0.8, true)
+		_ribbon(card, Rect2(niche.end.x + 8, 9, card.size.x - niche.end.x - 18, 15), title, glow)
+		var lx := niche.end.x + 10
+		card.draw_string(UITheme.font_title, Vector2(lx, 38), DataDB.t("shop_contents").to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#C9A46A"))
+		card.draw_line(Vector2(lx, 41), Vector2(card.size.x - 12, 41), Color("#C9A46A", 0.45), 1.0))
+	veil.set_meta("card", card)
+	_cards.append(card)
+	# large art: the shop-card art drawn into a scaled holder so every product looks like its niche
+	var art := Control.new()
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	art.size = CARD
+	art.scale = Vector2(1.4, 1.4)
+	art.position = (niche.get_center() + Vector2(0, 6) - Vector2(CARD.x / 2.0, 44) * art.scale).round()
+	var tex := SpriteLib.portrait(hid) if hid != "" else null
+	art.draw.connect(func(): _draw_art(art, str(p.get("kind", "")), p, tex, Vector2(CARD.x / 2.0, 44)))
+	card.add_child(art)
+	_cards.append(art)
+	# contents list
+	var lx := niche.end.x + 10
+	var list := VBoxContainer.new()
+	list.add_theme_constant_override("separation", 3)
+	list.position = Vector2(lx, 46)
+	list.size = Vector2(card.size.x - lx - 12, card.size.y - 46 - 26)
+	card.add_child(list)
+	for ln in _detail_lines(p, hid):
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 4)
+		var dot := Control.new()
+		dot.custom_minimum_size = Vector2(6, 10)
+		var col: Color = ln[1]
+		dot.draw.connect(func(): UISkin.diamond(dot.get_canvas_item(), Vector2(3, 6), 2.4, col.lightened(0.2), col.darkened(0.3)))
+		row.add_child(dot)
+		row.add_child(UITheme.para(str(ln[0]), list.size.x - 12, col, 8))
+		list.add_child(row)
+	var buy := _price_plaque(card, p, hid, Rect2(lx, card.size.y - 24, card.size.x - lx - 70, 16))
+	buy.pressed.connect(func(): veil.queue_free())
+	var close := UITheme.button(DataDB.t("btn_close"), "brown", func(): veil.queue_free(), Vector2(52, 16))
+	card.add_child(close)
+	close.size = Vector2(52, 16)
+	close.position = Vector2(card.size.x - 62, card.size.y - 24)
 
 
 func _draw_art(c: Control, kind: String, p: Dictionary, tex: Texture2D, ctr: Vector2) -> void:

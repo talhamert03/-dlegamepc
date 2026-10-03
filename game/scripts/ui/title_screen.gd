@@ -74,17 +74,20 @@ func _ready() -> void:
 		b.add_theme_font_size_override("font_size", 10)
 		_buttons.add_child(b)
 	_buttons.modulate.a = 0.0
-	_text = UITheme.label("", Color("#F4EAD2"), int(clampf(_frame.size.y * 0.04, 10.0, 15.0)), UITheme.font_title)
+	_text = UITheme.label("", Color("#F7EBCF"), int(clampf(_frame.size.y * 0.05, 12.0, 19.0)), UITheme.font_read)
 	_text.position = Vector2(_frame.position.x + _frame.size.x * 0.08, _frame.end.y - _frame.size.y * 0.13)
 	_text.size = Vector2(_frame.size.x * 0.84, _frame.size.y * 0.11)
 	_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_text.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
-	_text.add_theme_constant_override("outline_size", 4)
+	_text.add_theme_constant_override("outline_size", 5)
+	_text.add_theme_constant_override("line_spacing", 1)
 	_text.visible = false
 	add_child(_text)
-	_hint = UITheme.label(DataDB.t("click_continue"), Color(1, 1, 1, 0.5), 8)
+	_hint = UITheme.label(DataDB.t("click_continue"), Color("#E9DDC2"), 9)
+	_hint.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
+	_hint.add_theme_constant_override("outline_size", 3)
 	# top-left of the letterbox, well inside the frame
 	_hint.position = Vector2(_frame.position.x + 10, _frame.position.y + 10)
 	_hint.size = Vector2(_frame.size.x * 0.5, 10)
@@ -149,7 +152,7 @@ func _process(delta: float) -> void:
 			_fade = maxf(0.0, _fade - delta * 1.5) if _bt < BEAT_LEN - 0.6 else minf(1.0, _fade + delta * 1.8)
 			_text.visible_ratio = clampf((_bt - 0.5) / 2.2, 0.0, 1.0)
 			_hint.visible = _text.visible_ratio >= 1.0
-			_hint.modulate.a = 0.5 + 0.3 * sin(_t * 4.0)
+			_hint.modulate.a = 0.75 + 0.25 * sin(_t * 4.0)
 			_beat_events()
 			if _bt >= BEAT_LEN:
 				_next_beat()

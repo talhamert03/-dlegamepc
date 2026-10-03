@@ -1,11 +1,17 @@
 class_name Tavern
 extends RefCounted
 ## Hero recruitment: every hero of the roster is on show and is bought with gold (and tavern seals for the
-## rarer ones). Prices climb with rarity and with every hero already recruited, rarer heroes also need a
-## party level. Nobody joins for free: the party grows only through the tavern.
+## rarer ones). A few cheap companions get a new party going; everyone else is a real goal: plain heroes
+## start at 70k, SR and SSR need a party level and seals, and every hero recruited past a full party makes
+## the next one dearer. Nobody joins for free except the two story heroes.
 
-const BASE := {"R": {"gold": 450, "tavern_seal": 0, "lv": 1}, "SR": {"gold": 25000, "tavern_seal": 2, "lv": 15},
-	"SSR": {"gold": 250000, "tavern_seal": 8, "lv": 30}}
+## the first companions, at a fixed price (the cheapest buys in the tavern)
+const STARTERS := {"lyra": 1000, "pip": 5000, "leon": 10000, "nova": 20000}
+const BASE := {"R": {"gold": 70000, "tavern_seal": 0, "lv": 1}, "SR": {"gold": 220000, "tavern_seal": 2, "lv": 15},
+	"SSR": {"gold": 1200000, "tavern_seal": 8, "lv": 30}}
+## every hero owned beyond a full party (5) raises the price of the others by this much
+const GROWTH := 0.12
+const FULL_PARTY := 5
 
 
 static func roster() -> Array:
@@ -25,10 +31,13 @@ static func level_req(hid: String) -> int:
 
 
 static func cost(hid: String) -> Dictionary:
+	if STARTERS.has(hid):
+		return {"gold": int(STARTERS[hid]), "tavern_seal": 0}
 	var b: Dictionary = BASE.get(rarity(hid), BASE["R"])
-	var owned := maxi(0, GameState.heroes.size() - 1)
-	var mult := 1.0 + (0.8 if rarity(hid) == "R" else 0.25) * owned
-	return {"gold": int(round(float(b["gold"]) * mult / 50.0) * 50.0), "tavern_seal": int(b["tavern_seal"])}
+	var extra := maxi(0, GameState.heroes.size() - FULL_PARTY)
+	var mult := 1.0 + GROWTH * extra
+	var step := 5000.0 if rarity(hid) == "R" else 10000.0
+	return {"gold": int(round(float(b["gold"]) * mult / step) * step), "tavern_seal": int(b["tavern_seal"])}
 
 
 static func level_ok(hid: String) -> bool:

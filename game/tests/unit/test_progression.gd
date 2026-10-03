@@ -127,9 +127,9 @@ func test_shop_purchases() -> void:
 	Shop.buy("starter", func(r): box["r"] = r)
 	runner.check(GameState.heroes.size() == before + 2 and Chests.count() == 9, "starter pack: 2 heroes, 5 chests")
 	runner.check(Shop.block_reason(Shop.product("starter")) != "", "starter pack is one time")
-	runner.check(float(Shop.offline_bonus()["eff"]) == 0.0, "no offline boost before buying")
+	runner.check(float(Shop.offline_bonus()["mult"]) == 1.0, "no offline boost before buying")
 	Shop.buy("offline_boost", func(r): box["r"] = r)
-	runner.check(float(Shop.offline_bonus()["eff"]) > 0.0, "offline boost active")
+	runner.check(float(Shop.offline_bonus()["mult"]) == 2.0, "hourglass doubles offline gains")
 	GameState.loaded = was_loaded
 
 
@@ -217,3 +217,16 @@ func test_store_extras() -> void:
 	runner.check(GameState.stash_tabs == 4, "stash tab bought")
 	runner.check(Shop.products("packs").filter(func(p): return str(p["kind"]) == "bag").is_empty(), "no bag items left in the store")
 	GameState.loaded = was_loaded
+
+
+func test_tavern_prices() -> void:
+	GameState.new_game()
+	runner.check(int(Tavern.cost("lyra")["gold"]) == 1000 and int(Tavern.cost("nova")["gold"]) == 20000, "starter companions 1k … 20k")
+	runner.check(int(Tavern.cost("marcus")["gold"]) >= 70000, "other plain heroes start at 70k")
+	runner.check(int(Tavern.cost("vesper")["gold"]) > int(Tavern.cost("marcus")["gold"]), "SR dearer than R")
+	runner.check(int(Tavern.cost("aurelia")["gold"]) > int(Tavern.cost("vesper")["gold"]), "SSR dearest")
+	var r0 := int(Tavern.cost("marcus")["gold"])
+	for hid in ["lyra", "pip", "leon", "elowen", "rook", "vex"]:
+		GameState.unlock_hero(hid, false)
+	runner.check(int(Tavern.cost("marcus")["gold"]) > r0, "price grows past a full party")
+	runner.check(int(Tavern.cost("lyra")["gold"]) == 1000, "starter price stays fixed")

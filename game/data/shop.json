@@ -184,8 +184,7 @@
    "tab": "packs",
    "kind": "offline",
    "once": true,
-   "hours": 4,
-   "eff": 0.15,
+   "mult": 2.0,
    "price": {
     "try": 50.0,
     "usd": 2.49

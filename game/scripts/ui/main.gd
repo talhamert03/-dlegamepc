@@ -410,6 +410,9 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			WindowManager.panels["shop"]._tab = a.substr(10)
 			WindowManager.panels["shop"].refresh()
 			await get_tree().create_timer(0.4).timeout
+		if a.begins_with("--shopdetail=") and WindowManager.is_open("shop"):
+			WindowManager.panels["shop"]._details(Shop.product(a.substr(13)), "")
+			await get_tree().create_timer(0.4).timeout
 		if a == "--bagdrag" and WindowManager.is_open("hero"):
 			var slots: Array = []
 			for n in WindowManager.panels["hero"].find_children("*", "ItemSlot", true, false):

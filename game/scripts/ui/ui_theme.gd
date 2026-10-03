@@ -27,6 +27,8 @@ var font_small: FontFile
 var font_body: FontFile
 var font_title: FontFile
 var font_big: FontFile
+## book serif for anything read as prose: story, epilogue, lore and long descriptions
+var font_read: FontFile
 var theme: Theme
 var _tex: Dictionary = {}
 
@@ -36,6 +38,7 @@ func _ready() -> void:
 	font_body = _font("res://assets/fonts/FiraSans-SemiBold.ttf")
 	font_title = _font("res://assets/fonts/Cinzel-Bold.ttf")
 	font_big = _font("res://assets/fonts/CinzelDecorative-Bold.ttf")
+	font_read = _font("res://assets/fonts/Alegreya-SemiBold.ttf")
 	theme = _make_theme()
 
 
@@ -170,6 +173,15 @@ func label(text: String, color: Color = C_TEXT, size := 8, font: Font = null) ->
 	l.add_theme_font_override("font", font if font else font_small)
 	l.add_theme_font_size_override("font_size", size)
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return l
+
+
+## Wrapped paragraph: sentence-case body font, never below 8, with air between the lines.
+func para(text: String, width: float, color: Color = C_TEXT, size := 8) -> Label:
+	var l := label(text, color, maxi(size, 8), font_small)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.custom_minimum_size.x = width
+	l.add_theme_constant_override("line_spacing", 2)
 	return l
 
 

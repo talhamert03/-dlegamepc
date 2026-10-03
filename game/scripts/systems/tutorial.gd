@@ -96,7 +96,7 @@ func _on_level(hid: String, lv: int) -> void:
 func _on_stage(s: int) -> void:
 	var z := int(GameState.progress.get("zone", 0))
 	# point at the tavern once the first recruit is affordable
-	if GameState.heroes.size() == 1 and GameState.gold >= int(Tavern.cost("lyra")["gold"]):
+	if not GameState.heroes.has("lyra") and GameState.gold >= int(Tavern.cost("lyra")["gold"]):
 		_hint("tavern_buy", "tut_tavern_buy")
 
 

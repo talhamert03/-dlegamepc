@@ -23,7 +23,7 @@ func _ready() -> void:
 	var t := 0.0
 	var step := 900.0
 	var fails_prev := 0
-	print("time  | zone            | st | lv  | heroes | kills  | deaths | gold | runes")
+	print("time  | zone            | st | lv  | heroes | kills  | deaths | gold | runes | earned")
 	while t < hours * 3600.0:
 		BattleSim.simulate(step)
 		t += step
@@ -31,13 +31,15 @@ func _ready() -> void:
 		var z := DataDB.zone(BattleSim.zone_idx)
 		print("%5.2fh | %-15s | %2d | %3d | %6d | %6d | %6d | %s" % [t / 3600.0, str(z.get("id", "")) + " d" + str(BattleSim.difficulty),
 			BattleSim.stage, GameState.max_hero_level(), GameState.heroes.size(), int(GameState.totals["kills"]),
-			int(GameState.totals["deaths"]), F.fmt_num(GameState.gold) + " | " + str(Runes.points_spent())])
+			int(GameState.totals["deaths"]), F.fmt_num(GameState.gold) + " | " + str(Runes.points_spent()) + " | " + F.fmt_num(int(GameState.totals.get("gold", 0)))])
 	get_tree().quit()
 
 
 func _bot_actions() -> void:
 	# recruit the cheapest affordable hero (story heroes first) while the party has room
-	for hid in ["lyra", "pip", "nova", "bjorn", "finn"] + Tavern.roster():
+	var by_price := Tavern.roster()
+	by_price.sort_custom(func(a, b): return int(Tavern.cost(a)["gold"]) < int(Tavern.cost(b)["gold"]))
+	for hid in by_price:
 		if GameState.party_count() < 5 and not GameState.heroes.has(hid) and Tavern.can_afford(hid):
 			Tavern.recruit(hid)
 	for h in GameState.heroes.values():
@@ -63,13 +65,21 @@ func _bot_actions() -> void:
 				var info := Blacksmith.enhance_info(it)
 				if not info.is_empty() and GameState.gold > int(info["cost"]) * 3:
 					Blacksmith.enhance(it)
-	# spend spare gold on the cheapest open leadership runes (keep a reserve for recruits / smithing)
+	# a player saving for the next recruit: runes only from gold beyond the cheapest hero in reach
+	var save := 0
+	if GameState.party_count() < 5:
+		save = 1 << 40
+		for hid in Tavern.roster():
+			if not GameState.heroes.has(hid) and Tavern.level_ok(hid):
+				save = mini(save, int(Tavern.cost(hid)["gold"]))
+		if save == 1 << 40:
+			save = 0
 	for k in 200:
 		var best := ""
 		for rid in Runes.nodes():
 			if Runes.can_buy(rid) and (best == "" or Runes.cost(rid) < Runes.cost(best)):
 				best = rid
-		if best == "" or GameState.gold < Runes.cost(best) * 3:
+		if best == "" or GameState.gold - save < Runes.cost(best) * 3:
 			break
 		Runes.buy(best)
 	GameState.invalidate_stats()

@@ -249,9 +249,10 @@ static func _give_hero(hid: String) -> void:
 	GameState.add_to_party(hid)
 
 
-## Permanent offline bonus from the store ({"hours", "eff"} — eff as a fraction).
+## Permanent offline bonus from the store: the Hourglass of Ages multiplies everything earned offline
+## ({"hours", "eff", "mult"} — eff as a fraction, mult applied on top of the efficiency).
 static func offline_bonus() -> Dictionary:
 	var p := product("offline_boost")
 	if p.is_empty() or times_bought("offline_boost") == 0:
-		return {"hours": 0.0, "eff": 0.0}
-	return {"hours": float(p.get("hours", 0)), "eff": float(p.get("eff", 0.0))}
+		return {"hours": 0.0, "eff": 0.0, "mult": 1.0}
+	return {"hours": float(p.get("hours", 0)), "eff": float(p.get("eff", 0.0)), "mult": float(p.get("mult", 1.0))}

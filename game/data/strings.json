@@ -1432,8 +1432,8 @@
   "en": "All"
  },
  "tavern_hint": {
-  "tr": "Kahramanlar yalnızca burada alınır. Her yeni kahraman bir sonrakini pahalılaştırır.",
-  "en": "Heroes are only recruited here. Every recruit makes the next one dearer."
+  "tr": "Kahramanlar yalnızca burada alınır. İlk yoldaşlar ucuzdur; parti dolunca her yeni kahraman fiyatları artırır.",
+  "en": "Heroes are only recruited here. The first companions are cheap; past a full party every recruit raises prices."
  },
  "tavern_confirm": {
   "tr": "{name} partiye katılsın mı?\\n{cost}",
@@ -1740,8 +1740,8 @@
   "en": "Hourglass of Ages"
  },
  "shop_offline_desc": {
-  "tr": "+%{e} verim, +{h} saat",
-  "en": "+{e}%, +{h} hours"
+  "tr": "Çevrimdışı kazanç x{m}",
+  "en": "Offline gains x{m}"
  },
  "shop_sign": {
   "tr": "Zümrüt Kervan",
@@ -1756,8 +1756,8 @@
   "en": "2 random heroes, 5 magic (Crystal) chests and 75,000 gold. Once per account."
  },
  "shop_offline_boost_tip": {
-  "tr": "Çevrimdışı kazanç verimini kalıcı olarak %15 artırır ve süre sınırını 4 saat uzatır. Bu süre Lonca Salonu'nda oyun içinde de artırılabilir.",
-  "en": "Permanently +15% offline efficiency and +4 h cap. The offline cap can also be raised in-game in the Guild Hall."
+  "tr": "Oyun kapalıyken kazandığın altın, tecrübe ve eşyalar kalıcı olarak 2 katına çıkar. Hesap başına bir kez alınır.",
+  "en": "Gold, XP and items earned while the game is closed are permanently doubled. Once per account."
  },
  "smith_enh_pity": {
   "tr": "Garanti: her başarısızlık şansı artırır ({n}/{m}, {m}. denemede kesin)",
@@ -1864,8 +1864,8 @@
   "en": "Guild Supporter"
  },
  "shop_supporter_desc": {
-  "tr": "+%10 altın ve tecrübe, +20 çanta",
-  "en": "+10% gold/XP, +20 bag"
+  "tr": "Kalıcı bonuslar · İncele",
+  "en": "Permanent perks · Details"
  },
  "shop_supporter_tip": {
   "tr": "Geliştiriciyi destekle: kalıcı +%10 altın, +%10 tecrübe, +2 saat çevrimdışı süre ve +20 çanta yeri. Tek seferlik. Güç farkı küçüktür; oyunun tamamı ücretsiz oynanabilir.",
@@ -1958,5 +1958,113 @@
  "item_level_short": {
   "tr": "Eşya Sv.",
   "en": "iLvl"
+ },
+ "away_hourglass": {
+  "tr": "Zaman Kum Saati: kazançlar x2",
+  "en": "Hourglass of Ages: gains x2"
+ },
+ "shop_inspect": {
+  "tr": "İncele",
+  "en": "Details"
+ },
+ "shop_inspect_hint": {
+  "tr": "Ayrıntılar için tıkla",
+  "en": "Click for details"
+ },
+ "shop_contents": {
+  "tr": "İçerik",
+  "en": "Contents"
+ },
+ "sd_gold_find": {
+  "tr": "Kalıcı +%{n} altın kazancı",
+  "en": "Permanent +{n}% gold"
+ },
+ "sd_xp": {
+  "tr": "Kalıcı +%{n} tecrübe kazancı",
+  "en": "Permanent +{n}% XP"
+ },
+ "sd_offline_h": {
+  "tr": "Çevrimdışı süre sınırı +{n} saat",
+  "en": "Offline time cap +{n} h"
+ },
+ "sd_bag": {
+  "tr": "Çantaya +{n} yuva",
+  "en": "+{n} bag slots"
+ },
+ "sd_once": {
+  "tr": "Hesap başına bir kez alınır",
+  "en": "Once per account"
+ },
+ "sd_fair": {
+  "tr": "Güç farkı küçüktür; oyunun tamamı ücretsiz oynanabilir.",
+  "en": "The edge is small; the whole game is playable for free."
+ },
+ "sd_support": {
+  "tr": "Oyunun gelişimini doğrudan destekler. Teşekkürler!",
+  "en": "Directly supports the game's development. Thank you!"
+ },
+ "sd_heroes": {
+  "tr": "{n} rastgele kahraman (sahip olmadıkların arasından)",
+  "en": "{n} random heroes (from ones you don't own)"
+ },
+ "sd_chests": {
+  "tr": "{n}× {chest}",
+  "en": "{n}× {chest}"
+ },
+ "sd_gold": {
+  "tr": "+{g} altın",
+  "en": "+{g} gold"
+ },
+ "sd_gold_scale": {
+  "tr": "Miktar, ilerledikçe seviyene göre artar",
+  "en": "The amount grows with your progress"
+ },
+ "sd_first_double": {
+  "tr": "İlk alımda 2 katı!",
+  "en": "Doubled on the first purchase!"
+ },
+ "sd_offline_x": {
+  "tr": "Çevrimdışı altın, tecrübe ve eşya x{m}",
+  "en": "Offline gold, XP and items x{m}"
+ },
+ "sd_permanent": {
+  "tr": "Kalıcıdır, her dönüşünde geçerli",
+  "en": "Permanent, applies every time you return"
+ },
+ "sd_chest_items": {
+  "tr": "Her sandıkta {a}–{b} eşya, en az {r}",
+  "en": "{a}–{b} items per chest, at least {r}"
+ },
+ "sd_chest_bonus": {
+  "tr": "Ek altın ve demirci malzemeleri",
+  "en": "Bonus gold and smithing materials"
+ },
+ "sd_chest_seal": {
+  "tr": "Taverna Mührü içerir",
+  "en": "Contains Tavern Seals"
+ },
+ "sd_odds": {
+  "tr": "Şans: SSR %{ssr} · SR %{sr} · R %{r}",
+  "en": "Odds: SSR {ssr}% · SR {sr}% · R {r}%"
+ },
+ "sd_join": {
+  "tr": "Kahraman hemen hesabına katılır",
+  "en": "The hero joins your roster at once"
+ },
+ "sd_hero_pick": {
+  "tr": "{rar} · {cls}",
+  "en": "{rar} · {cls}"
+ },
+ "sd_seals": {
+  "tr": "+{n} Taverna Mührü",
+  "en": "+{n} Tavern Seals"
+ },
+ "sd_seals_use": {
+  "tr": "SR ve SSR kahramanları tavernada açmak için gerekir",
+  "en": "Needed to recruit SR and SSR heroes at the tavern"
+ },
+ "seals_tip": {
+  "tr": "Taverna Mührü: {n}\nSR ve SSR kahramanları açmak için gerekir.\nNereden kazanılır:\n· Bölge bossları: 1 mühür\n· Perde bossları: 3 mühür\n· Günlük görevler (düşman öldürme, altın toplama): 1'er mühür\n· Altın, Kristal ve Kraliyet sandıkları\n· Mağaza: 5'li mühür paketi",
+  "en": "Tavern Seals: {n}\nNeeded to recruit SR and SSR heroes.\nWhere to get them:\n· Zone bosses: 1 seal\n· Act bosses: 3 seals\n· Daily quests (kills, gold): 1 each\n· Gold, Crystal and Royal chests\n· Store: 5-seal pack"
  }
 }

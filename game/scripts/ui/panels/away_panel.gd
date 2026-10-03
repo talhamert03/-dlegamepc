@@ -35,6 +35,8 @@ func refresh() -> void:
 	var s := int(report.get("seconds", 0))
 	_body.add_child(UITheme.label(DataDB.t("away_time", {"h": s / 3600, "m": (s % 3600) / 60}), UITheme.C_TEXT))
 	_body.add_child(UITheme.label(DataDB.t("away_eff", {"p": int(round(float(report.get("eff", 0.6)) * 100))}), UITheme.C_DIM))
+	if float(Shop.offline_bonus()["mult"]) > 1.0:
+		_body.add_child(UITheme.label("⌛ " + DataDB.t("away_hourglass"), UITheme.C_GOLD))
 	var w := int(content.size.x)
 	_body.add_child(W.stat_row(DataDB.t("away_kills"), F.fmt_num(int(report.get("kills", 0))), UITheme.C_TEXT, Color("#E8C98A"), w))
 	_body.add_child(W.stat_row(DataDB.t("away_xp"), F.fmt_num(float(report.get("xp", 0))), UITheme.C_GREEN, Color("#E8C98A"), w))
