@@ -63,14 +63,36 @@ func refresh() -> void:
 	var costs: Array = DataDB.bal("stash.tab_costs", [])
 	_buy.visible = not unlocked
 	if not unlocked:
-		var cost: int = int(costs[min(GameState.stash_tabs, costs.size() - 1)])
-		_buy.text = DataDB.t("buy_tab", {"g": F.fmt_num(cost)})
+		if _gold_tab():
+			var cost: int = int(costs[min(GameState.stash_tabs, costs.size() - 1)])
+			_buy.text = DataDB.t("buy_tab", {"g": F.fmt_num(cost)})
+		else:
+			_buy.text = DataDB.t("buy_tab_real", {"price": Shop.price_text(Shop.product("stash_tab"))})
 		_info.text = DataDB.t("tab_locked")
 	else:
 		_info.text = "%d/%d" % [items.size(), _slots.size()]
 
 
+## Tabs 2 and 3 open with gold; further tabs are a real-money convenience.
+func _gold_tab() -> bool:
+	return GameState.stash_tabs < int(DataDB.bal("stash.gold_tabs", 3))
+
+
 func _buy_tab() -> void:
+	if not _gold_tab():
+		var p := Shop.product("stash_tab")
+		var txt := DataDB.t("stash_tab_confirm", {"price": Shop.price_text(p)})
+		if SteamService.payment_mode() == "direct":
+			txt += "\n" + DataDB.t("shop_test_note")
+		W.confirm(content, txt, func():
+			Shop.buy("stash_tab", func(res: Dictionary):
+				if res.is_empty():
+					EventBus.notify.emit(DataDB.t("shop_failed"), UITheme.C_RED)
+					return
+				AudioManager.play("coin", 0.05, 0.9)
+				Toast.show_reward(UITheme.icon("chest"), DataDB.t("stash_tab_opened", {"n": GameState.stash_tabs}), "")
+				_set_tab(GameState.stash_tabs - 1)), DataDB.t("shop_buy"))
+		return
 	var costs: Array = DataDB.bal("stash.tab_costs", [])
 	var cost: int = int(costs[min(GameState.stash_tabs, costs.size() - 1)])
 	if GameState.spend_gold(cost):

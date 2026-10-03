@@ -34,6 +34,10 @@ var _rate_t := 0.0
 var quiet := false           # suppress cosmetic events (offline/tests)
 var dmg_log: Dictionary = {}  # hero id -> damage dealt since reset
 var dmg_log_t := 0.0
+## live DPS: damage per hero gathered while fighting, smoothed into a ~15 s moving average
+var _dps_acc: Dictionary = {}
+var _dps_ema: Dictionary = {}
+var _dps_t := 0.0
 
 
 func _ready() -> void:
@@ -322,6 +326,14 @@ func _set_phase(p: String) -> void:
 func tick(dt: float) -> void:
 	time += dt
 	dmg_log_t += dt
+	if phase == "fight" or phase == "boss":
+		_dps_t += dt
+		if _dps_t >= 1.0:
+			for k in _dps_ema.keys() + _dps_acc.keys():
+				var rate: float = float(_dps_acc.get(k, 0.0)) / _dps_t
+				_dps_ema[k] = lerpf(float(_dps_ema.get(k, rate)), rate, 0.07)
+			_dps_acc.clear()
+			_dps_t = 0.0
 	phase_t += dt
 	_rate_t += dt
 	if _rate_t >= 10.0:
@@ -1130,6 +1142,7 @@ func _apply_damage(src: Combatant, tgt: Combatant, amount: float, crit: bool, el
 	if src != null and src.is_hero_side():
 		var key: String = src.id if src.etype == "hero" else "summon"
 		dmg_log[key] = float(dmg_log.get(key, 0.0)) + amount
+		_dps_acc[key] = float(_dps_acc.get(key, 0.0)) + amount
 	if not quiet:
 		EventBus.damage_dealt.emit(src, tgt, amount, crit, element, kind)
 	if tgt.hp <= 0.0:
@@ -1353,6 +1366,18 @@ func _after_wipe() -> void:
 	_save_stage()
 	EventBus.stage_changed.emit(stage)
 	_set_phase("travel")
+
+
+## Live damage per second of one hero (its summons count for the party total only).
+func hero_dps(hid: String) -> float:
+	return float(_dps_ema.get(hid, 0.0))
+
+
+func party_dps() -> float:
+	var t := 0.0
+	for k in _dps_ema:
+		t += float(_dps_ema[k])
+	return t
 
 
 # ------------------------------------------------------------------ endless tower

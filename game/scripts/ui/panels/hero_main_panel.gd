@@ -15,6 +15,7 @@ var _equip: Dictionary = {}
 var _portrait: TextureRect
 var _cls: Label
 var _lvl: Label
+var _hdps: Label
 var _xp: ProgressBar
 var _stars: Label
 var _party_row: Control
@@ -104,6 +105,13 @@ func build(c: Control) -> void:
 	_lvl.add_theme_constant_override("outline_size", 3)
 	_lvl.position = Vector2(px + 4, 56)
 	c.add_child(_lvl)
+	_hdps = UITheme.label("", Color("#FF9A6A"), 8, UITheme.font_body)
+	_hdps.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+	_hdps.add_theme_constant_override("outline_size", 3)
+	_hdps.position = Vector2(px + 4, 46)
+	_hdps.mouse_filter = Control.MOUSE_FILTER_STOP
+	_hdps.tooltip_text = DataDB.t("hero_dps_tip")
+	c.add_child(_hdps)
 	_stars = UITheme.label("", Color("#FFD84A"), 7)
 	_stars.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
 	_stars.add_theme_constant_override("outline_size", 2)
@@ -174,6 +182,25 @@ func build(c: Control) -> void:
 	_count.size = Vector2(68, 9)
 	_count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	c.add_child(_count)
+	# bag expansion lives right here, next to the slot count: a small "+" plate
+	var ex := Button.new()
+	ex.flat = true
+	ex.focus_mode = Control.FOCUS_NONE
+	ex.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	ex.position = Vector2(w - 84, 290)
+	ex.size = Vector2(16, 9)
+	ex.tooltip_text = DataDB.t("bag_expand_tip", {"price": Shop.price_text(Shop.product("bag_expand"))})
+	ex.pressed.connect(_ask_bag_expand)
+	ex.draw.connect(func():
+		var ci := ex.get_canvas_item()
+		var r := Rect2(Vector2.ZERO, ex.size)
+		var hov := ex.is_hovered()
+		UISkin.fill(ci, r, 2, Color("#F2C55A") if hov else Color("#D9A944"), Color("#8A5A1E"))
+		UISkin.stroke(ci, r, 2, Color("#2A1606"), 1.0)
+		ex.draw_string(UITheme.font_body, Vector2(2.5, 7.5), "+10", HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#2A1606")))
+	ex.mouse_entered.connect(ex.queue_redraw)
+	ex.mouse_exited.connect(ex.queue_redraw)
+	c.add_child(ex)
 	EventBus.inventory_changed.connect(refresh)
 	EventBus.equipment_changed.connect(func(_h): refresh())
 	EventBus.party_changed.connect(refresh)
@@ -244,10 +271,14 @@ func _cycle_hero(dir: int) -> void:
 
 func _process(_d: float) -> void:
 	var hid := W.current_hero()
+	if _hdps and Engine.get_process_frames() % 30 == 0:
+		var d := BattleSim.hero_dps(hid)
+		_hdps.text = ("⚔ %s DPS" % F.fmt_num(d)) if d > 0.0 and GameState.party.has(hid) else ""
 	if hid != "" and _xp and GameState.heroes.has(hid):
 		var h: HeroState = GameState.heroes[hid]
 		_xp.max_value = F.xp_required(h.level)
 		_xp.value = h.xp
+
 	for m in _bottom.get_children():
 		var on: bool = WindowManager.is_open(str(m.get_meta("panel", "")))
 		if m.get_meta("active", false) != on:
@@ -591,3 +622,22 @@ func _build_formation() -> void:
 	var fv := FormationView.new()
 	fv.size = _page.size
 	_page.add_child(fv)
+
+
+func _ask_bag_expand() -> void:
+	var p := Shop.product("bag_expand")
+	var why := Shop.block_reason(p)
+	if why != "":
+		EventBus.notify.emit(why, UITheme.C_RED)
+		return
+	var txt := DataDB.t("bag_expand_confirm", {"n": int(p.get("slots", 10)), "price": Shop.price_text(p)})
+	if SteamService.payment_mode() == "direct":
+		txt += "\n" + DataDB.t("shop_test_note")
+	W.confirm(_host, txt, func():
+		Shop.buy("bag_expand", func(res: Dictionary):
+			if res.is_empty():
+				EventBus.notify.emit(DataDB.t("shop_failed"), UITheme.C_RED)
+				return
+			AudioManager.play("coin", 0.05, 0.9)
+			Toast.show_reward(UITheme.icon("bag"), DataDB.t("bag_expanded", {"n": int(p.get("slots", 10))}), DataDB.t("bag_now", {"n": GameState.bag_slots}))
+			refresh()), DataDB.t("shop_buy"))

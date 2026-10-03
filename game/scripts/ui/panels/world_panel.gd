@@ -131,7 +131,7 @@ func _show_card(zi: int) -> void:
 			b.add_child(sk)
 		row.add_child(b)
 	var desc := UITheme.label(DataDB.t("boss") + ": " + DataDB.tx(DataDB.enemy_def(str(z.get("boss", ""))).get("name", {})), Color("#FF9A8A"), 8)
-	desc.position = Vector2(6, 58)
+	desc.position = Vector2(6, 55)
 	desc.size = Vector2(w * 0.5 - 8, 10)
 	desc.clip_text = true
 	_card.add_child(desc)
@@ -143,7 +143,7 @@ func _show_card(zi: int) -> void:
 	var ready := ZoneInfo.readiness(z, _diff)
 	var rcol: Color = {"ok": UITheme.C_GREEN, "hard": Color("#FFC94A"), "very_hard": Color("#FF6A5A")}[ready]
 	var thr := UITheme.label(DataDB.t("ready_" + ready) + ("   " + "  ".join(parts) if parts.size() > 0 else ""), rcol, 7, UITheme.font_body)
-	thr.position = Vector2(w * 0.5, 58)
+	thr.position = Vector2(w * 0.5, 55)
 	thr.size = Vector2(w * 0.5 - 6, 10)
 	thr.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	thr.clip_text = true
@@ -178,10 +178,11 @@ func _stage_picker(zi: int) -> void:
 		var boss: bool = st == n
 		var b := Button.new()
 		b.focus_mode = Control.FOCUS_NONE
-		b.position = Vector2(6 + i * (pw + 2.0), 73)
+		b.position = Vector2(6 + i * (pw + 2.0), 76)
 		b.size = Vector2(pw, 16)
 		b.disabled = not open
-		b.tooltip_text = (DataDB.t("boss") if boss else DataDB.t("world_stage_n", {"n": st})) + ("" if open else "  🔒")
+		b.tooltip_text = (DataDB.t("boss") if boss else DataDB.t("world_stage_n", {"n": st})) + ("" if open else "  🔒") \
+			+ "\n" + DataDB.t("dps_need_short", {"n": F.fmt_num(ZoneInfo.dps_needed(z_of(zi), st, _diff))})
 		b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		b.draw.connect(func():
 			var ci := b.get_canvas_item()
@@ -207,13 +208,29 @@ func _stage_picker(zi: int) -> void:
 		b.pressed.connect(func():
 			_sel_stage = st
 			AudioManager.play("ui_click", 0.05, 0.5)
+			var dl2 := _card.get_node_or_null("DpsNeed")
+			if dl2:
+				var nd := ZoneInfo.dps_needed(z_of(zi), st, _diff)
+				var hv := BattleSim.party_dps()
+				dl2.text = DataDB.t("dps_need", {"need": F.fmt_num(nd), "have": F.fmt_num(hv) if hv > 0.0 else "—"})
+				dl2.add_theme_color_override("font_color", UITheme.C_GREEN if hv >= nd else (Color("#FFC94A") if hv >= nd * 0.6 else Color("#FF7A6A")))
 			for ch in b.get_parent().get_children():
 				if ch is Button:
 					ch.queue_redraw())
 		_card.add_child(b)
+	# estimated DPS for the selected stage next to the party's live DPS
+	var need := ZoneInfo.dps_needed(z_of(zi), _sel_stage, _diff)
+	var have := BattleSim.party_dps()
+	var dl := UITheme.label(DataDB.t("dps_need", {"need": F.fmt_num(need), "have": F.fmt_num(have) if have > 0.0 else "—"}),
+		UITheme.C_GREEN if have >= need else (Color("#FFC94A") if have >= need * 0.6 else Color("#FF7A6A")), 7, UITheme.font_body)
+	dl.position = Vector2(6, 65)
+	dl.size = Vector2(w - 12, 9)
+	dl.clip_text = true
+	dl.name = "DpsNeed"
+	_card.add_child(dl)
 	var info := UITheme.label(DataDB.t("world_playing") if playing else (DataDB.t("world_resume", {"n": int(rec["last"])}) if unlocked else DataDB.t("world_locked_zone")),
 		UITheme.C_GREEN if playing else UITheme.C_DIM, 7, UITheme.font_body)
-	info.position = Vector2(6, 95)
+	info.position = Vector2(6, 98)
 	info.size = Vector2(w - 100, 10)
 	info.clip_text = true
 	_card.add_child(info)
@@ -224,7 +241,7 @@ func _stage_picker(zi: int) -> void:
 		refresh(), Vector2(84, 18))
 	_card.add_child(play)
 	play.size = Vector2(84, 18)
-	play.position = Vector2(w - 90, 92)
+	play.position = Vector2(w - 90, 95)
 	play.disabled = not unlocked
 
 
@@ -331,3 +348,7 @@ func _travel(zi: int) -> void:
 	BattleSim.go_to_zone(zi, _diff)
 	AudioManager.play("ui_travel")
 	refresh()
+
+
+func z_of(zi: int) -> Dictionary:
+	return DataDB.zone(zi)

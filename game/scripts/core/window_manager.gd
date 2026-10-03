@@ -7,7 +7,7 @@ extends Node
 ## Rendering uses canvas_items stretch at an integer scale: pixel art stays sharp, text and vector UI are
 ## drawn at native resolution.
 
-const STRIP_SIZE := Vector2i(440, 72)    # battle view 360 + control block 80
+const STRIP_SIZE := Vector2i(472, 72)    # battle view 360 + control block 112
 const MAX_PANEL_H := 334
 const GAP := 2   # logical pixels between panels / strip
 ## taskbar mode: the part of the battle view shown on the taskbar and the room above it for the bubble

@@ -193,30 +193,6 @@
    "steam_item": 404
   },
   {
-   "id": "bag_20",
-   "tab": "packs",
-   "kind": "bag",
-   "slots": 20,
-   "max_buys": 3,
-   "price": {
-    "try": 24.99,
-    "usd": 0.99
-   },
-   "steam_item": 402
-  },
-  {
-   "id": "bag_gold",
-   "tab": "packs",
-   "kind": "bag",
-   "slots": 10,
-   "max_buys": 5,
-   "price": {
-    "gold_kills": 3000,
-    "growth": 1.8
-   },
-   "badge": "earnable"
-  },
-  {
    "id": "seals_5",
    "tab": "packs",
    "kind": "mats",
@@ -228,6 +204,29 @@
     "usd": 1.79
    },
    "steam_item": 403
+  },
+  {
+   "id": "bag_expand",
+   "tab": "hidden",
+   "kind": "bag",
+   "slots": 10,
+   "max_buys": 10,
+   "price": {
+    "try": 50.0,
+    "usd": 2.49
+   },
+   "steam_item": 406
+  },
+  {
+   "id": "stash_tab",
+   "tab": "hidden",
+   "kind": "stash",
+   "max_buys": 4,
+   "price": {
+    "try": 50.0,
+    "usd": 2.49
+   },
+   "steam_item": 407
   }
  ]
 }

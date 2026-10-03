@@ -552,9 +552,30 @@ func _buy(p: Dictionary, hid: String) -> void:
 			EventBus.notify.emit(DataDB.t("shop_failed"), UITheme.C_RED)
 			AudioManager.play("ui_click", 0.05, 0.4)
 			return
-		AudioManager.play("coin", 0.05, 0.9)
-		_reveal(res)
+		_toast(res)
 		refresh(), hid)
+
+
+## PC-style reward notice above the strip (no full-screen reveal).
+func _toast(res: Dictionary) -> void:
+	match str(res.get("kind", "")):
+		"chest":
+			var title := DataDB.t("toast_daily") if str(res.get("id", "")) == "daily_gift" else DataDB.t("toast_bought")
+			Toast.show_reward(null, title, "%d× %s" % [int(res["count"]), Chests.display_name(str(res["chest"]))], str(res["chest"]))
+		"gold":
+			Toast.show_reward(UITheme.icon("gold"), DataDB.t("toast_bought"), "+" + F.fmt_num(int(res.get("gold", 0))) + " " + DataDB.t("gold"))
+		"hero_random", "hero_pick":
+			var hid := str(res.get("hero", ""))
+			AudioManager.play("recruit")
+			Toast.show_reward(SpriteLib.hero_icon(hid), DataDB.t("toast_new_hero"), str(DataDB.hero_def(hid).get("name", hid)))
+		"bundle":
+			var names: Array = []
+			for h in res.get("heroes", []):
+				names.append(str(DataDB.hero_def(str(h)).get("name", h)))
+			AudioManager.play("recruit")
+			Toast.show_reward(UITheme.icon("crown"), DataDB.t("shop_starter"), ", ".join(names) + "  +" + F.fmt_num(int(res.get("gold", 0))))
+		_:
+			Toast.show_reward(UITheme.icon("crown"), DataDB.t("toast_bought"), _title(Shop.product(str(res.get("id", ""))), ""))
 
 
 ## Reward reveal over the store: what was bought, with its art.

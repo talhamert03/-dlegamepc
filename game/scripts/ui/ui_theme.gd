@@ -32,8 +32,8 @@ var _tex: Dictionary = {}
 
 
 func _ready() -> void:
-	font_small = _font("res://assets/fonts/Nunito-700.ttf")
-	font_body = _font("res://assets/fonts/Nunito-800.ttf")
+	font_small = _font("res://assets/fonts/FiraSans-Medium.ttf")
+	font_body = _font("res://assets/fonts/FiraSans-SemiBold.ttf")
 	font_title = _font("res://assets/fonts/Cinzel-Bold.ttf")
 	font_big = _font("res://assets/fonts/CinzelDecorative-Bold.ttf")
 	theme = _make_theme()

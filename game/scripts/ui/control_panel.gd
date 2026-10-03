@@ -2,7 +2,7 @@ class_name ControlPanel
 extends Control
 ## Right-hand side control block of the strip (menu buttons, gold, quick icons).
 
-const W := 80
+const W := 112
 const H := 72
 
 var _gold: Label
@@ -10,6 +10,7 @@ var _btns: Dictionary = {}
 var _dots: Dictionary = {}
 var _xp_bar: ProgressBar
 var _lvl: Label
+var _dps: Label
 
 
 func _ready() -> void:
@@ -18,36 +19,49 @@ func _ready() -> void:
 	var bg := UITheme.nine("strip_panel", 4)
 	bg.size = size
 	add_child(bg)
-	# top icon row
+	# top icon row: system buttons, evenly spaced, the codex menu included
 	var icons := [["power", _on_power, "tip_quit"], ["minus", func(): WindowManager.minimize(), "tip_minimize"],
 		["gear", func(): WindowManager.toggle_panel("settings"), "tip_settings"],
 		["quest", func(): WindowManager.toggle_panel("quests"), "tip_quests"], ["chart", func(): WindowManager.toggle_panel("dps"), "tip_dps"],
-		["note", _on_mute, "tip_mute"]]
-	var x := 5
-	for ic in icons:
+		["note", _on_mute, "tip_mute"], ["menu", func(): WindowManager.toggle_panel("codex"), "tip_codex"]]
+	var step := (W - 16.0) / float(icons.size() - 1)
+	for i in icons.size():
+		var ic: Array = icons[i]
 		var b := UITheme.icon_button(ic[0], ic[1], DataDB.t(ic[2]))
-		b.position = Vector2(x, 3)
+		b.position = Vector2(round(4.0 + i * step), 3)
 		add_child(b)
 		_btns[ic[0]] = b
-		x += 12
-	# main menu: two rows of bronze medallions (tooltips + hotkeys name them)
+	# a fine bronze rule under the system row, and a recessed bed for the medallions
+	var deco := Control.new()
+	deco.size = size
+	deco.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	deco.draw.connect(func():
+		var ci := deco.get_canvas_item()
+		deco.draw_line(Vector2(5, 13.5), Vector2(W - 5, 13.5), Color(0, 0, 0, 0.6), 1.0)
+		deco.draw_line(Vector2(5, 14.5), Vector2(W - 5, 14.5), Color(UISkin.BRONZE, 0.45), 1.0)
+		UISkin.fill(ci, Rect2(4, 16, W - 8, 41), 3, Color(0, 0, 0, 0.28), Color(0, 0, 0, 0.12))
+		UISkin.fill(ci, Rect2(4, 58.5, W - 8, 11), 2, Color(0, 0, 0, 0.35), Color(0, 0, 0, 0.2)))
+	add_child(deco)
+	# main menu: two rows of bronze medallions with room to breathe
 	var defs := [["hero", "shield", "btn_hero"], ["stats", "cross", "panel_stats"], ["runes", "rune", "tip_runes"],
 		["world", "map", "btn_world"], ["growth", "star", "btn_growth"], ["tavern", "town", "btn_tavern"]]
+	var rad := 9.0
+	var cell := (W - 8.0) / 3.0
 	for i in defs.size():
 		var d: Array = defs[i]
 		var pid: String = d[0]
-		var m := UITheme.medallion(d[1], func(): WindowManager.toggle_panel(pid), DataDB.t(d[2]), 9.5)
-		m.position = Vector2(5 + (i % 3) * 24.0, 12 + (i / 3) * 20)
+		var m := UITheme.medallion(d[1], func(): WindowManager.toggle_panel(pid), DataDB.t(d[2]), rad)
+		m.position = Vector2(round(4.0 + (i % 3) * cell + (cell - m.size.x) / 2.0), 17.0 + (i / 3) * 20.0)
 		m.set_meta("panel", pid)
 		add_child(m)
 		_btns[pid] = m
-		var dot := UITheme.badge(8.0)
-		dot.position = m.position + Vector2(13, -1)
+		var dot := UITheme.badge(7.0)
+		dot.position = m.position + Vector2(m.size.x - 6, -1)
 		dot.visible = false
 		add_child(dot)
 		_dots[pid] = dot
 	# quest "!" badge and the mute slash over the top icons
-	var qb := UITheme.badge(7.0)
+	var qb := UITheme.badge(6.0)
 	qb.position = _btns["quest"].position + Vector2(5, -2)
 	qb.visible = false
 	add_child(qb)
@@ -62,23 +76,29 @@ func _ready() -> void:
 			slash.draw_line(Vector2(2.5, 7.5), Vector2(7.5, 2.5), Color("#FF5A4A"), 0.8, true))
 	add_child(slash)
 	_slash = slash
-	# gold
+	# bottom plate: gold | party DPS | level, XP bar under it
 	var coin: TextureRect = preload("res://scripts/ui/widgets.gd").icon_rect(UITheme.icon("gold"))
-	coin.position = Vector2(5, 57)
+	coin.position = Vector2(7, 60)
 	coin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(coin)
-	_gold = UITheme.label("0", UITheme.C_GOLD)
-	_gold.position = Vector2(14, 54)
+	_gold = UITheme.label("0", UITheme.C_GOLD, 8, UITheme.font_body)
+	_gold.position = Vector2(16, 58)
 	add_child(_gold)
-	_lvl = UITheme.label("", UITheme.C_DIM)
-	_lvl.position = Vector2(50, 54)
+	_dps = UITheme.label("", Color("#FF9A6A"), 8, UITheme.font_body)
+	_dps.position = Vector2(40, 58)
+	_dps.size = Vector2(40, 10)
+	_dps.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_dps.mouse_filter = Control.MOUSE_FILTER_STOP
+	_dps.tooltip_text = DataDB.t("party_dps_tip")
+	add_child(_dps)
+	_lvl = UITheme.label("", UITheme.C_DIM, 8, UITheme.font_body)
+	_lvl.position = Vector2(W - 32, 58)
+	_lvl.size = Vector2(26, 10)
+	_lvl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	add_child(_lvl)
-	_xp_bar = UITheme.bar(60, 3, Color("#F2B33D"))
-	_xp_bar.position = Vector2(5, 66)
+	_xp_bar = UITheme.bar(W - 12, 2, Color("#F2B33D"))
+	_xp_bar.position = Vector2(6, 68.5)
 	add_child(_xp_bar)
-	var menu := UITheme.icon_button("menu", func(): WindowManager.toggle_panel("codex"), DataDB.t("tip_codex"))
-	menu.position = Vector2(68, 62)
-	add_child(menu)
 	EventBus.gold_changed.connect(func(_g): _refresh())
 	EventBus.hero_leveled.connect(func(_h, _l): _refresh())
 	EventBus.inventory_changed.connect(_refresh)
@@ -98,7 +118,7 @@ var _slash: Control
 
 func _process(_d: float) -> void:
 	_tick += 1
-	if _tick % 30 == 0:
+	if _tick % 20 == 0:
 		_refresh()
 	for pid in ["hero", "stats", "runes", "world", "growth", "tavern"]:
 		var m: BaseButton = _btns[pid]
@@ -116,6 +136,8 @@ func _process(_d: float) -> void:
 
 func _refresh() -> void:
 	_gold.text = F.fmt_num(GameState.gold)
+	var pd := BattleSim.party_dps()
+	_dps.text = ("⚔ " + F.fmt_num(pd)) if pd > 0.0 else ""
 	_lvl.text = "Lv%d" % GameState.max_hero_level()
 	var sp := false
 	var kp := false

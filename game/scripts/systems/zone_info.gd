@@ -73,3 +73,25 @@ static func hint(z: Dictionary, diff: int) -> String:
 	if gap > 1.0:
 		return DataDB.t("hint_level", {"n": int(ceil(gap))})
 	return DataDB.t("hint_gear")
+
+
+## Damage per second a party needs to clear a stage comfortably: a wave in ~10 s, the boss inside its timer
+## with room to spare. Same scale as the live party DPS shown in the HUD.
+static func dps_needed(z: Dictionary, stage: int, diff: int) -> float:
+	var stages := int(DataDB.bal("stage.stages_per_zone", 10))
+	if stage >= stages:
+		var bid := str(z.get("boss", ""))
+		var bd := DataDB.enemy_def(bid)
+		var lv := F.monster_level(z, stages, diff) + 1
+		var hp := float(F.enemy_stats(bd, lv, str(bd.get("type", "boss")), diff).get("hp", 1.0))
+		return hp / (float(DataDB.bal("stage.boss_time", 90)) * 0.7)
+	var roster: Array = z.get("enemies", [])
+	if roster.is_empty():
+		return 0.0
+	var lv2 := F.monster_level(z, stage, diff)
+	var tot := 0.0
+	for eid in roster:
+		tot += float(F.enemy_stats(DataDB.enemy_def(str(eid)), lv2, "normal", diff).get("hp", 1.0))
+	var per := tot / roster.size()
+	var n := mini(4, GameState.party_count() + 1)
+	return per * n / 10.0

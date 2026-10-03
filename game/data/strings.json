@@ -1898,5 +1898,61 @@
  "gift_ready": {
   "tr": "Mağazada bugünün ücretsiz hediyesi seni bekliyor",
   "en": "Today's free gift is waiting in the store"
+ },
+ "party_dps_tip": {
+  "tr": "Partinin anlık DPS'i (son savaşların ortalaması). Kahraman başına DPS kahraman panelinde.",
+  "en": "Your party's live DPS (average of recent fights). Per-hero DPS is in the hero panel."
+ },
+ "hero_dps_tip": {
+  "tr": "Bu kahramanın anlık DPS'i (son savaşların ortalaması).",
+  "en": "This hero's live DPS (average of recent fights)."
+ },
+ "dps_need": {
+  "tr": "Tahmini gereken DPS: {need}   ·   Partin: {have}",
+  "en": "Estimated DPS needed: {need}   ·   Your party: {have}"
+ },
+ "dps_need_short": {
+  "tr": "Gereken DPS ~{n}",
+  "en": "DPS needed ~{n}"
+ },
+ "bag_expand_tip": {
+  "tr": "Çantaya +10 yer ({price})",
+  "en": "+10 bag slots ({price})"
+ },
+ "bag_expand_confirm": {
+  "tr": "Çantaya +{n} yer eklensin mi? Fiyat: {price}",
+  "en": "Add +{n} bag slots for {price}?"
+ },
+ "bag_expanded": {
+  "tr": "Çanta genişledi: +{n} yer",
+  "en": "Bag expanded: +{n} slots"
+ },
+ "bag_now": {
+  "tr": "Toplam {n} yer",
+  "en": "{n} slots in total"
+ },
+ "buy_tab_real": {
+  "tr": "Sekmeyi aç: {price}",
+  "en": "Open tab: {price}"
+ },
+ "stash_tab_confirm": {
+  "tr": "Yeni depo sekmesi (36 yer) açılsın mı? Fiyat: {price}",
+  "en": "Open a new stash tab (36 slots) for {price}?"
+ },
+ "stash_tab_opened": {
+  "tr": "Depo sekmesi {n} açıldı",
+  "en": "Stash tab {n} opened"
+ },
+ "toast_daily": {
+  "tr": "Günlük hediye alındı",
+  "en": "Daily gift received"
+ },
+ "toast_bought": {
+  "tr": "Satın alındı",
+  "en": "Purchased"
+ },
+ "toast_new_hero": {
+  "tr": "Yeni kahraman katıldı",
+  "en": "New hero joined"
  }
 }

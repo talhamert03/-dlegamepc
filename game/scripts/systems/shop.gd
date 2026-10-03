@@ -121,6 +121,9 @@ static func block_reason(p: Dictionary, hero_id := "") -> String:
 		"hero_pick":
 			if hero_id == "" or GameState.heroes.has(hero_id):
 				return DataDB.t("shop_all_heroes")
+		"stash":
+			if GameState.stash_tabs >= int(DataDB.bal("stash.tabs", 7)):
+				return DataDB.t("shop_bought")
 		"daily":
 			if not daily_ready():
 				return DataDB.t("shop_daily_taken")
@@ -212,6 +215,9 @@ static func grant(p: Dictionary, order_id: String, hero_id := "") -> Dictionary:
 				GameState.add_material(str(m), int(p["mats"][m]))
 		"offline":
 			pass   # permanent: read by offline_bonus() from the purchase record
+		"stash":
+			GameState.stash_tabs = mini(int(DataDB.bal("stash.tabs", 7)), GameState.stash_tabs + 1)
+			EventBus.inventory_changed.emit()
 		"bag":
 			GameState.bag_slots += int(p.get("slots", 20))
 			EventBus.inventory_changed.emit()

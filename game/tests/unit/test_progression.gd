@@ -209,8 +209,11 @@ func test_store_extras() -> void:
 	runner.check(Shop.supporter_perks().is_empty(), "no supporter perks before buying")
 	Shop.buy("supporter", func(r): box["r"] = r)
 	runner.check(float(GameState.account_mods().get("gold_find", 0.0)) >= 10.0, "supporter perks active")
-	var p0 := Shop.gold_price(Shop.product("bag_gold"))
-	GameState.add_gold(p0)
-	Shop.buy("bag_gold", func(r): box["r"] = r)
-	runner.check(Shop.gold_price(Shop.product("bag_gold")) > p0, "gold bag expansion gets pricier")
+	var b0 := GameState.bag_slots
+	Shop.buy("bag_expand", func(r): box["r"] = r)
+	runner.check(GameState.bag_slots == b0 + 10, "bag expansion adds 10 slots")
+	GameState.stash_tabs = 3
+	Shop.buy("stash_tab", func(r): box["r"] = r)
+	runner.check(GameState.stash_tabs == 4, "stash tab bought")
+	runner.check(Shop.products("packs").filter(func(p): return str(p["kind"]) == "bag").is_empty(), "no bag items left in the store")
 	GameState.loaded = was_loaded
