@@ -141,3 +141,53 @@
 - Mağaza sayfasında "TBH klonu" değil, kendi tanıtımımız olsun.
 - Görsel tutarlılık: tek bir sanat stili, düzgün ikonlar.
 - Steam'in yapay zekâ içerik bildirimini dürüstçe doldur. Yorumcular gizlenen AI kullanımını cezalandırıyor.
+
+---
+
+## ONAYLANAN YAPILACAKLAR LİSTESİ
+
+Kullanıcı onayı: kozmetik satışı ve kostüm bonusu hariç hepsi; Steam Pazarı şimdilik yok. İkinci rakibin yorumları eklendikten sonra toplu uygulanacak.
+
+### A. Mağaza ve ekonomi
+- [ ] A1. Mağaza modeli: kolaylıklar (offline süresi, çanta vb.) oyunda da kazanılabilir olsun; para yalnızca hızlandırsın. Güç satışı ölçülü kalsın.
+- [ ] A2. Şans güvencesi: başarısızlık birikimli şans artışı, N başarısızlıkta garanti; seviye düşmesi yalnızca çok yüksek seviyede ve koruma taşıyla engellenebilir; gösterilen oran = gerçek oran.
+
+### B. Zorluk ve denge
+- [ ] B1. Dünya panelinde bölüm başına düşman elementleri, önerilen direnç ve önerilen güç.
+- [ ] B2. Direnç kaynakları anlamlı (%10-20); x-9 bölümleri boss'tan zor olmasın; düzgün zorluk eğrisi.
+- [ ] B3. Takılınca ipucu ("Bu bölüm ateş vuruyor, ateş direnci al").
+- [ ] B4. Sınıf bazlı denge botu (tek sınıf koşuları); tank gerçekten tanklasın, tek sınıf oyunu bitirmesin.
+- [ ] B5. Zayıf eşyaya "daha iyi" oku çıkmasın; ilk silahlar daima net artı.
+- [ ] B6. Anlamsız yükseltme kalmasın (+0,01 gibi değerler taranıp düzeltilsin).
+
+### C. Arayüz, ses, platform
+- [ ] C1. Belirgin çıkış butonu + onay; altın her zaman görünür; ilk 10 dakikayı yönlendiren eğitim.
+- [ ] C2. Ayrı ses kaydırıcıları (müzik / savaş / arayüz); pencere odakta değilken savaş seslerini kısma; düşük varsayılan ses seviyeleri.
+- [ ] C3. Exe kod imzalama (Defender); Linux / Steam Deck'te normal pencere moduna düşme; siyah ekran düzeltmesinin Windows'ta testi.
+- [ ] C4. Saat değişikliğini asla cezalandırmama (yalnızca offline süresi sınırlansın).
+
+### D. İçerik ve kolaylık
+- [ ] D1. Farm ve boss için tek tıkla ekipman/yetenek presetleri.
+- [ ] D2. Kahraman başına hasar / iyileştirme / alınan hasar istatistiği.
+- [ ] D3. Akıllı ganimet filtresi (sınıf / slot bazında); açılmamış sınıfın eşyası çok az düşsün.
+- [ ] D4. Gelişmiş offline özet ekranı.
+- [ ] D5. Sonsuz Kule için Steam liderlik tablosu, haftalık meydan okuma.
+- [ ] D6. Asla kilitlenmeyen başarımlar; yeni zorluklar ve perdeler için içerik planı.
+- [ ] D7. Topluluk: yama notları, nerf'ten önce duyuru ve ücretsiz respec.
+
+### E. İlk açılış ve hikâye (premium)
+- [ ] E1. İlk açılışta kendi kahramanlarımızla poster tarzı bir ana görsel ("key art") ve oyunun logosu. Referans, rakibin kapağının kompozisyonu: kahramanlar dinamik pozlarla öne çıkıyor, altta alevli büyük logo var. Bizim görsel kendi karakterlerimiz ve kendi logomuzla özgün olacak; kopya olmayacak.
+- [ ] E2. Hikâye daha küçük, ortalanmış ve süslü çerçeveli bir sinema penceresinde oynasın, tam ekranda değil.
+- [ ] E3. Hikâyede düşman karakterleri kadraja tam sığsın (kırpılma düzeltmesi).
+- [ ] E4. Hikâyeye premium görünüm:
+  - geçiş efektleri, ışık ve parçacıklar
+  - sinematik siyah bantlar
+  - altyazı kutusu ve yazı animasyonu
+  - müzik ve ses senkronu
+  - atla butonu
+  - kısa ve keyifli bir akış
+- [ ] E5. Yeni oyuncu için hikâye metnini daha akıcı ve etkileyici hale getirme.
+
+### Kapsam dışı (şimdilik)
+- Steam Pazarı / envanter ekonomisi.
+- Kozmetik satış ve kostüm koleksiyon bonusu.
