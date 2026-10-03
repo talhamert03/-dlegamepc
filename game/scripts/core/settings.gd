@@ -16,12 +16,12 @@ var values: Dictionary = {
 	"dmg_numbers": 2,         # 0 off, 1 crits only, 2 all
 	"screen_shake": true,
 	"particles": 1.0,
-	"auto_equip": true,
-	"auto_stats": true,
-	"auto_skills": true,
+	"auto_equip": false,      # nothing is done for the player: points, skills and gear are their choice
+	"auto_stats": false,
+	"auto_skills": false,
 	"auto_progress": true,
 	"barks": 1,               # 0 off 1 few 2 normal
-	"loot_common": "sell", "loot_magic": "keep", "loot_rare": "keep", "loot_epic": "keep",
+	"loot_common": "keep", "loot_magic": "keep", "loot_rare": "keep", "loot_epic": "keep",
 	"strip_opacity": 1.0,
 	"show_bg": true,
 	"colorblind": false,
@@ -63,6 +63,12 @@ func load_settings() -> void:
 		return
 	for k in cf.get_section_keys("settings"):
 		values[k] = cf.get_value("settings", k)
+	# v2: automation off by default (older files had it on)
+	if int(values.get("settings_v", 1)) < 2:
+		values["settings_v"] = 2
+		for k in ["auto_equip", "auto_stats", "auto_skills"]:
+			values[k] = false
+		values["loot_common"] = "keep"
 
 
 func save_settings() -> void:

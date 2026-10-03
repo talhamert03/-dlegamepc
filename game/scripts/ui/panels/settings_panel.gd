@@ -10,7 +10,7 @@ func build(c: Control) -> void:
 	var v := W.vbox(2)
 	v.size = c.size
 	c.add_child(v)
-	_tabs = W.tabs([DataDB.t("set_display"), DataDB.t("set_sound"), DataDB.t("set_game"), DataDB.t("set_loot")], tab, func(i):
+	_tabs = W.tabs([DataDB.t("set_display"), DataDB.t("set_sound"), DataDB.t("set_game")], tab, func(i):
 		tab = i
 		W.set_tab_active(_tabs, i)
 		refresh())
@@ -50,8 +50,6 @@ func refresh() -> void:
 			_slider("set_duck", "unfocus_duck")
 			_toggle("set_mute", "mute")
 		2:
-			_toggle("set_auto_equip", "auto_equip")
-			_toggle("set_auto_stats", "auto_stats")
 			_choice("set_barks", "barks", [0, 1, 2], [DataDB.t("off"), DataDB.t("few"), DataDB.t("normal")])
 			_toggle("set_tutorial", "tutorial_done")
 			_body.add_child(UITheme.label(DataDB.t("hotkeys_help"), UITheme.C_DIM))
@@ -60,11 +58,6 @@ func refresh() -> void:
 				EventBus.notify.emit(DataDB.t("saved"), UITheme.C_GREEN))
 			_body.add_child(save_b)
 			_body.add_child(UITheme.button(DataDB.t("tip_quit"), "red", func(): WindowManager.quit_game()))
-		3:
-			_body.add_child(UITheme.label(DataDB.t("loot_filter_hint"), UITheme.C_DIM))
-			for r in ["common", "magic", "rare", "epic"]:
-				_choice_label(ItemUtil.rarity_name(r), ItemUtil.rarity_color(r), "loot_" + r, ["keep", "sell", "salvage"],
-					[DataDB.t("keep"), DataDB.t("sell"), DataDB.t("salvage")])
 
 
 func _row(label: String, color: Color = UITheme.C_TEXT) -> HBoxContainer:

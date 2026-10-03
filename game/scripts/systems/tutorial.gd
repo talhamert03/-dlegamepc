@@ -90,21 +90,14 @@ func _on_level(hid: String, lv: int) -> void:
 		_hint("stats", "tut_stats")
 	elif lv == 3:
 		_hint("skills_pts", "tut_skills")
-	elif lv == 8:
-		_hint("tavern", "tut_tavern")
 	Barks.trigger(hid, "level_up")
 
 
 func _on_stage(s: int) -> void:
 	var z := int(GameState.progress.get("zone", 0))
-	if z == 0 and s >= 3 and not GameState.heroes.has("lyra"):
-		GameState.unlock_hero("lyra")
-		GameState.add_to_party("lyra")
-		_show_bubble(DataDB.t("story_lyra"), "lyra", 5.0)
-	if z == 0 and s >= 9 and not GameState.heroes.has("pip"):
-		GameState.unlock_hero("pip")
-		GameState.add_to_party("pip")
-		_show_bubble(DataDB.t("story_pip"), "pip", 5.0)
+	# point at the tavern once the first recruit is affordable
+	if GameState.heroes.size() == 1 and GameState.gold >= int(Tavern.cost("lyra")["gold"]):
+		_hint("tavern_buy", "tut_tavern_buy")
 
 
 func _on_boss(_u) -> void:

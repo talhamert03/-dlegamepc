@@ -36,19 +36,10 @@ func _ready() -> void:
 
 
 func _bot_actions() -> void:
-	# story joins (normally driven by the tutorial node)
-	if not GameState.heroes.has("lyra"):
-		GameState.unlock_hero("lyra", false)
-		GameState.add_to_party("lyra")
-	if not GameState.heroes.has("pip") and BattleSim.zone_idx > 0:
-		GameState.unlock_hero("pip", false)
-		GameState.add_to_party("pip")
-	# recruit from the tavern when affordable
-	if GameState.max_hero_level() >= 8:
-		Tavern.ensure_offers()
-		for hid in GameState.tavern.get("offers", []).duplicate():
-			if GameState.party_count() < 5 and Tavern.can_afford(hid):
-				Tavern.recruit(hid)
+	# recruit the cheapest affordable hero (story heroes first) while the party has room
+	for hid in ["lyra", "pip", "nova", "bjorn", "finn"] + Tavern.roster():
+		if GameState.party_count() < 5 and not GameState.heroes.has(hid) and Tavern.can_afford(hid):
+			Tavern.recruit(hid)
 	for h in GameState.heroes.values():
 		h.auto_allocate()
 		h.auto_skills()

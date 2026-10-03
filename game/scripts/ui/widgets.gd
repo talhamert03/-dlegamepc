@@ -154,3 +154,40 @@ static func select_hero(hid: String) -> void:
 			WindowManager.panels[id].queue_redraw()
 		if WindowManager.is_open(id):
 			WindowManager.panels[id].refresh()
+
+
+## Modal "are you sure?" card laid over `host` (a panel's content): dims it, asks, calls `on_yes`.
+static func confirm(host: Control, text: String, on_yes: Callable, yes_text := "", danger := false) -> Control:
+	var veil := Control.new()
+	veil.size = host.size
+	veil.mouse_filter = Control.MOUSE_FILTER_STOP
+	veil.z_index = 50
+	veil.draw.connect(func(): veil.draw_rect(Rect2(Vector2.ZERO, veil.size), Color(0.02, 0.01, 0.03, 0.72)))
+	host.add_child(veil)
+	var w: float = minf(host.size.x - 16.0, 190.0)
+	var card := Control.new()
+	card.size = Vector2(w, 66)
+	card.position = ((host.size - card.size) / 2.0).round()
+	card.draw.connect(func():
+		var ci := card.get_canvas_item()
+		var r := Rect2(Vector2.ZERO, card.size)
+		UISkin.fill(ci, r, 4, Color("#2E2630"), Color("#161118"))
+		UISkin.ornate(ci, r.grow(-3.0)))
+	veil.add_child(card)
+	var l := UITheme.label(text, UITheme.C_TEXT, 8, UITheme.font_body)
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.position = Vector2(8, 7)
+	l.size = Vector2(w - 16, 34)
+	card.add_child(l)
+	var yes := UITheme.button(yes_text if yes_text != "" else DataDB.t("btn_yes"), "red" if danger else "gold", func():
+		veil.queue_free()
+		on_yes.call(), Vector2(64, 14))
+	card.add_child(yes)
+	yes.size = Vector2(64, 14)
+	yes.position = Vector2(w / 2.0 - 68, 46)
+	var no := UITheme.button(DataDB.t("btn_cancel"), "brown", func(): veil.queue_free(), Vector2(64, 14))
+	card.add_child(no)
+	no.size = Vector2(64, 14)
+	no.position = Vector2(w / 2.0 + 4, 46)
+	return veil

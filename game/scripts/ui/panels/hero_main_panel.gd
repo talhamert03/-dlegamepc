@@ -28,9 +28,12 @@ var _bottom: HBoxContainer
 var _last_uids: Dictionary = {}
 var _shown_hero := ""
 var _gold: Label
+var _tools: HBoxContainer
+var _host: Control
 
 
 func build(c: Control) -> void:
+	_host = c
 	var w := c.size.x
 	# ---------------------------------------------------------------- parchment: equipment + portrait
 	var parch := Control.new()
@@ -115,21 +118,26 @@ func build(c: Control) -> void:
 	_party_row.size = Vector2(pw + 4, 20)
 	c.add_child(_party_row)
 	# ---------------------------------------------------------------- tabs
-	_tabs = W.tabs([DataDB.t("panel_inventory"), DataDB.t("tab_formation")], tab, _on_tab, 58)
+	_tabs = W.tabs([DataDB.t("panel_inventory"), DataDB.t("tab_formation"), DataDB.t("tab_chests")], tab, _on_tab, 50)
 	_tabs.position = Vector2(0, 104)
 	c.add_child(_tabs)
-	var tools := W.hbox(2)
-	tools.position = Vector2(w - 70, 104)
-	c.add_child(tools)
+	_tools = W.hbox(2)
+	_tools.position = Vector2(w - 78, 104)
+	c.add_child(_tools)
 	var sb := UITheme.button("", "brown", func(): GameState.sort_bag(), Vector2(14, 13))
 	sb.icon = UITheme.icon("sort")
 	sb.expand_icon = true
 	sb.tooltip_text = DataDB.t("tip_sort")
-	tools.add_child(sb)
-	var sell := UITheme.button(DataDB.t("btn_sell_junk"), "red", _sell_junk, Vector2(0, 13))
+	_tools.add_child(sb)
+	var fb := UITheme.button("", "brown", _loot_filter_dialog, Vector2(14, 13))
+	fb.icon = UITheme.icon("gear")
+	fb.expand_icon = true
+	fb.tooltip_text = DataDB.t("tip_loot_filter")
+	_tools.add_child(fb)
+	var sell := UITheme.button(DataDB.t("btn_sell"), "red", _sell_dialog, Vector2(0, 13))
 	sell.tooltip_text = DataDB.t("tip_sell_junk")
 	sell.add_theme_font_size_override("font_size", 7)
-	tools.add_child(sell)
+	_tools.add_child(sell)
 	# ---------------------------------------------------------------- page (bag grid / formation)
 	var well := Control.new()
 	well.position = Vector2(0, 120)
@@ -206,13 +214,19 @@ func _build_page() -> void:
 		ch.queue_free()
 	_bag_slots.clear()
 	_bag_grid = null
+	if _tools:
+		_tools.visible = tab == 0
 	if tab == 0:
 		var sc := W.scroll(_page.size)
 		_page.add_child(sc)
 		_bag_grid = W.grid(COLS, 1)
 		sc.add_child(_bag_grid)
-	else:
+	elif tab == 1:
 		_build_formation()
+	else:
+		var cv := ChestsView.new()
+		cv.size = _page.size
+		_page.add_child(cv)
 
 
 func _cycle_hero(dir: int) -> void:
@@ -419,19 +433,133 @@ func _on_drop_bag(_slot: ItemSlot, data: Dictionary) -> void:
 			GameState.move_to_bag(int(data["key"][0]), str(data["item"]["uid"]))
 
 
-func _sell_junk() -> void:
-	var total := 0
-	for it in GameState.bag.duplicate():
-		if it.get("locked", false):
-			continue
-		if ItemUtil.rarity_rank(it.get("rarity", "common")) <= ItemUtil.rarity_rank("magic"):
-			total += GameState.sell_item(it["uid"])
-	if total > 0:
-		EventBus.notify.emit(DataDB.t("sold_for", {"g": F.fmt_num(total)}), UITheme.C_GOLD)
-		AudioManager.play("coin", 0.05, 0.8)
+## Sell by rarity: tick the rarities, see how many items and how much gold, then confirm.
+func _sell_dialog() -> void:
+	var picks := {"common": true, "magic": true, "rare": false, "epic": false, "legendary": false}
+	var veil := Control.new()
+	veil.size = _host.size
+	veil.mouse_filter = Control.MOUSE_FILTER_STOP
+	veil.z_index = 50
+	veil.draw.connect(func(): veil.draw_rect(Rect2(Vector2.ZERO, veil.size), Color(0.02, 0.01, 0.03, 0.72)))
+	_host.add_child(veil)
+	var card := Control.new()
+	card.size = Vector2(196, 146)
+	card.position = ((veil.size - card.size) / 2.0).round()
+	card.draw.connect(func():
+		var ci := card.get_canvas_item()
+		UISkin.fill(ci, Rect2(Vector2.ZERO, card.size), 4, Color("#2E2630"), Color("#161118"))
+		UISkin.ornate(ci, Rect2(Vector2(3, 3), card.size - Vector2(6, 6))))
+	veil.add_child(card)
+	var title := UITheme.label(DataDB.t("sell_title"), UITheme.C_TITLE, 10, UITheme.font_title)
+	title.position = Vector2(10, 6)
+	card.add_child(title)
+	var summary := UITheme.label("", UITheme.C_GOLD, 8, UITheme.font_body)
+	summary.position = Vector2(10, 104)
+	summary.size = Vector2(176, 10)
+	card.add_child(summary)
+	var go: Button
+	var recount := func():
+		var n := 0
+		var g := 0
+		for it in GameState.bag:
+			if not it.get("locked", false) and picks.get(str(it.get("rarity", "common")), false):
+				n += 1
+				g += ItemUtil.sell_price(it)
+		summary.text = DataDB.t("sell_summary", {"n": n, "g": F.fmt_num(g)})
+		if go:
+			go.disabled = n == 0
+	var y := 22.0
+	for r in picks.keys():
+		var rr: String = r
+		var cnt := 0
+		for it in GameState.bag:
+			if str(it.get("rarity", "")) == rr and not it.get("locked", false):
+				cnt += 1
+		var b := UITheme.button("", "brown", Callable(), Vector2(176, 14))
+		b.toggle_mode = true
+		b.button_pressed = picks[rr]
+		b.text = ("☑  " if picks[rr] else "☐  ") + ItemUtil.rarity_name(rr) + "  (%d)" % cnt
+		b.add_theme_color_override("font_color", ItemUtil.rarity_color(rr))
+		b.toggled.connect(func(on: bool):
+			picks[rr] = on
+			b.text = ("☑  " if on else "☐  ") + ItemUtil.rarity_name(rr) + "  (%d)" % cnt
+			recount.call())
+		card.add_child(b)
+		b.position = Vector2(10, y)
+		b.size = Vector2(176, 14)
+		y += 16.0
+	go = UITheme.button(DataDB.t("btn_sell"), "red", func():
+		var total := 0
+		for it in GameState.bag.duplicate():
+			if not it.get("locked", false) and picks.get(str(it.get("rarity", "common")), false):
+				total += GameState.sell_item(it["uid"])
+		veil.queue_free()
+		if total > 0:
+			EventBus.notify.emit(DataDB.t("sold_for", {"g": F.fmt_num(total)}), UITheme.C_GOLD)
+			AudioManager.play("coin", 0.05, 0.8), Vector2(84, 14))
+	card.add_child(go)
+	go.size = Vector2(84, 14)
+	go.position = Vector2(10, 124)
+	var no := UITheme.button(DataDB.t("btn_cancel"), "brown", func(): veil.queue_free(), Vector2(84, 14))
+	card.add_child(no)
+	no.size = Vector2(84, 14)
+	no.position = Vector2(102, 124)
+	recount.call()
 
 
-# ------------------------------------------------------------------ formation
+## What happens to new drops of each rarity: keep, sell at once or salvage into materials.
+func _loot_filter_dialog() -> void:
+	var veil := Control.new()
+	veil.size = _host.size
+	veil.mouse_filter = Control.MOUSE_FILTER_STOP
+	veil.z_index = 50
+	veil.draw.connect(func(): veil.draw_rect(Rect2(Vector2.ZERO, veil.size), Color(0.02, 0.01, 0.03, 0.72)))
+	_host.add_child(veil)
+	var card := Control.new()
+	card.size = Vector2(212, 128)
+	card.position = ((veil.size - card.size) / 2.0).round()
+	card.draw.connect(func():
+		var ci := card.get_canvas_item()
+		UISkin.fill(ci, Rect2(Vector2.ZERO, card.size), 4, Color("#2E2630"), Color("#161118"))
+		UISkin.ornate(ci, Rect2(Vector2(3, 3), card.size - Vector2(6, 6))))
+	veil.add_child(card)
+	var title := UITheme.label(DataDB.t("loot_filter_title"), UITheme.C_TITLE, 10, UITheme.font_title)
+	title.position = Vector2(10, 6)
+	card.add_child(title)
+	var hint := UITheme.label(DataDB.t("loot_filter_hint"), UITheme.C_DIM, 7, UITheme.font_body)
+	hint.position = Vector2(10, 18)
+	hint.size = Vector2(192, 10)
+	hint.clip_text = true
+	card.add_child(hint)
+	var y := 32.0
+	var acts := ["keep", "sell", "salvage"]
+	for r in ["common", "magic", "rare", "epic"]:
+		var rr: String = r
+		var l := UITheme.label(ItemUtil.rarity_name(rr), ItemUtil.rarity_color(rr), 8, UITheme.font_body)
+		l.position = Vector2(10, y + 1)
+		card.add_child(l)
+		var btns: Array = []
+		for i in acts.size():
+			var act: String = acts[i]
+			var on: bool = Settings.loot_action(rr) == act
+			var b := UITheme.button(DataDB.t(act), "gold" if on else "brown", Callable(), Vector2(44, 13))
+			card.add_child(b)
+			b.position = Vector2(64 + i * 46, y)
+			b.size = Vector2(44, 13)
+			btns.append(b)
+		for i in btns.size():
+			var act2: String = acts[i]
+			btns[i].pressed.connect(func():
+				Settings.set_v("loot_" + rr, act2)
+				for j in btns.size():
+					UITheme.set_button_color(btns[j], "gold" if j == i else "brown"))
+		y += 17.0
+	var ok := UITheme.button(DataDB.t("btn_close"), "brown", func(): veil.queue_free(), Vector2(80, 14))
+	card.add_child(ok)
+	ok.size = Vector2(80, 14)
+	ok.position = Vector2(66, 104)
+
+
 func _build_formation() -> void:
 	if tab != 1:
 		return

@@ -135,7 +135,10 @@ func _build_chest_button() -> void:
 	b.size = Vector2(19, 15)
 	b.z_index = 45
 	b.tooltip_text = DataDB.t("tip_chests")
-	b.pressed.connect(func(): WindowManager.toggle_panel("chests"))
+	b.pressed.connect(func():
+		var hp := WindowManager.open_panel("hero")
+		if hp:
+			hp._on_tab(2))
 	b.draw.connect(func():
 		var bi := Chests.best_index()
 		if bi < 0:
@@ -350,6 +353,12 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			print("SCREENSHOTS_DONE ", ProjectSettings.globalize_path(out))
 			get_tree().quit()
 			return
+		if a.begins_with("--herotab=") and WindowManager.is_open("hero"):
+			WindowManager.panels["hero"]._on_tab(int(a.substr(10)))
+			await get_tree().create_timer(0.5).timeout
+		if a == "--selldlg" and WindowManager.is_open("hero"):
+			WindowManager.panels["hero"]._sell_dialog()
+			await get_tree().create_timer(0.3).timeout
 		if a == "--chestopen" and WindowManager.is_open("chests"):
 			WindowManager.panels["chests"]._on_open()
 			await get_tree().create_timer(1.0).timeout

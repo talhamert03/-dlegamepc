@@ -948,8 +948,8 @@
   "en": "Base"
  },
  "tip_sell_junk": {
-  "tr": "Sıradan ve Büyülü itemleri sat",
-  "en": "Sell Common and Magic items"
+  "tr": "Seçtiğin nadirlikteki tüm eşyaları sat (kilitliler hariç)",
+  "en": "Sell every item of the rarities you pick (locked ones are kept)"
  },
  "tip_sort": {
   "tr": "Sırala",
@@ -1414,5 +1414,73 @@
  "rune_capstone": {
   "tr": "Doruk rünü: dalın en güçlü ödülü",
   "en": "Capstone: the branch's greatest reward"
+ },
+ "tut_tavern_buy": {
+  "tr": "Yeterince altının var! Kasabadaki Taverna'dan partine yeni bir kahraman katabilirsin.",
+  "en": "You have enough gold! Recruit a new hero at the Tavern."
+ },
+ "tavern_owned": {
+  "tr": "Partide",
+  "en": "Recruited"
+ },
+ "tavern_need_lv": {
+  "tr": "Sv. {lv} gerekli",
+  "en": "Needs Lv {lv}"
+ },
+ "tavern_all": {
+  "tr": "Tümü",
+  "en": "All"
+ },
+ "tavern_hint": {
+  "tr": "Kahramanlar yalnızca burada alınır. Her yeni kahraman bir sonrakini pahalılaştırır.",
+  "en": "Heroes are only recruited here. Every recruit makes the next one dearer."
+ },
+ "tavern_confirm": {
+  "tr": "{name} partiye katılsın mı?\\n{cost}",
+  "en": "Recruit {name}?\\n{cost}"
+ },
+ "btn_yes": {
+  "tr": "Evet",
+  "en": "Yes"
+ },
+ "btn_cancel": {
+  "tr": "Vazgeç",
+  "en": "Cancel"
+ },
+ "seal_name": {
+  "tr": "Mühür",
+  "en": "Seals"
+ },
+ "btn_recruit": {
+  "tr": "Al",
+  "en": "Recruit"
+ },
+ "tab_chests": {
+  "tr": "Sandıklar",
+  "en": "Chests"
+ },
+ "btn_sell": {
+  "tr": "Sat",
+  "en": "Sell"
+ },
+ "sell_title": {
+  "tr": "Toplu Satış",
+  "en": "Bulk Sale"
+ },
+ "sell_summary": {
+  "tr": "{n} item  →  {g} altın",
+  "en": "{n} items  →  {g} gold"
+ },
+ "tip_loot_filter": {
+  "tr": "Ganimet filtresi: yeni düşen eşyalar tutulsun mu, satılsın mı?",
+  "en": "Loot filter: keep, sell or salvage new drops"
+ },
+ "loot_filter_title": {
+  "tr": "Ganimet Filtresi",
+  "en": "Loot Filter"
+ },
+ "btn_close": {
+  "tr": "Kapat",
+  "en": "Close"
  }
 }

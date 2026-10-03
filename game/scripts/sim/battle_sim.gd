@@ -344,9 +344,16 @@ func _next_wave() -> void:
 		_spawn_boss()
 		return
 	wave += 1
+	# catching breath between waves: living heroes recover part of their health
+	var rest: float = float(DataDB.bal("combat.wave_rest_heal", 0.3))
+	for u in heroes:
+		if u.alive and u.etype == "hero":
+			u.hp = minf(u.max_hp, u.hp + u.max_hp * rest)
 	var z := zone()
 	var lv := F.monster_level(z, stage, difficulty)
 	var n := rng.randi_range(int(DataDB.bal("stage.wave_min", 3)), int(DataDB.bal("stage.wave_max", 5)))
+	# a small party meets smaller waves (one hero: two monsters at a time)
+	n = mini(n, GameState.party_count() + 1)
 	if stage <= 2 and zone_idx == 0:
 		n = 2 + (stage - 1)
 	var roster: Array = z.get("enemies", [])
@@ -1049,6 +1056,9 @@ func calc_damage(src: Combatant, tgt: Combatant, mult: float, element: String, i
 	if not is_dot and rng.randf() * 100.0 < min(50.0, tgt.st("block")):
 		raw *= 1.0 - float(DataDB.bal("combat.block_reduction", 0.6))
 		out["blocked"] = true
+	# a lone hero (before the first recruit) takes less punishment
+	if tgt.is_hero_side() and GameState.party_count() <= 1:
+		raw *= float(DataDB.bal("combat.solo_damage_taken", 0.6))
 	var v: float = float(DataDB.bal("combat.dmg_variance", 0.05))
 	raw *= rng.randf_range(1.0 - v, 1.0 + v)
 	out["amount"] = max(1.0, round(raw))

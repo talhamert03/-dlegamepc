@@ -319,14 +319,13 @@ func add_hero_xp(h: HeroState, amount: float) -> void:
 			h.stat_points += int(DataDB.bal("points.stat_bonus", 5))
 			h.skill_points += int(DataDB.bal("points.skill_bonus", 1))
 		leveled = true
-		if Settings.get_v("auto_stats", true):
+		if Settings.get_v("auto_stats", false):
 			h.auto_allocate()
-		if Settings.get_v("auto_skills", true):
+		if Settings.get_v("auto_skills", false):
 			h.auto_skills()
 		EventBus.hero_leveled.emit(h.id, h.level)
 	if leveled:
 		invalidate_stats()
-		_check_story_unlocks()
 
 
 func _check_story_unlocks() -> void:
@@ -386,7 +385,7 @@ func receive_item(item: Dictionary) -> String:
 	var action: String = Settings.loot_action(r)
 	if bag.size() >= bag_slots and action == "keep" and ItemUtil.rarity_rank(r) < ItemUtil.rarity_rank("legendary"):
 		action = "sell"
-	if action == "keep" and Settings.get_v("auto_equip", true):
+	if action == "keep" and Settings.get_v("auto_equip", false):
 		if try_auto_equip(item):
 			return "equipped"
 	match action:
