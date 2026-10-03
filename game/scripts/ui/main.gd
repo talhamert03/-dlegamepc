@@ -299,7 +299,15 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 		if a == "--runes":
 			GameState.add_gold(5000000)
 			var lead: HeroState = GameState.party_heroes()[0]
-			for id in ["core", "w1", "w1", "w2", "w2", "w3", "w3a", "d1", "d1", "d2", "e1", "e2", "e2", "e3", "a1", "a2", "a2", "a2", "a2", "a2"]:
+			for a2 in cmd:
+				if a2.begins_with("--runehero="):
+					lead = GameState.heroes[a2.substr(11)]
+					WindowManager.selected_hero = lead.id
+			var order: Array = ["core"]
+			for b in Runes.branches(lead):
+				for k in ["1", "1", "2", "2", "3", "_side"]:
+					order.append(str(b["key"]) + k)
+			for id in order:
 				Runes.buy(lead, id)
 			GameState.gold = 2715147
 	for a in cmd:

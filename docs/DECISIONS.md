@@ -71,8 +71,10 @@ yapay zeka) projeye katılmadan önce bu dosyayı okumalı.
   şansı düşman türüne göre değişir: normal %0,45, elit %6, boss %60, perde bossu %100. Nadirlik tablosu da
   türe göre belirlenir; rünlerden gelen "Sandık Bulma" şansı artırır. Ödüller öldürmenin seviyesine göre
   ölçeklenir: N normal öldürme değerinde altın, en az belirli nadirlikte itemler ve malzemeler.
-- Rün ağacı: her kahramanın kendi kişisel gelişim ağacı (46 düğüm, 4 dal), altınla alınır; panelde parti
-  kahramanları arasında sekmelerle geçilir. Bir düğüm, bağlı düğümlerden biri en az bir kademe alınca açılır.
+- Rün ağacı: her sınıfın kendi ağacı var (data/runes.json, tools/data/gen_runes.py). Öz rün + sınıfa özel
+  isimli 3 dal; her dalda 5 rün, 1 yan rün ve tek kademeli bir doruk rünü bulunur (sınıf başına 22 rün). Dal
+  şekilleri (düz, zikzak, kıvrımlı, çapraz) sınıfa göre değişir. Her kahraman kendi ağacını altınla geliştirir;
+  panelde parti kahramanları arasında sekmelerle geçilir. Bir düğüm, bağlı düğümlerden biri en az bir kademe alınca açılır.
   Maliyet halka başına x2,2, kademe başına x1,6 artar. Bonuslar yalnızca o kahramanın statlarına eklenir;
   Sandık Bulma partinin ortalamasıdır. Rün düğümleri kare oyma taşlar ve stat sembolleridir; sınıf
   yeteneklerinin yuvarlak madalyonlarıyla karışmasın diye bilerek farklıdır.

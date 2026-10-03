@@ -1312,8 +1312,8 @@
   "en": "Arcane"
  },
  "rune_none": {
-  "tr": "Bu kahramanın henüz rünü yok. Ortadaki rünle başla; her rün yanındaki rünlerin yolunu açar. Rünler yalnızca bu kahramanı güçlendirir.",
-  "en": "This hero has no runes yet. Start with the central rune; every rune opens the way to its neighbours. Runes strengthen only this hero."
+  "tr": "Bu kahramanın henüz rünü yok. Ortadaki Öz Rün ile başla; her rün yanındakilerin yolunu açar. Her sınıfın kendi ağacı vardır ve rünler yalnızca bu kahramanı güçlendirir.",
+  "en": "No runes yet. Start with the Core Rune in the middle; every rune opens its neighbours. Each class has its own tree and runes strengthen only this hero."
  },
  "rune_buy": {
   "tr": "Al",
@@ -1406,5 +1406,13 @@
  "tip_minimize": {
   "tr": "Küçült: savaş görev çubuğunda sürer (geri dönmek için şeride tıkla)",
   "en": "Minimise: the fight goes on in the taskbar (click the bar to come back)"
+ },
+ "rune_tree": {
+  "tr": "Rün Ağacı",
+  "en": "Rune Tree"
+ },
+ "rune_capstone": {
+  "tr": "Doruk rünü: dalın en güçlü ödülü",
+  "en": "Capstone: the branch's greatest reward"
  }
 }

@@ -18,6 +18,7 @@ var acts: Array = []
 var difficulties: Array = []
 var strings: Dictionary = {}
 var achievements: Array = []
+var runes: Dictionary = {}       # class -> {branches, nodes} (tools/data/gen_runes.py)
 var pets: Dictionary = {}
 var hero_anims: Dictionary = {}
 var lang: String = "tr"
@@ -63,6 +64,7 @@ func load_all() -> void:
 	var ach: Dictionary = _load("res://data/achievements.json")
 	achievements = ach.get("achievements", [])
 	pets = _load("res://data/pets.json")
+	runes = _load("res://data/runes.json")
 	hero_anims = _load("res://assets/sprites/heroes/anims.json")
 	loaded = true
 

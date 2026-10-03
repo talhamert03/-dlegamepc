@@ -595,13 +595,13 @@ func from_dict(d: Dictionary) -> void:
 	gold = int(d.get("gold", 0))
 	materials = d.get("materials", {})
 	chests = d.get("chests", [])
-	# runes were account-wide for one build: hand them to the party leader
-	var old_runes: Dictionary = d.get("runes", {})
-	if not old_runes.is_empty():
-		for hid in party:
-			if hid != "" and heroes.has(hid):
-				heroes[hid].runes = old_runes.duplicate()
-				break
+	# drop ranks of runes that no longer exist in the hero's class tree
+	for hid in heroes:
+		var hs: HeroState = heroes[hid]
+		var ns := Runes.nodes(hs)
+		for rid in hs.runes.keys():
+			if not ns.has(rid):
+				hs.runes.erase(rid)
 	bag = d.get("bag", [])
 	bag_slots = int(d.get("bag_slots", bag_slots))
 	stash = d.get("stash", stash)

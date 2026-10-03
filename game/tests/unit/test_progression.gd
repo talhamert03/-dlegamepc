@@ -62,14 +62,14 @@ func test_runes_are_personal() -> void:
 	GameState.add_gold(100000)
 	var kael: HeroState = GameState.heroes["kael"]
 	var before := float(GameState.hero_stats("kael").get("hp_pct", 0.0))
-	runner.check(not Runes.can_buy(kael, "d1"), "d1 locked before the core")
+	runner.check(not Runes.can_buy(kael, "bulwark1"), "bulwark1 locked before the core")
 	runner.check(Runes.buy(kael, "core"), "core bought")
-	runner.check(Runes.buy(kael, "d1"), "d1 bought after the core")
+	runner.check(Runes.buy(kael, "bulwark1"), "bulwark1 bought after the core")
 	runner.check(float(GameState.hero_stats("kael").get("hp_pct", 0.0)) > before, "rune raises the hero's stat")
 	GameState.save_game(9)
 	GameState.reset_state()
 	GameState.load_game(9)
-	runner.check(Runes.rank(GameState.heroes["kael"], "d1") == 1, "rune rank restored")
+	runner.check(Runes.rank(GameState.heroes["kael"], "bulwark1") == 1, "rune rank restored")
 
 
 func test_corrupt_save_falls_back_to_backup() -> void:
