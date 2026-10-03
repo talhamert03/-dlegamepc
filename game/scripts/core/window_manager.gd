@@ -10,6 +10,11 @@ extends Node
 const STRIP_SIZE := Vector2i(440, 72)    # battle view 360 + control block 80
 const MAX_PANEL_H := 334
 const GAP := 2   # logical pixels between panels / strip
+## taskbar mode: the part of the battle view shown on the taskbar and the room above it for the bubble
+const MINI_CROP := Rect2(48, 18, 312, 54)
+const MINI_BUBBLE_H := 36.0
+
+signal mini_changed(on: bool)
 const PANELS := {
 	"hero": {"script": "res://scripts/ui/panels/hero_main_panel.gd", "size": Vector2i(252, 334), "title": "panel_hero"},
 	"stats": {"script": "res://scripts/ui/panels/stats_panel.gd", "size": Vector2i(196, 334), "title": "panel_stats"},
@@ -29,6 +34,7 @@ const PANELS := {
 	"codex": {"script": "res://scripts/ui/panels/codex_panel.gd", "size": Vector2i(232, 240), "title": "panel_codex"},
 	"ending": {"script": "res://scripts/ui/panels/ending_panel.gd", "size": Vector2i(250, 150), "title": "panel_ending"},
 	"pets": {"script": "res://scripts/ui/panels/pets_panel.gd", "size": Vector2i(210, 190), "title": "panel_pets"},
+	"chests": {"script": "res://scripts/ui/panels/chests_panel.gd", "size": Vector2i(236, 222), "title": "panel_chests"},
 }
 const GROUPS := {"hero": ["hero"], "bag": ["hero"], "world": ["world"], "growth": ["growth"]}
 ## Default home of every panel: panels sit above the strip, bottom-aligned. Groups open side by side;
@@ -37,7 +43,7 @@ const HOME := {
 	"hero": "center", "ending": "center",
 	"away": "left", "stats": "left", "skills": "left", "stash": "left", "blacksmith": "left", "pets": "left", "dps": "left",
 	"world": "right", "growth": "right", "tavern": "right", "quests": "right", "codex": "right", "settings": "right",
-	"party": "right", "inventory": "right", "portrait": "left",
+	"party": "right", "inventory": "right", "portrait": "left", "chests": "right",
 }
 
 var ui_scale: float = 2.0
@@ -55,7 +61,13 @@ var top_layer: Control = null
 var _focus_poll := 0.0
 var _any_focused := true
 var _region_dirty := true
+var _region_refresh := 0.0
 var _last_region: PackedVector2Array = PackedVector2Array()
+var mini_mode := false
+var mini_bar: MiniBar = null
+var _mini_top_t := 0.0
+var _mini_rect := Rect2i()       # taskbar the bar sits on (screen pixels)
+var _was_focused := false
 
 
 func _ready() -> void:
@@ -111,6 +123,8 @@ func setup_main_window() -> void:
 	# window managers may move/resize a window when it is first mapped: put it back once shown
 	for delay in [0.15, 1.0]:
 		get_tree().create_timer(delay).timeout.connect(func():
+			if mini_mode:
+				return
 			w.size = phys
 			w.position = pos
 			layout_changed())
@@ -403,29 +417,41 @@ func layout_changed() -> void:
 func _update_region() -> void:
 	_region_dirty = false
 	var rects: Array = []
-	if title_mode and title_control and is_instance_valid(title_control):
+	if mini_mode and mini_bar:
+		rects.append(mini_bar.bar_rect)
+		if mini_bar.bubble.visible:
+			rects.append(Rect2(mini_bar.bubble.position.x, 0, mini_bar.bubble.size.x, mini_bar.bubble.size.y + 6))
+	elif title_mode and title_control and is_instance_valid(title_control):
 		rects.append(Rect2(title_control.position, title_control.size * title_control.scale))
 	elif strip and strip.visible:
 		rects.append(strip_rect())
 	for id in panels:
 		var p: Control = panels[id]
-		if is_instance_valid(p) and p.visible and not p.is_queued_for_deletion():
+		if not mini_mode and is_instance_valid(p) and p.visible and not p.is_queued_for_deletion():
 			rects.append(Rect2(p.position, p.size))
-	if tooltip and tooltip.visible:
+	if tooltip and tooltip.visible and not mini_mode:
 		rects.append(Rect2(tooltip.position, tooltip.size))
-	if top_layer:
+	if top_layer and not mini_mode:
 		for c in top_layer.get_children():
 			if c != tooltip and c is Control and c.visible and c.has_meta("region"):
 				rects.append(Rect2(c.position, c.size))
-	# map logical rects to real window pixels with the transform the renderer actually uses, so the region
-	# stays on the drawn UI even if the OS resized the window or applied DPI scaling behind our back
-	var xf := get_tree().root.get_final_transform()
+	# logical -> window pixels: the actual stretch (window size / content size); never trust a 0 scale
+	var w := get_window()
+	var cs := Vector2(w.content_scale_size)
+	var sc := Vector2(w.size) / cs if cs.x > 0 and cs.y > 0 else Vector2(ui_scale, ui_scale)
+	if sc.x <= 0.01 or sc.y <= 0.01 or is_nan(sc.x) or is_nan(sc.y):
+		sc = Vector2(ui_scale, ui_scale)
+	var full := Vector2(w.size)
 	var irects: Array[Rect2i] = []
 	for r: Rect2 in rects:
-		var a := Vector2i((xf * r.position).floor())
-		var b := Vector2i((xf * r.end).ceil())
+		var a := Vector2i((r.position * sc).floor().clamp(Vector2.ZERO, full))
+		var b := Vector2i((r.end * sc).ceil().clamp(Vector2.ZERO, full))
 		if b.x > a.x and b.y > a.y:
 			irects.append(Rect2i(a, b - a))
+	# an empty polygon means "whole window" to the OS: on drivers without per-pixel transparency that is a
+	# black screen over the desktop. Keep at least a 1-pixel region.
+	if irects.is_empty():
+		irects.append(Rect2i(0, 0, 1, 1))
 	var poly := union_outline(irects)
 	if poly == _last_region:
 		return
@@ -580,8 +606,15 @@ func _route_tooltips(delta: float) -> void:
 # ------------------------------------------------------------------ focus / fps / hotkeys
 func _process(delta: float) -> void:
 	_route_tooltips(delta)
+	# re-assert the window region now and then: some OS events (resize, DPI change, explorer restart) drop it
+	_region_refresh += delta
+	if _region_refresh > 2.0:
+		_region_refresh = 0.0
+		_last_region = PackedVector2Array()
+		_region_dirty = true
 	if _region_dirty and desktop:
 		_update_region()
+	_mini_watch(delta)
 	_focus_poll += delta
 	if _focus_poll < 0.3:
 		return
@@ -589,8 +622,141 @@ func _process(delta: float) -> void:
 	var f := get_window().has_focus()
 	if f != _any_focused:
 		_any_focused = f
-		Engine.max_fps = int(Settings.get_v("fps_focus", 60)) if f else int(Settings.get_v("fps_idle", 15))
+		_apply_fps()
 		AudioManager.set_focused(f)
+
+
+func _apply_fps() -> void:
+	var idle := int(Settings.get_v("fps_idle", 15))
+	if mini_mode:
+		idle = maxi(idle, 30)     # the taskbar battle stays smooth
+	Engine.max_fps = int(Settings.get_v("fps_focus", 60)) if _any_focused else idle
+
+
+# ------------------------------------------------------------------ taskbar mode
+## Minimising the game (taskbar button, Win+D, ...) doesn't stop it: the window comes straight back as a
+## slim battle bar on the taskbar, left of the notification area, and the party keeps fighting. Clicking the
+## bar, the taskbar button or the tray icon brings the full game back.
+func _mini_watch(delta: float) -> void:
+	if desktop == null or title_mode or hidden_all:
+		return
+	var w := get_window()
+	if w.mode == Window.MODE_MINIMIZED:
+		if mini_mode:
+			exit_mini()
+		elif bool(Settings.get_v("mini_mode", true)):
+			enter_mini()
+		return
+	if not mini_mode:
+		return
+	# the taskbar keeps raising itself: stay above it
+	_mini_top_t += delta
+	if _mini_top_t > 1.5:
+		_mini_top_t = 0.0
+		w.always_on_top = false
+		w.always_on_top = true
+	# activated from the taskbar button (the click landed on the taskbar, not on the bar): restore
+	var f := w.has_focus()
+	if f and not _was_focused:
+		var m := DisplayServer.mouse_get_position()
+		var own := Rect2i(w.position, w.size)
+		if _mini_rect.has_point(m) and not own.has_point(m):
+			exit_mini()
+			return
+	_was_focused = f
+
+
+func _taskbar_rect() -> Rect2i:
+	var scr := DisplayServer.window_get_current_screen()
+	var full := Rect2i(DisplayServer.screen_get_position(scr), DisplayServer.screen_get_size(scr))
+	var usable := DisplayServer.screen_get_usable_rect(scr)
+	var dpi := maxf(1.0, DisplayServer.screen_get_dpi(scr) / 96.0)
+	if usable.end.y < full.end.y - 8:
+		return Rect2i(full.position.x, usable.end.y, full.size.x, full.end.y - usable.end.y)
+	if usable.position.y > full.position.y + 8:
+		return Rect2i(full.position.x, full.position.y, full.size.x, usable.position.y - full.position.y)
+	# side or auto-hidden taskbar: a taskbar-high strip along the bottom of the screen
+	var hh := int(48 * dpi)
+	return Rect2i(usable.position.x, usable.end.y - hh, usable.size.x, hh)
+
+
+func enter_mini() -> void:
+	var w := get_window()
+	mini_mode = true
+	_ensure_mini_bar()
+	hide_tooltip()
+	if _ctx_menu and is_instance_valid(_ctx_menu):
+		_ctx_menu.queue_free()
+	w.mode = Window.MODE_WINDOWED
+	panels_layer.visible = false
+	top_layer.visible = false
+	var tb := _taskbar_rect()
+	_mini_rect = tb
+	var dpi := maxf(1.0, DisplayServer.screen_get_dpi(DisplayServer.window_get_current_screen()) / 96.0)
+	var bar_px := maxf(24.0, tb.size.y - 4.0 * dpi)
+	var k := bar_px / MINI_CROP.size.y
+	var logical := Vector2i(int(MINI_CROP.size.x), int(MINI_CROP.size.y + MINI_BUBBLE_H))
+	var phys := Vector2i(roundi(logical.x * k), roundi(logical.y * k))
+	w.content_scale_size = logical
+	w.size = phys
+	var off := int(Settings.get_v("mini_off", -1))
+	if off < 0:
+		off = int(300 * dpi)     # clears the Windows 11 / 10 tray + clock
+	var x := clampi(tb.end.x - off - phys.x, tb.position.x, tb.end.x - phys.x)
+	w.position = Vector2i(x, tb.end.y - phys.y - int(2 * dpi))
+	w.always_on_top = true
+	desktop.size = Vector2(logical)
+	strip.position = Vector2(-MINI_CROP.position.x, MINI_BUBBLE_H - MINI_CROP.position.y)
+	mini_bar.visible = true
+	mini_bar.size = Vector2(logical)
+	mini_bar.layout(Rect2(0, MINI_BUBBLE_H, MINI_CROP.size.x, MINI_CROP.size.y), MINI_BUBBLE_H)
+	_was_focused = w.has_focus()
+	_apply_fps()
+	mini_changed.emit(true)
+	layout_changed()
+
+
+func exit_mini(open_id := "") -> void:
+	if not mini_mode:
+		return
+	mini_mode = false
+	var w := get_window()
+	w.mode = Window.MODE_WINDOWED
+	if mini_bar:
+		mini_bar.visible = false
+		mini_bar.hide_bubble()
+	panels_layer.visible = true
+	top_layer.visible = true
+	mini_changed.emit(false)
+	setup_main_window()
+	_apply_fps()
+	if open_id != "":
+		open_panel(open_id)
+	w.grab_focus()
+
+
+func mini_drag_to(x: int) -> void:
+	var w := get_window()
+	w.position.x = clampi(x, _mini_rect.position.x, _mini_rect.end.x - w.size.x)
+
+
+func mini_drag_done() -> void:
+	var w := get_window()
+	Settings.set_v("mini_off", _mini_rect.end.x - (w.position.x + w.size.x))
+
+
+func _ensure_mini_bar() -> void:
+	if mini_bar and is_instance_valid(mini_bar):
+		return
+	mini_bar = MiniBar.new()
+	mini_bar.z_index = 95
+	desktop.add_child(mini_bar)
+	mini_bar.restore_requested.connect(func(): exit_mini())
+	mini_bar.bubble_clicked.connect(func(): exit_mini("chests"))
+	EventBus.chest_dropped.connect(func(kind: String, _p: Vector2):
+		if mini_mode and Chests.rank(kind) >= int(Settings.get_v("mini_bubble_min", 0)):
+			mini_bar.show_bubble(kind, DataDB.t("chest_found", {"name": Chests.display_name(kind)}))
+			AudioManager.play("chest_drop", 0.0, 0.5))
 
 
 func handle_hotkey(ev: InputEventKey) -> void:
@@ -627,6 +793,8 @@ func handle_hotkey(ev: InputEventKey) -> void:
 
 
 func toggle_hide_all() -> void:
+	if mini_mode:
+		exit_mini()
 	hidden_all = not hidden_all
 	var w := get_window()
 	if hidden_all:
@@ -662,7 +830,11 @@ func _setup_tray() -> void:
 	add_child(tray)
 	tray.set("menu", tray.get_path_to(menu))
 	if tray.has_signal("pressed"):
-		tray.connect("pressed", func(_b, _p): if hidden_all: toggle_hide_all())
+		tray.connect("pressed", func(_b, _p):
+			if hidden_all:
+				toggle_hide_all()
+			elif mini_mode:
+				exit_mini())
 
 
 func _on_tray_menu(id: int) -> void:
@@ -670,6 +842,8 @@ func _on_tray_menu(id: int) -> void:
 		0:
 			if hidden_all:
 				toggle_hide_all()
+			elif mini_mode:
+				exit_mini()
 			else:
 				get_window().grab_focus()
 		1:

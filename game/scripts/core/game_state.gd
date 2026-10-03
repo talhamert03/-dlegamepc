@@ -10,6 +10,7 @@ var heroes: Dictionary = {}           # id -> HeroState
 var party: Array = ["", "", "", "", ""]  # index 0 = front-most slot
 var gold: int = 0
 var materials: Dictionary = {}
+var chests: Array = []          # held treasure chests [{k, lv, t}]
 var bag: Array = []
 var bag_slots: int = 60
 var stash: Array = [[], [], [], [], [], [], []]
@@ -71,6 +72,7 @@ func reset_state() -> void:
 	party = ["", "", "", "", ""]
 	gold = 0
 	materials = {}
+	chests = []
 	bag = []
 	bag_slots = int(DataDB.bal("inventory.base_slots", 60))
 	stash = [[], [], [], [], [], [], []]
@@ -572,7 +574,7 @@ func to_dict() -> Dictionary:
 	var hd: Dictionary = {}
 	for k in heroes:
 		hd[k] = heroes[k].to_dict()
-	return {"heroes": hd, "party": party, "gold": gold, "materials": materials, "bag": bag, "bag_slots": bag_slots,
+	return {"heroes": hd, "party": party, "gold": gold, "materials": materials, "chests": chests, "bag": bag, "bag_slots": bag_slots,
 		"stash": stash, "stash_tabs": stash_tabs, "progress": progress, "totals": totals, "flags": flags,
 		"blacksmith": blacksmith, "tavern": tavern, "guild": guild, "codex": codex, "achievements": achievements,
 		"pets": pets, "rates": rates, "uid_counter": uid_counter, "created": created_unix,
@@ -588,6 +590,7 @@ func from_dict(d: Dictionary) -> void:
 		party.append("")
 	gold = int(d.get("gold", 0))
 	materials = d.get("materials", {})
+	chests = d.get("chests", [])
 	bag = d.get("bag", [])
 	bag_slots = int(d.get("bag_slots", bag_slots))
 	stash = d.get("stash", stash)

@@ -2,6 +2,8 @@ class_name StripView
 extends Control
 ## The battle strip: parallax background, units, projectiles, VFX, damage numbers and HUD.
 
+signal chest_landed(kind: String)
+
 const W := 360
 const H := 72
 const BG_CROP := 12          # the background art is 84 px tall: drop the top of the sky so its ground meets GROUND_Y
@@ -80,6 +82,7 @@ func _ready() -> void:
 	EventBus.projectile_fired.connect(_on_projectile)
 	EventBus.vfx_requested.connect(_on_vfx)
 	EventBus.item_dropped.connect(_on_item_dropped)
+	EventBus.chest_dropped.connect(_on_chest_dropped)
 	EventBus.hero_leveled.connect(_on_level)
 	EventBus.zone_changed.connect(_on_zone)
 	EventBus.stage_changed.connect(func(_s): _update_hud_text())
@@ -457,19 +460,26 @@ func _on_damage(src, tgt, amount: float, crit: bool, element: String, kind: Stri
 		_shake = 0.25
 
 
-## Blades ring, heavy weapons and monsters thud, spells sparkle.
+## Weapon-specific impacts: blades cut, axes chop, arrows thunk in, spells burst by element; monsters thud.
+const SPELL_SFX := {"fire": "magic_fire", "cold": "magic_ice", "lightning": "magic_shock", "holy": "magic_holy", "chaos": "magic_dark"}
+
+
 func _hit_sound(src, element: String) -> String:
 	if element != "physical" and element != "":
-		return "hit_magic"
+		return SPELL_SFX.get(element, "hit_magic")
 	if src == null:
 		return "hit_blunt%d" % (_rng.randi() % 2)
 	if src.is_hero_side() and src.etype == "hero":
 		var cls: String = str(DataDB.hero_def(src.id).get("class", "knight"))
+		if src.projectile.begins_with("arrow") or cls == "archer":
+			return "arrow_hit"
 		if cls in ["mage", "necromancer", "cleric", "bard"]:
 			return "hit_magic"
 		if cls == "berserker":
-			return "hit_blunt%d" % (_rng.randi() % 2)
-		return "hit%d" % (_rng.randi() % 3)
+			return "chop"
+		return "slash%d" % (_rng.randi() % 3)
+	if src.projectile.begins_with("arrow"):
+		return "arrow_hit"
 	return "hit_blunt%d" % (_rng.randi() % 2)
 
 
@@ -480,7 +490,7 @@ func _on_heal(tgt, amount: float) -> void:
 
 
 func _on_projectile(src, tgt, kind: String, travel: float) -> void:
-	AudioManager.play("shoot" if kind.begins_with("arrow") else "magic", 0.12, 0.35)
+	AudioManager.play("arrow_fly" if kind.begins_with("arrow") else "magic", 0.12, 0.3 if kind.begins_with("arrow") else 0.35)
 	var p := Projectile.new()
 	var sv: UnitView = views.get(src.uid)
 	var tv: UnitView = views.get(tgt.uid)
@@ -578,6 +588,16 @@ func _on_item_dropped(item: Dictionary, pos: Vector2) -> void:
 		_shake = 0.2
 	elif rank >= ItemUtil.rarity_rank("rare"):
 		AudioManager.play("loot_rare", 0.05, 0.8)
+
+
+func _on_chest_dropped(kind: String, pos: Vector2) -> void:
+	var c := ChestDrop.new()
+	c.setup(kind, Vector2(pos.x, BattleSim.GROUND_Y - 2), Vector2(9, 68))
+	c.collected.connect(func(): chest_landed.emit(kind))
+	fx_root.add_child(c)
+	_spawn_number(Chests.display_name(kind) + "!", Vector2(pos.x, BattleSim.GROUND_Y - 30), Chests.color(kind), Chests.rank(kind) >= 2)
+	if Chests.rank(kind) >= 3:
+		_shake = max(_shake, 0.15)
 
 
 func _on_level(hid: String, lv: int) -> void:

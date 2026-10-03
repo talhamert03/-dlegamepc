@@ -8,6 +8,9 @@ var cpanel: ControlPanel
 var _round: Dictionary = {}
 var _notify_box: VBoxContainer
 var _auto_btn: TextureButton
+var _chest_btn: Button
+var _chest_pulse := 0.0
+var _t := 0.0
 
 
 func _ready() -> void:
@@ -27,6 +30,9 @@ func _ready() -> void:
 	cpanel.position = Vector2(StripView.W, 0)
 	strip_root.add_child(cpanel)
 	_build_round_buttons()
+	_build_chest_button()
+	strip.chest_landed.connect(func(_k):
+		_chest_pulse = 1.0)
 	_notify_box = VBoxContainer.new()
 	_notify_box.position = Vector2(190, 12)
 	_notify_box.size = Vector2(166, 48)
@@ -35,6 +41,7 @@ func _ready() -> void:
 	_notify_box.z_index = 50
 	strip_root.add_child(_notify_box)
 	EventBus.notify.connect(_on_notify)
+	WindowManager.mini_changed.connect(_on_mini)
 	get_viewport().size_changed.connect(func():
 		size = get_viewport().get_visible_rect().size)
 	call_deferred("_boot")
@@ -61,6 +68,15 @@ func _boot() -> void:
 		Tutorial.start_if_needed(strip_root)
 	if cmd.has("--screenshot"):
 		_screenshot_mode(cmd)
+
+
+## Taskbar mode shows only the battlefield: hide the control block, buttons, HUD and notifications.
+func _on_mini(on: bool) -> void:
+	cpanel.visible = not on
+	for k in _round:
+		_round[k].visible = not on
+	_notify_box.visible = not on
+	strip.hud.visible = not on
 
 
 func _run_title() -> void:
@@ -110,7 +126,38 @@ func _build_round_buttons() -> void:
 	_update_auto()
 
 
+## Pile of found chests under the round buttons: shows the best one held and the count.
+func _build_chest_button() -> void:
+	var b := Button.new()
+	b.flat = true
+	b.focus_mode = Control.FOCUS_NONE
+	b.position = Vector2(0, 57)
+	b.size = Vector2(19, 15)
+	b.z_index = 45
+	b.tooltip_text = DataDB.t("tip_chests")
+	b.pressed.connect(func(): WindowManager.toggle_panel("chests"))
+	b.draw.connect(func():
+		var bi := Chests.best_index()
+		if bi < 0:
+			return
+		var kind := str(GameState.chests[bi]["k"])
+		var s := 1.0 + _chest_pulse * 0.35 + (0.08 if b.is_hovered() else 0.0)
+		ChestArt.draw(b, Vector2(9, 13), 13.0 * s, kind, 0.0, _t, false)
+		var n := Chests.count()
+		if n > 1:
+			var f := UITheme.font_body
+			b.draw_string_outline(f, Vector2(12, 7), str(n), HORIZONTAL_ALIGNMENT_LEFT, -1, 7, 3, Color(0, 0, 0, 0.95))
+			b.draw_string(f, Vector2(12, 7), str(n), HORIZONTAL_ALIGNMENT_LEFT, -1, 7, UITheme.C_GOLD))
+	strip_root.add_child(b)
+	_chest_btn = b
+
+
 func _process(_d: float) -> void:
+	_t += _d
+	_chest_pulse = maxf(0.0, _chest_pulse - _d * 2.0)
+	if _chest_btn:
+		_chest_btn.visible = Chests.count() > 0 and not WindowManager.mini_mode
+		_chest_btn.queue_redraw()
 	if _auto_btn and GameState.progress.get("auto", true):
 		_auto_btn.pivot_offset = Vector2(7, 7)
 	_round["town"].modulate = Color(1.3, 1.3, 1.0) if BattleSim.phase == "town" else Color.WHITE
@@ -248,6 +295,12 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 				var it := LootSystem.generate(GameState.rng, 20, r, ["knight", "archer", "cleric", "mage", "berserker"][i % 5])
 				GameState.bag.append(it)
 			EventBus.inventory_changed.emit()
+	for a in cmd:
+		if a == "--chests":
+			for k in ["wood", "wood", "iron", "gold", "crystal", "royal", "iron"]:
+				Chests.add(k, 20)
+			get_tree().create_timer(secs - 1.2).timeout.connect(func():
+				EventBus.chest_dropped.emit("gold", Vector2(250, BattleSim.GROUND_Y)))
 	await get_tree().create_timer(0.5).timeout
 	for p in panels:
 		if p != "":
@@ -265,6 +318,19 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 				await get_tree().create_timer(0.033).timeout
 				var im := get_viewport().get_texture().get_image()
 				im.get_region(Rect2i(Vector2i(sr0.position * sc0), Vector2i(sr0.size * sc0))).save_png(out + "burst_%03d.png" % i)
+	for a in cmd:
+		if a == "--mini":
+			WindowManager.enter_mini()
+			await get_tree().create_timer(0.6).timeout
+			EventBus.chest_dropped.emit("crystal", Vector2(250, BattleSim.GROUND_Y))
+			await get_tree().create_timer(1.0).timeout
+			get_viewport().get_texture().get_image().save_png(out + "mini.png")
+			print("SCREENSHOTS_DONE ", ProjectSettings.globalize_path(out))
+			get_tree().quit()
+			return
+		if a == "--chestopen" and WindowManager.is_open("chests"):
+			WindowManager.panels["chests"]._on_open()
+			await get_tree().create_timer(1.0).timeout
 	var img := get_viewport().get_texture().get_image()
 	img.save_png(out + "screen.png")
 	var sc: float = WindowManager.ui_scale

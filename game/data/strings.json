@@ -1230,5 +1230,61 @@
  "click_continue": {
   "tr": "Devam etmek için tıkla",
   "en": "Click to continue"
+ },
+ "chest_wood": {
+  "tr": "Ahşap Sandık",
+  "en": "Wooden Chest"
+ },
+ "chest_iron": {
+  "tr": "Demir Sandık",
+  "en": "Iron Chest"
+ },
+ "chest_gold": {
+  "tr": "Altın Sandık",
+  "en": "Golden Chest"
+ },
+ "chest_crystal": {
+  "tr": "Kristal Sandık",
+  "en": "Crystal Chest"
+ },
+ "chest_royal": {
+  "tr": "Kraliyet Sandığı",
+  "en": "Royal Chest"
+ },
+ "panel_chests": {
+  "tr": "Sandıklar",
+  "en": "Chests"
+ },
+ "chest_open": {
+  "tr": "Aç",
+  "en": "Open"
+ },
+ "chest_open_all": {
+  "tr": "Hepsini Aç",
+  "en": "Open All"
+ },
+ "chest_empty": {
+  "tr": "Sandık yok. Düşmanlar savaşta sandık düşürebilir; elitler ve bosslar daha sık ve daha değerli sandık bırakır.",
+  "en": "No chests yet. Enemies can drop chests in battle; elites and bosses drop them more often and better."
+ },
+ "chest_found": {
+  "tr": "{name} bulundu!",
+  "en": "{name} found!"
+ },
+ "chest_bubble": {
+  "tr": "Açmak için tıkla",
+  "en": "Click to open"
+ },
+ "tip_chests": {
+  "tr": "Sandıklar",
+  "en": "Chests"
+ },
+ "mini_tip": {
+  "tr": "Tıkla: oyuna dön  ·  Sürükle: taşı",
+  "en": "Click: back to the game  ·  Drag: move"
+ },
+ "set_mini_mode": {
+  "tr": "Küçültünce görev çubuğu modu",
+  "en": "Taskbar mode when minimised"
  }
 }

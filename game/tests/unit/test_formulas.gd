@@ -40,8 +40,8 @@ func test_enemy_scaling_monotonic() -> void:
 		var s := F.enemy_stats(d, lv, "normal", 0)
 		runner.check(float(s["hp"]) > prev, "hp grows at %d" % lv)
 		prev = float(s["hp"])
-	var b := F.enemy_stats(d, 30, "boss", 0)
-	var n := F.enemy_stats(d, 30, "normal", 0)
+	var b := F.enemy_stats(d, 40, "boss", 0)
+	var n := F.enemy_stats(d, 40, "normal", 0)
 	runner.near(float(b["hp"]) / float(n["hp"]), float(DataDB.bal("enemy.type_hp.boss", 25.0)), 0.5, "boss mult")
 
 

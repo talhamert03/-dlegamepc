@@ -1141,6 +1141,11 @@ func _on_enemy_killed(e: Combatant) -> void:
 				ItemUtil.rarity_color(it["rarity"]))
 	for m in drops["materials"]:
 		GameState.add_material(m, int(drops["materials"][m]))
+	var ck := Chests.roll(GameState.rng, e.etype, iff / n)
+	if ck != "":
+		Chests.add(ck, e.level)
+		if not quiet:
+			EventBus.chest_dropped.emit(ck, Vector2(e.x, GROUND_Y))
 	if mode == "tower":
 		var left := 0
 		for o in enemies:
