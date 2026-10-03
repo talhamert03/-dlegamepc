@@ -333,3 +333,73 @@ Açılış posteri mevcut HD kahraman çizimlerimizden Godot içinde kurulacak:
 - Prosedürel alevli logo: kalın kontur, altın-turuncu gradyan, alev parçacıkları ve kıvılcımlar.
 - Hikâye aynı yöntemle küçük bir sinema penceresinde.
 Yeni görsel üretimi gerekmiyor.
+
+---
+
+# Madde → kaynak eşlemesi
+
+**Veri seti** (Steam API'den çekilen en çok beğeni alan yorumlar):
+
+| Oyun | Yorum | Olumsuz | Olumlu |
+|---|---|---|---|
+| **MPIG** (My Party Is Grinding, 4952980) | 342 | 188 | 154 |
+| **TBH** (Task Bar Hero, 3678970) | 499 | 299 | 200 |
+
+**Nasıl sayıldı:**
+- Sayılar, konuyu anlatan çok dilli anahtar kelimelerin (İngilizce, Çince, Japonca, Rusça, Portekizce, İspanyolca, Türkçe, Korece…) geçtiği yorum sayısıdır.
+- `−` olumsuz, `+` olumlu yorumlardaki sayıyı gösterir.
+- Bir yorum birden çok konuya girebilir. Sayılar **yaklaşıktır** ve kıyaslama içindir, kesin istatistik değildir.
+- Olumlu yorumlardaki sayılar çoğu zaman "şu şu kötü ama yine de seviyorum" türü cümlelerden geliyor.
+
+| Madde | Konu | MPIG − / + | TBH − / + | Ağırlık |
+|---|---|---|---|---|
+| A1 | Parayla güç / kolaylık satışı, DLC | 14 / 14 | 41 / 15 | İkisi de, TBH ağır |
+| A2 | Şans güvencesi (başarısızlık, oran) | 21 / 12 | 47 / 9 | İkisi de, TBH ağır |
+| A2 | Eşyanın yok olması | 9 / 9 | 7 / 1 | MPIG |
+| B1-B3 | Zorluk duvarı / anında ölüm | 25 / 4 | 23 / 2 | İkisi de |
+| B1-B3 | Element direnci | 10 / 2 | 12 / 4 | İkisi de |
+| B4 | Sınıf dengesizliği | 18 / 16 | 43 / 17 | İkisi de, TBH ağır |
+| B5 | Eşya karakteri güçsüzleştiriyor | 8 / 2 | 5 / 0 | MPIG ağır |
+| B6 | Gelir büyümüyor / +0,01 gibi yükseltmeler | 10 / 1 | 1 / 0 | MPIG |
+| C1, J2-J4 | Arayüz / pencere / çıkış | 14 / 6 | 9 / 6 | İkisi de |
+| C2 | Ses | 2 / 1 | 0 / 0 | MPIG (az) |
+| C3 | Defender / Linux / siyah ekran | 4 / 1 | 0 / 0 | MPIG |
+| C4, H4 | Ban / hesap kilitlenmesi | 6 / 7 | 6 / 1 | İkisi de |
+| D1 | Beceri/ekipman presetleri | 1 / 1 | 0 / 0 | MPIG'de övülen özellik ("4 beceri seti") |
+| D2 | Kahraman başına istatistik | 1 / 1 | 2 / 0 | Az; MPIG'de övülen |
+| D3, I5 | Partide olmayan sınıfın eşyası düşüyor | 1 / 0 | 3 / 2 | TBH |
+| D4, K3 | Offline dengesi | 4 / 3 | 8 / 2 | İkisi de, zıt yönde |
+| D5 | Steam liderlik tablosu | — | — | Bizim önerimiz (yorumda yok) |
+| D6, K2 | Başarımlar (imkânsız / parayla) | 4 / 3 | 9 / 7 | TBH |
+| D7, H1, H2 | Sessiz nerf / yama notu | 3 / 2 | 7 / 1 | TBH |
+| E1-E5 | Açılış posteri ve hikâye | — | — | Senin isteğin |
+| F1 | Birleştirme (9→1) geri gidiyor | 10 / 4 | 62 / 11 | **TBH çok ağır** |
+| F2 | Düşüş oranı / sandık | 29 / 15 | 100 / 19 | **TBH çok ağır** |
+| F3 | Oyun sonunda ilerleme yok | 10 / 6 | 64 / 16 | **TBH çok ağır** |
+| F4, L1 | Yeni içerik / güncelleme boş | 1 / 0 | 39 / 4 | TBH (Veba Toprakları) |
+| G1, G2 | Rahibe yapay zekâsı / iyileştirme alanı | 0 / 0 | 14 / 9 | TBH |
+| G3 | Savunma işe yaramıyor, tek vuruş | 5 / 0 | 6 / 0 | İkisi de |
+| G4 | Tek sınıf solo meta | 2 / 2 | 10 / 6 | TBH (okçu); MPIG'de suikastçı |
+| G5 | İstatistik açıklaması eksik | 0 / 1 | 1 / 0 | Az (TBH: kritik "yüzdenin yüzdesi") |
+| H3 | Kayıt kaybı / rollback | 1 / 1 | 9 / 1 | TBH |
+| I1-I3 | Envanter / filtre / stack | 10 / 9 | 15 / 5 | İkisi de |
+| I4 | Puanları tek tek sıfırlama | 1 / 2 | 3 / 1 | TBH |
+| J1 | RAM / GPU / sızıntı / çökme | 6 / 2 | 8 / 4 | İkisi de |
+| K1 | Parayla kilitli kahraman | 1 / 0 | 5 / 2 | TBH |
+
+## Kapsam dışı ama bilgi olarak
+
+| Konu | MPIG − / + | TBH − / + | Not |
+|---|---|---|---|
+| Sunucu / bağlantı / gecikme | 43 / 15 | 24 / 4 | MPIG'nin en büyük sorunu. Bizde sunucu yok, bu bir avantaj. |
+| Pazar | 23 / 23 | 55 / 20 | Şimdilik yok, karar verildi. |
+| Kopya / "AI slop" | 37 / 17 | 8 / 5 | MPIG'yi en çok yakan ikinci şey. Kimlik ve E maddeleri bunun için. |
+
+## Olumlu tarafta öne çıkanlar
+
+| Konu | MPIG + | TBH + |
+|---|---|---|
+| Görev çubuğu / arka planda eşlik etmesi | 18 | 44 |
+| Sanat / piksel / karakter tasarımı | 6 | 11 |
+| Sık güncelleme, geliştiricinin oyuncuyu dinlemesi | 17 | 21 |
+| 5 kahramanın birlikte savaşması | 5 | — |
