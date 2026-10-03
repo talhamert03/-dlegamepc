@@ -35,10 +35,43 @@ static func _level() -> int:
 	return maxi(1, GameState.max_hero_level())
 
 
-## Gold price of a gold-priced product, scaled to the party's level.
+## Gold price of a gold-priced product, scaled to the party's level (and growing per earlier buy).
 static func gold_price(p: Dictionary) -> int:
-	var k := float(p.get("price", {}).get("gold_kills", 0))
+	var pr: Dictionary = p.get("price", {})
+	var k := float(pr.get("gold_kills", 0)) * pow(float(pr.get("growth", 1.0)), times_bought(str(p.get("id", ""))))
 	return int(round(F.gold_per_kill(_level()) * k / 10.0) * 10.0)
+
+
+static func is_free(p: Dictionary) -> bool:
+	return bool(p.get("price", {}).get("free", false))
+
+
+static func today() -> int:
+	return int(TimeService.unix_now() / 86400)
+
+
+## The daily gift: a chest that fits the party's progress, free once a day.
+static func daily_ready() -> bool:
+	return int(GameState.progress.get("daily_gift_day", -1)) != today()
+
+
+static func daily_chest() -> String:
+	var lv := _level()
+	return "gold" if lv >= 45 else ("iron" if lv >= 12 else "wood")
+
+
+## Gold packs pay double the first time each one is bought.
+static func first_double(p: Dictionary) -> bool:
+	return bool(p.get("first_double", false)) and times_bought(str(p["id"])) == 0
+
+
+## Permanent perks of the Guild Supporter pack ({} when not owned).
+static func supporter_perks() -> Dictionary:
+	if GameState.purchases.is_empty() or times_bought("supporter") == 0:
+		return {}
+	var p := product("supporter")
+	var perks: Dictionary = p.get("perks", {})
+	return perks
 
 
 ## Gold a gold pack or bundle grants now (worth `kills` normal kills, never less than `min`).
@@ -50,8 +83,10 @@ static func gold_amount(p: Dictionary) -> int:
 ## "50,00 ₺" in Turkish, "$2.49" otherwise. Steam charges in the player's own currency.
 static func price_text(p: Dictionary) -> String:
 	var pr: Dictionary = p.get("price", {})
+	if pr.has("free"):
+		return DataDB.t("shop_free")
 	if pr.has("gold_kills"):
-		return F.fmt_num(gold_price(p))
+		return F.fmt_num(gold_price(p)) + " " + DataDB.t("gold")
 	if DataDB.lang == "tr" and pr.has("try"):
 		var v := float(pr["try"])
 		return ("%.2f" % v).replace(".", ",") + " ₺"
@@ -86,6 +121,11 @@ static func block_reason(p: Dictionary, hero_id := "") -> String:
 		"hero_pick":
 			if hero_id == "" or GameState.heroes.has(hero_id):
 				return DataDB.t("shop_all_heroes")
+		"daily":
+			if not daily_ready():
+				return DataDB.t("shop_daily_taken")
+			if Chests.count() >= Chests.MAX_HELD:
+				return DataDB.t("shop_chests_full")
 		"bundle":
 			var n := 0
 			for k in p.get("chests", {}):
@@ -98,7 +138,7 @@ static func block_reason(p: Dictionary, hero_id := "") -> String:
 		return DataDB.t("shop_bought")
 	if p.has("max_buys") and times_bought(str(p["id"])) >= int(p["max_buys"]):
 		return DataDB.t("shop_bought")
-	if not is_real_money(p) and GameState.gold < gold_price(p):
+	if not is_real_money(p) and not is_free(p) and GameState.gold < gold_price(p):
 		return DataDB.t("not_enough_gold")
 	return ""
 
@@ -110,7 +150,7 @@ static func buy(pid: String, on_done: Callable, hero_id := "") -> void:
 		on_done.call({})
 		return
 	if not is_real_money(p):
-		if not GameState.spend_gold(gold_price(p)):
+		if not is_free(p) and not GameState.spend_gold(gold_price(p)):
 			on_done.call({})
 			return
 		on_done.call(grant(p, "g%d_%d" % [TimeService.unix_now(), GameState.rng.randi()], hero_id))
@@ -131,8 +171,18 @@ static func grant(p: Dictionary, order_id: String, hero_id := "") -> Dictionary:
 				Chests.add(str(p["chest"]), lv)
 			out["chest"] = str(p["chest"])
 			out["count"] = int(p.get("count", 1))
+		"daily":
+			GameState.progress["daily_gift_day"] = today()
+			Chests.add(daily_chest(), lv)
+			out["kind"] = "chest"
+			out["chest"] = daily_chest()
+			out["count"] = 1
+		"supporter":
+			GameState.bag_slots += int(p.get("slots", 20))
+			EventBus.inventory_changed.emit()
+			GameState.invalidate_stats()
 		"gold":
-			var g := gold_amount(p)
+			var g := gold_amount(p) * (2 if first_double(p) else 1)
 			GameState.add_gold(g)
 			out["gold"] = g
 		"hero_random":

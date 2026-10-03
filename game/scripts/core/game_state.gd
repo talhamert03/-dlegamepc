@@ -242,6 +242,9 @@ func account_mods() -> Dictionary:
 		var nd: Dictionary = GuildHall.node_def(node_id)
 		if nd.has("stat"):
 			out[nd["stat"]] = float(out.get(nd["stat"], 0.0)) + float(nd.get("per", 0)) * int(guild[node_id])
+	# store: the Guild Supporter pack's small permanent perks
+	for st in Shop.supporter_perks():
+		out[st] = float(out.get(st, 0.0)) + float(Shop.supporter_perks()[st])
 	return out
 
 

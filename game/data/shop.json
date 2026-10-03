@@ -1,5 +1,5 @@
 {
- "_note": "Store catalogue. Everything here is bought with real money: price.try / price.usd, steam_item = the item id sent to Steam's InitTxn. Chests still drop in battle as before; the store only sells packs.",
+ "_note": "Store catalogue. price.try/usd = real money (steam_item = InitTxn item id); price.gold_kills = paid with in-game gold (scaled to party level, x growth per earlier buy); price.free = the daily gift. Battle chest drops are separate.",
  "tabs": [
   "chests",
   "gold",
@@ -7,6 +7,15 @@
   "packs"
  ],
  "products": [
+  {
+   "id": "daily_gift",
+   "tab": "chests",
+   "kind": "daily",
+   "price": {
+    "free": true
+   },
+   "badge": "free"
+  },
   {
    "id": "chest_iron_5",
    "tab": "chests",
@@ -67,7 +76,8 @@
     "try": 19.99,
     "usd": 0.99
    },
-   "steam_item": 201
+   "steam_item": 201,
+   "first_double": true
   },
   {
    "id": "gold_m",
@@ -80,7 +90,8 @@
     "usd": 2.49
    },
    "steam_item": 202,
-   "badge": "popular"
+   "badge": "popular",
+   "first_double": true
   },
   {
    "id": "gold_l",
@@ -93,7 +104,8 @@
     "usd": 4.99
    },
    "steam_item": 203,
-   "badge": "best"
+   "badge": "best",
+   "first_double": true
   },
   {
    "id": "hero_random",
@@ -150,6 +162,24 @@
    "badge": "once"
   },
   {
+   "id": "supporter",
+   "tab": "packs",
+   "kind": "supporter",
+   "once": true,
+   "perks": {
+    "gold_find": 10,
+    "xp_bonus": 10,
+    "offline_hours": 2
+   },
+   "slots": 20,
+   "price": {
+    "try": 79.99,
+    "usd": 3.99
+   },
+   "steam_item": 405,
+   "badge": "support"
+  },
+  {
    "id": "offline_boost",
    "tab": "packs",
    "kind": "offline",
@@ -173,6 +203,18 @@
     "usd": 0.99
    },
    "steam_item": 402
+  },
+  {
+   "id": "bag_gold",
+   "tab": "packs",
+   "kind": "bag",
+   "slots": 10,
+   "max_buys": 5,
+   "price": {
+    "gold_kills": 3000,
+    "growth": 1.8
+   },
+   "badge": "earnable"
   },
   {
    "id": "seals_5",

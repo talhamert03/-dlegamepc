@@ -7,7 +7,8 @@ const COLS := 3
 const CARD := Vector2(102, 118)
 const FRONT_H := 44.0
 const TABS_H := 17.0
-const BADGE_COL := {"popular": Color("#3FA9F5"), "best": Color("#FF7A2E"), "once": Color("#3FCF6A")}
+const BADGE_COL := {"popular": Color("#3FA9F5"), "best": Color("#FF7A2E"), "once": Color("#3FCF6A"), "free": Color("#3FCF6A"),
+	"support": Color("#C77DFF"), "earnable": Color("#C9A46A"), "double": Color("#FF4F6A")}
 const RARITY_COL := {"R": Color("#A9B1C2"), "SR": Color("#5E9BFF"), "SSR": Color("#FFC24A")}
 ## velvet of the display niches, per tab: [top, bottom, glow]
 const VELVET := {
@@ -264,7 +265,11 @@ func _subtitle(p: Dictionary, hid: String) -> String:
 		"chest":
 			return "%d× %s" % [int(p.get("count", 1)), Chests.display_name(str(p["chest"]))]
 		"gold":
-			return "+" + F.fmt_num(Shop.gold_amount(p)) + " " + DataDB.t("gold")
+			return "+" + F.fmt_num(Shop.gold_amount(p) * (2 if Shop.first_double(p) else 1)) + " " + DataDB.t("gold")
+		"daily":
+			return DataDB.t("shop_daily_desc", {"chest": Chests.display_name(Shop.daily_chest())})
+		"supporter":
+			return DataDB.t("shop_supporter_desc")
 		"hero_random":
 			return DataDB.t("shop_random_odds", {"ssr": int(p["weights"].get("SSR", 0)), "sr": int(p["weights"].get("SR", 0))})
 		"hero_pick":
@@ -366,6 +371,8 @@ func _card(p: Dictionary, hid: String, pos: Vector2) -> void:
 			UISkin.stroke(ci, tag, 2, Color(0, 0, 0, 0.9), 1.0)
 			c.draw_string(fb, tag.position + Vector2(2.5, 7.5), rar, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#1A1208"))
 		var badge := str(p.get("badge", ""))
+		if Shop.first_double(p):
+			badge = "double"
 		if badge != "":
 			_sash(c, DataDB.t("shop_badge_" + badge), BADGE_COL.get(badge, Color.WHITE)))
 	_grid.add_child(c)
@@ -475,6 +482,15 @@ func _draw_art(c: Control, kind: String, p: Dictionary, tex: Texture2D, ctr: Vec
 				_coin(c, ctr + Vector2(16 + (i % 2) * 9.0, 28 - (i / 2) * 6.0), 5.5)
 		"offline":
 			_hourglass(c, ctr + Vector2(0, 6), 1.0)
+		"daily":
+			ChestArt.draw(c, ctr + Vector2(0, 26), 36.0, Shop.daily_chest(), 0.0, _t, Shop.daily_ready())
+			if Shop.daily_ready():
+				var f := UITheme.font_title
+				var bob := sin(_t * 3.0) * 2.0
+				c.draw_string_outline(f, ctr + Vector2(-4, -20 + bob), "!", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, 4, Color(0, 0, 0, 0.9))
+				c.draw_string(f, ctr + Vector2(-4, -20 + bob), "!", HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("#FFE27A"))
+		"supporter":
+			_crest(c, ctr + Vector2(0, 4))
 		"gold":
 			var piles := {"gold_s": [3], "gold_m": [4, 3, 2], "gold_l": [5, 4, 3, 2, 1]}.get(str(p["id"]), [3, 2]) as Array
 			var base := ctr + Vector2(0, 24)
@@ -625,6 +641,21 @@ func _mystery_card(c: Control, ctr: Vector2, k: float, phase: float) -> void:
 	var bob := sin(_t * 2.0 + phase) * 1.5
 	c.draw_string_outline(f, Vector2(ctr.x - w / 2.0, ctr.y + 10 * k + bob), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, s, 4, Color(0, 0, 0, 0.9))
 	c.draw_string(f, Vector2(ctr.x - w / 2.0, ctr.y + 10 * k + bob), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, s, Color("#FFE7A0"))
+
+
+## Guild crest: a shield with a crown, for the supporter pack.
+func _crest(c: Control, ctr: Vector2) -> void:
+	var ci := c.get_canvas_item()
+	for k in 5:
+		c.draw_circle(ctr, 30.0 - k * 5.0, Color(0.8, 0.5, 1.0, 0.05 + 0.02 * sin(_t * 2.0)))
+	var pts := PackedVector2Array([ctr + Vector2(-18, -16), ctr + Vector2(18, -16), ctr + Vector2(18, 2), ctr + Vector2(0, 22), ctr + Vector2(-18, 2)])
+	UISkin.poly(ci, pts, Color("#7A3FB0"), Color("#2A0E44"))
+	c.draw_polyline(_close(pts), Color("#FFD36A"), 1.6, true)
+	var inner := PackedVector2Array()
+	for q in pts:
+		inner.append(ctr + (q - ctr) * 0.78)
+	c.draw_polyline(_close(inner), Color("#FFD36A", 0.5), 0.8, true)
+	c.draw_texture_rect(UITheme.icon("crown"), Rect2(ctr - Vector2(9, 12), Vector2(18, 18)), false, Color("#FFC94A"))
 
 
 ## Brass hourglass with sand running.

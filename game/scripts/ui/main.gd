@@ -111,6 +111,9 @@ func _run_title() -> void:
 	WindowManager.layout_changed()
 
 
+var _gift_dot: Control
+
+
 func _build_round_buttons() -> void:
 	var defs := [["red", "town", Vector2(2, 12), "tip_town"], ["green", "dps", Vector2(2, 27), "tip_dps"], ["blue", "auto", Vector2(2, 42), "tip_auto"]]
 	for d in defs:
@@ -121,6 +124,12 @@ func _build_round_buttons() -> void:
 		strip_root.add_child(b)
 		_round[d[1]] = b
 	_round["town"].pressed.connect(_on_town)
+	# a small "!" when today's free gift waits in the store (no pop-ups)
+	_gift_dot = UITheme.badge(6.0)
+	_gift_dot.position = Vector2(9, -2)
+	_gift_dot.visible = false
+	_gift_dot.tooltip_text = DataDB.t("gift_ready")
+	_round["town"].add_child(_gift_dot)
 	_round["dps"].pressed.connect(func(): WindowManager.toggle_panel("dps"))
 	_round["auto"].pressed.connect(_on_auto)
 	_auto_btn = _round["auto"]
@@ -165,6 +174,8 @@ func _process(_d: float) -> void:
 	if _auto_btn and GameState.progress.get("auto", true):
 		_auto_btn.pivot_offset = Vector2(7, 7)
 	_round["town"].modulate = Color(1.3, 1.3, 1.0) if BattleSim.phase == "town" else Color.WHITE
+	if _gift_dot:
+		_gift_dot.visible = Shop.daily_ready() and not WindowManager.mini_mode
 
 
 func _on_town() -> void:

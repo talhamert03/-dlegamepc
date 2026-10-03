@@ -1740,8 +1740,8 @@
   "en": "Hourglass of Ages"
  },
  "shop_offline_desc": {
-  "tr": "Kalıcı: +%{e} verim, +{h} saat",
-  "en": "Permanent: +{e}%, +{h} hours"
+  "tr": "+%{e} verim, +{h} saat",
+  "en": "+{e}%, +{h} hours"
  },
  "shop_sign": {
   "tr": "Zümrüt Kervan",
@@ -1756,8 +1756,8 @@
   "en": "2 random heroes, 5 magic (Crystal) chests and 75,000 gold. Once per account."
  },
  "shop_offline_boost_tip": {
-  "tr": "Kalıcı olarak offline kazanç verimini %15 artırır ve offline süre sınırını 4 saat uzatır.",
-  "en": "Permanently raises offline efficiency by 15% and the offline time cap by 4 hours."
+  "tr": "Kalıcı olarak offline verimini %15 artırır ve süre sınırını 4 saat uzatır. Offline süresi Lonca Salonu'nda oyun içinde de artırılabilir.",
+  "en": "Permanently +15% offline efficiency and +4 h cap. The offline cap can also be raised in-game in the Guild Hall."
  },
  "smith_enh_pity": {
   "tr": "Garanti: her başarısızlık şansı artırır ({n}/{m}, {m}. denemede kesin)",
@@ -1842,5 +1842,61 @@
  "tab_news": {
   "tr": "Yenilikler",
   "en": "What's New"
+ },
+ "shop_free": {
+  "tr": "Ücretsiz",
+  "en": "Free"
+ },
+ "shop_daily_taken": {
+  "tr": "Yarın yine gel",
+  "en": "Come back tomorrow"
+ },
+ "shop_daily_gift": {
+  "tr": "Günlük Hediye",
+  "en": "Daily Gift"
+ },
+ "shop_daily_desc": {
+  "tr": "Her gün 1 sandık bedava",
+  "en": "1 free chest every day"
+ },
+ "shop_supporter": {
+  "tr": "Lonca Destekçisi",
+  "en": "Guild Supporter"
+ },
+ "shop_supporter_desc": {
+  "tr": "+%10 altın/XP, +20 çanta",
+  "en": "+10% gold/XP, +20 bag"
+ },
+ "shop_supporter_tip": {
+  "tr": "Geliştiriciyi destekle: kalıcı +%10 altın, +%10 tecrübe, +2 saat offline süresi ve +20 çanta yeri. Tek seferlik. Güç farkı küçüktür; oyunun tamamı ücretsiz oynanabilir.",
+  "en": "Support the developer: permanent +10% gold, +10% XP, +2 h offline cap and +20 bag slots. One time. The edge is small; the whole game is playable for free."
+ },
+ "shop_bag_gold": {
+  "tr": "Çanta Genişletme",
+  "en": "Bag Expansion"
+ },
+ "shop_bag_gold_tip": {
+  "tr": "Oyun altınıyla +10 çanta yeri (5 kez, her seferinde pahalanır). Gerçek parayla almak zorunda değilsin.",
+  "en": "+10 bag slots for in-game gold (5 times, pricier each time). No real money needed."
+ },
+ "shop_badge_free": {
+  "tr": "Ücretsiz",
+  "en": "Free"
+ },
+ "shop_badge_support": {
+  "tr": "Destek",
+  "en": "Support"
+ },
+ "shop_badge_earnable": {
+  "tr": "Altınla",
+  "en": "With gold"
+ },
+ "shop_badge_double": {
+  "tr": "İlk alım 2x",
+  "en": "First buy 2x"
+ },
+ "gift_ready": {
+  "tr": "Mağazada bugünün ücretsiz hediyesi seni bekliyor",
+  "en": "Today's free gift is waiting in the store"
  }
 }

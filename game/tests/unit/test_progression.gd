@@ -192,3 +192,25 @@ func test_one_shot_cap() -> void:
 	tgt.stats = {"def": 0.0}
 	var dmg := float(BattleSim.calc_damage(src, tgt, 1.0, "physical", false)["amount"])
 	runner.check(dmg <= 1000.0 * 0.45, "a normal enemy can't one-shot (%d)" % int(dmg))
+
+
+func test_store_extras() -> void:
+	GameState.new_game()
+	var was_loaded: bool = GameState.loaded
+	GameState.loaded = false
+	var box := {}
+	runner.check(Shop.daily_ready(), "daily gift ready on a new day")
+	Shop.buy("daily_gift", func(r): box["r"] = r)
+	runner.check(Chests.count() == 1 and not Shop.daily_ready(), "daily gift taken once")
+	var g0 := GameState.gold
+	var once := Shop.gold_amount(Shop.product("gold_s"))
+	Shop.buy("gold_s", func(r): box["r"] = r)
+	runner.check(GameState.gold - g0 == once * 2, "first gold pack pays double")
+	runner.check(Shop.supporter_perks().is_empty(), "no supporter perks before buying")
+	Shop.buy("supporter", func(r): box["r"] = r)
+	runner.check(float(GameState.account_mods().get("gold_find", 0.0)) >= 10.0, "supporter perks active")
+	var p0 := Shop.gold_price(Shop.product("bag_gold"))
+	GameState.add_gold(p0)
+	Shop.buy("bag_gold", func(r): box["r"] = r)
+	runner.check(Shop.gold_price(Shop.product("bag_gold")) > p0, "gold bag expansion gets pricier")
+	GameState.loaded = was_loaded

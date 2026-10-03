@@ -671,6 +671,7 @@ func _town_sign(panel_id: String, text: String, icon_name: String) -> Button:
 		var t := Time.get_ticks_msec() / 1000.0
 		var sway := sin(t * 1.6 + phase) * 0.035
 		var open := WindowManager.is_open(panel_id)
+		var gift := panel_id == "shop" and Shop.daily_ready()
 		b.draw_set_transform(Vector2(b.size.x / 2.0, 0), sway, Vector2.ONE)
 		var r := Rect2(Vector2(-b.size.x / 2.0, 4), Vector2(b.size.x, 15))
 		# chains
@@ -679,6 +680,8 @@ func _town_sign(panel_id: String, text: String, icon_name: String) -> Button:
 			b.draw_line(Vector2(cx, 0), Vector2(cx, 5), Color("#B79868"), 0.6)
 		if hov or open:
 			UISkin.stroke(ci, r.grow(1.5), 4, Color(1.0, 0.85, 0.4, 0.55), 2.0)
+		elif gift:
+			UISkin.stroke(ci, r.grow(1.5), 4, Color(0.5, 1.0, 0.55, 0.35 + 0.3 * sin(t * 4.0)), 2.0)
 		UISkin.fill(ci, r, 3, Color("#7A4E2E") if not hov else Color("#93613A"), Color("#3C2414"))
 		for k in 3:
 			var gy := r.position.y + 4.0 + k * 4.0
