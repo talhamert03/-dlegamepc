@@ -454,12 +454,37 @@ func _update_region() -> void:
 	# an empty polygon means "whole window" to the OS: on drivers without per-pixel transparency that is a
 	# black screen over the desktop. Keep at least a 1-pixel region.
 	if irects.is_empty():
+		# two separate pixels: still a complex region (see _notched)
 		irects.append(Rect2i(0, 0, 1, 1))
-	var poly := union_outline(irects)
+		irects.append(Rect2i(2, 0, 1, 1))
+	var poly := union_outline(_notched(irects))
 	if poly == _last_region:
 		return
 	_last_region = poly
 	get_window().mouse_passthrough_polygon = poly
+
+
+## Never hand Windows a plain rectangular region. Chromium-based apps (the Steam client, browsers,
+## Discord) treat a window whose region is a simple rectangle as an opaque window the size of its whole
+## window rect; ours covers the screen, so they think they are hidden behind it and stop drawing (black
+## pages). A region with any notch is a "complex" region, which they ignore. So one corner pixel of the
+## region's bounding box is always cut out (it is a transparent frame corner anyway).
+static func _notched(rects: Array[Rect2i]) -> Array[Rect2i]:
+	var box := rects[0]
+	for r in rects:
+		box = box.merge(r)
+	var tl := box.position
+	var out: Array[Rect2i] = []
+	for r in rects:
+		if r.has_point(tl) and r.size.x > 1 and r.size.y > 1:
+			# rect minus its top-left pixel = the rest of the first row + every row below
+			out.append(Rect2i(r.position.x + 1, r.position.y, r.size.x - 1, 1))
+			out.append(Rect2i(r.position.x, r.position.y + 1, r.size.x, r.size.y - 1))
+		elif r.has_point(tl):
+			continue
+		else:
+			out.append(r)
+	return out if not out.is_empty() else rects
 
 
 ## Outline of the union of axis-aligned rectangles as ONE polygon: every boundary loop (outer edges and

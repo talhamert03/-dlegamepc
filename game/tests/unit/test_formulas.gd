@@ -52,3 +52,15 @@ func test_monster_level_difficulty() -> void:
 	runner.check(F.monster_level(z, 10, 0) == 2)
 	runner.check(F.monster_level(z, 1, 1) >= 50, "nightmare offset")
 	runner.check(F.monster_level(z, 1, 2) >= 75, "hell offset")
+
+
+func test_window_region_is_never_a_plain_rectangle() -> void:
+	var WM = load("res://scripts/core/window_manager.gd")
+	var strip: Array[Rect2i] = [Rect2i(100, 500, 880, 144)]
+	var poly: PackedVector2Array = WM.union_outline(WM._notched(strip))
+	runner.check(poly.size() > 5, "single strip region has a notch (%d points)" % poly.size())
+	runner.check(Geometry2D.is_point_in_polygon(Vector2(500.5, 560.5), poly), "strip interior still inside")
+	runner.check(not Geometry2D.is_point_in_polygon(Vector2(100.5, 500.5), poly), "corner pixel cut out")
+	var two: Array[Rect2i] = [Rect2i(100, 500, 880, 144), Rect2i(300, 100, 400, 396)]
+	var poly2: PackedVector2Array = WM.union_outline(WM._notched(two))
+	runner.check(Geometry2D.is_point_in_polygon(Vector2(500.5, 300.5), poly2) and Geometry2D.is_point_in_polygon(Vector2(900.5, 600.5), poly2), "strip and panel both inside")
