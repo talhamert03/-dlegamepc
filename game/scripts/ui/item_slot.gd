@@ -13,6 +13,7 @@ var compare_hero := ""
 var placeholder: Texture2D = null
 var selected := false
 var dim := false
+var double_click_only := false   # bag / equipment: one click selects (and sounds), a double click acts
 var _hover := false
 var _flash := 0.0
 
@@ -108,9 +109,16 @@ func _up_arrow(c: Vector2) -> void:
 func _gui_input(ev: InputEvent) -> void:
 	if ev is InputEventMouseButton and ev.pressed:
 		if ev.button_index == MOUSE_BUTTON_LEFT:
+			if not ev.double_click:
+				ItemSfx.pick(item)
+			var modified: bool = ev.shift_pressed or ev.ctrl_pressed or ev.alt_pressed or WindowManager.is_open("blacksmith")
+			if double_click_only and not ev.double_click and not modified:
+				accept_event()
+				return
 			left_clicked.emit(self)
 			accept_event()
 		elif ev.button_index == MOUSE_BUTTON_RIGHT:
+			ItemSfx.pick(item)
 			right_clicked.emit(self)
 			accept_event()
 
@@ -133,4 +141,6 @@ func _can_drop_data(_pos: Vector2, data: Variant) -> bool:
 
 
 func _drop_data(_pos: Vector2, data: Variant) -> void:
+	if source != "equip":
+		ItemSfx.drop()
 	dropped.emit(self, data)

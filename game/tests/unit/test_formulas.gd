@@ -5,7 +5,8 @@ var runner
 func test_xp_curve_matches_gdd() -> void:
 	runner.near(F.xp_per_kill(50), 538, 0.5, "xp/kill L50")
 	runner.check(F.kills_to_level(50) == 490, "kills L50")
-	runner.near(F.xp_required(50), 263620, 1, "xp req L50")
+	# GDD base 263620 at L50, stretched by the late-game factor (1 + 40 * 0.09)
+	runner.near(F.xp_required(50), 263620 * 4.6, 1, "xp req L50")
 	runner.near(F.xp_required(1), 490, 1, "xp req L1")
 
 

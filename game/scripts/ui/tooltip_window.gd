@@ -99,6 +99,7 @@ func show_item(item: Dictionary, compare_hero := "") -> void:
 			var txt := DataDB.t("compare_better") if diff > 0 else DataDB.t("compare_worse")
 			_line("%s %s (%+d)" % [h.display_name(), txt, int(round(diff))], UITheme.C_GREEN if diff > 0 else UITheme.C_RED)
 	_line(DataDB.t("sell_price", {"g": F.fmt_num(ItemUtil.sell_price(item))}), UITheme.C_GOLD)
+	_line(DataDB.t("item_hint_dbl"), UITheme.C_DIM)
 	if item.get("locked", false):
 		_line(DataDB.t("locked"), UITheme.C_DIM)
 	_present()

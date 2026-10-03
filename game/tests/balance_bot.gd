@@ -23,7 +23,7 @@ func _ready() -> void:
 	var t := 0.0
 	var step := 900.0
 	var fails_prev := 0
-	print("time  | zone            | st | lv  | heroes | kills  | deaths | gold")
+	print("time  | zone            | st | lv  | heroes | kills  | deaths | gold | runes")
 	while t < hours * 3600.0:
 		BattleSim.simulate(step)
 		t += step
@@ -31,7 +31,7 @@ func _ready() -> void:
 		var z := DataDB.zone(BattleSim.zone_idx)
 		print("%5.2fh | %-15s | %2d | %3d | %6d | %6d | %6d | %s" % [t / 3600.0, str(z.get("id", "")) + " d" + str(BattleSim.difficulty),
 			BattleSim.stage, GameState.max_hero_level(), GameState.heroes.size(), int(GameState.totals["kills"]),
-			int(GameState.totals["deaths"]), F.fmt_num(GameState.gold)])
+			int(GameState.totals["deaths"]), F.fmt_num(GameState.gold) + " | " + str(Runes.points_spent())])
 	get_tree().quit()
 
 
@@ -63,5 +63,14 @@ func _bot_actions() -> void:
 				var info := Blacksmith.enhance_info(it)
 				if not info.is_empty() and GameState.gold > int(info["cost"]) * 3:
 					Blacksmith.enhance(it)
+	# spend spare gold on the cheapest open leadership runes (keep a reserve for recruits / smithing)
+	for k in 200:
+		var best := ""
+		for rid in Runes.nodes():
+			if Runes.can_buy(rid) and (best == "" or Runes.cost(rid) < Runes.cost(best)):
+				best = rid
+		if best == "" or GameState.gold < Runes.cost(best) * 3:
+			break
+		Runes.buy(best)
 	GameState.invalidate_stats()
 	BattleSim.refresh_hero_stats()

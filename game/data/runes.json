@@ -52,8 +52,8 @@
    "x": 0,
    "y": -1,
    "stat": "spell_pct",
-   "per": 4,
-   "max": 5,
+   "per": 3,
+   "max": 10,
    "glyph": "book",
    "links": [
     "core"
@@ -74,8 +74,8 @@
    "x": 0,
    "y": -2,
    "stat": "fire_dmg",
-   "per": 6,
-   "max": 5,
+   "per": 4,
+   "max": 10,
    "glyph": "flame",
    "links": [
     "academy1"
@@ -93,8 +93,8 @@
    "x": 0,
    "y": -3,
    "stat": "cast_speed",
-   "per": 3,
-   "max": 5,
+   "per": 2,
+   "max": 10,
    "glyph": "bolt",
    "links": [
     "academy2"
@@ -115,8 +115,8 @@
    "x": 0,
    "y": -4,
    "stat": "summon_dmg",
-   "per": 8,
-   "max": 5,
+   "per": 5,
+   "max": 10,
    "glyph": "people",
    "links": [
     "academy3"
@@ -134,8 +134,8 @@
    "x": 0,
    "y": -5,
    "stat": "skill_dmg",
-   "per": 5,
-   "max": 5,
+   "per": 3,
+   "max": 10,
    "glyph": "rune",
    "links": [
     "academy4"
@@ -155,12 +155,113 @@
   "academy6": {
    "x": 0,
    "y": -6,
-   "stat": "cdr",
-   "per": 1.5,
-   "max": 5,
-   "glyph": "clock",
+   "stat": "cold_dmg",
+   "per": 4,
+   "max": 10,
+   "glyph": "gem",
    "links": [
     "academy5"
+   ],
+   "br": "academy",
+   "name": {
+    "tr": "Büyücü: Buz Kalbi",
+    "en": "Mage: Heart of Ice"
+   },
+   "cls": [
+    "mage"
+   ]
+  },
+  "academy7": {
+   "x": 0,
+   "y": -7,
+   "stat": "chaos_dmg",
+   "per": 4,
+   "max": 10,
+   "glyph": "skull",
+   "links": [
+    "academy6"
+   ],
+   "br": "academy",
+   "name": {
+    "tr": "Nekromant: Kara Bilgi",
+    "en": "Necromancer: Dark Lore"
+   },
+   "cls": [
+    "necromancer"
+   ]
+  },
+  "academy8": {
+   "x": 0,
+   "y": -8,
+   "stat": "lightning_dmg",
+   "per": 4,
+   "max": 10,
+   "glyph": "bolt",
+   "links": [
+    "academy7"
+   ],
+   "br": "academy",
+   "name": {
+    "tr": "Ozan: Gök Ezgisi",
+    "en": "Bard: Sky Song"
+   },
+   "cls": [
+    "bard"
+   ]
+  },
+  "academy9": {
+   "x": 0,
+   "y": -9,
+   "stat": "spell_pct",
+   "per": 4,
+   "max": 10,
+   "glyph": "book",
+   "links": [
+    "academy8"
+   ],
+   "br": "academy",
+   "name": {
+    "tr": "Yüksek Büyü",
+    "en": "High Sorcery"
+   },
+   "cls": [
+    "mage",
+    "necromancer",
+    "bard",
+    "cleric"
+   ]
+  },
+  "academy10": {
+   "x": 0,
+   "y": -10,
+   "stat": "ult_dmg",
+   "per": 6,
+   "max": 10,
+   "glyph": "sparkle",
+   "links": [
+    "academy9"
+   ],
+   "br": "academy",
+   "name": {
+    "tr": "Kıyamet Sözleri",
+    "en": "Words of Ruin"
+   },
+   "cls": [
+    "mage",
+    "necromancer",
+    "bard",
+    "cleric"
+   ]
+  },
+  "academy_s1": {
+   "x": 1,
+   "y": -2,
+   "stat": "cdr",
+   "per": 1,
+   "max": 10,
+   "glyph": "clock",
+   "links": [
+    "academy2"
    ],
    "br": "academy",
    "name": {
@@ -174,31 +275,12 @@
     "cleric"
    ]
   },
-  "academy_s1": {
-   "x": 1,
-   "y": -2,
-   "stat": "lightning_dmg",
-   "per": 8,
-   "max": 5,
-   "glyph": "bolt",
-   "links": [
-    "academy2"
-   ],
-   "br": "academy",
-   "name": {
-    "tr": "Ozan: Gök Ezgisi",
-    "en": "Bard: Sky Song"
-   },
-   "cls": [
-    "bard"
-   ]
-  },
   "academy_s2": {
    "x": -1,
    "y": -4,
    "stat": "crit_chance",
-   "per": 1,
-   "max": 5,
+   "per": 0.6,
+   "max": 10,
    "glyph": "target",
    "links": [
     "academy4"
@@ -215,18 +297,58 @@
     "cleric"
    ]
   },
-  "academy_cap": {
-   "x": 0,
-   "y": -7,
-   "stat": "spell_pct",
-   "per": 15,
-   "max": 1,
-   "glyph": "crown",
+  "academy_s3": {
+   "x": 1,
+   "y": -6,
+   "stat": "holy_dmg",
+   "per": 4,
+   "max": 10,
+   "glyph": "cross",
    "links": [
     "academy6"
    ],
    "br": "academy",
-   "cap": true,
+   "name": {
+    "tr": "Rahip: Işık Kelamı",
+    "en": "Cleric: Word of Light"
+   },
+   "cls": [
+    "cleric"
+   ]
+  },
+  "academy_s4": {
+   "x": -1,
+   "y": -8,
+   "stat": "elem_dmg",
+   "per": 3,
+   "max": 10,
+   "glyph": "gem",
+   "links": [
+    "academy8"
+   ],
+   "br": "academy",
+   "name": {
+    "tr": "Element Uyumu",
+    "en": "Elemental Harmony"
+   },
+   "cls": [
+    "mage",
+    "necromancer",
+    "bard",
+    "cleric"
+   ]
+  },
+  "academy_cap": {
+   "x": 0,
+   "y": -11,
+   "stat": "spell_pct",
+   "per": 20,
+   "max": 1,
+   "glyph": "crown",
+   "links": [
+    "academy10"
+   ],
+   "br": "academy",
    "name": {
     "tr": "Başbüyücü Kürsüsü",
     "en": "Archmage's Chair"
@@ -236,14 +358,15 @@
     "necromancer",
     "bard",
     "cleric"
-   ]
+   ],
+   "cap": true
   },
   "war1": {
    "x": 1,
    "y": 0,
    "stat": "attack_pct",
-   "per": 4,
-   "max": 5,
+   "per": 3,
+   "max": 10,
    "glyph": "sword",
    "links": [
     "core"
@@ -264,8 +387,8 @@
    "x": 2,
    "y": 0,
    "stat": "attack_speed",
-   "per": 2,
-   "max": 5,
+   "per": 1.5,
+   "max": 10,
    "glyph": "bolt",
    "links": [
     "war1"
@@ -284,8 +407,8 @@
    "x": 3,
    "y": 0,
    "stat": "crit_chance",
-   "per": 1,
-   "max": 5,
+   "per": 0.6,
+   "max": 10,
    "glyph": "target",
    "links": [
     "war2"
@@ -306,8 +429,8 @@
    "x": 4,
    "y": 0,
    "stat": "hp_pct",
-   "per": 5,
-   "max": 5,
+   "per": 3,
+   "max": 10,
    "glyph": "heart",
    "links": [
     "war3"
@@ -326,8 +449,8 @@
    "x": 5,
    "y": 0,
    "stat": "crit_dmg",
-   "per": 8,
-   "max": 5,
+   "per": 5,
+   "max": 10,
    "glyph": "claw",
    "links": [
     "war4"
@@ -347,12 +470,116 @@
   "war6": {
    "x": 6,
    "y": 0,
-   "stat": "boss_dmg",
-   "per": 6,
-   "max": 5,
-   "glyph": "skull",
+   "stat": "phys_dmg",
+   "per": 4,
+   "max": 10,
+   "glyph": "hammer",
    "links": [
     "war5"
+   ],
+   "br": "war",
+   "name": {
+    "tr": "Çelik Disiplin",
+    "en": "Steel Discipline"
+   },
+   "cls": [
+    "knight",
+    "berserker",
+    "assassin",
+    "archer"
+   ]
+  },
+  "war7": {
+   "x": 7,
+   "y": 0,
+   "stat": "rage_dmg",
+   "per": 5,
+   "max": 10,
+   "glyph": "flame",
+   "links": [
+    "war6"
+   ],
+   "br": "war",
+   "name": {
+    "tr": "Barbar: Öfke Ateşi",
+    "en": "Berserker: Fire of Rage"
+   },
+   "cls": [
+    "berserker"
+   ]
+  },
+  "war8": {
+   "x": 8,
+   "y": 0,
+   "stat": "execute_dmg",
+   "per": 5,
+   "max": 10,
+   "glyph": "skull",
+   "links": [
+    "war7"
+   ],
+   "br": "war",
+   "name": {
+    "tr": "Suikastçı: Son Darbe",
+    "en": "Assassin: Finishing Blow"
+   },
+   "cls": [
+    "assassin"
+   ]
+  },
+  "war9": {
+   "x": 9,
+   "y": 0,
+   "stat": "attack_pct",
+   "per": 4,
+   "max": 10,
+   "glyph": "sword",
+   "links": [
+    "war8"
+   ],
+   "br": "war",
+   "name": {
+    "tr": "Usta Kılıççı",
+    "en": "Blademaster"
+   },
+   "cls": [
+    "knight",
+    "berserker",
+    "assassin",
+    "archer"
+   ]
+  },
+  "war10": {
+   "x": 10,
+   "y": 0,
+   "stat": "crit_dmg",
+   "per": 7,
+   "max": 10,
+   "glyph": "claw",
+   "links": [
+    "war9"
+   ],
+   "br": "war",
+   "name": {
+    "tr": "Cellat",
+    "en": "Headsman"
+   },
+   "cls": [
+    "knight",
+    "berserker",
+    "assassin",
+    "archer"
+   ]
+  },
+  "war_s1": {
+   "x": 2,
+   "y": 1,
+   "stat": "boss_dmg",
+   "per": 4,
+   "max": 10,
+   "glyph": "skull",
+   "links": [
+    "war2"
    ],
    "br": "war",
    "name": {
@@ -360,15 +587,15 @@
     "en": "Giant Hunters"
    }
   },
-  "war_s1": {
-   "x": 2,
-   "y": 1,
+  "war_s2": {
+   "x": 4,
+   "y": -1,
    "stat": "penetrate",
-   "per": 2,
-   "max": 5,
+   "per": 1.2,
+   "max": 10,
    "glyph": "arrow",
    "links": [
-    "war2"
+    "war4"
    ],
    "br": "war",
    "name": {
@@ -379,15 +606,15 @@
     "archer"
    ]
   },
-  "war_s2": {
-   "x": 4,
-   "y": -1,
+  "war_s3": {
+   "x": 6,
+   "y": 1,
    "stat": "elite_dmg",
-   "per": 6,
-   "max": 5,
+   "per": 4,
+   "max": 10,
    "glyph": "flag",
    "links": [
-    "war4"
+    "war6"
    ],
    "br": "war",
    "name": {
@@ -395,18 +622,33 @@
     "en": "Elite Hunt"
    }
   },
+  "war_s4": {
+   "x": 8,
+   "y": -1,
+   "stat": "aoe_dmg",
+   "per": 4,
+   "max": 10,
+   "glyph": "star",
+   "links": [
+    "war8"
+   ],
+   "br": "war",
+   "name": {
+    "tr": "Yarma",
+    "en": "Cleave"
+   }
+  },
   "war_cap": {
-   "x": 7,
+   "x": 11,
    "y": 0,
    "stat": "attack_pct",
-   "per": 15,
+   "per": 20,
    "max": 1,
    "glyph": "crown",
    "links": [
-    "war6"
+    "war10"
    ],
    "br": "war",
-   "cap": true,
    "name": {
     "tr": "Savaş Lordu",
     "en": "Warlord"
@@ -416,14 +658,15 @@
     "berserker",
     "assassin",
     "archer"
-   ]
+   ],
+   "cap": true
   },
   "guard1": {
    "x": -1,
    "y": 0,
    "stat": "hp_pct",
-   "per": 3,
-   "max": 5,
+   "per": 2,
+   "max": 10,
    "glyph": "heart",
    "links": [
     "core"
@@ -438,8 +681,8 @@
    "x": -2,
    "y": 0,
    "stat": "heal_bonus",
-   "per": 6,
-   "max": 5,
+   "per": 4,
+   "max": 10,
    "glyph": "plus",
    "links": [
     "guard1"
@@ -458,8 +701,8 @@
    "x": -3,
    "y": 0,
    "stat": "def_pct",
-   "per": 4,
-   "max": 5,
+   "per": 3,
+   "max": 10,
    "glyph": "shield",
    "links": [
     "guard2"
@@ -474,8 +717,8 @@
    "x": -4,
    "y": 0,
    "stat": "block",
-   "per": 1.5,
-   "max": 5,
+   "per": 1,
+   "max": 10,
    "glyph": "lock",
    "links": [
     "guard3"
@@ -493,8 +736,8 @@
    "x": -5,
    "y": 0,
    "stat": "all_res",
-   "per": 2,
-   "max": 5,
+   "per": 1.5,
+   "max": 10,
    "glyph": "gem",
    "links": [
     "guard4"
@@ -508,12 +751,92 @@
   "guard6": {
    "x": -6,
    "y": 0,
-   "stat": "revive_speed",
-   "per": 8,
-   "max": 5,
-   "glyph": "cross",
+   "stat": "dr",
+   "per": 0.4,
+   "max": 10,
+   "glyph": "tower",
    "links": [
     "guard5"
+   ],
+   "br": "guard",
+   "name": {
+    "tr": "Sarsılmaz",
+    "en": "Unshakeable"
+   }
+  },
+  "guard7": {
+   "x": -7,
+   "y": 0,
+   "stat": "hp_regen_pct",
+   "per": 0.1,
+   "max": 10,
+   "glyph": "drop",
+   "links": [
+    "guard6"
+   ],
+   "br": "guard",
+   "name": {
+    "tr": "Toparlanma",
+    "en": "Recovery"
+   }
+  },
+  "guard8": {
+   "x": -8,
+   "y": 0,
+   "stat": "evasion",
+   "per": 1,
+   "max": 10,
+   "glyph": "boot",
+   "links": [
+    "guard7"
+   ],
+   "br": "guard",
+   "name": {
+    "tr": "Çevik Adımlar",
+    "en": "Light Feet"
+   }
+  },
+  "guard9": {
+   "x": -9,
+   "y": 0,
+   "stat": "hp_pct",
+   "per": 3,
+   "max": 10,
+   "glyph": "heart",
+   "links": [
+    "guard8"
+   ],
+   "br": "guard",
+   "name": {
+    "tr": "Dev Yürek",
+    "en": "Giant's Heart"
+   }
+  },
+  "guard10": {
+   "x": -10,
+   "y": 0,
+   "stat": "def_pct",
+   "per": 4,
+   "max": 10,
+   "glyph": "shield",
+   "links": [
+    "guard9"
+   ],
+   "br": "guard",
+   "name": {
+    "tr": "Kale Duvarları",
+    "en": "Castle Walls"
+   }
+  },
+  "guard_s1": {
+   "x": -2,
+   "y": -1,
+   "stat": "revive_speed",
+   "per": 5,
+   "max": 10,
+   "glyph": "cross",
+   "links": [
+    "guard2"
    ],
    "br": "guard",
    "name": {
@@ -521,15 +844,15 @@
     "en": "Field Medic"
    }
   },
-  "guard_s1": {
-   "x": -2,
-   "y": -1,
+  "guard_s2": {
+   "x": -4,
+   "y": 1,
    "stat": "buff_duration",
-   "per": 6,
-   "max": 5,
+   "per": 4,
+   "max": 10,
    "glyph": "note",
    "links": [
-    "guard2"
+    "guard4"
    ],
    "br": "guard",
    "name": {
@@ -541,45 +864,65 @@
     "cleric"
    ]
   },
-  "guard_s2": {
-   "x": -4,
-   "y": 1,
-   "stat": "dr",
-   "per": 0.5,
-   "max": 5,
-   "glyph": "tower",
+  "guard_s3": {
+   "x": -6,
+   "y": -1,
+   "stat": "thorns",
+   "per": 3,
+   "max": 10,
+   "glyph": "spikes",
    "links": [
-    "guard4"
+    "guard6"
    ],
    "br": "guard",
    "name": {
-    "tr": "Sarsılmaz",
-    "en": "Unshakeable"
+    "tr": "Dikenli Zırh",
+    "en": "Thorned Plate"
+   },
+   "cls": [
+    "knight",
+    "berserker"
+   ]
+  },
+  "guard_s4": {
+   "x": -8,
+   "y": 1,
+   "stat": "crit_res",
+   "per": 2,
+   "max": 10,
+   "glyph": "eye",
+   "links": [
+    "guard8"
+   ],
+   "br": "guard",
+   "name": {
+    "tr": "Tetikte",
+    "en": "Vigilance"
    }
   },
   "guard_cap": {
-   "x": -7,
+   "x": -11,
    "y": 0,
    "stat": "cheat_death",
    "per": 1,
    "max": 1,
    "glyph": "cross",
    "links": [
-    "guard6"
+    "guard10"
    ],
    "br": "guard",
-   "cap": true,
    "name": {
     "tr": "Son Direniş",
     "en": "Last Stand"
-   }
+   },
+   "cap": true
   },
   "guild1": {
    "x": 0,
    "y": 1,
    "stat": "gold_find",
-   "per": 5,
-   "max": 5,
+   "per": 4,
+   "max": 10,
    "glyph": "gold",
    "links": [
     "core"
@@ -594,8 +937,8 @@
    "x": 0,
    "y": 2,
    "stat": "xp_bonus",
-   "per": 4,
-   "max": 5,
+   "per": 3,
+   "max": 10,
    "glyph": "book",
    "links": [
     "guild1"
@@ -610,8 +953,8 @@
    "x": 0,
    "y": 3,
    "stat": "item_find",
-   "per": 5,
-   "max": 5,
+   "per": 4,
+   "max": 10,
    "glyph": "bag",
    "links": [
     "guild2"
@@ -626,8 +969,8 @@
    "x": 0,
    "y": 4,
    "stat": "chest_find",
-   "per": 10,
-   "max": 5,
+   "per": 6,
+   "max": 10,
    "glyph": "chest",
    "links": [
     "guild3"
@@ -642,8 +985,8 @@
    "x": 0,
    "y": 5,
    "stat": "gold_find",
-   "per": 6,
-   "max": 5,
+   "per": 5,
+   "max": 10,
    "glyph": "gold",
    "links": [
     "guild4"
@@ -657,12 +1000,44 @@
   "guild6": {
    "x": 0,
    "y": 6,
-   "stat": "legendary_find",
-   "per": 1.5,
-   "max": 5,
-   "glyph": "crown",
+   "stat": "xp_bonus",
+   "per": 4,
+   "max": 10,
+   "glyph": "book",
    "links": [
     "guild5"
+   ],
+   "br": "guild",
+   "name": {
+    "tr": "Kahramanlar Okulu",
+    "en": "School of Heroes"
+   }
+  },
+  "guild7": {
+   "x": 0,
+   "y": 7,
+   "stat": "item_find",
+   "per": 5,
+   "max": 10,
+   "glyph": "bag",
+   "links": [
+    "guild6"
+   ],
+   "br": "guild",
+   "name": {
+    "tr": "Hazine Avcısı",
+    "en": "Treasure Hunter"
+   }
+  },
+  "guild8": {
+   "x": 0,
+   "y": 8,
+   "stat": "legendary_find",
+   "per": 1,
+   "max": 10,
+   "glyph": "crown",
+   "links": [
+    "guild7"
    ],
    "br": "guild",
    "name": {
@@ -670,12 +1045,44 @@
     "en": "Legend Seeker"
    }
   },
+  "guild9": {
+   "x": 0,
+   "y": 9,
+   "stat": "gold_find",
+   "per": 6,
+   "max": 10,
+   "glyph": "gold",
+   "links": [
+    "guild8"
+   ],
+   "br": "guild",
+   "name": {
+    "tr": "Altın Dağı",
+    "en": "Mountain of Gold"
+   }
+  },
+  "guild10": {
+   "x": 0,
+   "y": 10,
+   "stat": "chest_find",
+   "per": 8,
+   "max": 10,
+   "glyph": "chest",
+   "links": [
+    "guild9"
+   ],
+   "br": "guild",
+   "name": {
+    "tr": "Hazine Odası",
+    "en": "Treasure Vault"
+   }
+  },
   "guild_s1": {
    "x": -1,
    "y": 2,
    "stat": "pet_dmg",
-   "per": 10,
-   "max": 5,
+   "per": 6,
+   "max": 10,
    "glyph": "heart",
    "links": [
     "guild2"
@@ -690,34 +1097,66 @@
    "x": 1,
    "y": 4,
    "stat": "xp_bonus",
-   "per": 6,
-   "max": 5,
+   "per": 5,
+   "max": 10,
    "glyph": "book",
    "links": [
     "guild4"
    ],
    "br": "guild",
    "name": {
-    "tr": "Kahramanlar Okulu",
-    "en": "School of Heroes"
+    "tr": "Bilge Rehber",
+    "en": "Wise Guide"
    }
   },
-  "guild_cap": {
-   "x": 0,
-   "y": 7,
-   "stat": "chest_find",
-   "per": 25,
-   "max": 1,
-   "glyph": "chest",
+  "guild_s3": {
+   "x": -1,
+   "y": 6,
+   "stat": "legendary_find",
+   "per": 1.5,
+   "max": 10,
+   "glyph": "sparkle",
    "links": [
     "guild6"
    ],
    "br": "guild",
-   "cap": true,
+   "name": {
+    "tr": "Kahin",
+    "en": "Seer"
+   }
+  },
+  "guild_s4": {
+   "x": 1,
+   "y": 8,
+   "stat": "item_find",
+   "per": 6,
+   "max": 10,
+   "glyph": "bag",
+   "links": [
+    "guild8"
+   ],
+   "br": "guild",
+   "name": {
+    "tr": "Koleksiyoncu",
+    "en": "Collector"
+   }
+  },
+  "guild_cap": {
+   "x": 0,
+   "y": 11,
+   "stat": "chest_find",
+   "per": 30,
+   "max": 1,
+   "glyph": "chest",
+   "links": [
+    "guild10"
+   ],
+   "br": "guild",
    "name": {
     "tr": "Kraliyet Hazinesi",
     "en": "Royal Treasury"
-   }
+   },
+   "cap": true
   }
  }
 }

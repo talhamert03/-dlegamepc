@@ -353,7 +353,7 @@ func _on_board_input(ev: InputEvent) -> void:
 			if d.length() > 3.0:
 				_drag_moved = true
 			if _drag_moved:
-				_pan = (_pan_start + d).clamp(Vector2(-9 * G, -7 * G), Vector2(9 * G, 7 * G))
+				_pan = (_pan_start + d).clamp(Vector2(-12 * G, -12 * G), Vector2(12 * G, 12 * G))
 			_board.accept_event()
 			return
 		var h := _node_at(ev.position)

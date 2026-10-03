@@ -1528,7 +1528,7 @@
   "en": "(Lv {lv})"
  },
  "formation_hint": {
-  "tr": "Kahramanı sürükle: yerleştir, yer değiştir ya da sahadan aşağı bırakarak yedeğe al.",
+  "tr": "Sürükle-bırak: yerleştir, yer değiştir; aşağı bırak: yedeğe al.",
   "en": "Drag heroes to place or swap them; drop one below the stage to bench it."
  },
  "formation_last": {
@@ -1554,5 +1554,25 @@
  "faction_in_party": {
   "tr": "Partide · bonusa katkı veriyor",
   "en": "In the party · counts for the bonus"
+ },
+ "tavern_sec_owned": {
+  "tr": "Kahramanların",
+  "en": "Your Heroes"
+ },
+ "tavern_sec_locked": {
+  "tr": "Açılmamışlar",
+  "en": "Not Yet Recruited"
+ },
+ "tavern_bench": {
+  "tr": "Yedekte",
+  "en": "Benched"
+ },
+ "formation_bench": {
+  "tr": "Yedeğe al",
+  "en": "Bench"
+ },
+ "item_hint_dbl": {
+  "tr": "Çift tık: kuşan / çıkar · Sağ tık: menü",
+  "en": "Double-click: equip / unequip · Right-click: menu"
  }
 }

@@ -354,6 +354,31 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 		if a.begins_with("--statustab=") and WindowManager.is_open("stats"):
 			WindowManager.panels["stats"]._on_tab(int(a.substr(12)))
 			await get_tree().create_timer(0.4).timeout
+		if a == "--dragtest" and WindowManager.is_open("hero"):
+			var fv: FormationView = null
+			for n in WindowManager.panels["hero"].find_children("*", "FormationView", true, false):
+				fv = n
+			if fv:
+				var sc0: float = WindowManager.ui_scale
+				var p0: Vector2 = fv.get_global_transform() * fv._slot_rect(0).get_center()
+				var p1: Vector2 = fv.get_global_transform() * fv._slot_rect(2).get_center()
+				Input.warp_mouse(p0 * sc0)
+				var ev := InputEventMouseButton.new()
+				ev.button_index = MOUSE_BUTTON_LEFT
+				ev.pressed = true
+				ev.position = p0 * sc0
+				ev.global_position = p0 * sc0
+				Input.parse_input_event(ev)
+				for k in 10:
+					await get_tree().process_frame
+					var mv := InputEventMouseMotion.new()
+					var q: Vector2 = p0.lerp(p1 + Vector2(0, -8), (k + 1) / 10.0) * sc0
+					mv.position = q
+					mv.global_position = q
+					mv.button_mask = MOUSE_BUTTON_MASK_LEFT
+					Input.warp_mouse(q)
+					Input.parse_input_event(mv)
+				await get_tree().create_timer(0.3).timeout
 		if a == "--selldlg" and WindowManager.is_open("hero"):
 			WindowManager.panels["hero"]._sell_dialog()
 			await get_tree().create_timer(0.3).timeout

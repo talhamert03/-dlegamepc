@@ -79,7 +79,7 @@ static func ring(id: String) -> int:
 
 ## Gold price of the next rank; capstones cost like four ranks.
 static func cost(id: String) -> int:
-	var c := 200.0 * pow(2.1, maxi(0, ring(id) - 1)) * pow(1.6, rank(id))
+	var c := 150.0 * pow(1.8, maxi(0, ring(id) - 1)) * pow(1.45, rank(id))
 	if is_cap(id):
 		c *= 4.0
 	return int(round(c / 10.0) * 10.0)

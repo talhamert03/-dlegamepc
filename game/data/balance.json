@@ -21,7 +21,9 @@
   "bonus_high_step": 0.05,
   "bonus_high_max": 0.25,
   "reserve_share": 0.25,
-  "paragon_growth": 0.02
+  "paragon_growth": 0.02,
+  "late_start": 10,
+  "late_growth": 0.09
  },
  "gold": {
   "base": 3,
@@ -160,7 +162,10 @@
     75,
     0.5
    ]
-  ]
+  ],
+  "pressure_start": 8,
+  "pressure_hp": 0.08,
+  "pressure_atk": 0.045
  },
  "stage": {
   "stages_per_zone": 10,

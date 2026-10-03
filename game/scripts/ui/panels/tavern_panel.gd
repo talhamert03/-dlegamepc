@@ -44,22 +44,61 @@ func refresh() -> void:
 	for ch in _grid.get_children():
 		ch.queue_free()
 	_cards.clear()
-	var ids: Array = []
-	for hid in Tavern.roster():
-		if _filter == "" or Tavern.rarity(hid) == _filter:
-			ids.append(hid)
-	# not yet recruited first, cheapest first
-	ids.sort_custom(func(a, b):
-		var oa := GameState.heroes.has(a)
-		var ob := GameState.heroes.has(b)
-		if oa != ob:
-			return ob
+	var owned: Array = []
+	var locked: Array = []
+	for hid in ["kael"] + Tavern.roster():
+		if _filter != "" and Tavern.rarity(hid) != _filter:
+			continue
+		if GameState.heroes.has(hid):
+			owned.append(hid)
+		elif hid != "kael":
+			locked.append(hid)
+	var rr := {"R": 0, "SR": 1, "SSR": 2}
+	# recruited: party first, then by rarity (low to high) and level
+	owned.sort_custom(func(a, b):
+		var pa := GameState.party.has(a)
+		var pb := GameState.party.has(b)
+		if pa != pb:
+			return pa
+		if rr[Tavern.rarity(a)] != rr[Tavern.rarity(b)]:
+			return rr[Tavern.rarity(a)] < rr[Tavern.rarity(b)]
+		return GameState.heroes[a].level > GameState.heroes[b].level)
+	# not yet recruited: by rarity (low to high), then required level, then price
+	locked.sort_custom(func(a, b):
+		if rr[Tavern.rarity(a)] != rr[Tavern.rarity(b)]:
+			return rr[Tavern.rarity(a)] < rr[Tavern.rarity(b)]
+		if Tavern.level_req(a) != Tavern.level_req(b):
+			return Tavern.level_req(a) < Tavern.level_req(b)
 		return int(Tavern.cost(a)["gold"]) < int(Tavern.cost(b)["gold"]))
 	var gap := (_grid.get_parent_control().size.x - 6.0 - COLS * CARD.x) / (COLS - 1)
-	for i in ids.size():
-		var pos := Vector2((i % COLS) * (CARD.x + gap), (i / COLS) * (CARD.y + 4.0))
-		_card(str(ids[i]), pos)
-	_grid.custom_minimum_size = Vector2(_host.size.x - 6, ceil(ids.size() / float(COLS)) * (CARD.y + 4.0))
+	var y := 0.0
+	for sec in [[owned, DataDB.t("tavern_sec_owned")], [locked, DataDB.t("tavern_sec_locked")]]:
+		var ids: Array = sec[0]
+		if ids.is_empty():
+			continue
+		var hdr := _section_header(str(sec[1]) + "  (%d)" % ids.size())
+		hdr.position = Vector2(0, y)
+		_grid.add_child(hdr)
+		y += 16.0
+		for i in ids.size():
+			_card(str(ids[i]), Vector2((i % COLS) * (CARD.x + gap), y + (i / COLS) * (CARD.y + 4.0)))
+		y += ceil(ids.size() / float(COLS)) * (CARD.y + 4.0) + 4.0
+	_grid.custom_minimum_size = Vector2(_host.size.x - 6, y)
+
+
+func _section_header(text: String) -> Control:
+	var c := Control.new()
+	c.size = Vector2(_host.size.x - 6, 14)
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	c.draw.connect(func():
+		var ci := c.get_canvas_item()
+		var r := Rect2(Vector2(0, 1), c.size - Vector2(0, 2))
+		UISkin.fill(ci, r, 3, Color("#3A1416"), Color("#1E0A0C"))
+		UISkin.stroke(ci, r, 3, Color(0, 0, 0, 0.9), 1.0)
+		UISkin.stroke(ci, r.grow(-1.0), 2, Color(UISkin.BRONZE, 0.5), 1.0)
+		UISkin.diamond(ci, Vector2(8, r.get_center().y), 2.4)
+		c.draw_string(UITheme.font_title, Vector2(15, 11), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#F3D58F")))
+	return c
 
 
 func _build_top() -> void:
@@ -118,7 +157,7 @@ func _card(hid: String, pos: Vector2) -> void:
 			var art_h := r.size.y * 0.78
 			var aw := tex.get_width() * art_h / float(tex.get_height())
 			c.draw_texture_rect(tex, Rect2(Vector2((r.size.x - aw) / 2.0, 3), Vector2(aw, art_h)), false,
-				Color.WHITE if not owned else Color(0.55, 0.55, 0.6))
+				Color.WHITE if owned or Tavern.level_ok(hid) else Color(0.5, 0.5, 0.55))
 		UISkin.fill(ci, Rect2(0, r.size.y * 0.5, r.size.x, r.size.y * 0.5), 0, Color(0, 0, 0, 0.0), Color(0, 0, 0, 0.9))
 		var pulse := 0.65 + 0.35 * sin(_t * 3.0) if rar == "SSR" else 0.85
 		UISkin.stroke(ci, r, 4, Color(0, 0, 0, 0.95), 1.0)
@@ -139,7 +178,16 @@ func _card(hid: String, pos: Vector2) -> void:
 	_grid.add_child(c)
 	_cards.append(c)
 	if owned:
-		var badge := UITheme.label("✓ " + DataDB.t("tavern_owned"), UITheme.C_GREEN, 8, UITheme.font_body)
+		var in_party := GameState.party.has(hid)
+		var lv := UITheme.label("Lv %d" % GameState.heroes[hid].level, UITheme.C_GOLD, 8, UITheme.font_body)
+		lv.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		lv.position = Vector2(4, 4)
+		lv.size = Vector2(CARD.x - 8, 12)
+		lv.add_theme_constant_override("outline_size", 4)
+		lv.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
+		c.add_child(lv)
+		var badge := UITheme.label("✓ " + DataDB.t("tavern_owned") if in_party else DataDB.t("tavern_bench"),
+			UITheme.C_GREEN if in_party else UITheme.C_TEXT, 8, UITheme.font_body)
 		badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		badge.position = Vector2(0, CARD.y - 15)
 		badge.size = Vector2(CARD.x, 12)

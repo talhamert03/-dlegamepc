@@ -81,3 +81,14 @@ yapay zeka) projeye katılmadan önce bu dosyayı okumalı.
 - Durum paneli: beş temel statın dağıtımı (ikon, ne işe yaradığı, puan başı etkisi ipucunda), dört ana sayı
   ve kırmızı seviye çubuğuna bağlı "Sınıf Yetenekleri" kademeleri: 1 / 30 (sınıf yükseltme) / 70 (yol seçimi).
 - Kontrol panelinde "Küçült" düğmesi: görev çubuğu modunu doğrudan açar (mod kapalıysa normal küçültür).
+
+## Denge turu (uzun oyun)
+- XP: 10. seviyeden sonra her seviye %9 daha fazla XP ister (xp.late_growth). Düşmanlar 8. seviyeden sonra
+  referans kahramandan daha hızlı güçlenir (enemy.pressure_hp / pressure_atk): ekipman, skill ve rünler
+  yetişmek zorunda; bosslar gerçek duvar olur.
+- Liderlik rünleri: 61 rün (her dalda 10 + 4 yan + doruk), çoğu 10 kademe. Fiyat halka başına x1.8,
+  kademe başına x1.45: ilk rünler birkaç yüz altın, son kademeler milyonlar (uzun vadeli altın hedefi).
+- Tek kahramanla başlangıç: küçük dalgalar, dalga arası iyileşme, %50 daha az alınan hasar; ikinci R
+  kahraman 450 altın (~15 dk).
+- Çanta: tek tık seçer ve ses verir, çift tık kuşanır/çıkarır; sesler malzemeye göre (ItemSfx).
+- Diziliş sürükleme panel içinde kendi sistemimizle (Godot DnD önizlemesi pencere bölgesinde görünmüyordu).

@@ -22,7 +22,9 @@ static func xp_required(level: int) -> float:
 	if level >= int(b("xp.max_level", 100)):
 		# paragon requirement grows 2% per paragon level
 		return round(8 + 1.5 * pow(100, 1.5)) * kills_to_level(100)
-	return round(8 + 1.5 * pow(level, 1.5)) * kills_to_level(level)
+	# past the first levels every level asks for progressively more: the long middle and late game
+	var late := 1.0 + maxf(0.0, level - float(b("xp.late_start", 10))) * float(b("xp.late_growth", 0.0))
+	return round(round(8 + 1.5 * pow(level, 1.5)) * kills_to_level(level) * late)
 
 
 static func xp_level_factor(hero_level: int, monster_level: int) -> float:
@@ -89,6 +91,10 @@ static func enemy_stats(def: Dictionary, level: int, etype: String, difficulty: 
 	var hp: float = ref_dps(level) * float(b("ref.enemy_hp_k", 7.0)) * ef * float(def.get("hp", 1.0)) * (type_hp if etype == "normal" or etype == "elite" else type_hp * ef) * diff_mult
 	var atk: float = ref_hp(level) * float(b("ref.enemy_atk_k", 0.035)) * float(def.get("atk", 1.0)) * type_atk * diff_mult
 	atk *= lerp(0.38, 1.0, early_factor(level))   # gentle first hours, full strength by ~lv 30
+	# deeper zones press harder than the reference hero: gear, skills and runes have to keep up
+	var over: float = maxf(0.0, level - float(b("enemy.pressure_start", 8)))
+	hp *= 1.0 + over * float(b("enemy.pressure_hp", 0.0))
+	atk *= 1.0 + over * float(b("enemy.pressure_atk", 0.0))
 	var dfn: float = float(b("enemy.def_base", 10)) + float(b("enemy.def_per_level", 4.5)) * level
 	var res: Dictionary = {}
 	for e in ["fire", "cold", "lightning", "chaos", "holy", "physical"]:

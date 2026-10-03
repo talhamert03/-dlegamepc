@@ -1081,7 +1081,7 @@ func calc_damage(src: Combatant, tgt: Combatant, mult: float, element: String, i
 		out["blocked"] = true
 	# a lone hero (before the first recruit) takes less punishment
 	if tgt.is_hero_side() and GameState.party_count() <= 1:
-		raw *= float(DataDB.bal("combat.solo_damage_taken", 0.6))
+		raw *= float(DataDB.bal("combat.solo_damage_taken", 0.5))
 	var v: float = float(DataDB.bal("combat.dmg_variance", 0.05))
 	raw *= rng.randf_range(1.0 - v, 1.0 + v)
 	out["amount"] = max(1.0, round(raw))

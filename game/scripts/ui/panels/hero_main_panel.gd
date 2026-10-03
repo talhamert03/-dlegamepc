@@ -29,6 +29,7 @@ var _last_uids: Dictionary = {}
 var _shown_hero := ""
 var _gold: Label
 var _tools: HBoxContainer
+var _changed_item: Dictionary = {}
 var _host: Control
 
 
@@ -191,6 +192,7 @@ func _arrow(t: String, cb: Callable) -> Button:
 
 func _add_equip(c: Control, key: String, pos: Vector2) -> void:
 	var s := ItemSlot.new(SLOT)
+	s.double_click_only = true
 	s.source = "equip"
 	s.key = key
 	s.placeholder = UITheme.icon(SLOT_ICONS.get(key, "star"))
@@ -268,11 +270,12 @@ func refresh() -> void:
 		if _shown_hero == hid and _last_uids.get(k, "") != uid and uid != "":
 			s.flash()
 			changed = true
+			_changed_item = it
 		_last_uids[k] = uid
 		s.set_item(it)
 		s.compare_hero = hid
 	if changed and visible:
-		AudioManager.play("equip", 0.06, 0.8)
+		ItemSfx.equip(_changed_item)
 	_shown_hero = hid
 	if h:
 		set_panel_title(DataDB.t("panel_hero"))
@@ -337,6 +340,7 @@ func _refresh_bag(hid: String) -> void:
 	var need: int = max(GameState.bag_slots, COLS * 6)
 	while _bag_slots.size() < need:
 		var sl := ItemSlot.new(SLOT)
+		sl.double_click_only = true
 		sl.source = "bag"
 		sl.left_clicked.connect(_on_bag_click)
 		sl.right_clicked.connect(_on_bag_right)
@@ -357,7 +361,7 @@ func _on_equip_click(slot: ItemSlot) -> void:
 	if slot.item.is_empty():
 		return
 	if GameState.unequip(W.current_hero(), str(slot.key)):
-		AudioManager.play("unequip", 0.06, 0.7)
+		ItemSfx.drop()
 	WindowManager.hide_tooltip()
 
 

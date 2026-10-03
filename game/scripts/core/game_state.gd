@@ -127,7 +127,6 @@ func unlock_hero(hid: String, notify := true) -> HeroState:
 				bonus_sp += int(DataDB.bal("points.skill_bonus", 1))
 		h.stat_points = bonus_pts
 		h.skill_points = bonus_sp
-		h.auto_allocate()
 	heroes[hid] = h
 	if notify:
 		EventBus.hero_unlocked.emit(hid)
@@ -501,6 +500,7 @@ func sell_item(uid: String) -> int:
 	var p := ItemUtil.sell_price(bag[idx])
 	bag.remove_at(idx)
 	add_gold(p)
+	AudioManager.play("sell", 0.08, 0.6)
 	EventBus.inventory_changed.emit()
 	return p
 

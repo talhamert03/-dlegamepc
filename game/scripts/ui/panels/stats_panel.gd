@@ -302,10 +302,6 @@ func _build_stats(h: HeroState, s: Dictionary) -> void:
 	top.custom_minimum_size = Vector2(_list.custom_minimum_size.x, 11)
 	var pl := UITheme.label(DataDB.t("stat_points_left", {"n": h.stat_points}), Color("#8A3A1A") if h.stat_points > 0 else Color("#6A4A2A"), 8, UITheme.font_title)
 	top.add_child(W.expand(pl))
-	if h.stat_points > 0:
-		top.add_child(UITheme.button(DataDB.t("btn_auto"), "blue", func():
-			h.auto_allocate()
-			_changed(h), Vector2(30, 10)))
 	_list.add_child(top)
 	var main: String = h.class_def().get("primary", "str")
 	for p in HeroState.PRIMARY:

@@ -13,6 +13,12 @@ var _stage: Control
 var _roster: Control
 var _info: Control
 var _tex := {}
+# in-panel drag: the hero follows the mouse, the platform under it lights up
+var _cand := {}            # {hid, from_slot, start}
+var _dragging := false
+var _just_dragged := false
+var _ghost: Control
+var _hover_slot := -1
 
 
 func _ready() -> void:
@@ -31,6 +37,12 @@ func _ready() -> void:
 	_info.size = Vector2(size.x, 13)
 	_info.draw.connect(_draw_info)
 	add_child(_info)
+	_ghost = Control.new()
+	_ghost.size = size
+	_ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_ghost.z_index = 20
+	_ghost.draw.connect(_draw_ghost)
+	add_child(_ghost)
 	EventBus.party_changed.connect(rebuild)
 	EventBus.hero_unlocked.connect(func(_h): rebuild())
 	rebuild()
@@ -39,6 +51,73 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_t += delta
 	_stage.queue_redraw()
+	if not _cand.is_empty():
+		var m := get_local_mouse_position()
+		if not _dragging and m.distance_to(_cand["start"]) > 4.0:
+			_dragging = true
+			WindowManager.hide_tooltip()
+			AudioManager.play("ui_click", 0.05, 0.4)
+		if _dragging:
+			_hover_slot = _slot_at(m)
+			_ghost.queue_redraw()
+
+
+func _input(ev: InputEvent) -> void:
+	if _cand.is_empty():
+		return
+	if ev is InputEventMouseButton and ev.button_index == MOUSE_BUTTON_LEFT and not ev.pressed:
+		if _dragging:
+			_finish_drag(get_local_mouse_position())
+			_just_dragged = true
+			get_viewport().set_input_as_handled()
+		_cand = {}
+		_dragging = false
+		_hover_slot = -1
+		_ghost.queue_redraw()
+
+
+func _begin(hid: String, from_slot: int) -> void:
+	if hid == "":
+		return
+	_cand = {"hid": hid, "from_slot": from_slot, "start": get_local_mouse_position()}
+	_just_dragged = false
+
+
+func _slot_at(local: Vector2) -> int:
+	for slot in 5:
+		if _slot_rect(slot).grow(2.0).has_point(local):
+			return slot
+	return -1
+
+
+func _finish_drag(local: Vector2) -> void:
+	var hid: String = _cand["hid"]
+	var from: int = int(_cand["from_slot"])
+	var to := _slot_at(local)
+	if to >= 0:
+		if to < GameState.unlocked_party_slots():
+			_place(hid, to)
+	elif from >= 0 and local.y > STAGE_H:
+		_bench({"from_slot": from})
+
+
+func _draw_ghost() -> void:
+	if not _dragging or _cand.is_empty():
+		return
+	var tex := _chibi(str(_cand["hid"]))
+	if tex == null:
+		return
+	var m := get_local_mouse_position()
+	var h := 50.0
+	var w := tex.get_width() * h / float(tex.get_height())
+	# shadow on the ground under the cursor, then the lifted hero, slightly tilted
+	_ghost.draw_set_transform(m + Vector2(0, 4), 0.0, Vector2(1.0, 0.3))
+	_ghost.draw_circle(Vector2.ZERO, 12.0, Color(0, 0, 0, 0.35))
+	_ghost.draw_set_transform(m, sin(_t * 9.0) * 0.06, Vector2.ONE)
+	_ghost.draw_texture_rect(tex, Rect2(-w / 2.0, -h - 4.0, w, h), false, Color(1, 1, 1, 0.92))
+	_ghost.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	if m.y > STAGE_H and int(_cand["from_slot"]) >= 0:
+		_ghost.draw_string(UITheme.font_body, m + Vector2(10, -2), DataDB.t("formation_bench"), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, UITheme.C_ORANGE)
 
 
 func _slot_rect(slot: int) -> Rect2:
@@ -77,10 +156,13 @@ func rebuild() -> void:
 			b.tooltip_text = "%s · %s · Lv %d" % [h.display_name(), h.class_title(), h.level]
 			_chibi(hid)
 		var s := slot
+		b.button_down.connect(func(): _begin(str(GameState.party[s]), s))
 		b.pressed.connect(func():
+			if _just_dragged:
+				_just_dragged = false
+				return
 			sel_slot = s
 			AudioManager.play("ui_click", 0.05, 0.5))
-		b.set_drag_forwarding(func(_p): return _drag_from_slot(s), func(_p, d): return _can_drop(d, s), func(_p, d): _drop_on_slot(d, s))
 		_stage.add_child(b)
 	# roster cards
 	var ids: Array = GameState.heroes.keys()
@@ -97,7 +179,6 @@ func rebuild() -> void:
 	var holder := Control.new()
 	holder.custom_minimum_size = Vector2(_roster.size.x - 6, ceil(ids.size() / float(per_row)) * (cw + 10))
 	holder.mouse_filter = Control.MOUSE_FILTER_PASS
-	holder.set_drag_forwarding(Callable(), func(_p, d): return d is Dictionary and d.has("from_slot"), func(_p, d): _bench(d))
 	sc.add_child(holder)
 	for i in ids.size():
 		var hid2: String = ids[i]
@@ -137,40 +218,14 @@ func _card(hid: String, cw: float) -> Control:
 		b.draw_string(f, Vector2((cw - tw) / 2.0, cw + 7), lv, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, UITheme.C_DIM))
 	b.mouse_entered.connect(b.queue_redraw)
 	b.mouse_exited.connect(b.queue_redraw)
+	b.button_down.connect(func(): _begin(hid, GameState.party.find(hid)))
 	b.pressed.connect(func():
+		if _just_dragged:
+			_just_dragged = false
+			return
 		if sel_slot < GameState.unlocked_party_slots():
 			_place(hid, sel_slot))
-	b.set_drag_forwarding(func(_p):
-		var pv := TextureRect.new()
-		pv.texture = tex
-		pv.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		pv.size = Vector2(cw, cw) * WindowManager.ui_scale
-		pv.modulate.a = 0.85
-		b.set_drag_preview(pv)
-		return {"hid": hid}, Callable(), Callable())
 	return b
-
-
-func _drag_from_slot(slot: int) -> Variant:
-	var hid: String = GameState.party[slot]
-	if hid == "":
-		return null
-	var pv := TextureRect.new()
-	pv.texture = _chibi(hid)
-	pv.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	pv.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	pv.size = Vector2(40, 48) * WindowManager.ui_scale
-	pv.modulate.a = 0.85
-	_stage.set_drag_preview(pv)
-	return {"hid": hid, "from_slot": slot}
-
-
-func _can_drop(d: Variant, slot: int) -> bool:
-	return d is Dictionary and d.has("hid") and slot < GameState.unlocked_party_slots()
-
-
-func _drop_on_slot(d: Dictionary, slot: int) -> void:
-	_place(str(d["hid"]), slot)
 
 
 func _place(hid: String, slot: int) -> void:
@@ -206,7 +261,7 @@ func _draw_stage() -> void:
 		var sr := _slot_rect(slot)
 		var foot := Vector2(sr.get_center().x, sr.end.y - 16)
 		var hid: String = GameState.party[slot]
-		var sel := slot == sel_slot
+		var sel := slot == sel_slot or (_dragging and slot == _hover_slot)
 		# platform
 		_stage.draw_set_transform(foot + Vector2(0, 2), 0.0, Vector2(1.0, 0.32))
 		var pc := Color("#C8913F") if sel else Color("#5A4A60")
@@ -231,7 +286,8 @@ func _draw_stage() -> void:
 				var h := 46.0
 				var w := tex.get_width() * h / float(tex.get_height())
 				var bob := sin(_t * 2.5 + slot) * 0.6
-				_stage.draw_texture_rect(tex, Rect2(foot.x - w / 2.0, foot.y - h + 4 + bob, w, h), false)
+				var lifted: bool = _dragging and int(_cand.get("from_slot", -1)) == slot
+				_stage.draw_texture_rect(tex, Rect2(foot.x - w / 2.0, foot.y - h + 4 + bob, w, h), false, Color(1, 1, 1, 0.25 if lifted else 1.0))
 			var h2: HeroState = GameState.heroes[hid]
 			var nm := h2.display_name()
 			var plate := Rect2(sr.position.x + 1, sr.end.y - 12, sr.size.x - 2, 11)

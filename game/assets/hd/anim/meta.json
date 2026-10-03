@@ -42,22 +42,35 @@
    "ch": 131,
    "cw": 159,
    "h": 123.0,
-   "hurt_flip": true
+   "flip_frames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    18,
+    19
+   ]
   },
   "goblin_archer": {
    "ax": 111,
    "ay": 126,
    "ch": 130,
    "cw": 188,
-   "h": 120.0
+   "h": 120.0,
+   "flip_frames": [
+    18,
+    19
+   ]
   },
   "goblin_chief": {
    "ax": 83,
    "ay": 154,
    "ch": 158,
    "cw": 184,
-   "h": 135.5,
-   "hurt_flip": true
+   "h": 135.5
   },
   "goblin_scout_chief": {
    "ax": 81,
@@ -65,7 +78,10 @@
    "ch": 160,
    "cw": 185,
    "h": 135.5,
-   "hurt_flip": true
+   "flip_frames": [
+    18,
+    19
+   ]
   },
   "goblin_shaman": {
    "ax": 70,
@@ -73,14 +89,22 @@
    "ch": 159,
    "cw": 165,
    "h": 128.0,
-   "hurt_flip": true
+   "flip_frames": [
+    12,
+    18,
+    19
+   ]
   },
   "goblin_warrior": {
    "ax": 72,
    "ay": 125,
    "ch": 129,
    "cw": 159,
-   "h": 118.0
+   "h": 118.0,
+   "flip_frames": [
+    18,
+    19
+   ]
   },
   "king_mushroom": {
    "ax": 94,

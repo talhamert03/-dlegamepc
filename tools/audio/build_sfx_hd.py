@@ -263,6 +263,94 @@ def main():
     x = mix(d, (0, creak), (0.3, thump(0.3, 160, 55, 0.08) * 0.9), (0.3, click(0.02, 400, 3000) * 0.6),
             (0.33, lp(noise(0.5), 9000) * expdec(0.5, 0.12) * 0.08), (0.34, shimmer), (0.36, jingle * 0.4))
     save("chest_open", room(x, 0.22), 0.85)
+    # ---------------------------------------------------------------- item handling, per material
+    def pluck_ks(f, d, decay=0.996, bright=0.5):
+        n = int(SR * d)
+        per = max(2, int(SR / f))
+        x = np.zeros(n)
+        x[:per] = rng.uniform(-1, 1, per)
+        x[:per] = signal.lfilter([bright, 1 - bright], [1], x[:per])
+        for i in range(per, n):
+            x[i] = decay * 0.5 * (x[i - per] + x[i - per - 1])
+        return x * expdec(d, d * 0.5, 0.0005)
+
+    def chime(freqs, d, gap=0.05, tau=0.25):
+        out = np.zeros(int(SR * d))
+        for k, f in enumerate(freqs):
+            tt = t(d - k * gap)
+            tone = (np.sin(2 * np.pi * f * tt) + 0.3 * np.sin(2 * np.pi * f * 2.76 * tt)) * np.exp(-tt / tau)
+            i = int(SR * k * gap)
+            out[i:i + len(tone)] += tone[: len(out) - i]
+        return out
+
+    def rustle(d, lo=900, hi=4500, grains=14):
+        out = np.zeros(int(SR * d))
+        for k in range(grains):
+            g = band(noise(0.04), lo, hi) * expdec(0.04, 0.012)
+            i = int(rng.uniform(0, d - 0.05) * SR)
+            out[i:i + len(g)] += g * rng.uniform(0.3, 1.0)
+        return out * np.sin(np.linspace(0, np.pi, len(out))) ** 0.7
+
+    def jingle(d, n=10, lo=3500, hi=7000):
+        out = np.zeros(int(SR * d))
+        for k in range(n):
+            m_ = metal(0.06, rng.uniform(lo, hi), 0.012, 3) * rng.uniform(0.3, 1.0)
+            i = int(rng.uniform(0, d - 0.07) * SR)
+            out[i:i + len(m_)] += m_
+        return out
+
+    # blades: drawn from the scabbard / slid back in
+    x = mix(0.5, (0, whoosh(0.22, 2500, 7000) * 0.5), (0.03, metal(0.4, 2400, 0.12, 5) * 0.55), (0.02, click(0.01, 3000, 9000) * 0.4))
+    save("pick_blade", room(x, 0.1), 0.6)
+    x = mix(0.5, (0, whoosh(0.15, 5000, 2000) * 0.4), (0.12, click(0.015, 1500, 6000) * 0.9), (0.12, metal(0.35, 1900, 0.09, 5) * 0.5),
+            (0.12, thump(0.15, 180, 80, 0.04) * 0.5))
+    save("equip_blade", room(x, 0.12), 0.7)
+    # plate & mail: clank and jingling rings
+    x = mix(0.5, (0, metal(0.3, 820, 0.07, 6) * 0.7), (0, click(0.012, 800, 5000) * 0.8), (0.01, jingle(0.25, 8) * 0.35))
+    save("pick_metal", room(x, 0.12), 0.65)
+    x = mix(0.6, (0, metal(0.35, 640, 0.09, 6) * 0.8), (0, thump(0.2, 160, 70, 0.05) * 0.8), (0.0, click(0.015, 600, 4000) * 0.9),
+            (0.05, jingle(0.4, 14) * 0.4), (0.12, metal(0.3, 980, 0.06, 5) * 0.4))
+    save("equip_metal", room(x, 0.14), 0.75)
+    # bows: wood creak and a string being drawn / released
+    creak_t = t(0.25)
+    creak = band(np.sign(np.sin(2 * np.pi * np.cumsum(110 + 60 * creak_t + 15 * np.sin(2 * np.pi * 23 * creak_t)) / SR)), 200, 1600) * np.sin(np.linspace(0, np.pi, len(creak_t))) * 0.35
+    x = mix(0.5, (0, creak), (0.12, pluck_ks(196, 0.35, 0.994, 0.7) * 0.5))
+    save("pick_bow", room(x, 0.1), 0.6)
+    x = mix(0.6, (0, creak * 0.7), (0.15, pluck_ks(147, 0.45, 0.995, 0.85) * 0.8), (0.15, click(0.01, 1000, 5000) * 0.4))
+    save("equip_bow", room(x, 0.12), 0.7)
+    # leather & cloth: rustle, buckle
+    save("pick_cloth", room(rustle(0.3), 0.08), 0.55)
+    x = mix(0.5, (0, rustle(0.35, 700, 3500, 18)), (0.22, metal(0.12, 2800, 0.03, 3) * 0.4), (0.24, thump(0.1, 150, 70, 0.03) * 0.3))
+    save("equip_cloth", room(x, 0.1), 0.6)
+    # jewellery: tiny bells
+    save("pick_jewel", room(chime([2637, 3520, 3136], 0.6, 0.04, 0.18), 0.25), 0.5)
+    save("equip_jewel", room(chime([1568, 2093, 2637, 3136], 0.9, 0.06, 0.3), 0.3), 0.6)
+    # staves, orbs, tomes: shimmer
+    sh = np.zeros(int(SR * 0.7))
+    for k in range(8):
+        f = 900 * 2 ** (k / 5)
+        tone = np.sin(2 * np.pi * f * t(0.4)) * expdec(0.4, 0.15) * 0.15
+        i = int(SR * k * 0.03)
+        sh[i:i + len(tone)] += tone
+    save("pick_magic", room(sh + band(noise(0.7), 4000, 12000) * expdec(0.7, 0.2) * 0.05, 0.3), 0.5)
+    x = mix(0.9, (0, whoosh(0.35, 600, 3000) * 0.35), (0.15, chime([784, 1175, 1568], 0.7, 0.05, 0.3)), (0.15, sh[: int(SR * 0.7)] * 0.6))
+    save("equip_magic", room(x, 0.3), 0.65)
+    # instruments: lute pluck / strum
+    save("pick_music", room(pluck_ks(330, 0.5, 0.996, 0.6), 0.15), 0.55)
+    x = np.zeros(int(SR * 0.9))
+    for k, f in enumerate([196, 247, 294, 392]):
+        p_ = pluck_ks(f, 0.8, 0.996, 0.6)
+        i = int(SR * k * 0.025)
+        x[i:i + len(p_)] += p_[: len(x) - i] * 0.5
+    save("equip_music", room(x, 0.15), 0.65)
+    # put-down on a wooden shelf, and a coin purse for sales
+    save("item_drop", room(mix(0.25, (0, thump(0.18, 210, 90, 0.035) * 0.8), (0, click(0.012, 500, 3000) * 0.6)), 0.08), 0.5)
+    coins_ = np.zeros(int(SR * 0.8))
+    for k in range(12):
+        m_ = metal(0.15, rng.uniform(2500, 5200), 0.03, 4) * rng.uniform(0.3, 1.0)
+        i = int(SR * (k * 0.035 + rng.uniform(0, 0.02)))
+        coins_[i:i + len(m_)] += m_[: len(coins_) - i]
+    save("sell", room(coins_, 0.18), 0.7)
     print("ok")
 
 
