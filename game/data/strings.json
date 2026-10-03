@@ -1312,8 +1312,8 @@
   "en": "Arcane"
  },
  "rune_none": {
-  "tr": "Henüz rün yok. Merkezdeki rünle başla; her rün yanındaki rünlerin yolunu açar.",
-  "en": "No runes yet. Start with the central rune; every rune opens the way to its neighbours."
+  "tr": "Bu kahramanın henüz rünü yok. Ortadaki rünle başla; her rün yanındaki rünlerin yolunu açar. Rünler yalnızca bu kahramanı güçlendirir.",
+  "en": "This hero has no runes yet. Start with the central rune; every rune opens the way to its neighbours. Runes strengthen only this hero."
  },
  "rune_buy": {
   "tr": "Al",
@@ -1348,8 +1348,8 @@
   "en": "Needs a linked rune"
  },
  "tip_runes": {
-  "tr": "Rün Ağacı (R)",
-  "en": "Rune Tree (R)"
+  "tr": "Rün Ağacı: kahramana özel gelişim (R)",
+  "en": "Rune Tree: personal growth per hero (R)"
  },
  "status_more": {
   "tr": "Tüm statlar",
@@ -1362,5 +1362,49 @@
  "status_pick_spec": {
   "tr": "Yolunu Seç",
   "en": "Choose Path"
+ },
+ "rune_spent": {
+  "tr": "Öğrenilen rün: {n}",
+  "en": "Runes learned: {n}"
+ },
+ "prim_hint_str": {
+  "tr": "Saldırı · HP",
+  "en": "Attack · HP"
+ },
+ "prim_hint_dex": {
+  "tr": "Kritik · Hız",
+  "en": "Crit · Speed"
+ },
+ "prim_hint_int": {
+  "tr": "Büyü · Skill",
+  "en": "Spell · Skills"
+ },
+ "prim_hint_vit": {
+  "tr": "HP · Savunma",
+  "en": "HP · Defense"
+ },
+ "prim_hint_luk": {
+  "tr": "Kritik · Ganimet",
+  "en": "Crit · Loot"
+ },
+ "prim_per_point": {
+  "tr": "puan başına",
+  "en": "per point"
+ },
+ "prim_main_only": {
+  "tr": "(Saldırı/büyü bonusu yalnızca sınıfın ana statında)",
+  "en": "(Attack/spell bonus only on the class's main stat)"
+ },
+ "status_summary": {
+  "tr": "Özet",
+  "en": "Summary"
+ },
+ "status_abilities": {
+  "tr": "SINIF YETENEKLERİ",
+  "en": "CLASS ABILITIES"
+ },
+ "tip_minimize": {
+  "tr": "Küçült: savaş görev çubuğunda sürer (geri dönmek için şeride tıkla)",
+  "en": "Minimise: the fight goes on in the taskbar (click the bar to come back)"
  }
 }

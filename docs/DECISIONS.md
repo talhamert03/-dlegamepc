@@ -71,8 +71,11 @@ yapay zeka) projeye katılmadan önce bu dosyayı okumalı.
   şansı düşman türüne göre değişir: normal %0,45, elit %6, boss %60, perde bossu %100. Nadirlik tablosu da
   türe göre belirlenir; rünlerden gelen "Sandık Bulma" şansı artırır. Ödüller öldürmenin seviyesine göre
   ölçeklenir: N normal öldürme değerinde altın, en az belirli nadirlikte itemler ve malzemeler.
-- Rün ağacı: hesap genelinde altın harcanan ağaç (46 düğüm, 4 dal), kaydırılabilir bir tahta üzerinde. Bir
-  düğüm, bağlı düğümlerden biri en az bir kademe alınca açılır. Maliyet halka başına x2,3, kademe başına
-  x1,6 artar. Bonuslar account_mods'a eklenir.
-- Durum paneli ayrı skill penceresinin yerini alır: parşömen stat sayfası ve kırmızı seviye çubuğuna bağlı
-  skill kademeleri, gerçek açılma seviyelerinde: 1 / 30 (sınıf yükseltme) / 70 (yol seçimi).
+- Rün ağacı: her kahramanın kendi kişisel gelişim ağacı (46 düğüm, 4 dal), altınla alınır; panelde parti
+  kahramanları arasında sekmelerle geçilir. Bir düğüm, bağlı düğümlerden biri en az bir kademe alınca açılır.
+  Maliyet halka başına x2,2, kademe başına x1,6 artar. Bonuslar yalnızca o kahramanın statlarına eklenir;
+  Sandık Bulma partinin ortalamasıdır. Rün düğümleri kare oyma taşlar ve stat sembolleridir; sınıf
+  yeteneklerinin yuvarlak madalyonlarıyla karışmasın diye bilerek farklıdır.
+- Durum paneli: beş temel statın dağıtımı (ikon, ne işe yaradığı, puan başı etkisi ipucunda), dört ana sayı
+  ve kırmızı seviye çubuğuna bağlı "Sınıf Yetenekleri" kademeleri: 1 / 30 (sınıf yükseltme) / 70 (yol seçimi).
+- Kontrol panelinde "Küçült" düğmesi: görev çubuğu modunu doğrudan açar (mod kapalıysa normal küçültür).

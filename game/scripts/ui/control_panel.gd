@@ -19,7 +19,8 @@ func _ready() -> void:
 	bg.size = size
 	add_child(bg)
 	# top icon row
-	var icons := [["power", _on_power, "tip_quit"], ["gear", func(): WindowManager.toggle_panel("settings"), "tip_settings"],
+	var icons := [["power", _on_power, "tip_quit"], ["minus", func(): WindowManager.minimize(), "tip_minimize"],
+		["gear", func(): WindowManager.toggle_panel("settings"), "tip_settings"],
 		["quest", func(): WindowManager.toggle_panel("quests"), "tip_quests"], ["chart", func(): WindowManager.toggle_panel("dps"), "tip_dps"],
 		["note", _on_mute, "tip_mute"]]
 	var x := 5
@@ -28,7 +29,7 @@ func _ready() -> void:
 		b.position = Vector2(x, 3)
 		add_child(b)
 		_btns[ic[0]] = b
-		x += 14
+		x += 12
 	# main menu: two rows of bronze medallions (tooltips + hotkeys name them)
 	var defs := [["hero", "shield", "btn_hero"], ["stats", "cross", "panel_stats"], ["runes", "rune", "tip_runes"],
 		["world", "map", "btn_world"], ["growth", "star", "btn_growth"], ["tavern", "town", "btn_tavern"]]
@@ -122,7 +123,10 @@ func _refresh() -> void:
 		sp = sp or h.stat_points > 0
 		kp = kp or h.skill_points > 0
 	_dots["stats"].visible = sp or kp
-	_dots["runes"].visible = Runes.any_affordable() and not WindowManager.is_open("runes") and GameState.runes.size() < 3
+	var few := false
+	for h in GameState.party_heroes():
+		few = few or Runes.points_spent(h) < 3
+	_dots["runes"].visible = few and Runes.any_affordable() and not WindowManager.is_open("runes")
 	_dots["hero"].visible = GameState.bag.size() >= GameState.bag_slots - 4
 	_dots["quest"].visible = Quests.claimable() > 0
 

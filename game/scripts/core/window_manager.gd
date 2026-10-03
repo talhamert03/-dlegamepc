@@ -717,6 +717,16 @@ func enter_mini() -> void:
 	layout_changed()
 
 
+## The in-game minimise button: taskbar mode when enabled, a normal minimise otherwise.
+func minimize() -> void:
+	if mini_mode:
+		return
+	if bool(Settings.get_v("mini_mode", true)):
+		enter_mini()
+	else:
+		get_window().mode = Window.MODE_MINIMIZED
+
+
 func exit_mini(open_id := "") -> void:
 	if not mini_mode:
 		return

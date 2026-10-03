@@ -1,18 +1,21 @@
 extends PanelWindow
-## Status: the hero's stats on a parchment sheet (hero switcher on its tab), skill points, and the skill
-## tiers hanging off a red level rail (base / first advancement / specialisation) as round skill medallions.
-## Click a skill for its details below; learn and equip from there.
+## Status: personal growth of one hero. A parchment sheet to spend stat points on the five attributes (each
+## with its own glyph and what it gives), a strip of key numbers, and the class abilities hanging off a red
+## level rail (base / first advancement / specialisation) as round medallions. The magnifier shows every stat.
 
-const PARCH_H := 104.0
+const PARCH_H := 98.0
 const TIER_LV := [1, 30, 70]
-const ROW_H := 40.0
-const ROW_GAP := 5.0
+const ROW_H := 34.0
+const ROW_GAP := 4.0
+const PRIM_ICON := {"str": "sword", "dex": "boot", "int": "book", "vit": "heart", "luk": "star"}
+const PRIM_COL := {"str": Color("#B8402A"), "dex": Color("#2F8A3E"), "int": Color("#2F5FB8"), "vit": Color("#B8305A"), "luk": Color("#B88A1E")}
 const RAIL_X := 12.0
 const BOX_X := 36.0
 
 var _parch: Control
 var _list: VBoxContainer
 var _pts_plaque: Control
+var _chips: Control
 var _tiers: Control
 var _detail: Control
 var _learn: Button
@@ -61,7 +64,7 @@ func build(c: Control) -> void:
 	mag.flat = true
 	mag.focus_mode = Control.FOCUS_NONE
 	mag.size = Vector2(13, 13)
-	mag.position = Vector2(3, PARCH_H - 15)
+	mag.position = Vector2(4, 0)
 	mag.tooltip_text = DataDB.t("status_more")
 	mag.draw.connect(func():
 		var ci := mag.get_canvas_item()
@@ -78,15 +81,22 @@ func build(c: Control) -> void:
 		AudioManager.play("ui_click", 0.05, 0.5)
 		refresh())
 	c.add_child(mag)
-	# skill points plaque
+	# key numbers
+	_chips = Control.new()
+	_chips.position = Vector2(0, PARCH_H + 2)
+	_chips.size = Vector2(w, 17)
+	_chips.mouse_filter = Control.MOUSE_FILTER_PASS
+	_chips.draw.connect(_draw_chips)
+	c.add_child(_chips)
+	# class abilities header with skill points
 	_pts_plaque = Control.new()
-	_pts_plaque.position = Vector2(w / 2.0 - 54, PARCH_H + 4)
-	_pts_plaque.size = Vector2(108, 13)
+	_pts_plaque.position = Vector2(0, PARCH_H + 22)
+	_pts_plaque.size = Vector2(w, 13)
 	_pts_plaque.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_pts_plaque.draw.connect(_draw_plaque)
 	c.add_child(_pts_plaque)
 	# tier rail + boxes
-	_tier_top = PARCH_H + 21.0
+	_tier_top = PARCH_H + 38.0
 	_tiers = Control.new()
 	_tiers.position = Vector2(0, _tier_top)
 	_tiers.size = Vector2(w, 3 * ROW_H + 2 * ROW_GAP + 4)
@@ -163,6 +173,7 @@ func refresh() -> void:
 	_update_detail()
 	_parch.queue_redraw()
 	_pts_plaque.queue_redraw()
+	_chips.queue_redraw()
 
 
 # ------------------------------------------------------------------ parchment
@@ -202,44 +213,31 @@ func _section(title: String) -> void:
 	_list.add_child(l)
 
 
+const PRIM_HINT := {"str": "prim_hint_str", "dex": "prim_hint_dex", "int": "prim_hint_int", "vit": "prim_hint_vit", "luk": "prim_hint_luk"}
+
+
 func _build_stats(h: HeroState, s: Dictionary) -> void:
-	var ink := UISkin.INK
-	_row(StatNames.label("level"), str(h.level))
-	_row(DataDB.t("stat_exp"), "%s / %s" % [F.fmt_num(h.xp), F.fmt_num(F.xp_required(h.level))])
-	_row(DataDB.t("stat_dps"), F.fmt_num(StatCalc.dps_estimate(s)), Color("#7A1E10"))
-	_row(StatNames.label("attack"), F.fmt_num(s["attack"]))
-	_row(StatNames.label("max_hp"), F.fmt_num(s["max_hp"]))
-	_row(StatNames.label("aps"), "%.2f" % float(s["aps"]))
-	_row(StatNames.label("crit_chance"), "%.1f%%" % float(s["crit_chance"]))
-	_row(StatNames.label("crit_dmg"), "%d%%" % int(s["crit_dmg"]))
-	var d: float = float(s["def"])
-	var drp: float = min(75.0, d / (d + 50.0 + 6.0 * h.level) * 100.0)
-	_row(StatNames.label("def"), "%s (%d%%)" % [F.fmt_num(d), int(round(drp))])
-	# primary stats (+ while points are left)
-	_section(DataDB.t("stat_points_left", {"n": h.stat_points}))
+	# points + auto
+	var top := W.hbox(2)
+	top.custom_minimum_size = Vector2(_list.custom_minimum_size.x, 11)
+	var pl := UITheme.label(DataDB.t("stat_points_left", {"n": h.stat_points}), Color("#8A3A1A") if h.stat_points > 0 else Color("#6A4A2A"), 8, UITheme.font_title)
+	top.add_child(W.expand(pl))
 	if h.stat_points > 0:
-		var top := W.hbox(2)
-		top.add_child(W.expand(Control.new()))
 		top.add_child(UITheme.button(DataDB.t("btn_auto"), "blue", func():
 			h.auto_allocate()
 			_changed(h), Vector2(30, 10)))
-		_list.add_child(top)
+	_list.add_child(top)
 	var main: String = h.class_def().get("primary", "str")
 	for p in HeroState.PRIMARY:
-		var pp: String = p
-		var cb := Callable()
-		if h.stat_points > 0:
-			cb = func():
-				var n := 1
-				if Input.is_key_pressed(KEY_SHIFT):
-					n = min(10, h.stat_points)
-				if h.stat_points >= n:
-					h.alloc[pp] = int(h.alloc[pp]) + n
-					h.stat_points -= n
-					_changed(h)
-		_row(StatNames.label(p) + (" ★" if p == main else ""), str(int(s["primary"][p])), ink, cb)
+		_prim_row(h, s, p, p == main)
 	if not _full:
 		return
+	_section(DataDB.t("status_summary"))
+	_row(StatNames.label("level"), str(h.level))
+	_row(DataDB.t("stat_exp"), "%s / %s" % [F.fmt_num(h.xp), F.fmt_num(F.xp_required(h.level))])
+	_row(StatNames.label("aps"), "%.2f" % float(s["aps"]))
+	_row(StatNames.label("crit_chance"), "%.1f%%" % float(s["crit_chance"]))
+	_row(StatNames.label("crit_dmg"), "%d%%" % int(s["crit_dmg"]))
 	_section(DataDB.t("tab_combat"))
 	for k in ["spell", "added_dmg", "elem_dmg", "penetrate", "attack_speed", "cast_speed", "skill_dmg", "phys_dmg", "fire_dmg",
 			"cold_dmg", "lightning_dmg", "chaos_dmg", "holy_dmg", "elite_dmg", "boss_dmg"]:
@@ -259,6 +257,92 @@ func _build_stats(h: HeroState, s: Dictionary) -> void:
 	_list.add_child(rb)
 
 
+## Attribute row: glyph, name, what it gives, value and a + while points are left.
+func _prim_row(h: HeroState, s: Dictionary, p: String, main: bool) -> void:
+	var r := W.hbox(2)
+	r.custom_minimum_size = Vector2(_list.custom_minimum_size.x, 12)
+	r.mouse_filter = Control.MOUSE_FILTER_PASS
+	r.tooltip_text = _prim_tip(h, p, main)
+	var col: Color = PRIM_COL[p]
+	var ic := Control.new()
+	ic.custom_minimum_size = Vector2(11, 11)
+	ic.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var tex := UITheme.icon(PRIM_ICON[p])
+	ic.draw.connect(func():
+		ic.draw_circle(Vector2(5.5, 5.5), 5.5, col.darkened(0.25))
+		ic.draw_arc(Vector2(5.5, 5.5), 5.3, 0, TAU, 16, Color(0.2, 0.12, 0.05, 0.9), 1.0, true)
+		if tex:
+			ic.draw_texture_rect(tex, Rect2(2, 2, 7, 7), false, Color(1, 0.96, 0.88)))
+	r.add_child(ic)
+	var l := UITheme.label(StatNames.label(p) + (" ★" if main else ""), Color("#4A2E16"), 8, UITheme.font_body)
+	l.custom_minimum_size = Vector2(62, 0)
+	l.clip_text = true
+	l.mouse_filter = Control.MOUSE_FILTER_PASS
+	r.add_child(l)
+	var hint := UITheme.label(DataDB.t(PRIM_HINT[p]), Color(0.36, 0.24, 0.12, 0.8), 7, UITheme.font_body)
+	hint.clip_text = true
+	hint.mouse_filter = Control.MOUSE_FILTER_PASS
+	r.add_child(W.expand(hint))
+	var v := UITheme.label(str(int(s["primary"][p])), UISkin.INK, 8, UITheme.font_title)
+	v.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	v.custom_minimum_size = Vector2(20, 0)
+	r.add_child(v)
+	if h.stat_points > 0:
+		var pp: String = p
+		r.add_child(UITheme.button("+", "green", func():
+			var n := 1
+			if Input.is_key_pressed(KEY_SHIFT):
+				n = min(10, h.stat_points)
+			if h.stat_points >= n:
+				h.alloc[pp] = int(h.alloc[pp]) + n
+				h.stat_points -= n
+				AudioManager.play("ui_click", 0.05, 0.5)
+				_changed(h), Vector2(11, 10)))
+	_list.add_child(r)
+
+
+func _prim_tip(h: HeroState, p: String, main: bool) -> String:
+	var row: Dictionary = DataDB.bal("primary", {}).get(p, {})
+	var lines: Array = [StatNames.label(p) + " — " + DataDB.t("prim_per_point")]
+	var eff: Dictionary = row.get("always", {}).duplicate()
+	if main:
+		for k in row.get("main", {}):
+			eff[k] = float(eff.get(k, 0.0)) + float(row["main"][k])
+	for k in eff:
+		var v := float(eff[k])
+		lines.append(("+%s %s" if StatNames.is_flat(k) else "+%s%% %s") % [("%.2f" % v).rstrip("0").rstrip("."), StatNames.label(k)])
+	if not main and row.has("main"):
+		lines.append(DataDB.t("prim_main_only"))
+	return "\n".join(lines)
+
+
+func _draw_chips() -> void:
+	var h := _hero()
+	if h == null:
+		return
+	var s := GameState.hero_stats(h.id)
+	var d: float = float(s["def"])
+	var items := [["dps", DataDB.t("stat_dps"), F.fmt_num(StatCalc.dps_estimate(s)), Color("#FF8A5A")],
+		["sword", StatNames.label("attack"), F.fmt_num(s["attack"] if not bool(h.class_def().get("uses_spell", false)) else s["spell"]), Color("#F2C45A")],
+		["heart", StatNames.label("max_hp"), F.fmt_num(s["max_hp"]), Color("#FF6A8A")],
+		["shield", StatNames.label("def"), F.fmt_num(d), Color("#86B3FF")]]
+	var cw := (_chips.size.x - 6.0) / 4.0
+	var ci := _chips.get_canvas_item()
+	var f := UITheme.font_body
+	for i in items.size():
+		var it: Array = items[i]
+		var r := Rect2(i * (cw + 2.0), 0, cw, _chips.size.y)
+		UISkin.fill(ci, r, 3, Color("#2A2228"), Color("#151116"))
+		UISkin.stroke(ci, r, 3, Color(0, 0, 0, 0.95), 1.0)
+		UISkin.stroke(ci, r.grow(-1.0), 2, Color(it[3], 0.35), 1.0)
+		var tex := UITheme.icon(str(it[0]))
+		if tex:
+			_chips.draw_texture_rect(tex, Rect2(r.position + Vector2(3, 4.5), Vector2(8, 8)), false, it[3])
+		var val: String = it[2]
+		var tw := f.get_string_size(val, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
+		_chips.draw_string(f, Vector2(r.end.x - tw - 4, 12), val, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, UITheme.C_TEXT)
+
+
 func _p(s: Dictionary, k: String) -> String:
 	var v: float = float(s.get(k, 0.0))
 	if abs(v - round(v)) < 0.05:
@@ -270,17 +354,18 @@ func _draw_plaque() -> void:
 	var ci := _pts_plaque.get_canvas_item()
 	var r := Rect2(Vector2.ZERO, _pts_plaque.size)
 	var h := _hero()
-	UISkin.fill(ci, r, 3, Color("#2A2228"), Color("#151116"))
+	UISkin.fill(ci, r, 3, Color("#3A1416"), Color("#1E0A0C"))
 	UISkin.stroke(ci, r, 3, Color(0, 0, 0, 0.95), 1.0)
 	UISkin.stroke(ci, r.grow(-1.0), 2, Color(UISkin.BRONZE, 0.55), 1.0)
-	var ic := UITheme.icon("cross")
-	if ic:
-		_pts_plaque.draw_texture_rect(ic, Rect2(5, 2.5, 8, 8), false, Color(1, 0.85, 0.6))
+	var f := UITheme.font_title
+	var title := DataDB.t("status_abilities")
+	UISkin.diamond(ci, Vector2(8, r.size.y / 2.0), 2.6)
+	_pts_plaque.draw_string(f, Vector2(14, 10), title, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#F3D58F"))
 	var n := h.skill_points if h else 0
 	var s := DataDB.t("skill_points_left", {"n": n})
-	var f := UITheme.font_body
-	var tw := f.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
-	_pts_plaque.draw_string(f, Vector2((r.size.x - tw) / 2.0 + 5, 10), s, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, UITheme.C_GOLD if n > 0 else UITheme.C_TEXT)
+	var fb := UITheme.font_body
+	var tw := fb.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
+	_pts_plaque.draw_string(fb, Vector2(r.size.x - tw - 6, 9.5), s, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, UITheme.C_GOLD if n > 0 else UITheme.C_DIM)
 
 
 # ------------------------------------------------------------------ tiers
@@ -409,7 +494,7 @@ func _draw_skill(r: Rect2, sid: String, locked: bool, h: HeroState) -> void:
 	var sd := DataDB.skill_def(sid)
 	var lv := h.skill_level(sid)
 	var mx := int(sd.get("max", 1))
-	var c := Vector2(r.get_center().x, r.position.y + 11)
+	var c := Vector2(r.get_center().x, r.position.y + 10)
 	var rad := 9.5
 	var typ := str(sd.get("type", "active"))
 	var rim: Color = {"active": Color("#F2C45A"), "passive": Color("#7FB3FF"), "ult": Color("#FF6A5A")}.get(typ, Color.WHITE)
@@ -436,8 +521,8 @@ func _draw_skill(r: Rect2, sid: String, locked: bool, h: HeroState) -> void:
 	var txt := "%d/%d" % [lv, mx]
 	var f := UITheme.font_body
 	var tw := f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
-	_tiers.draw_string_outline(f, Vector2(c.x - tw / 2.0, r.position.y + 30), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, 2, Color(0, 0, 0, 0.9))
-	_tiers.draw_string(f, Vector2(c.x - tw / 2.0, r.position.y + 30), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7,
+	_tiers.draw_string_outline(f, Vector2(c.x - tw / 2.0, r.position.y + 28), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, 2, Color(0, 0, 0, 0.9))
+	_tiers.draw_string(f, Vector2(c.x - tw / 2.0, r.position.y + 28), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7,
 		UITheme.C_TEXT if lv > 0 else (UITheme.C_DIM if not locked else Color("#5A5560")))
 
 
@@ -549,7 +634,7 @@ func _draw_detail() -> void:
 	if sd.has("cd"):
 		meta += "  ·  " + DataDB.t("cooldown", {"s": "%.0f" % float(sd["cd"])})
 	_detail.draw_string(UITheme.font_body, Vector2(24, 20), meta, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 28, 7, UITheme.C_DIM)
-	_detail.draw_string(UITheme.font_body, Vector2(5, 29), _describe(sd, maxi(1, lv)), HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 10, 7, UITheme.C_TEXT)
+	_detail.draw_multiline_string(UITheme.font_body, Vector2(5, 30), _describe(sd, maxi(1, lv)), HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 10, 7, 2, UITheme.C_TEXT)
 
 
 func _on_learn() -> void:
