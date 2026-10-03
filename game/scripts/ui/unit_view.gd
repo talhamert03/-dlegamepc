@@ -8,6 +8,25 @@ extends Node2D
 ## Units without a sheet fall back to the single HD illustration with procedural motion.
 
 const SHADER := preload("res://assets/shaders/unit.gdshader")
+const SHADER_HD := preload("res://assets/shaders/unit_hd.gdshader")
+## Motion profile per monster rig for single-image monsters (see unit_hd.gdshader):
+## breathe amp, sway, ripple (amp, speed), wings, jelly, undulate, skitter, gait (amp, speed), hover
+const RIG := {
+	"biped": {"br": 1.0, "sway": 0.010, "wave": 0.35, "ws": 2.2, "gait": 0.7, "gs": 9.0},
+	"bandit": {"br": 1.0, "sway": 0.010, "wave": 0.45, "ws": 2.0, "gait": 0.7, "gs": 9.0},
+	"goblin": {"br": 1.1, "sway": 0.012, "wave": 0.30, "ws": 2.6, "gait": 0.8, "gs": 11.0},
+	"skeleton": {"br": 0.5, "sway": 0.008, "wave": 0.20, "ws": 2.0, "gait": 0.7, "gs": 8.0, "skit": 0.12},
+	"zombie": {"br": 0.6, "sway": 0.028, "wave": 0.30, "ws": 1.2, "gait": 0.5, "gs": 5.0, "lean": 0.03},
+	"golem": {"br": 0.55, "sway": 0.004, "wave": 0.10, "ws": 1.4, "gait": 0.45, "gs": 5.5},
+	"ent": {"br": 0.5, "sway": 0.020, "wave": 0.85, "ws": 1.3, "gait": 0.35, "gs": 4.5},
+	"quad": {"br": 0.8, "sway": 0.004, "wave": 0.30, "ws": 2.4, "gait": 1.0, "gs": 12.0},
+	"flyer": {"br": 0.5, "sway": 0.010, "wave": 0.60, "ws": 2.8, "flap": 0.45, "fs": 9.0, "hover": 2.0},
+	"blob": {"br": 0.3, "sway": 0.0, "wave": 0.0, "ws": 1.0, "jelly": 1.0},
+	"mushroom": {"br": 0.8, "sway": 0.006, "wave": 0.10, "ws": 1.5, "jelly": 0.4, "gait": 0.4, "gs": 8.0},
+	"spider": {"br": 0.4, "sway": 0.004, "wave": 0.15, "ws": 2.0, "skit": 1.0, "gait": 0.8, "gs": 14.0},
+	"worm": {"br": 0.4, "sway": 0.0, "wave": 0.30, "ws": 1.6, "und": 1.0},
+	"hero": {"br": 1.0, "sway": 0.010, "wave": 0.45, "ws": 2.0, "gait": 0.7, "gs": 9.0},
+}
 const HERO_H := 34.0                  # on-screen height of a hero, logical px
 const ROW_IDLE := 0
 const ROW_MOVE := 1
@@ -165,18 +184,77 @@ func _setup_hd() -> void:
 	mode = "hd"
 	var m := SpriteLib.hd_meta(ref[0], ref[1])
 	var h := float(m.get("h", tex.get_height()))
+	var foot := float(m.get("foot_x", tex.get_width() / 2.0))
 	_k = _h / h
-	spr = Sprite2D.new()
-	spr.texture = tex
-	spr.centered = false
-	spr.offset = Vector2(-float(m.get("foot_x", tex.get_width() / 2.0)), -h)
-	spr.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
-	spr.material = mat
+	# the painting on a grid mesh, deformed per vertex by unit_hd.gdshader (a light 2D rig)
+	var mt := ShaderMaterial.new()
+	mt.shader = SHADER_HD
+	for prm in ["time_offset", "outline_color", "tint"]:
+		var v: Variant = mat.get_shader_parameter(prm)
+		if v != null:
+			mt.set_shader_parameter(prm, v)
+	mat = mt
+	var art_front := 1.0 if (ref[0] == "heroes" or ref[0] == "pets") else -1.0
+	mat.set_shader_parameter("rig_h", h)
+	mat.set_shader_parameter("rig_w", maxf(foot, tex.get_width() - foot))
+	mat.set_shader_parameter("front", art_front)
 	mat.set_shader_parameter("texel_scale", 1.0 / _k)
-	body.add_child(spr)
+	var mi := MeshInstance2D.new()
+	mi.mesh = _grid_mesh(Vector2(tex.get_width(), tex.get_height()), Vector2(-foot, -h))
+	mi.texture = tex
+	mi.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	mi.material = mat
+	body.add_child(mi)
+	var rig := str(unit.visual.get("def", {}).get("rig", "biped")) if kind == "enemy" else "biped"
+	if ref[0] == "heroes":
+		rig = "hero"
+	_rig = RIG.get(rig, RIG["biped"])
+	_rig_name = rig
+	mat.set_shader_parameter("wave_speed", float(_rig.get("ws", 2.0)))
+	mat.set_shader_parameter("flap_speed", float(_rig.get("fs", 10.0)))
+	if _rig.has("hover"):
+		_fly = maxf(_fly, 6.0)
 	# HD illustrations face right for heroes, left for monsters
 	# (pets are painted facing right, like heroes)
 	_hd_flip = (ref[0] == "heroes" or ref[0] == "pets") != unit.is_hero_side()
+
+
+var _rig: Dictionary = {}
+var _rig_name := ""
+var _prev_x := 0.0
+var _gait := 0.0
+static var _meshes: Dictionary = {}
+
+
+## Grid mesh over a texture (cached per size and anchor): enough vertices for smooth bending.
+static func _grid_mesh(sz: Vector2, origin: Vector2) -> ArrayMesh:
+	var key := "%d_%d_%d_%d" % [int(sz.x), int(sz.y), int(origin.x), int(origin.y)]
+	if _meshes.has(key):
+		return _meshes[key]
+	var cols := 10
+	var rows := 18
+	var verts := PackedVector2Array()
+	var uvs := PackedVector2Array()
+	var idx := PackedInt32Array()
+	for j in rows + 1:
+		for i in cols + 1:
+			var u := float(i) / cols
+			var v := float(j) / rows
+			verts.append(origin + Vector2(u * sz.x, v * sz.y))
+			uvs.append(Vector2(u, v))
+	for j in rows:
+		for i in cols:
+			var a := j * (cols + 1) + i
+			idx.append_array([a, a + 1, a + cols + 1, a + 1, a + cols + 2, a + cols + 1])
+	var arr := []
+	arr.resize(Mesh.ARRAY_MAX)
+	arr[Mesh.ARRAY_VERTEX] = verts
+	arr[Mesh.ARRAY_TEX_UV] = uvs
+	arr[Mesh.ARRAY_INDEX] = idx
+	var am := ArrayMesh.new()
+	am.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arr)
+	_meshes[key] = am
+	return am
 
 
 var _hd_flip := false
@@ -363,49 +441,96 @@ func _animate_sheet() -> void:
 	mat.set_shader_parameter("glow", Color(1.0, 0.85, 0.45, glow) if unit.is_hero_side() else Color(1.0, 0.3, 0.2, glow))
 
 
-## Procedural animation for units that only have the single HD illustration (pivot = feet).
+## Single-image monsters: drive the mesh rig (unit_hd.gdshader) with breathing, sway, gait, wind-up and
+## strike, recoil and a crumpling death, flavoured per rig; the body node adds the dash, tilt and squash.
 func _animate_hd() -> void:
+	var dt := get_process_delta_time()
+	var t := _clock + _phase
+	var r := _rig
 	var ox := 0.0
 	var oy := 0.0
 	var rot := 0.0
 	var sx := 1.0
 	var sy := 1.0
-	var t := _clock + _phase
+	var breathe := sin(t * 2.4)
+	var sway := float(r.get("sway", 0.01)) * 2.2 * sin(t * 1.3)
+	var lean := float(r.get("lean", 0.0))
+	var reach := 0.0
+	var crouch := 0.0
+	var wave := float(r.get("wave", 0.3))
+	var flap := float(r.get("flap", 0.0))
+	var jelly := float(r.get("jelly", 0.0))
+	var und := float(r.get("und", 0.0))
+	var skit := float(r.get("skit", 0.0)) * 0.25
+	# walking: a gait cycle while the unit actually moves
+	var vx := absf(position.x - _prev_x) / maxf(0.001, dt)
+	_prev_x = position.x
+	var moving := vx > 4.0 or _cur == "run"
+	var gs := float(r.get("gs", 9.0))
+	if moving:
+		_gait += dt * gs
+	var stride := sin(_gait) if moving else 0.0
+	var stride_amp := float(r.get("gait", 0.0)) if moving else 0.0
+	if moving:
+		lean += 0.025
+		skit = float(r.get("skit", 0.0))
+		oy -= absf(sin(_gait)) * 0.6 * float(r.get("gait", 0.0))
 	match _cur:
-		"run":
-			oy = -absf(sin(t * 9.0)) * 1.6
-			rot = 0.04 + 0.02 * sin(t * 9.0)
 		"attack", "skill":
 			var imp: float = clampf(unit.act_impact, 0.08, 1.6)
 			var total: float = max(unit.act_len, imp + 0.16)
+			var power := 1.0 if _melee else 0.45
 			if _t < imp:
+				# wind-up: gather, pull the arm back, lean away
 				var e := _t / imp
-				ox = -2.0 * e
-				rot = -0.08 * e
-				sx = 1.0 - 0.04 * e
-				sy = 1.0 + 0.03 * e
+				var ee := e * e * (3.0 - 2.0 * e)
+				reach = -0.45 * power * ee
+				lean -= 0.05 * ee
+				crouch = 0.07 * ee
+				ox = -1.5 * ee
+				if imp > 0.9:
+					breathe = sin(t * 14.0)
 			else:
+				# strike: a fast snap forward, then settle
 				var e2: float = clampf((_t - imp) / max(0.05, total - imp), 0.0, 1.0)
-				ox = lerpf(5.0, 0.0, e2) if _melee else lerpf(-1.5, 0.0, e2)
-				rot = lerpf(0.12, 0.0, e2)
-				sx = 1.0 + 0.06 * (1.0 - e2)
-				sy = 1.0 - 0.05 * (1.0 - e2)
+				var snap := sin(clampf(e2 * 4.0, 0.0, 1.0) * PI * 0.5)
+				var settle := 1.0 - smoothstep(0.35, 1.0, e2)
+				reach = 1.0 * power * snap * settle
+				lean += 0.07 * snap * settle
+				crouch = -0.04 * snap * settle
+				ox = (5.0 if _melee else -1.2) * settle
+				sx = 1.0 + 0.05 * settle
+				sy = 1.0 - 0.04 * settle
+				wave *= 1.0 + 1.5 * settle
 				if e2 >= 1.0:
 					_done = true
 		"hit":
-			var p := clampf(_t / 0.25, 0.0, 1.0)
-			rot = -0.1 * (1.0 - p)
+			var p := clampf(_t / 0.28, 0.0, 1.0)
+			var k := 1.0 - p
+			lean -= 0.10 * k
+			crouch = 0.08 * k
+			reach = -0.25 * k
+			wave *= 1.0 + 2.0 * k
+			jelly += 0.8 * k
 			if p >= 1.0:
 				_done = true
 		"death":
-			var d: float = clampf(_death_t / 0.45, 0.0, 1.0)
-			rot = -1.45 * d * d
+			var d: float = clampf(_death_t / 0.5, 0.0, 1.0)
+			crouch = 0.28 * d
+			lean -= 0.12 * d
+			reach = -0.3 * d
+			rot = -1.2 * d * d
 			oy = 2.0 * d
+			breathe = 0.0
+			wave *= 1.0 - d
+			flap *= 1.0 - d
 		"victory":
 			oy = -absf(sin(t * 6.0)) * 3.0
+			breathe = sin(t * 6.0)
 		_:
-			sy = 1.0 + 0.015 * sin(t * 2.6)
-			sx = 1.0 - 0.008 * sin(t * 2.6)
+			pass
+	if r.has("hover") and _cur != "death":
+		oy -= float(r["hover"]) + sin(t * 2.2) * 1.5
 	sx *= 1.0 + 0.08 * _squash
 	sy *= 1.0 - 0.08 * _squash
 	ox -= _kick
@@ -413,6 +538,19 @@ func _animate_hd() -> void:
 	body.position = Vector2(round(ox * _facing), round(oy))
 	body.rotation = rot * _facing
 	body.scale = Vector2(_k * sx * flip, _k * sy)
+	mat.set_shader_parameter("breathe", breathe)
+	mat.set_shader_parameter("breathe_amp", float(r.get("br", 1.0)))
+	mat.set_shader_parameter("sway", sway)
+	mat.set_shader_parameter("lean", lean)
+	mat.set_shader_parameter("reach", reach)
+	mat.set_shader_parameter("crouch", crouch)
+	mat.set_shader_parameter("wave_amp", wave)
+	mat.set_shader_parameter("flap", flap)
+	mat.set_shader_parameter("jelly", jelly)
+	mat.set_shader_parameter("undulate", und)
+	mat.set_shader_parameter("skitter", skit)
+	mat.set_shader_parameter("stride", stride)
+	mat.set_shader_parameter("stride_amp", stride_amp)
 
 
 func _draw() -> void:
