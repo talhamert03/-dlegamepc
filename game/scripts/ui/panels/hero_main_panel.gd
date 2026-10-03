@@ -23,9 +23,10 @@ var _page: Control
 var _bag_grid: GridContainer
 var _bag_slots: Array = []
 var _count: Label
-var _ctx: PopupMenu
 var _ctx_uid := ""
 var _bottom: HBoxContainer
+var _last_uids: Dictionary = {}
+var _shown_hero := ""
 var _gold: Label
 
 
@@ -154,9 +155,6 @@ func build(c: Control) -> void:
 	_count.size = Vector2(68, 9)
 	_count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	c.add_child(_count)
-	_ctx = UITheme.context_menu()
-	_ctx.id_pressed.connect(_on_ctx)
-	add_child(_ctx)
 	EventBus.inventory_changed.connect(refresh)
 	EventBus.equipment_changed.connect(func(_h): refresh())
 	EventBus.party_changed.connect(refresh)
@@ -238,10 +236,20 @@ func refresh() -> void:
 	var h: HeroState = GameState.heroes.get(hid)
 	_gold.text = F.fmt_num(GameState.gold)
 	_count.text = "%d / %d" % [GameState.bag.size(), GameState.bag_slots]
+	var changed := false
 	for k in _equip:
 		var s: ItemSlot = _equip[k]
-		s.set_item(h.equipment.get(k, {}) if h else {})
+		var it: Dictionary = h.equipment.get(k, {}) if h else {}
+		var uid: String = str(it.get("uid", ""))
+		if _shown_hero == hid and _last_uids.get(k, "") != uid and uid != "":
+			s.flash()
+			changed = true
+		_last_uids[k] = uid
+		s.set_item(it)
 		s.compare_hero = hid
+	if changed and visible:
+		AudioManager.play("equip", 0.06, 0.8)
+	_shown_hero = hid
 	if h:
 		set_panel_title(DataDB.t("panel_hero"))
 		_cls.text = "%s · %s" % [h.display_name(), h.class_title()]
@@ -288,11 +296,8 @@ func _build_party_row(sel: String) -> void:
 			b.add_child(UITheme.selected_frame(Vector2(20, 18)))
 		var h2: HeroState = GameState.heroes.get(hid)
 		if h2 and (h2.stat_points > 0 or h2.skill_points > 0):
-			var dot := ColorRect.new()
-			dot.color = Color("#FF5A4A")
-			dot.size = Vector2(3, 3)
-			dot.position = Vector2(16, 1)
-			dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			var dot := UITheme.badge(7.0)
+			dot.position = Vector2(14, -2)
 			b.add_child(dot)
 		var id2: String = hid
 		b.pressed.connect(func(): W.select_hero(id2))
@@ -327,7 +332,8 @@ func _refresh_bag(hid: String) -> void:
 func _on_equip_click(slot: ItemSlot) -> void:
 	if slot.item.is_empty():
 		return
-	GameState.unequip(W.current_hero(), str(slot.key))
+	if GameState.unequip(W.current_hero(), str(slot.key)):
+		AudioManager.play("unequip", 0.06, 0.7)
 	WindowManager.hide_tooltip()
 
 
@@ -351,8 +357,6 @@ func _on_bag_click(slot: ItemSlot) -> void:
 	var err := GameState.equip_from_bag(W.current_hero(), uid)
 	if err != "":
 		EventBus.notify.emit(err, UITheme.C_RED)
-	else:
-		AudioManager.play("equip", 0.05, 0.7)
 	WindowManager.hide_tooltip()
 
 
@@ -360,17 +364,14 @@ func _on_bag_right(slot: ItemSlot) -> void:
 	if slot.item.is_empty():
 		return
 	_ctx_uid = slot.item["uid"]
-	_ctx.clear()
-	_ctx.add_item(DataDB.t("ctx_equip"), 0)
-	_ctx.add_item(DataDB.t("ctx_stash"), 1)
-	_ctx.add_item(DataDB.t("ctx_sell") + " (%s)" % F.fmt_num(ItemUtil.sell_price(slot.item)), 2)
-	_ctx.add_item(DataDB.t("ctx_salvage"), 3)
-	_ctx.add_item(DataDB.t("ctx_unlock") if slot.item.get("locked", false) else DataDB.t("ctx_lock"), 4)
-	_ctx.content_scale_factor = WindowManager.ui_scale
-	_ctx.reset_size()
-	_ctx.position = DisplayServer.mouse_get_position()
-	_ctx.popup()
-	WindowManager.hide_tooltip()
+	var locked: bool = slot.item.get("locked", false)
+	ContextMenu.open([
+		[DataDB.t("ctx_equip"), func(): _on_ctx(0)],
+		[DataDB.t("ctx_stash"), func(): _on_ctx(1)],
+		[DataDB.t("ctx_sell") + "  (%s)" % F.fmt_num(ItemUtil.sell_price(slot.item)), func(): _on_ctx(2), Color("#F2C45A")],
+		[DataDB.t("ctx_salvage"), func(): _on_ctx(3)],
+		[DataDB.t("ctx_unlock") if locked else DataDB.t("ctx_lock"), func(): _on_ctx(4)],
+	], WindowManager.desktop.get_local_mouse_position())
 
 
 func _on_ctx(id: int) -> void:

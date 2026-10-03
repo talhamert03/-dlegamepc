@@ -13,7 +13,6 @@ var _bag_slots: Array = []
 var _filters: HBoxContainer
 var _count: Label
 var _sel_box: HBoxContainer
-var _ctx: PopupMenu
 var _ctx_uid := ""
 
 
@@ -52,9 +51,6 @@ func build(c: Control) -> void:
 	bottom.add_child(_count)
 	_sel_box = W.hbox(1)
 	v.add_child(_sel_box)
-	_ctx = UITheme.context_menu()
-	_ctx.id_pressed.connect(_on_ctx)
-	add_child(_ctx)
 	EventBus.inventory_changed.connect(refresh)
 	EventBus.equipment_changed.connect(func(_h): refresh())
 	refresh()
@@ -143,17 +139,14 @@ func _on_bag_right(slot: ItemSlot) -> void:
 	if slot.item.is_empty():
 		return
 	_ctx_uid = slot.item["uid"]
-	_ctx.clear()
-	_ctx.add_item(DataDB.t("ctx_equip"), 0)
-	_ctx.add_item(DataDB.t("ctx_stash"), 1)
-	_ctx.add_item(DataDB.t("ctx_sell") + " (%s)" % F.fmt_num(ItemUtil.sell_price(slot.item)), 2)
-	_ctx.add_item(DataDB.t("ctx_salvage"), 3)
-	_ctx.add_item(DataDB.t("ctx_unlock") if slot.item.get("locked", false) else DataDB.t("ctx_lock"), 4)
-	_ctx.content_scale_factor = WindowManager.ui_scale
-	_ctx.reset_size()
-	_ctx.position = DisplayServer.mouse_get_position()
-	_ctx.popup()
-	WindowManager.hide_tooltip()
+	var locked: bool = slot.item.get("locked", false)
+	ContextMenu.open([
+		[DataDB.t("ctx_equip"), func(): _on_ctx(0)],
+		[DataDB.t("ctx_stash"), func(): _on_ctx(1)],
+		[DataDB.t("ctx_sell") + "  (%s)" % F.fmt_num(ItemUtil.sell_price(slot.item)), func(): _on_ctx(2), Color("#F2C45A")],
+		[DataDB.t("ctx_salvage"), func(): _on_ctx(3)],
+		[DataDB.t("ctx_unlock") if locked else DataDB.t("ctx_lock"), func(): _on_ctx(4)],
+	], WindowManager.desktop.get_local_mouse_position())
 
 
 func _on_ctx(id: int) -> void:

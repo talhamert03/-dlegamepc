@@ -101,7 +101,7 @@ func _on_stage(s: int) -> void:
 		GameState.unlock_hero("lyra")
 		GameState.add_to_party("lyra")
 		_show_bubble(DataDB.t("story_lyra"), "lyra", 5.0)
-	if z == 0 and s >= 7 and not GameState.heroes.has("pip"):
+	if z == 0 and s >= 9 and not GameState.heroes.has("pip"):
 		GameState.unlock_hero("pip")
 		GameState.add_to_party("pip")
 		_show_bubble(DataDB.t("story_pip"), "pip", 5.0)

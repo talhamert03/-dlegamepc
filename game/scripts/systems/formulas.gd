@@ -85,7 +85,7 @@ static func enemy_stats(def: Dictionary, level: int, etype: String, difficulty: 
 	var type_atk: float = float(b("enemy.type_atk", {}).get(etype, 1.0))
 	var ef := early_factor(level)
 	if etype != "normal" and etype != "elite":
-		ef = 0.4 + 0.6 * ef
+		ef = 0.25 + 0.75 * ef   # gentler early bosses, same as before once ef reaches 1 (~lv 30)
 	var hp: float = ref_dps(level) * float(b("ref.enemy_hp_k", 7.0)) * ef * float(def.get("hp", 1.0)) * (type_hp if etype == "normal" or etype == "elite" else type_hp * ef) * diff_mult
 	var atk: float = ref_hp(level) * float(b("ref.enemy_atk_k", 0.035)) * float(def.get("atk", 1.0)) * type_atk * diff_mult
 	atk *= lerp(0.6, 1.0, early_factor(level))

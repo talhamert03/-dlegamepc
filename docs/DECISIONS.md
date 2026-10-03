@@ -45,6 +45,8 @@ yapay zeka) projeye katılmadan önce bu dosyayı okumalı.
   harekete düşer.
 - `UnitView` saldırı karesini simülasyonun vuruş anına (`act_impact`) senkronlar; yakın dövüşçüler hedefe atılır,
   menzilliler geri teper; vuruşta flaş, geri itme, kritikte vuruş donması (hit-stop) ve sarsıntı.
+- Ekipman ikonları: iki AI ikon sayfasından (`art_src/urls_items.json`, `tools/art/import_items.py`) 36 tip x 2 görünüm;
+  tier 0-2 sade, tier 3+ süslü/büyülü. Slot arka planı nadirlik rengiyle dolu (TBH tarzı).
 - HD illüstrasyonlar portre, kahraman penceresi ve sinematik girişte kullanılır; arka planlar JPEG.
 - UI: `UISkin` (tamamen vektör: demir panel, kurdele, bronz madalyon, ahşap buton, nadirlik renkli slot),
   `GameStyleBox` ile tüm Button'lara uygulanır. Fontlar Cinzel/Nunito (OFL).

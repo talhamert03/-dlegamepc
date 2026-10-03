@@ -1,0 +1,83 @@
+class_name ContextMenu
+extends Control
+## Slim right-click menu drawn inside the overlay (a native popup window would not share the UI scale/style).
+## items: [[text, callable, colour(optional)], ...]; closes on pick, on a click elsewhere or when the mouse leaves.
+
+const ROW_H := 13.0
+const PAD := 3.0
+
+var _items: Array = []
+var _hover := -1
+var _away := 0.0
+
+
+static func open(items: Array, at: Vector2) -> ContextMenu:
+	var m := ContextMenu.new()
+	m._items = items
+	WindowManager.show_context_menu(m, at)
+	return m
+
+
+func _ready() -> void:
+	set_meta("region", true)
+	mouse_filter = Control.MOUSE_FILTER_STOP
+	var w := 0.0
+	for it in _items:
+		w = maxf(w, UITheme.font_body.get_string_size(str(it[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x)
+	size = Vector2(w + 18.0, _items.size() * ROW_H + PAD * 2.0)
+	z_index = 100
+
+
+func _process(delta: float) -> void:
+	var m := get_local_mouse_position()
+	var inside := Rect2(Vector2.ZERO, size).grow(6.0).has_point(m)
+	_away = 0.0 if inside else _away + delta
+	if _away > 0.7:
+		close()
+		return
+	var h := int(floor((m.y - PAD) / ROW_H)) if Rect2(Vector2.ZERO, size).has_point(m) else -1
+	if h != _hover:
+		_hover = h
+		queue_redraw()
+
+
+func _input(ev: InputEvent) -> void:
+	if ev is InputEventMouseButton and ev.pressed and not Rect2(Vector2.ZERO, size).has_point(get_local_mouse_position()):
+		close()
+
+
+func _gui_input(ev: InputEvent) -> void:
+	if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+		if _hover >= 0 and _hover < _items.size():
+			var cb: Callable = _items[_hover][1]
+			AudioManager.play("ui_click", 0.05, 0.6)
+			close()
+			if cb.is_valid():
+				cb.call()
+		accept_event()
+
+
+func close() -> void:
+	if is_queued_for_deletion():
+		return
+	queue_free()
+	WindowManager.layout_changed()
+
+
+func _draw() -> void:
+	var ci := get_canvas_item()
+	var r := Rect2(Vector2.ZERO, size)
+	UISkin.fill(ci, Rect2(r.position + Vector2(0, 1.5), r.size), 3, Color(0, 0, 0, 0.45), Color(0, 0, 0, 0.45))
+	UISkin.fill(ci, r, 3, Color("#1B1C23"), Color("#111217"))
+	UISkin.stroke(ci, r, 3, Color(0, 0, 0, 1), 1.0)
+	UISkin.stroke(ci, r.grow(-1.0), 2, Color(UISkin.BRONZE, 0.7), 1.0)
+	for i in _items.size():
+		var y := PAD + i * ROW_H
+		if i == _hover:
+			UISkin.fill(ci, Rect2(2, y, size.x - 4, ROW_H), 2, Color("#B86A2A"), Color("#7A3E14"))
+		elif i > 0:
+			draw_line(Vector2(6, y), Vector2(size.x - 6, y), Color(1, 1, 1, 0.05), 1.0)
+		var col: Color = _items[i][2] if _items[i].size() > 2 else Color("#E9DEC8")
+		if i == _hover:
+			col = Color.WHITE
+		draw_string(UITheme.font_body, Vector2(9, y + ROW_H * 0.5 + 3.2), str(_items[i][0]), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)

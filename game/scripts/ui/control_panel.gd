@@ -30,7 +30,7 @@ func _ready() -> void:
 		_btns[ic[0]] = b
 		x += 14
 	# main menu: two rows of bronze medallions (tooltips + hotkeys name them)
-	var defs := [["hero", "shield", "btn_hero"], ["stats", "chart", "panel_stats"], ["skills", "book", "panel_skills"],
+	var defs := [["hero", "shield", "btn_hero"], ["stats", "chart", "panel_stats"], ["skills", "item:tome_b", "panel_skills"],
 		["world", "map", "btn_world"], ["growth", "star", "btn_growth"], ["tavern", "town", "btn_tavern"]]
 	for i in defs.size():
 		var d: Array = defs[i]
@@ -40,14 +40,27 @@ func _ready() -> void:
 		m.set_meta("panel", pid)
 		add_child(m)
 		_btns[pid] = m
-		var dot := ColorRect.new()
-		dot.color = Color("#FF5A4A")
-		dot.size = Vector2(4, 4)
-		dot.position = m.position + Vector2(17, 1)
+		var dot := UITheme.badge(8.0)
+		dot.position = m.position + Vector2(13, -1)
 		dot.visible = false
-		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(dot)
 		_dots[pid] = dot
+	# quest "!" badge and the mute slash over the top icons
+	var qb := UITheme.badge(7.0)
+	qb.position = _btns["quest"].position + Vector2(5, -2)
+	qb.visible = false
+	add_child(qb)
+	_dots["quest"] = qb
+	var slash := Control.new()
+	slash.position = _btns["note"].position
+	slash.size = Vector2(8, 8)
+	slash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	slash.draw.connect(func():
+		if Settings.get_v("mute", false):
+			slash.draw_line(Vector2(0, 8), Vector2(8, 0), Color(0, 0, 0, 0.8), 2.6, true)
+			slash.draw_line(Vector2(0, 8), Vector2(8, 0), Color("#FF5A4A"), 1.4, true))
+	add_child(slash)
+	_slash = slash
 	# gold
 	var coin: TextureRect = preload("res://scripts/ui/widgets.gd").icon_rect(UITheme.icon("gold"))
 	coin.position = Vector2(5, 57)
@@ -79,6 +92,7 @@ func _relabel() -> void:
 
 
 var _tick := 0
+var _slash: Control
 
 
 func _process(_d: float) -> void:
@@ -110,6 +124,7 @@ func _refresh() -> void:
 	_dots["stats"].visible = sp
 	_dots["skills"].visible = kp
 	_dots["hero"].visible = GameState.bag.size() >= GameState.bag_slots - 4
+	_dots["quest"].visible = Quests.claimable() > 0
 
 
 func _on_power() -> void:
@@ -118,4 +133,5 @@ func _on_power() -> void:
 
 func _on_mute() -> void:
 	Settings.set_v("mute", not Settings.get_v("mute", false))
-	_btns["note"].modulate = Color(0.5, 0.5, 0.5) if Settings.get_v("mute", false) else Color(0.95, 0.9, 0.85)
+	_btns["note"].modulate = Color(0.55, 0.55, 0.6) if Settings.get_v("mute", false) else Color(0.95, 0.9, 0.85)
+	_slash.queue_redraw()

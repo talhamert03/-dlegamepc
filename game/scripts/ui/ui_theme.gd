@@ -233,6 +233,37 @@ func icon_button(icon_name: String, cb: Callable, tip := "") -> TextureButton:
 	return b
 
 
+## Notification badge: a small glowing red gem with a gold rim and a white "!" (pulses softly).
+func badge(size := 9.0, mark := "!") -> Control:
+	var c := Control.new()
+	c.size = Vector2(size, size)
+	c.custom_minimum_size = c.size
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	c.z_index = 5
+	var t0 := randf() * 6.0
+	c.draw.connect(func():
+		var ci := c.get_canvas_item()
+		var ctr := c.size / 2.0
+		var r := size * 0.5
+		var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 1000.0 * 4.0 + t0)
+		c.draw_circle(ctr, r + 1.5 + pulse * 1.2, Color(1.0, 0.3, 0.2, 0.18 + 0.12 * pulse))
+		UISkin.circle(ci, ctr, r + 0.6, Color(0, 0, 0, 0.9), Color(0, 0, 0, 0.9))
+		UISkin.circle(ci, ctr, r, UISkin.BRONZE_HI, UISkin.BRONZE_LO)
+		UISkin.circle(ci, ctr, r - 1.1, Color("#FF6A55"), Color("#9E1414"))
+		c.draw_circle(ctr + Vector2(-r * 0.3, -r * 0.35), r * 0.28, Color(1, 1, 1, 0.45))
+		if mark != "":
+			var fs := int(size * 0.95)
+			var w := UITheme.font_body.get_string_size(mark, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+			c.draw_string_outline(UITheme.font_body, ctr + Vector2(-w / 2.0, fs * 0.36), mark, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 2, Color(0.3, 0, 0, 0.8))
+			c.draw_string(UITheme.font_body, ctr + Vector2(-w / 2.0, fs * 0.36), mark, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color.WHITE))
+	var tm := Timer.new()
+	tm.wait_time = 0.05
+	tm.autostart = true
+	tm.timeout.connect(c.queue_redraw)
+	c.add_child(tm)
+	return c
+
+
 ## Right-click menu in the game's style. It is a separate OS popup window, so it gets the UI scale itself.
 func context_menu() -> PopupMenu:
 	var m := PopupMenu.new()
@@ -264,14 +295,15 @@ func medallion(icon_name: String, cb: Callable, tip := "", rad := 11.0) -> BaseB
 	b.focus_mode = Control.FOCUS_NONE
 	b.tooltip_text = tip
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	var ic := hd(icon_name)
+	var colour := icon_name.begins_with("item:")
+	var ic: Texture2D = load("res://assets/hd/items/%s.png" % icon_name.substr(5)) if colour else hd(icon_name)
 	b.draw.connect(func():
 		var st := "pressed" if b.button_pressed else ("hover" if b.is_hovered() else "normal")
 		var c := Vector2(rad + 1, rad + 1 + (1.0 if st == "pressed" else 0.0))
 		UISkin.medallion(b.get_canvas_item(), c, rad, st, b.has_meta("active") and b.get_meta("active"))
 		if ic:
-			var s2 := rad * 1.05
-			b.draw_texture_rect(ic, Rect2(c - Vector2(s2, s2) / 2.0, Vector2(s2, s2)), false, Color(1.0, 0.94, 0.82)))
+			var s2 := rad * (1.45 if colour else 1.05)
+			b.draw_texture_rect(ic, Rect2(c - Vector2(s2, s2) / 2.0, Vector2(s2, s2)), false, Color.WHITE if colour else Color(1.0, 0.94, 0.82)))
 	b.mouse_entered.connect(b.queue_redraw)
 	b.mouse_exited.connect(b.queue_redraw)
 	b.button_down.connect(b.queue_redraw)
@@ -318,12 +350,13 @@ func close_button(cb: Callable) -> Button:
 		b.add_theme_stylebox_override(st, btn_box("red", st))
 	b.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	var xt := hd("close")
+	b.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	b.draw.connect(func():
 		var o := 1.0 if b.button_pressed else 0.0
-		var c := Vector2(6, 5.6 + o)
-		for d in [[Vector2(-2.6, -2.6), Vector2(2.6, 2.6)], [Vector2(2.6, -2.6), Vector2(-2.6, 2.6)]]:
-			b.draw_line(c + d[0], c + d[1], Color(0, 0, 0, 0.5), 2.6, true)
-			b.draw_line(c + d[0], c + d[1], Color("#FFF1E6"), 1.4, true))
+		if xt:
+			b.draw_texture_rect(xt, Rect2(Vector2(2.5, 2.0 + o) + Vector2(0.6, 0.8), Vector2(7, 7)), false, Color(0, 0, 0, 0.55))
+			b.draw_texture_rect(xt, Rect2(Vector2(2.5, 2.0 + o), Vector2(7, 7)), false, Color("#FFF4EA")))
 	b.pressed.connect(cb)
 	return b
 

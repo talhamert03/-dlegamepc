@@ -51,6 +51,15 @@ static func progress(q: Dictionary) -> float:
 	return float(GameState.totals.get(q["stat"], 0)) - float(q["start"])
 
 
+## Number of finished daily quests waiting to be claimed (drives the "!" badge).
+static func claimable() -> int:
+	var n := 0
+	for q in GameState.flags.get("daily", {}).get("list", []):
+		if not q.get("claimed", false) and progress(q) >= float(q["target"]):
+			n += 1
+	return n
+
+
 static func claim(i: int) -> bool:
 	var list: Array = GameState.flags.get("daily", {}).get("list", [])
 	if i >= list.size():

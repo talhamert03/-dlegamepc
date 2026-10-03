@@ -14,9 +14,24 @@ var placeholder: Texture2D = null
 var selected := false
 var dim := false
 var _hover := false
+var _flash := 0.0
+
+
+## Golden pulse when this slot's item just changed (equip / upgrade feedback).
+func flash() -> void:
+	_flash = 1.0
+	set_process(true)
+
+
+func _process(delta: float) -> void:
+	_flash = maxf(0.0, _flash - delta * 1.4)
+	queue_redraw()
+	if _flash <= 0.0:
+		set_process(false)
 
 
 func _init(sz := 22.0) -> void:
+	set_process(false)
 	custom_minimum_size = Vector2(sz, sz)
 	size = Vector2(sz, sz)
 	# HD frames are minified (mipmaps), pixel item icons are magnified (stay crisp)
@@ -62,6 +77,10 @@ func _draw() -> void:
 		draw_texture_rect(UITheme.icon("lock"), Rect2(size.x - 7, size.y - 7, 6, 6), false, Color(1, 1, 1, 0.9))
 	if selected:
 		UISkin.stroke(ci, r.grow(-0.5), 2, Color("#FFE45C"), 1.6)
+	if _flash > 0.0:
+		var e := _flash
+		draw_rect(r, Color(1.0, 0.9, 0.55, 0.45 * e * e))
+		UISkin.stroke(ci, r.grow(1.0 + (1.0 - e) * 3.0), 3, Color(1.0, 0.85, 0.35, e), 1.5)
 	if compare_hero != "" and source != "equip" and GameState.heroes.has(compare_hero):
 		var h: HeroState = GameState.heroes[compare_hero]
 		if ItemUtil.can_equip(h, item):

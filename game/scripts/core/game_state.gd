@@ -1,7 +1,7 @@
 extends Node
 ## Owner of all persistent game data (heroes, party, items, progress) + save/load.
 
-const SAVE_VERSION := 1
+const SAVE_VERSION := 2      # 2 = taskbar-hero rework: older saves are archived and a fresh game starts
 const SAVE_DIR := "user://saves/"
 const PARTY_SIZE := 5
 
@@ -395,6 +395,9 @@ func receive_item(item: Dictionary) -> String:
 	return "kept"
 
 
+var last_equip_gain := 0       # % power gain of the latest auto-equip (for the notification)
+
+
 func try_auto_equip(item: Dictionary) -> bool:
 	var best_h: HeroState = null
 	var best_gain := 0.0
@@ -412,6 +415,8 @@ func try_auto_equip(item: Dictionary) -> bool:
 	if best_h == null:
 		return false
 	var old: Dictionary = best_h.equipment.get(best_slot, {})
+	var base := ItemUtil.power_score(old, best_h.cls())
+	last_equip_gain = int(round(best_gain / maxf(1.0, base) * 100.0)) if base > 0.0 else 0
 	best_h.equipment[best_slot] = item
 	if not old.is_empty():
 		var act: String = Settings.loot_action(old.get("rarity", "common"))
@@ -637,7 +642,23 @@ func save_game(slot := 0) -> bool:
 
 
 func has_save(slot := 0) -> bool:
+	_archive_legacy(slot)
 	return FileAccess.file_exists(save_path(slot)) or FileAccess.file_exists(save_path(slot) + ".bak1")
+
+
+## Saves from before the rework (version 1) are moved to legacy_v1/ so the game starts fresh with one hero.
+func _archive_legacy(slot: int) -> void:
+	var path := save_path(slot)
+	if not FileAccess.file_exists(path):
+		return
+	var w: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	if not (w is Dictionary) or int(w.get("version", 1)) >= SAVE_VERSION:
+		return
+	var dir := SAVE_DIR + "legacy_v1/"
+	DirAccess.make_dir_recursive_absolute(dir)
+	for suffix in ["", ".bak1", ".bak2", ".bak3"]:
+		if FileAccess.file_exists(path + suffix):
+			DirAccess.rename_absolute(path + suffix, dir + path.get_file() + suffix)
 
 
 func load_game(slot := 0) -> bool:

@@ -154,6 +154,15 @@ static func item_icon(item: Dictionary) -> Texture2D:
 	var bt: String = item.get("btype", "")
 	var tier := int(item.get("tier", 0))
 	var w: String = item.get("weight", "")
+	# HD painted icon: plain look for tiers 0-2, ornate enchanted look from tier 3 on
+	var hd_name := ("%s_%s" % [bt, w]) if w != "" else bt
+	var hp := "res://assets/hd/items/%s_%s.png" % [hd_name, "b" if tier >= 3 else "a"]
+	if _cache.has(hp):
+		return _cache[hp]
+	if ResourceLoader.exists(hp):
+		var ht := _tag_hd(load(hp), Vector2(16, 16))
+		_cache[hp] = ht
+		return ht
 	var cands := []
 	if w != "":
 		cands.append("res://assets/sprites/items/%s_%s_t%d.png" % [bt, w, tier])

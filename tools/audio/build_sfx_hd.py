@@ -174,6 +174,14 @@ def main():
     d = 0.5
     x = mix(d, (0, thump(0.35, 180, 50, 0.1) * 0.8), (0, lp(noise(0.45), 1800) * expdec(0.45, 0.12) * 0.6))
     save("death", room(x, 0.2), 0.6)
+    # equip: leather rustle + buckle clink; unequip: softer rustle
+    d = 0.4
+    x = mix(d, (0, band(noise(0.18), 800, 4000) * expdec(0.18, 0.05) * 0.6), (0.06, metal(0.3, 2600, 0.05, 4) * 0.35),
+            (0.06, click(0.01, 2000, 9000) * 0.6), (0.0, thump(0.12, 220, 90, 0.03) * 0.4))
+    save("equip", room(x, 0.12), 0.65)
+    d = 0.3
+    x = mix(d, (0, band(noise(0.2), 600, 3000) * expdec(0.2, 0.06) * 0.6), (0.02, thump(0.1, 180, 80, 0.03) * 0.3))
+    save("unequip", room(x, 0.1), 0.5)
     print("ok")
 
 

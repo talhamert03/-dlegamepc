@@ -126,11 +126,8 @@ static func hero_selector(selected: String, cb: Callable, include_roster := fals
 			b.add_child(fr)
 		var h2: HeroState = GameState.heroes.get(hid)
 		if h2 and (h2.stat_points > 0 or h2.skill_points > 0):
-			var dot := ColorRect.new()
-			dot.color = Color("#FF5A4A")
-			dot.size = Vector2(3, 3)
-			dot.position = Vector2(16, 1)
-			dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			var dot := UITheme.badge(7.0)
+			dot.position = Vector2(14, -2)
 			b.add_child(dot)
 		var id2: String = hid
 		b.pressed.connect(func(): cb.call(id2))

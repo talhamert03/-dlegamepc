@@ -127,7 +127,7 @@
    "normal": 1.0,
    "elite": 3.5,
    "miniboss": 10,
-   "boss": 25,
+   "boss": 21,
    "actboss": 32
   },
   "type_atk": {
@@ -165,15 +165,15 @@
  "stage": {
   "stages_per_zone": 10,
   "waves_per_stage": 7,
-  "boss_time": 75,
+  "boss_time": 90,
   "elite_chance": 0.2,
   "wave_min": 3,
   "wave_max": 5
  },
  "loot": {
   "drop_chance": {
-   "normal": 0.08,
-   "elite": 0.6,
+   "normal": 0.065,
+   "elite": 0.45,
    "miniboss": 1.0,
    "boss": 1.0,
    "actboss": 1.0
@@ -186,10 +186,10 @@
    "actboss": 5
   },
   "rarity_weights": {
-   "common": 70,
-   "magic": 22,
-   "rare": 6.5,
-   "epic": 1.2,
+   "common": 62,
+   "magic": 27,
+   "rare": 8.5,
+   "epic": 1.8,
    "legendary": 0.25,
    "set": 0.05,
    "mythic": 0.005

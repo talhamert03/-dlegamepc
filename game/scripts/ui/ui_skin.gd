@@ -245,4 +245,4 @@ static func rarity_fill(r: String) -> Color:
 			return Color("#2F9A4A")
 		"mythic":
 			return Color("#C93A4F")
-	return Color("#5A5E69")
+	return Color("#8C919C")

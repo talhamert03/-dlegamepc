@@ -1136,7 +1136,9 @@ func _on_enemy_killed(e: Combatant) -> void:
 		if not quiet:
 			EventBus.item_dropped.emit(it, Vector2(e.x, GROUND_Y))
 		if res == "equipped" and not quiet:
-			EventBus.notify.emit(DataDB.t("auto_equipped", {"name": ItemUtil.display_name(it)}), ItemUtil.rarity_color(it["rarity"]))
+			var gain := GameState.last_equip_gain
+			EventBus.notify.emit(DataDB.t("auto_equipped", {"name": ItemUtil.display_name(it)}) + ("  ▲%d%%" % gain if gain > 0 else ""),
+				ItemUtil.rarity_color(it["rarity"]))
 	for m in drops["materials"]:
 		GameState.add_material(m, int(drops["materials"][m]))
 	if mode == "tower":

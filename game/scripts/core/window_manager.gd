@@ -21,7 +21,7 @@ const PANELS := {
 	"world": {"script": "res://scripts/ui/panels/world_panel.gd", "size": Vector2i(240, 334), "title": "panel_world"},
 	"growth": {"script": "res://scripts/ui/panels/growth_panel.gd", "size": Vector2i(248, 260), "title": "panel_growth"},
 	"party": {"script": "res://scripts/ui/panels/party_panel.gd", "size": Vector2i(220, 200), "title": "panel_party"},
-	"tavern": {"script": "res://scripts/ui/panels/tavern_panel.gd", "size": Vector2i(240, 168), "title": "panel_tavern"},
+	"tavern": {"script": "res://scripts/ui/panels/tavern_panel.gd", "size": Vector2i(300, 236), "title": "panel_tavern"},
 	"settings": {"script": "res://scripts/ui/panels/settings_panel.gd", "size": Vector2i(236, 250), "title": "panel_settings"},
 	"away": {"script": "res://scripts/ui/panels/away_panel.gd", "size": Vector2i(210, 180), "title": "panel_away"},
 	"dps": {"script": "res://scripts/ui/panels/dps_panel.gd", "size": Vector2i(180, 160), "title": "panel_dps"},
@@ -369,6 +369,19 @@ func snap_position(p: Control, pos: Vector2) -> Vector2:
 		if v_overlap and absf(r.position.y - o.position.y) < snap:
 			pos.y = o.position.y
 	return clamp_to_area(pos, sz)
+
+
+var _ctx_menu: Control = null
+
+
+func show_context_menu(m: Control, at: Vector2) -> void:
+	if _ctx_menu and is_instance_valid(_ctx_menu):
+		_ctx_menu.queue_free()
+	hide_tooltip()
+	_ctx_menu = m
+	top_layer.add_child(m)
+	m.position = clamp_to_area(at + Vector2(2, 2), m.size)
+	layout_changed()
 
 
 func reset_layout() -> void:
