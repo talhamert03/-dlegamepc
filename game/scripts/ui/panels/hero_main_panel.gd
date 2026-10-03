@@ -336,8 +336,8 @@ func _build_party_row(sel: String) -> void:
 func _refresh_bag(hid: String) -> void:
 	if _bag_grid == null:
 		return
-	var items: Array = GameState.bag
-	var need: int = max(GameState.bag_slots, COLS * 6)
+	var items: Array = GameState.bag_layout()
+	var need: int = max(items.size(), COLS * 6)
 	while _bag_slots.size() < need:
 		var sl := ItemSlot.new(SLOT)
 		sl.double_click_only = true
@@ -351,8 +351,10 @@ func _refresh_bag(hid: String) -> void:
 		var sl: ItemSlot = _bag_slots[i]
 		sl.visible = i < need
 		sl.compare_hero = hid
-		sl.set_item(items[i] if i < items.size() else {})
-		sl.key = items[i]["uid"] if i < items.size() else null
+		var it: Variant = items[i] if i < items.size() else null
+		sl.set_item(it if it != null else {})
+		sl.key = it["uid"] if it != null else null
+		sl.set_meta("cell", i)
 		sl.dim = i >= GameState.bag_slots
 		sl.selected = WindowManager.is_open("blacksmith") and WindowManager.panels["blacksmith"].is_selected(sl.key)
 
@@ -429,10 +431,15 @@ func _on_drop_equip(slot: ItemSlot, data: Dictionary) -> void:
 			EventBus.notify.emit(err, UITheme.C_RED)
 
 
-func _on_drop_bag(_slot: ItemSlot, data: Dictionary) -> void:
+func _on_drop_bag(slot: ItemSlot, data: Dictionary) -> void:
+	var cell := int(slot.get_meta("cell", -1))
 	match data.get("source", ""):
+		"bag":
+			GameState.move_in_bag(str(data["item"]["uid"]), cell)
 		"equip":
-			GameState.unequip(W.current_hero(), str(data["key"]))
+			var uid := str(data["item"].get("uid", ""))
+			if GameState.unequip(W.current_hero(), str(data["key"])) and slot.item.is_empty():
+				GameState.move_in_bag(uid, cell)
 		"stash":
 			GameState.move_to_bag(int(data["key"][0]), str(data["item"]["uid"]))
 

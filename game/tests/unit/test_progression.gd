@@ -112,13 +112,10 @@ func test_shop_purchases() -> void:
 	GameState.new_game()
 	var was_loaded: bool = GameState.loaded
 	GameState.loaded = false   # keep the test from writing the player's save
-	var chest := Shop.product("chest_iron")
-	runner.check(Shop.block_reason(chest) != "", "gold chest needs gold")
-	GameState.add_gold(Shop.gold_price(chest))
 	var box := {}
-	Shop.buy("chest_iron", func(r): box["r"] = r)
+	Shop.buy("chest_gold_4", func(r): box["r"] = r)
 	var got: Dictionary = box["r"]
-	runner.check(got.get("chest", "") == "iron" and Chests.count() == 1 and GameState.gold == 0, "gold chest bought")
+	runner.check(got.get("chest", "") == "gold" and Chests.count() == 4, "gold chest pack bought")
 	var before := GameState.heroes.size()
 	Shop.buy("hero_random", func(r): box["r"] = r)
 	got = box["r"]
@@ -126,6 +123,26 @@ func test_shop_purchases() -> void:
 	runner.check(hid != "" and GameState.heroes.has(hid) and GameState.heroes.size() == before + 1, "random hero granted")
 	var order: String = GameState.purchases.keys()[GameState.purchases.size() - 1]
 	runner.check(Shop.grant(Shop.product("hero_random"), order).is_empty(), "an order is granted only once")
+	before = GameState.heroes.size()
 	Shop.buy("starter", func(r): box["r"] = r)
+	runner.check(GameState.heroes.size() == before + 2 and Chests.count() == 9, "starter pack: 2 heroes, 5 chests")
 	runner.check(Shop.block_reason(Shop.product("starter")) != "", "starter pack is one time")
+	runner.check(float(Shop.offline_bonus()["eff"]) == 0.0, "no offline boost before buying")
+	Shop.buy("offline_boost", func(r): box["r"] = r)
+	runner.check(float(Shop.offline_bonus()["eff"]) > 0.0, "offline boost active")
 	GameState.loaded = was_loaded
+
+
+func test_bag_grid_move() -> void:
+	GameState.new_game()
+	for i in 3:
+		GameState.receive_item(LootSystem.generate(GameState.rng, 5, "magic", "knight"))
+	var uid := str(GameState.bag[0]["uid"])
+	GameState.move_in_bag(uid, 10)
+	var grid := GameState.bag_layout()
+	runner.check(grid[10] != null and str(grid[10]["uid"]) == uid and grid[0] == null, "item moved to an empty cell")
+	var other := str(GameState.bag[1]["uid"])
+	var at := int(GameState.bag[1]["bpos"])
+	GameState.move_in_bag(other, 10)
+	grid = GameState.bag_layout()
+	runner.check(str(grid[10]["uid"]) == other and str(grid[at]["uid"]) == uid, "items swap cells")

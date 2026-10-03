@@ -87,8 +87,13 @@ static func block_reason(p: Dictionary, hero_id := "") -> String:
 			if hero_id == "" or GameState.heroes.has(hero_id):
 				return DataDB.t("shop_all_heroes")
 		"bundle":
-			if Chests.count() + 3 > Chests.MAX_HELD:
+			var n := 0
+			for k in p.get("chests", {}):
+				n += int(p["chests"][k])
+			if Chests.count() + n > Chests.MAX_HELD:
 				return DataDB.t("shop_chests_full")
+			if unowned().size() < int(p.get("heroes", 0)):
+				return DataDB.t("shop_all_heroes")
 	if p.get("once", false) and times_bought(str(p["id"])) > 0:
 		return DataDB.t("shop_bought")
 	if p.has("max_buys") and times_bought(str(p["id"])) >= int(p["max_buys"]):
@@ -138,14 +143,25 @@ static func grant(p: Dictionary, order_id: String, hero_id := "") -> Dictionary:
 			out["hero"] = hero_id
 			_give_hero(hero_id)
 		"bundle":
-			var g2 := gold_amount(p)
+			var g2 := int(p["gold"]) if p.has("gold") else gold_amount(p)
 			GameState.add_gold(g2)
 			out["gold"] = g2
+			var got: Array = []
+			for i in int(p.get("heroes", 0)):
+				var h := _roll_hero(p.get("weights", {"R": 70, "SR": 25, "SSR": 5}))
+				_give_hero(h)
+				if h != "":
+					got.append(h)
+			out["heroes"] = got
+			if got.size() > 0:
+				out["hero"] = got[0]
 			for k in p.get("chests", {}):
 				for i in int(p["chests"][k]):
 					Chests.add(str(k), lv)
 			for m in p.get("mats", {}):
 				GameState.add_material(str(m), int(p["mats"][m]))
+		"offline":
+			pass   # permanent: read by offline_bonus() from the purchase record
 		"bag":
 			GameState.bag_slots += int(p.get("slots", 20))
 			EventBus.inventory_changed.emit()
@@ -175,3 +191,11 @@ static func _give_hero(hid: String) -> void:
 		return
 	GameState.unlock_hero(hid)
 	GameState.add_to_party(hid)
+
+
+## Permanent offline bonus from the store ({"hours", "eff"} — eff as a fraction).
+static func offline_bonus() -> Dictionary:
+	var p := product("offline_boost")
+	if p.is_empty() or times_bought("offline_boost") == 0:
+		return {"hours": 0.0, "eff": 0.0}
+	return {"hours": float(p.get("hours", 0)), "eff": float(p.get("eff", 0.0))}

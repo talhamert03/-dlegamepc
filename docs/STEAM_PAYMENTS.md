@@ -38,12 +38,19 @@ Steam mikro işlemleri bir sunucu gerektirir, çünkü yayıncı Web API anahtar
 `steam_item` alanı, InitTxn'e giden `itemid` değeridir.
 
 ## Fiyatlar (TL)
+Mağazada her şey gerçek parayla alınır. Savaşta sandık düşmesi eskisi gibi devam eder.
 
-| Ürün | Fiyat |
-|---|---|
-| Rastgele kahraman (R %70 / SR %25 / SSR %5) | 50 ₺ |
-| Seçilen SR kahraman | 79,99 ₺ |
-| Seçilen SSR kahraman | 129,99 ₺ |
-| Altın paketleri | 19,99 / 49,99 / 109,99 ₺ |
-
-Altın paketlerinin verdiği miktar parti seviyesiyle ölçeklenir.
+| Ürün | İçerik | Fiyat |
+|---|---|---|
+| Demir Sandık Yığını | 5 Demir Sandık | 10 ₺ |
+| Altın Sandık Dörtlüsü | 4 Altın Sandık | 20 ₺ |
+| Kristal Üçlüsü | 3 Kristal Sandık | 34,99 ₺ |
+| Kraliyet Hazinesi | 5 Kraliyet Sandığı | 89,99 ₺ |
+| Altın paketleri | Parti seviyesine göre ölçeklenir | 19,99 / 49,99 / 109,99 ₺ |
+| Rastgele Kahraman | R %70 · SR %25 · SSR %5 | 25 ₺ |
+| Seçilen SR kahraman | 1 SR kahraman | 50 ₺ |
+| Seçilen SSR kahraman | 1 SSR kahraman | 80 ₺ |
+| Başlangıç Paketi (tek sefer) | 2 rastgele kahraman, 5 Kristal sandık, 75.000 altın | 100 ₺ |
+| Zaman Kum Saati (tek sefer) | Kalıcı +%15 offline verim, +4 saat | 50 ₺ |
+| Büyük Çanta | +20 yer (en fazla 3 kez) | 24,99 ₺ |
+| Taverna Mühürleri | 5 mühür | 39,99 ₺ |

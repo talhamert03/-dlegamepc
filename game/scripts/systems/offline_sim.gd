@@ -10,11 +10,12 @@ static func apply() -> Dictionary:
 	if last <= 0 or now <= last:
 		return report
 	var acc: Dictionary = GameState.account_mods()
-	var max_h: float = float(DataDB.bal("offline.max_hours", 12)) + float(acc.get("offline_hours", 0.0))
+	var boost := Shop.offline_bonus()
+	var max_h: float = float(DataDB.bal("offline.max_hours", 12)) + float(acc.get("offline_hours", 0.0)) + float(boost["hours"])
 	var secs: float = min(float(now - last), max_h * 3600.0)
 	if secs < 60:
 		return report
-	var eff: float = min(0.45, float(DataDB.bal("offline.efficiency", 0.2)) + float(acc.get("offline_eff", 0.0)) / 100.0)
+	var eff: float = min(0.45 + float(boost["eff"]), float(DataDB.bal("offline.efficiency", 0.2)) + float(acc.get("offline_eff", 0.0)) / 100.0 + float(boost["eff"]))
 	for h in GameState.party_heroes():
 		for slot in h.equipment:
 			var it: Dictionary = h.equipment[slot]

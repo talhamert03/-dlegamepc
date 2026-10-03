@@ -29,6 +29,19 @@ func build(c: Control) -> void:
 			EventBus.notify.emit(DataDB.t("tower_locked"), UITheme.C_RED), Vector2(w * 0.5 - 1, 14))
 	tb.tooltip_text = DataDB.t("tower_best", {"n": int(GameState.progress.get("tower_best", 0))})
 	top.add_child(tb)
+	if not BattleSim.tower_unlocked():
+		# locked: grey, with the requirement in the lower right corner
+		tb.disabled = true
+		tb.text = ""
+		tb.tooltip_text = DataDB.t("tower_locked")
+		tb.draw.connect(func():
+			var f := UITheme.font_body
+			var lock := UITheme.icon("lock")
+			tb.draw_texture_rect(lock, Rect2(4, 3, 7, 7), false, Color(0.75, 0.75, 0.8))
+			tb.draw_string(f, Vector2(13, 9), DataDB.t("tower_name"), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0.62, 0.62, 0.66))
+			var req := DataDB.t("tower_req")
+			var rw := f.get_string_size(req, HORIZONTAL_ALIGNMENT_LEFT, -1, 5).x
+			tb.draw_string(f, Vector2(tb.size.x - rw - 3, tb.size.y - 1.5), req, HORIZONTAL_ALIGNMENT_LEFT, -1, 5, Color("#FF8A7A")))
 	_tabs = W.hbox(2)
 	_tabs.position = Vector2(0, 18)
 	c.add_child(_tabs)

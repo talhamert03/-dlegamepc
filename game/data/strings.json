@@ -1084,8 +1084,8 @@
   "en": "Tower: fell on floor {n}."
  },
  "tower_locked": {
-  "tr": "Kule Lv 50'de açılır.",
-  "en": "The Tower opens at Lv 50."
+  "tr": "Sonsuz Kule: 50 seviye karakter gerekli.",
+  "en": "Endless Tower: requires a level 50 hero."
  },
  "tower_best": {
   "tr": "En iyi kat: {n}",
@@ -1652,8 +1652,8 @@
   "en": "SSR {ssr}% · SR {sr}%"
  },
  "shop_starter_desc": {
-  "tr": "3 sandık · 3 mühür · {g} altın",
-  "en": "3 chests · 3 seals · {g} gold"
+  "tr": "2 kahraman · 5 sandık · {g}",
+  "en": "2 heroes · 5 chests · {g}"
  },
  "shop_bag_desc": {
   "tr": "+{n} çanta yeri ({left} kaldı)",
@@ -1692,8 +1692,8 @@
   "en": "(Test mode: no payment is taken)"
  },
  "shop_test_mode": {
-  "tr": "Test modu: Steam ödemesi henüz bağlı değil, ürünler direkt verilir.",
-  "en": "Test mode: Steam payments not connected yet, products are granted directly."
+  "tr": "Test modu: ödeme alınmaz, ürün direkt verilir.",
+  "en": "Test mode: no payment, products granted directly."
  },
  "shop_hint": {
   "tr": "Ödemeler Steam üzerinden güvenle alınır.",
@@ -1722,5 +1722,41 @@
  "btn_ok": {
   "tr": "Tamam",
   "en": "OK"
+ },
+ "tower_req": {
+  "tr": "50 Seviye Karakter Gerekli",
+  "en": "Requires a Level 50 Hero"
+ },
+ "shop_chest_iron_5": {
+  "tr": "Demir Sandık Yığını",
+  "en": "Iron Chest Stack"
+ },
+ "shop_chest_gold_4": {
+  "tr": "Altın Sandık Dörtlüsü",
+  "en": "Gold Chest Quartet"
+ },
+ "shop_offline_boost": {
+  "tr": "Zaman Kum Saati",
+  "en": "Hourglass of Ages"
+ },
+ "shop_offline_desc": {
+  "tr": "Kalıcı: +%{e} verim, +{h} saat",
+  "en": "Permanent: +{e}%, +{h} hours"
+ },
+ "shop_sign": {
+  "tr": "Zümrüt Kervan",
+  "en": "The Emerald Caravan"
+ },
+ "shop_motto": {
+  "tr": "Uzak diyarlardan nadir hazineler",
+  "en": "Rare treasures from distant lands"
+ },
+ "shop_starter_tip": {
+  "tr": "2 rastgele kahraman, 5 büyülü (Kristal) sandık ve 75.000 altın. Hesap başına bir kez alınabilir.",
+  "en": "2 random heroes, 5 magic (Crystal) chests and 75,000 gold. Once per account."
+ },
+ "shop_offline_boost_tip": {
+  "tr": "Kalıcı olarak offline kazanç verimini %15 artırır ve offline süre sınırını 4 saat uzatır.",
+  "en": "Permanently raises offline efficiency by 15% and the offline time cap by 4 hours."
  }
 }

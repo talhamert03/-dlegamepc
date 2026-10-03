@@ -393,7 +393,8 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			if slots.size() > 8:
 				var sc2: float = WindowManager.ui_scale
 				var q0: Vector2 = slots[0].get_global_transform_with_canvas() * (slots[0].size * 0.3)
-				var q1: Vector2 = slots[8].get_global_transform_with_canvas() * (slots[8].size * 0.5)
+				var tgt: Control = slots[mini(45, slots.size() - 1)] if cmd.has("--bagdrop") else slots[8]
+				var q1: Vector2 = tgt.get_global_transform_with_canvas() * (tgt.size * 0.5)
 				var pe := InputEventMouseButton.new()
 				pe.button_index = MOUSE_BUTTON_LEFT
 				pe.pressed = true
@@ -410,6 +411,14 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 					mv2.button_mask = MOUSE_BUTTON_MASK_LEFT
 					Input.warp_mouse(q)
 					Input.parse_input_event(mv2)
+				if cmd.has("--bagdrop"):
+					await get_tree().process_frame
+					var re := InputEventMouseButton.new()
+					re.button_index = MOUSE_BUTTON_LEFT
+					re.pressed = false
+					re.position = q1 * sc2
+					re.global_position = q1 * sc2
+					Input.parse_input_event(re)
 				await get_tree().create_timer(0.3).timeout
 		if a == "--selldlg" and WindowManager.is_open("hero"):
 			WindowManager.panels["hero"]._sell_dialog()

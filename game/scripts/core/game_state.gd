@@ -554,7 +554,46 @@ func move_to_bag(tab: int, uid: String) -> bool:
 	return false
 
 
+## The bag as a grid: every cell holds an item or null. Items keep the cell they were put in ("bpos");
+## new or displaced items take the first free cell.
+func bag_layout() -> Array:
+	var n: int = maxi(bag_slots, bag.size())
+	var grid: Array = []
+	grid.resize(n)
+	var rest: Array = []
+	for it in bag:
+		var p := int(it.get("bpos", -1))
+		if p >= 0 and p < n and grid[p] == null:
+			grid[p] = it
+		else:
+			rest.append(it)
+	var i := 0
+	for it in rest:
+		while grid[i] != null:
+			i += 1
+		grid[i] = it
+		it["bpos"] = i
+	return grid
+
+
+## Drag inside the bag: the item goes to cell `to`; an item already there swaps into its old cell.
+func move_in_bag(uid: String, to: int) -> void:
+	var idx := find_bag_index(uid)
+	var grid := bag_layout()
+	if idx < 0 or to < 0 or to >= grid.size():
+		return
+	var it: Dictionary = bag[idx]
+	var from := int(it.get("bpos", -1))
+	var other: Variant = grid[to]
+	it["bpos"] = to
+	if other != null and other != it:
+		other["bpos"] = from
+	EventBus.inventory_changed.emit()
+
+
 func sort_bag() -> void:
+	for it in bag:
+		it.erase("bpos")
 	bag.sort_custom(func(a, b):
 		var ra := ItemUtil.rarity_rank(a.get("rarity", "common"))
 		var rb := ItemUtil.rarity_rank(b.get("rarity", "common"))
