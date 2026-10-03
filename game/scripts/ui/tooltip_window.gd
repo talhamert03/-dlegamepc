@@ -48,7 +48,7 @@ func show_item(item: Dictionary, compare_hero := "") -> void:
 	var col := ItemUtil.rarity_color(r)
 	_line(ItemUtil.display_name(item), col, UITheme.font_title, 10)
 	var slot_name: String = DataDB.tx(DataDB.items["slot_names"].get(item.get("slot", "") if item.get("slot", "") != "ring" else "ring1", {}))
-	var sub := "%s %s  iLvl %d" % [ItemUtil.rarity_name(r), slot_name, int(item.get("ilvl", 1))]
+	var sub := "%s %s  ·  %s %d" % [ItemUtil.rarity_name(r), slot_name, DataDB.t("item_level_short"), int(item.get("ilvl", 1))]
 	if item.get("cat", "") == "armor":
 		sub += "  " + DataDB.t("weight_" + str(item.get("weight", "medium")))
 	_line(sub, UITheme.C_DIM)

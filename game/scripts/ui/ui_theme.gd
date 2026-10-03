@@ -4,7 +4,7 @@ extends Node
 const UI := "res://assets/ui/"
 const UI_HD := "res://assets/ui_hd/"
 const C_TEXT := Color("#ECE6D8")
-const C_DIM := Color("#9AA1B5")
+const C_DIM := Color("#B9AB92")
 const C_GOLD := Color("#F2C45A")
 const C_GREEN := Color("#6FE08A")
 const C_RED := Color("#FF6A5A")
@@ -161,6 +161,9 @@ func _make_theme() -> Theme:
 func label(text: String, color: Color = C_TEXT, size := 8, font: Font = null) -> Label:
 	if font == font_title and size >= 13:
 		size = 11
+	# readability floor: body text is never drawn below 8 (16 px at the common 2x scale)
+	if font != font_title and font != font_big and size < 8:
+		size = 8
 	var l := Label.new()
 	l.text = text
 	l.add_theme_color_override("font_color", color)
@@ -394,7 +397,7 @@ func slot_button(sz := Vector2(20, 20)) -> TextureButton:
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	b.draw.connect(func():
 		var hov := b.is_hovered()
-		var sb := _flat(Color("#0C0F17"), Color("#C9A45C") if hov else Color("#2F3649"), 3)
+		var sb := _flat(Color("#16100C"), Color("#C9A45C") if hov else Color("#4A3826"), 3)
 		b.draw_style_box(sb, Rect2(Vector2.ZERO, b.size)))
 	b.mouse_entered.connect(b.queue_redraw)
 	b.mouse_exited.connect(b.queue_redraw)
@@ -431,12 +434,12 @@ func nine(name: String, margin: int) -> Control:
 	return UIFrame.new("panel")
 
 
-func bar(w: int, h: int, fill: Color, bg := Color("#0B0E15")) -> ProgressBar:
+func bar(w: int, h: int, fill: Color, bg := Color("#120C08")) -> ProgressBar:
 	var p := ProgressBar.new()
 	p.custom_minimum_size = Vector2(w, h)
 	p.show_percentage = false
 	var r := int(min(h / 2.0, 3.0))
-	var b := _flat(bg, Color("#2C3346"), r)
+	var b := _flat(bg, Color("#4A3524"), r)
 	var f := _flat(fill, fill.lightened(0.35), r, 0)
 	f.border_width_top = 1
 	p.add_theme_stylebox_override("background", b)

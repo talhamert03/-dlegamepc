@@ -137,7 +137,7 @@ static func affix_label(id: String, v: float) -> String:
 	var nm := DataDB.tx(ad.get("name", {})) if not ad.is_empty() else StatNames.label(id)
 	if ad.has("flat") or ["str", "dex", "int", "vit", "luk", "all_stats"].has(id) or StatNames.is_flat(id):
 		return "+%s %s" % [F.fmt_num(v), nm]
-	return "+%s%% %s" % [_pct(v), nm]
+	return "%s %s" % [F.pct(v, true), nm]
 
 
 static func _pct(v: float) -> String:

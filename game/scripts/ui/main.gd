@@ -329,6 +329,10 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 	await get_tree().create_timer(0.5).timeout
 	if cmd.has("--town"):
 		BattleSim.enter_town()
+	if cmd.has("--tooltip"):
+		get_tree().create_timer(maxf(0.5, secs - 1.0)).timeout.connect(func():
+			var it := LootSystem.generate(GameState.rng, 20, "legendary", "knight")
+			WindowManager.show_item_tooltip(it, "kael"))
 	if cmd.has("--toast"):
 		get_tree().create_timer(maxf(0.5, secs - 1.5)).timeout.connect(func():
 			Toast.show_reward(null, DataDB.t("toast_daily"), "1× " + Chests.display_name("iron"), "iron"))

@@ -127,7 +127,23 @@ static func stat_reset_cost(level: int, resets_done: int) -> int:
 	return int(float(b("stat_reset_cost.coef", 100)) * pow(level, float(b("stat_reset_cost.exp", 1.5))))
 
 
+## Percent in the player's language: "%12,5" in Turkish, "12.5%" in English (whole numbers drop the decimal).
+static func pct(v: float, plus := false) -> String:
+	var whole := absf(v - round(v)) < 0.05
+	var num := ("%d" % int(round(v))) if whole else ("%.1f" % v)
+	var sign := "+" if plus and v >= 0.0 else ""
+	if DataDB.lang == "tr":
+		return sign + "%" + num.replace(".", ",").replace("-", "") if v >= 0.0 else "-%" + num.replace(".", ",").replace("-", "")
+	return sign + num + "%"
+
+
 static func fmt_num(v: float) -> String:
+	var out := _fmt_num_raw(v)
+	# Turkish uses a decimal comma: 1,5k / 2,25M
+	return out.replace(".", ",") if DataDB.lang == "tr" else out
+
+
+static func _fmt_num_raw(v: float) -> String:
 	var a: float = abs(v)
 	var sgn := "-" if v < 0 else ""
 	if a >= 1e9:

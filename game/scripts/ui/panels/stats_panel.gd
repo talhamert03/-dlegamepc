@@ -348,8 +348,8 @@ func _build_stats(h: HeroState, s: Dictionary) -> void:
 	_row(StatNames.label("level"), str(h.level))
 	_row(DataDB.t("stat_exp"), "%s / %s" % [F.fmt_num(h.xp), F.fmt_num(F.xp_required(h.level))])
 	_row(StatNames.label("aps"), "%.2f" % float(s["aps"]), UISkin.INK, Callable(), "aps")
-	_row(StatNames.label("crit_chance"), "%.1f%%" % float(s["crit_chance"]), UISkin.INK, Callable(), "crit_chance")
-	_row(StatNames.label("crit_dmg"), "%d%%" % int(s["crit_dmg"]), UISkin.INK, Callable(), "crit_dmg")
+	_row(StatNames.label("crit_chance"), F.pct(float(s["crit_chance"])), UISkin.INK, Callable(), "crit_chance")
+	_row(StatNames.label("crit_dmg"), F.pct(float(s["crit_dmg"])), UISkin.INK, Callable(), "crit_dmg")
 	_section(DataDB.t("tab_combat"))
 	for k in ["spell", "added_dmg", "elem_dmg", "penetrate", "attack_speed", "cast_speed", "skill_dmg", "phys_dmg", "fire_dmg",
 			"cold_dmg", "lightning_dmg", "chaos_dmg", "holy_dmg", "elite_dmg", "boss_dmg"]:
@@ -422,7 +422,7 @@ func _prim_tip(h: HeroState, p: String, main: bool) -> String:
 			eff[k] = float(eff.get(k, 0.0)) + float(row["main"][k])
 	for k in eff:
 		var v := float(eff[k])
-		lines.append(("+%s %s" if StatNames.is_flat(k) else "+%s%% %s") % [("%.2f" % v).rstrip("0").rstrip("."), StatNames.label(k)])
+		lines.append(("+%s %s" % [("%.2f" % v).rstrip("0").rstrip("."), StatNames.label(k)]) if StatNames.is_flat(k) else ("%s %s" % [F.pct(v, true), StatNames.label(k)]))
 	if not main and row.has("main"):
 		lines.append(DataDB.t("prim_main_only"))
 	return "\n".join(lines)
@@ -457,9 +457,7 @@ func _draw_chips() -> void:
 
 func _p(s: Dictionary, k: String) -> String:
 	var v: float = float(s.get(k, 0.0))
-	if abs(v - round(v)) < 0.05:
-		return "%d%%" % int(round(v))
-	return "%.1f%%" % v
+	return F.pct(v)
 
 
 func _draw_plaque() -> void:
@@ -725,9 +723,9 @@ func _fmt_param(sd: Dictionary, name: String, lvl: int) -> String:
 	var v := StatCalc.param(sd, name, max(1, lvl))
 	match str(p[2]):
 		"%":
-			return "%d%%" % int(round(v * 100))
+			return F.pct(v * 100.0)
 		"p":
-			return ("%.1f%%" % v) if abs(v - round(v)) > 0.05 else "%d%%" % int(round(v))
+			return F.pct(v)
 		"s":
 			return "%.1fs" % v
 	return F.fmt_num(round(v * 10) / 10.0)

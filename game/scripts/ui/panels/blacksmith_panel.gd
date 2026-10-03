@@ -198,7 +198,7 @@ func _build_enhance() -> void:
 		_body.add_child(UITheme.label(DataDB.t("smith_max"), UITheme.C_GOLD))
 		return
 	_body.add_child(W.stat_row(DataDB.t("smith_next"), "+%d" % int(info["next"]), UITheme.C_GREEN, UITheme.C_TEXT, int(content.size.x)))
-	_body.add_child(W.stat_row(DataDB.t("smith_chance"), "%d%%" % int(round(float(info["chance"]) * 100)), UITheme.C_TEXT, UITheme.C_TEXT, int(content.size.x)))
+	_body.add_child(W.stat_row(DataDB.t("smith_chance"), F.pct(round(float(info["chance"]) * 100.0)), UITheme.C_TEXT, UITheme.C_TEXT, int(content.size.x)))
 	_body.add_child(W.stat_row(DataDB.t("cost"), F.fmt_num(int(info["cost"])) + " " + DataDB.t("gold"), UITheme.C_GOLD, UITheme.C_TEXT, int(content.size.x)))
 	if info["mat"] != "":
 		_body.add_child(W.stat_row(ItemUtil.material_name(info["mat"]), "%d / %d" % [int(info["mat_n"]), int(GameState.materials.get(info["mat"], 0))],
@@ -305,7 +305,7 @@ func _roll_log(kind: String) -> Label:
 	var parts: Array = []
 	for e in GameState.blacksmith.get("log", []):
 		if str(e.get("k", "")) == kind and parts.size() < 6:
-			parts.append(("✓ " if e.get("ok", false) else "✗ ") + "%d%%" % int(round(float(e.get("c", 0)) * 100)))
+			parts.append(("✓ " if e.get("ok", false) else "✗ ") + F.pct(round(float(e.get("c", 0)) * 100.0)))
 	var l := UITheme.label(DataDB.t("smith_log") + " " + ("  ".join(parts) if parts.size() > 0 else "—"), UITheme.C_DIM, 7, UITheme.font_body)
 	l.clip_text = true
 	l.custom_minimum_size = Vector2(content.size.x - 4, 9)

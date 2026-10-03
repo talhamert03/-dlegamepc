@@ -88,7 +88,7 @@
   "en": "Story"
  },
  "tip_auto": {
-  "tr": "AUTO: Otomatik ilerleme",
+  "tr": "Otomatik ilerleme (aç / kapat)",
   "en": "AUTO: Auto progress"
  },
  "tip_town": {
@@ -192,7 +192,7 @@
   "en": "Locked"
  },
  "mythic_power": {
-  "tr": "Mitik Güç: +%20 hasar, +%10 HP",
+  "tr": "Mitik Güç: +%20 hasar, +%10 can",
   "en": "Mythic Power: +20% damage, +10% HP"
  },
  "req_level": {
@@ -248,23 +248,23 @@
   "en": "Heroes fight on their own. You just make them stronger!"
  },
  "tut_item": {
-  "tr": "Bir item düştü! Daha iyiyse otomatik kuşanılır. Çanta'dan kontrol et.",
+  "tr": "Bir eşya düştü! Çantanı aç (I) ve daha iyiyse çift tıklayarak kuşan.",
   "en": "Loot! Better gear is equipped automatically. Check your Bag."
  },
  "tut_stats": {
-  "tr": "Seviye atladın! Statlar otomatik dağıtılır; Kahraman panelinden değiştirebilirsin.",
+  "tr": "Seviye atladın! Özellik puanlarını Durum penceresinden (C) kendin dağıt.",
   "en": "Level up! Stats auto-distribute; adjust them in the Hero panel."
  },
  "tut_skills": {
-  "tr": "Skill puanı kazandın! Durum panelinden (C) yeni skill aç.",
+  "tr": "Yetenek puanı kazandın! Durum penceresinden (C) yeni bir yetenek aç.",
   "en": "You earned a skill point! Unlock skills in the Status panel (C)."
  },
  "tut_tavern": {
-  "tr": "Taverna açıldı! 5. kahramanını oradan seç.",
+  "tr": "Taverna açıldı! Yeni kahramanları oradan partine katabilirsin.",
   "en": "The Tavern is open! Recruit your 5th hero there."
  },
  "tut_boss": {
-  "tr": "Boss! 60 saniye içinde yenmelisin.",
+  "tr": "Boss geliyor! Onu 90 saniye içinde yenmelisin.",
   "en": "A boss! Defeat it within 60 seconds."
  },
  "tut_world": {
@@ -288,7 +288,7 @@
   "en": "Act {n}"
  },
  "adv_req": {
-  "tr": "Lv {lv} ilerleme",
+  "tr": "Sv. {lv} ilerlemesi",
   "en": "Lv {lv} advancement"
  },
  "advanced": {
@@ -308,11 +308,11 @@
   "en": "Best loot:"
  },
  "away_eff": {
-  "tr": "Offline verim: %{p}",
+  "tr": "Çevrimdışı verim: %{p}",
   "en": "Offline efficiency: {p}%"
  },
  "away_items": {
-  "tr": "Bulunan item",
+  "tr": "Bulunan eşya",
   "en": "Items found"
  },
  "away_kills": {
@@ -328,7 +328,7 @@
   "en": "You were away {h}h {m}m"
  },
  "away_xp": {
-  "tr": "Kahraman XP",
+  "tr": "Kahraman tecrübesi",
   "en": "Hero XP"
  },
  "boss": {
@@ -360,7 +360,7 @@
   "en": "Equip"
  },
  "btn_levelup": {
-  "tr": "Level UP",
+  "tr": "Yükselt",
   "en": "Level UP"
  },
  "btn_refresh": {
@@ -408,7 +408,7 @@
   "en": "Claimed"
  },
  "collection_bonus": {
-  "tr": "{stat} +{v} (sonraki {n})",
+  "tr": "{stat} +{v} (sonraki: {n})",
   "en": "{stat} +{v} (next {n})"
  },
  "cooldown": {
@@ -528,7 +528,7 @@
   "en": "Kills/min"
  },
  "loot_filter_hint": {
-  "tr": "Düşen itemler için otomatik işlem. Efsanevi+ her zaman tutulur.",
+  "tr": "Yeni düşen eşyalar için otomatik işlem. Efsanevi ve üstü her zaman tutulur.",
   "en": "Automatic action for drops. Legendary+ is always kept."
  },
  "low": {
@@ -568,7 +568,7 @@
   "en": "Owned"
  },
  "party_hint": {
-  "tr": "Slot seç, sonra kahramana tıkla. Sağ = en ön.",
+  "tr": "Bir yuva seç, sonra bir kahramana tıkla. En sağdaki yuva en öndedir.",
   "en": "Pick a slot, then a hero. Right = front."
  },
  "pos_free": {
@@ -592,7 +592,7 @@
   "en": "Defeat {n} bosses"
  },
  "quest_items": {
-  "tr": "{n} item bul",
+  "tr": "{n} eşya bul",
   "en": "Find {n} items"
  },
  "quest_combines": {
@@ -628,7 +628,7 @@
   "en": "Salvage"
  },
  "salvaged_n": {
-  "tr": "{n} item parçalandı",
+  "tr": "{n} eşya parçalandı",
   "en": "Salvaged {n} items"
  },
  "saved": {
@@ -680,11 +680,11 @@
   "en": "Always on top"
  },
  "set_fps_idle": {
-  "tr": "Arka plan FPS",
+  "tr": "Arka planda FPS",
   "en": "Idle FPS"
  },
  "set_fps_focus": {
-  "tr": "Odak FPS",
+  "tr": "Odaktayken FPS",
   "en": "Focus FPS"
  },
  "set_dmg_numbers": {
@@ -724,7 +724,7 @@
   "en": "Auto equip"
  },
  "set_auto_stats": {
-  "tr": "Otomatik stat",
+  "tr": "Özellikleri otomatik dağıt",
   "en": "Auto stats"
  },
  "set_barks": {
@@ -748,7 +748,7 @@
   "en": "Ultimate"
  },
  "skill_points_left": {
-  "tr": "Skill puanı: {n}",
+  "tr": "Yetenek puanı: {n}",
   "en": "Skill points left {n}"
  },
  "smith_autofill": {
@@ -764,11 +764,11 @@
   "en": "Combine"
  },
  "smith_combine_fail": {
-  "tr": "Birleştirme başarısız... 3 item geri döndü.",
+  "tr": "Birleştirme başarısız oldu. 6 eşya geri döndü, şansın arttı.",
   "en": "Combine failed... 3 items returned."
  },
  "smith_combine_hint": {
-  "tr": "Aynı nadirlikte 9 itemi seç (çantadan tıkla).",
+  "tr": "Aynı nadirlikte 9 eşyayı seç (çantadan tıkla).",
   "en": "Pick 9 items of the same rarity (click in bag)."
  },
  "smith_combine_ok": {
@@ -780,7 +780,7 @@
   "en": "Craft"
  },
  "smith_craft_hint": {
-  "tr": "Malzeme ve altınla Nadir+ item üret.",
+  "tr": "Malzeme ve altınla Nadir veya daha iyi eşya üret.",
   "en": "Craft a Rare+ item with gold and materials."
  },
  "smith_crafted": {
@@ -800,7 +800,7 @@
   "en": "Enhance"
  },
  "smith_enhance_hint": {
-  "tr": "Kuşanılı bir item veya çantadan item seç.",
+  "tr": "Kuşanılmış bir eşya ya da çantadan bir eşya seç.",
   "en": "Pick an equipped item or one from the bag."
  },
  "smith_fail_down": {
@@ -812,7 +812,7 @@
   "en": "Blacksmith level {lv}!"
  },
  "smith_lv": {
-  "tr": "Demirci Lv.{lv}",
+  "tr": "Demirci Sv. {lv}",
   "en": "Blacksmith Lv.{lv}"
  },
  "smith_max": {
@@ -832,7 +832,7 @@
   "en": "Salvage"
  },
  "smith_salvage_hint": {
-  "tr": "Itemleri malzemeye dönüştür.",
+  "tr": "Eşyaları malzemeye dönüştür.",
   "en": "Turn items into materials."
  },
  "smith_success": {
@@ -840,11 +840,11 @@
   "en": "Success {p}%"
  },
  "smith_need9": {
-  "tr": "9 item gerekli",
+  "tr": "9 eşya gerekli",
   "en": "Need 9 items"
  },
  "smith_locked": {
-  "tr": "Kilitli item var",
+  "tr": "Seçimde kilitli eşya var",
   "en": "Contains a locked item"
  },
  "smith_same_rarity": {
@@ -876,19 +876,19 @@
   "en": "Stash tab full"
  },
  "stat_exp": {
-  "tr": "EXP",
-  "en": "EXP"
+  "tr": "Tecrübe",
+  "en": "Experience"
  },
  "stat_dps": {
   "tr": "Tahmini DPS",
   "en": "Estimated DPS"
  },
  "stat_ehp": {
-  "tr": "Etkin HP",
+  "tr": "Etkin Can",
   "en": "Effective HP"
  },
  "stat_points_left": {
-  "tr": "Stat puanı: {n}",
+  "tr": "Özellik puanı: {n}",
   "en": "Stat points: {n}"
  },
  "summons": {
@@ -940,7 +940,7 @@
   "en": "No offers right now."
  },
  "tavern_locked": {
-  "tr": "Taverna Lv 8'de açılır.",
+  "tr": "Taverna 8. seviyede açılır.",
   "en": "The Tavern opens at Lv 8."
  },
  "tier_base": {
@@ -956,7 +956,7 @@
   "en": "Sort"
  },
  "xp_hour": {
-  "tr": "XP/saat",
+  "tr": "Tecrübe / saat",
   "en": "XP/hour"
  },
  "acc_kills": {
@@ -968,7 +968,7 @@
   "en": "Total gold"
  },
  "acc_items": {
-  "tr": "Bulunan item",
+  "tr": "Bulunan eşya",
   "en": "Items found"
  },
  "acc_legendaries": {
@@ -988,7 +988,7 @@
   "en": "Playtime"
  },
  "acc_offline": {
-  "tr": "Offline süre",
+  "tr": "Çevrimdışı süre",
   "en": "Offline time"
  },
  "acc_heroes": {
@@ -1196,7 +1196,7 @@
   "en": "Costume"
  },
  "set_remember_panels": {
-  "tr": "Panel yerini hatırla",
+  "tr": "Pencere yerlerini hatırla",
   "en": "Remember panel spots"
  },
  "panel_skills": {
@@ -1208,7 +1208,7 @@
   "en": "Formation"
  },
  "tip_open_stats": {
-  "tr": "Statlar",
+  "tr": "Özellikler",
   "en": "Stats"
  },
  "tip_open_skills": {
@@ -1284,7 +1284,7 @@
   "en": "Click: back to the game  ·  Drag: move"
  },
  "set_mini_mode": {
-  "tr": "Küçültünce görev çubuğu modu",
+  "tr": "Görev çubuğu modu",
   "en": "Taskbar mode when minimised"
  },
  "panel_runes": {
@@ -1352,7 +1352,7 @@
   "en": "Rune Tree: commander growth (R)"
  },
  "status_more": {
-  "tr": "Tüm statlar",
+  "tr": "Tüm özellikler",
   "en": "All stats"
  },
  "status_advance": {
@@ -1368,7 +1368,7 @@
   "en": "Runes learned: {n}"
  },
  "prim_hint_str": {
-  "tr": "Saldırı · HP",
+  "tr": "Saldırı · Can",
   "en": "Attack · HP"
  },
  "prim_hint_dex": {
@@ -1376,11 +1376,11 @@
   "en": "Crit · Speed"
  },
  "prim_hint_int": {
-  "tr": "Büyü · Skill",
+  "tr": "Büyü · Yetenek",
   "en": "Spell · Skills"
  },
  "prim_hint_vit": {
-  "tr": "HP · Savunma",
+  "tr": "Can · Savunma",
   "en": "HP · Defense"
  },
  "prim_hint_luk": {
@@ -1468,7 +1468,7 @@
   "en": "Bulk Sale"
  },
  "sell_summary": {
-  "tr": "{n} item  →  {g} altın",
+  "tr": "{n} eşya  →  {g} altın",
   "en": "{n} items  →  {g} gold"
  },
  "tip_loot_filter": {
@@ -1756,7 +1756,7 @@
   "en": "2 random heroes, 5 magic (Crystal) chests and 75,000 gold. Once per account."
  },
  "shop_offline_boost_tip": {
-  "tr": "Kalıcı olarak offline verimini %15 artırır ve süre sınırını 4 saat uzatır. Offline süresi Lonca Salonu'nda oyun içinde de artırılabilir.",
+  "tr": "Çevrimdışı kazanç verimini kalıcı olarak %15 artırır ve süre sınırını 4 saat uzatır. Bu süre Lonca Salonu'nda oyun içinde de artırılabilir.",
   "en": "Permanently +15% offline efficiency and +4 h cap. The offline cap can also be raised in-game in the Guild Hall."
  },
  "smith_enh_pity": {
@@ -1808,7 +1808,7 @@
   "en": "Tip: your {el} resistance is low ({now}%). Aim for {want}%+ with resistance gear, runes or jewelry."
  },
  "hint_level": {
-  "tr": "İpucu: bölge senden yaklaşık {n} seviye yukarıda. Bir önceki bölümde biraz kas, sonra tekrar dene.",
+  "tr": "İpucu: bölge senden yaklaşık {n} seviye yukarıda. Bir önceki bölümde biraz güçlen, sonra tekrar dene.",
   "en": "Tip: the zone is about {n} levels above you. Farm the previous stage a little, then try again."
  },
  "hint_gear": {
@@ -1816,11 +1816,11 @@
   "en": "Tip: enhance your gear at the blacksmith and review skills and runes."
  },
  "stuck_hint": {
-  "tr": "Boss'u {n}. kez geçemedin. {hint}",
+  "tr": "Boss'u {n} kez yenemedin. {hint}",
   "en": "Failed the boss {n} times. {hint}"
  },
  "paragon_up": {
-  "tr": "{name} Paragon {n}! +3 stat puanı",
+  "tr": "{name}: Paragon {n}! +3 özellik puanı",
   "en": "{name} Paragon {n}! +3 stat points"
  },
  "loot_offclass": {
@@ -1832,11 +1832,11 @@
   "en": "Monitor"
  },
  "quit_confirm": {
-  "tr": "Oyundan çıkılsın mı? İlerlemen kaydedildi; kapalıyken de offline kazanırsın.",
+  "tr": "Oyundan çıkılsın mı? İlerlemen kaydedildi; oyun kapalıyken de çevrimdışı kazanmaya devam edersin.",
   "en": "Quit the game? Progress is saved and you keep earning offline."
  },
  "skill_set_tip": {
-  "tr": "Yetenek seti A / B: örn. A = farm, B = boss. Tıklayınca o sete geçer, mevcut seçim saklanır.",
+  "tr": "Yetenek seti A / B (örneğin A: ganimet toplama, B: boss). Tıklayınca o sete geçer; mevcut seçim saklanır.",
   "en": "Skill bar A / B: e.g. A = farming, B = bosses. Click to switch; the current bar is kept."
  },
  "tab_news": {
@@ -1864,11 +1864,11 @@
   "en": "Guild Supporter"
  },
  "shop_supporter_desc": {
-  "tr": "+%10 altın/XP, +20 çanta",
+  "tr": "+%10 altın ve tecrübe, +20 çanta",
   "en": "+10% gold/XP, +20 bag"
  },
  "shop_supporter_tip": {
-  "tr": "Geliştiriciyi destekle: kalıcı +%10 altın, +%10 tecrübe, +2 saat offline süresi ve +20 çanta yeri. Tek seferlik. Güç farkı küçüktür; oyunun tamamı ücretsiz oynanabilir.",
+  "tr": "Geliştiriciyi destekle: kalıcı +%10 altın, +%10 tecrübe, +2 saat çevrimdışı süre ve +20 çanta yeri. Tek seferlik. Güç farkı küçüktür; oyunun tamamı ücretsiz oynanabilir.",
   "en": "Support the developer: permanent +10% gold, +10% XP, +2 h offline cap and +20 bag slots. One time. The edge is small; the whole game is playable for free."
  },
  "shop_bag_gold": {
@@ -1900,7 +1900,7 @@
   "en": "Today's free gift is waiting in the store"
  },
  "party_dps_tip": {
-  "tr": "Partinin anlık DPS'i (son savaşların ortalaması). Kahraman başına DPS kahraman panelinde.",
+  "tr": "Partinin anlık DPS'i (son savaşların ortalaması). Kahraman başına DPS, Kahraman penceresinde.",
   "en": "Your party's live DPS (average of recent fights). Per-hero DPS is in the hero panel."
  },
  "hero_dps_tip": {
@@ -1908,11 +1908,11 @@
   "en": "This hero's live DPS (average of recent fights)."
  },
  "dps_need": {
-  "tr": "Tahmini gereken DPS: {need}   ·   Partin: {have}",
+  "tr": "Gereken DPS (tahmini): {need}   ·   Partin: {have}",
   "en": "Estimated DPS needed: {need}   ·   Your party: {have}"
  },
  "dps_need_short": {
-  "tr": "Gereken DPS ~{n}",
+  "tr": "Gereken DPS: ~{n}",
   "en": "DPS needed ~{n}"
  },
  "bag_expand_tip": {
@@ -1954,5 +1954,9 @@
  "toast_new_hero": {
   "tr": "Yeni kahraman katıldı",
   "en": "New hero joined"
+ },
+ "item_level_short": {
+  "tr": "Eşya Sv.",
+  "en": "iLvl"
  }
 }

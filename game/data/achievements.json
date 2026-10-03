@@ -154,7 +154,7 @@
     "en": "Level 10"
    },
    "desc": {
-    "tr": "Bir kahramanı Lv 10 yap",
+    "tr": "Bir kahramanı 10. seviyeye çıkar",
     "en": "Reach level 10"
    },
    "cond": {
@@ -172,7 +172,7 @@
     "en": "Level 25"
    },
    "desc": {
-    "tr": "Bir kahramanı Lv 25 yap",
+    "tr": "Bir kahramanı 25. seviyeye çıkar",
     "en": "Reach level 25"
    },
    "cond": {
@@ -190,7 +190,7 @@
     "en": "Level 50"
    },
    "desc": {
-    "tr": "Bir kahramanı Lv 50 yap",
+    "tr": "Bir kahramanı 50. seviyeye çıkar",
     "en": "Reach level 50"
    },
    "cond": {
@@ -208,7 +208,7 @@
     "en": "Level 75"
    },
    "desc": {
-    "tr": "Bir kahramanı Lv 75 yap",
+    "tr": "Bir kahramanı 75. seviyeye çıkar",
     "en": "Reach level 75"
    },
    "cond": {
@@ -226,7 +226,7 @@
     "en": "Level 100"
    },
    "desc": {
-    "tr": "Bir kahramanı Lv 100 yap",
+    "tr": "Bir kahramanı 100. seviyeye çıkar",
     "en": "Reach level 100"
    },
    "cond": {
@@ -708,7 +708,7 @@
     "en": "Sleeping Guild"
    },
    "desc": {
-    "tr": "12 saat offline ilerleme",
+    "tr": "12 saat çevrimdışı ilerleme",
     "en": "12 hours of offline progress"
    },
    "cond": {

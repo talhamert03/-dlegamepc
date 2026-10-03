@@ -1,6 +1,27 @@
 {
- "current": "0.2.1",
+ "current": "0.2.2",
  "notes": [
+  {
+   "version": "0.2.2",
+   "title": {
+    "tr": "Orta Çağ Pencereleri",
+    "en": "Medieval Windows"
+   },
+   "items": [
+    {
+     "tr": "Tüm pencereler yeniden tasarlandı: ceviz ahşap çerçeve, eskitilmiş altın kenarlar, yakutlu köşe süslemeleri ve işlenmiş deri yüzey.",
+     "en": "Every window redesigned: walnut frame, aged-gold trim, ruby corner filigree and tooled leather."
+    },
+    {
+     "tr": "Yazılar daha iri ve okunaklı; Türkçe metinler tek terimle yazıldı (eşya, yetenek, özellik, can) ve sayılar Türkçe biçimde (%12,5 · 1,5k).",
+     "en": "Larger, clearer text; consistent Turkish terms and number formats."
+    },
+    {
+     "tr": "Sandık düşme olasılığı yaklaşık yarıya indirildi.",
+     "en": "Chest drop chances roughly halved."
+    }
+   ]
+  },
   {
    "version": "0.2.1",
    "title": {
@@ -82,7 +103,7 @@
      "en": "Loot: gear nobody can wear can be auto-sold; drops favour your party's classes."
     },
     {
-     "tr": "Offline verim %30, süre 10 saat. Monitör seçimi, çıkış onayı.",
+     "tr": "Çevrimdışı verim %30, süre 10 saat. Monitör seçimi, çıkış onayı.",
      "en": "Offline efficiency 30%, 10 hours. Monitor choice, quit confirmation."
     }
    ]

@@ -118,7 +118,7 @@ func _build_info() -> void:
 	for st in bon:
 		var per: float = float(bon[st])
 		var cur: float = per * max(1, lv)
-		_info.add_child(W.stat_row(StatNames.label(st), "+%s%%  (+%s/%s)" % [_fmt(cur), _fmt(per), DataDB.t("lv_short")], Color("#8CFF7A")))
+		_info.add_child(W.stat_row(StatNames.label(st), "%s  (%s/%s)" % [F.pct(cur, true), F.pct(per, true), DataDB.t("lv_short")], Color("#8CFF7A")))
 	var d := UITheme.label(DataDB.tx(pd.get("desc", {})) if lv > 0 else _source_text(pd), UITheme.C_DIM)
 	d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	d.custom_minimum_size = Vector2(190, 0)

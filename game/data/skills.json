@@ -57,7 +57,7 @@
     "en": "Recovery"
    },
    "desc": {
-    "tr": "Tüm müttefiklere max HP'nin {heal} kadar iyileşme.",
+    "tr": "Tüm dostlara en yüksek canlarının {heal} kadarını iyileştirir.",
     "en": "Restores {heal} max HP to all allies."
    },
    "params": {
@@ -113,7 +113,7 @@
     "en": "Challenge"
    },
    "desc": {
-    "tr": "Tehdit +{t}, +{v} HP.",
+    "tr": "Tehdit +{t}, +{v} can.",
     "en": "Threat +{t}, +{v} HP."
    },
    "params": {
@@ -551,7 +551,7 @@
     "en": "Rising Rage"
    },
    "desc": {
-    "tr": "Eksik HP'nin her %10'u için +{v} hasar.",
+    "tr": "Eksik canın her %10'u için +{v} hasar.",
     "en": "+{v} damage per 10% missing HP."
    },
    "params": {
@@ -752,7 +752,7 @@
     "en": "Thick Skull"
    },
    "desc": {
-    "tr": "+{v} HP.",
+    "tr": "+{v} can.",
     "en": "+{v} HP."
    },
    "params": {
@@ -1335,7 +1335,7 @@
     "en": "Forest's Grace"
    },
    "desc": {
-    "tr": "Partiye +{v} HP yenilenme.",
+    "tr": "Partiye +{v} can yenilenmesi.",
     "en": "+{v} HP regen to the party."
    },
    "params": {
@@ -1394,7 +1394,7 @@
     "en": "Shadow Step"
    },
    "desc": {
-    "tr": "En düşük HP'li düşmana {dmg}.",
+    "tr": "En düşük canlı düşmana {dmg}.",
     "en": "Deals {dmg} to the lowest-HP enemy."
    },
    "params": {
@@ -1634,7 +1634,7 @@
     "en": "Execute"
    },
    "desc": {
-    "tr": "Düşük HP'li düşmana +{v} hasar.",
+    "tr": "Düşük canlı düşmana +{v} hasar.",
     "en": "+{v} damage to low-HP enemies."
    },
    "params": {
@@ -2650,7 +2650,7 @@
     "en": "Bone Sovereign"
    },
    "desc": {
-    "tr": "+{v} çağrı hasarı ve HP.",
+    "tr": "+{v} çağrı hasarı ve can.",
     "en": "+{v} summon damage and HP."
    },
    "params": {
@@ -2773,7 +2773,7 @@
     "en": "Healing Light"
    },
    "desc": {
-    "tr": "En düşük HP'li müttefik {h} Büyü Gücü kadar iyileşir.",
+    "tr": "En düşük canlı müttefik {h} Büyü Gücü kadar iyileşir.",
     "en": "Heals the lowest ally for {h} Spell Power."
    },
    "params": {
@@ -3034,7 +3034,7 @@
     "en": "Heaven's Gate"
    },
    "desc": {
-    "tr": "Parti max HP'nin {h} kadar iyileşir.",
+    "tr": "Parti en yüksek canın {h} kadar iyileşir.",
     "en": "The party heals {h} of max HP."
    },
    "params": {
@@ -3341,7 +3341,7 @@
     "en": "Lucky Tune"
    },
    "desc": {
-    "tr": "Partiye +{v} Item Bulma.",
+    "tr": "Partiye +{v} Eşya Bulma.",
     "en": "+{v} Item Find to the party."
    },
    "params": {
@@ -3558,7 +3558,7 @@
     "en": "Serene Melody"
    },
    "desc": {
-    "tr": "Parti max HP'nin {h} kadar iyileşir.",
+    "tr": "Parti en yüksek canın {h} kadar iyileşir.",
     "en": "Heals the party for {h} max HP."
    },
    "params": {
@@ -3756,7 +3756,7 @@
     "en": "Vigor"
    },
    "desc": {
-    "tr": "+{v} HP Yenilenme %/sn",
+    "tr": "+{v} can Yenilenme %/sn",
     "en": "+{v} HP Regen %/s"
    },
    "params": {

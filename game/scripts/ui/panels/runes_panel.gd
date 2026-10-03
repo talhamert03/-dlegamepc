@@ -150,7 +150,9 @@ func _refresh_list() -> void:
 
 func _bonus_text(st: String, v: float) -> String:
 	var num := ("%d" % int(round(v))) if absf(v - round(v)) < 0.05 else ("%.1f" % v)
-	return ("+%s %s" if StatNames.is_flat(st) else "+%s%% %s") % [num, StatNames.label(st)]
+	if StatNames.is_flat(st):
+		return "+%s %s" % [num, StatNames.label(st)]
+	return "%s %s" % [F.pct(v, true), StatNames.label(st)]
 
 
 func _process(delta: float) -> void:

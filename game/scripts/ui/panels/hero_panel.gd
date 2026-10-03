@@ -122,9 +122,9 @@ func _fmt_param(sd: Dictionary, name: String, lvl: int) -> String:
 	var v := StatCalc.param(sd, name, max(1, lvl))
 	match str(p[2]):
 		"%":
-			return "%d%%" % int(round(v * 100))
+			return F.pct(v * 100.0)
 		"p":
-			return ("%.1f%%" % v) if abs(v - round(v)) > 0.05 else "%d%%" % int(round(v))
+			return F.pct(v)
 		"s":
 			return "%.1fs" % v
 	return F.fmt_num(round(v * 10) / 10.0)

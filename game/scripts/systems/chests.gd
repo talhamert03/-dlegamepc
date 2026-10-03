@@ -14,7 +14,7 @@ const DEF := {
 	"royal": {"gold": 480, "items": [3, 4], "min_r": "legendary", "mats": {"soul_shard": [4, 8], "tavern_seal": [2, 3], "guild_badge": [1, 2]}},
 }
 ## chance per kill and the rarity table by enemy type
-const DROP := {"normal": 0.0045, "elite": 0.06, "miniboss": 0.25, "boss": 0.6, "actboss": 1.0}
+const DROP := {"normal": 0.002, "elite": 0.03, "miniboss": 0.15, "boss": 0.4, "actboss": 1.0}
 const WEIGHTS := {
 	"normal": [70.0, 24.0, 5.0, 0.9, 0.1],
 	"elite": [0.0, 62.0, 30.0, 7.0, 1.0],

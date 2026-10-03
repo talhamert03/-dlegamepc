@@ -71,7 +71,7 @@ func refresh() -> void:
 func _row(label: String, color: Color = UITheme.C_TEXT) -> HBoxContainer:
 	var h := W.hbox(2)
 	var l := UITheme.label(label, color)
-	l.custom_minimum_size = Vector2(70, 0)
+	l.custom_minimum_size = Vector2(96, 0)
 	l.clip_text = true
 	h.add_child(l)
 	_body.add_child(h)
