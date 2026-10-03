@@ -41,7 +41,8 @@
    "ay": 127,
    "ch": 131,
    "cw": 159,
-   "h": 123.0
+   "h": 123.0,
+   "hurt_flip": true
   },
   "goblin_archer": {
    "ax": 111,
@@ -55,21 +56,24 @@
    "ay": 154,
    "ch": 158,
    "cw": 184,
-   "h": 135.5
+   "h": 135.5,
+   "hurt_flip": true
   },
   "goblin_scout_chief": {
    "ax": 81,
    "ay": 156,
    "ch": 160,
    "cw": 185,
-   "h": 135.5
+   "h": 135.5,
+   "hurt_flip": true
   },
   "goblin_shaman": {
    "ax": 70,
    "ay": 155,
    "ch": 159,
    "cw": 165,
-   "h": 128.0
+   "h": 128.0,
+   "hurt_flip": true
   },
   "goblin_warrior": {
    "ax": 72,

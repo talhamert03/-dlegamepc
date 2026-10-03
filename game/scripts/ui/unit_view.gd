@@ -143,6 +143,7 @@ func _setup_sheet() -> bool:
 	_k = _h / float(m.get("h", 128.0))
 	mat.set_shader_parameter("texel_scale", 1.0 / _k)
 	body.add_child(spr)
+	_hurt_flip = bool(m.get("hurt_flip", false))
 	if m.get("fly", false):
 		_fly = 8.0
 		_h *= 0.8
@@ -178,6 +179,7 @@ func _setup_hd() -> void:
 
 
 var _hd_flip := false
+var _hurt_flip := false       # sheets whose hurt frames were painted facing the other way
 
 
 func _play(a: String) -> void:
@@ -355,7 +357,8 @@ func _animate_sheet() -> void:
 	sy *= 1.0 - 0.08 * _squash
 	ox -= _kick
 	body.position = Vector2(round(ox * _facing), round(oy))
-	body.scale = Vector2(_k * sx * _facing, _k * sy)
+	var mirror := -1.0 if _hurt_flip and _cur == "hit" else 1.0
+	body.scale = Vector2(_k * sx * _facing * mirror, _k * sy)
 	mat.set_shader_parameter("glow", Color(1.0, 0.85, 0.45, glow) if unit.is_hero_side() else Color(1.0, 0.3, 0.2, glow))
 
 
