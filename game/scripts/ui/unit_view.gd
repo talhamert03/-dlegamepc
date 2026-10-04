@@ -68,6 +68,7 @@ var _last_flash := 0.0
 var _phase := 0.0
 var _base_x := 0.0
 var _fallback_color := Color("#6CC24A")
+var _trail := 1.0                     # health bar: the lost part lingers and drains after a hit
 
 
 func setup(u: Combatant) -> void:
@@ -577,10 +578,20 @@ func _draw() -> void:
 	if unit.is_hero_side() and frac < 0.35:
 		col = Color("#F0B33A")
 	var x0 := -w / 2.0
-	draw_rect(Rect2(x0 - 1, y - 1, w + 2, 4), Color(0.04, 0.03, 0.05, 0.85))
-	draw_rect(Rect2(x0, y, w, 2), Color(0.22, 0.13, 0.14))
+	if _trail < frac:
+		_trail = frac
+	else:
+		_trail = move_toward(_trail, frac, get_process_delta_time() * (0.5 if _trail - frac < 0.3 else 0.9))
+	# framed bar: dark iron case with a bronze edge (gold for heroes), a draining trail and a lit top edge
+	var ci := get_canvas_item()
+	var case := Rect2(x0 - 1.5, y - 1.5, w + 3, 5)
+	UISkin.fill(ci, case, 1.5, Color(0.06, 0.04, 0.03, 0.92), Color(0.02, 0.01, 0.01, 0.92))
+	UISkin.stroke(ci, case, 1.5, Color("#C9A04E", 0.85) if unit.is_hero_side() else Color("#8A5A3A", 0.8), 0.6)
+	draw_rect(Rect2(x0, y, w, 2), Color(0.20, 0.10, 0.10))
+	if _trail > frac:
+		draw_rect(Rect2(x0 + round(w * frac), y, round(w * (_trail - frac)), 2), Color("#FFE2B0"))
 	draw_rect(Rect2(x0, y, round(w * frac), 2), col)
-	draw_rect(Rect2(x0, y, round(w * frac), 0.5), col.lightened(0.45))
+	draw_rect(Rect2(x0, y, round(w * frac), 0.6), col.lightened(0.5))
 	if unit.shield > 0:
 		var sf: float = clamp(unit.shield / max(1.0, unit.max_hp), 0.0, 1.0)
 		draw_rect(Rect2(x0, y - 1, round(w * sf), 1), Color("#8FD8FF"))

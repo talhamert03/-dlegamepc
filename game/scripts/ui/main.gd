@@ -359,6 +359,9 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 	await get_tree().create_timer(0.5).timeout
 	if cmd.has("--town"):
 		BattleSim.enter_town()
+	if cmd.has("--boss"):
+		BattleSim.stage = BattleSim.stages_per_zone()
+		BattleSim.challenge_boss()
 	if cmd.has("--tooltip"):
 		get_tree().create_timer(maxf(0.5, secs - 1.0)).timeout.connect(func():
 			var it := LootSystem.generate(GameState.rng, 20, "legendary", "knight")

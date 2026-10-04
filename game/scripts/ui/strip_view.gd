@@ -107,6 +107,7 @@ func _build_hud() -> void:
 	hud.z_index = 40
 	add_child(hud)
 	var plate := ColorRect.new()
+	plate.visible = false
 	plate.color = Color(0.08, 0.06, 0.09, 0.55)
 	plate.position = Vector2(20, 1)
 	plate.size = Vector2(150, 9)
@@ -126,6 +127,21 @@ func _build_hud() -> void:
 	_wave_dots.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_wave_dots.draw.connect(_draw_wave_dots)
 	hud.add_child(_wave_dots)
+	# the drawn HUD replaces the plain labels above (kept for their text)
+	_zone_label.visible = false
+	_stage_label.visible = false
+	_wave_dots.visible = false
+	_plaque = Control.new()
+	_plaque.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_plaque.size = Vector2(W, 20)
+	_plaque.draw.connect(_draw_plaque)
+	hud.add_child(_plaque)
+	_boss_hud = Control.new()
+	_boss_hud.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_boss_hud.size = Vector2(W, 22)
+	_boss_hud.visible = false
+	_boss_hud.draw.connect(_draw_boss_hud)
+	hud.add_child(_boss_hud)
 	_boss_bar = UITheme.bar(110, 4, Color("#D63A3A"))
 	_boss_bar.position = Vector2(196, 5)
 	_boss_bar.visible = false
@@ -157,6 +173,103 @@ func _build_hud() -> void:
 		sign.position = Vector2(sx, 3)
 		_town_overlay.add_child(sign)
 		sx += sign.size.x + 6.0
+
+
+var _plaque: Control
+var _boss_hud: Control
+var _boss_trail := 1.0
+
+
+## Carved zone plaque in the top left: a small difficulty shield, the zone name, a gold stage tag and the
+## wave pips as little diamonds hanging under it.
+func _draw_plaque() -> void:
+	var ci := _plaque.get_canvas_item()
+	var f := UITheme.font_title
+	var fb := UITheme.font_body
+	var name := _zone_label.text
+	var stage := _stage_label.text
+	var boss := BattleSim.mode != "tower" and BattleSim.is_boss_stage()
+	var nw := f.get_string_size(name, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
+	var sw := fb.get_string_size(stage, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x + 8.0
+	var x0 := 20.0
+	var r := Rect2(x0, 1, nw + sw + 24.0, 11)
+	UISkin.fill(ci, Rect2(r.position + Vector2(0, 1), r.size), 2, Color(0, 0, 0, 0.35), Color(0, 0, 0, 0.35))
+	UISkin.fill(ci, r, 2, Color(0.24, 0.15, 0.09, 0.92), Color(0.11, 0.07, 0.04, 0.92))
+	UISkin.stroke(ci, r, 2, UISkin.OUTLINE, 1.0)
+	UISkin.stroke(ci, r.grow(-1.0), 1.5, Color(UISkin.BRONZE, 0.7), 0.7)
+	# difficulty shield
+	var dc: Color = [Color("#E8C27A"), Color("#C98BFF"), Color("#FF6A4A")][clampi(BattleSim.difficulty, 0, 2)]
+	var s := Vector2(x0 + 6.5, 6.5)
+	var sh := PackedVector2Array([s + Vector2(-3.4, -3.8), s + Vector2(3.4, -3.8), s + Vector2(3.4, 0.4), s + Vector2(0, 4.2), s + Vector2(-3.4, 0.4)])
+	UISkin.poly(ci, sh, dc.lightened(0.2), dc.darkened(0.45))
+	var shc := sh.duplicate()
+	shc.append(sh[0])
+	_plaque.draw_polyline(shc, UISkin.OUTLINE, 0.8, true)
+	var tp := Vector2(x0 + 13, 9.6)
+	_plaque.draw_string_outline(f, tp, name, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, 2, Color(0, 0, 0, 0.8))
+	_plaque.draw_string(f, tp, name, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#FFE7B0"))
+	# stage tag
+	var tag := Rect2(x0 + 16 + nw + 2, 2.5, sw, 8)
+	var tcol := Color("#C0392B") if boss else Color("#D8A04A")
+	UISkin.fill(ci, tag, 2, tcol.lightened(0.15), tcol.darkened(0.35))
+	UISkin.stroke(ci, tag, 2, UISkin.OUTLINE, 0.8)
+	_plaque.draw_string(fb, tag.position + Vector2(4, 6.6), stage, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#FFF4DA") if boss else Color("#2A1606"))
+	# wave pips
+	if BattleSim.mode != "tower" and not boss and BattleSim.phase != "boss":
+		var n := BattleSim.waves_per_stage()
+		for i in n:
+			var c := Vector2(x0 + 8 + i * 6.0, 15.0)
+			var done: bool = i < BattleSim.wave
+			UISkin.diamond(ci, c, 2.2, Color("#FFE08A") if done else Color("#4A3A30"), Color("#B07420") if done else Color("#241A14"))
+
+
+## Boss bar across the top: the boss's name on a ribbon, a framed health bar with a draining trail and a
+## timer medallion that turns red in the last ten seconds.
+func _draw_boss_hud() -> void:
+	var b := BattleSim.boss_unit
+	if b == null:
+		return
+	var ci := _boss_hud.get_canvas_item()
+	var frac := clampf(b.hp / maxf(1.0, b.max_hp), 0.0, 1.0)
+	if _boss_trail < frac:
+		_boss_trail = frac
+	else:
+		_boss_trail = move_toward(_boss_trail, frac, get_process_delta_time() * 0.35)
+	var bar := Rect2(196, 9, 118, 5)
+	var case := bar.grow(1.5)
+	UISkin.fill(ci, Rect2(case.position + Vector2(0, 1), case.size), 2, Color(0, 0, 0, 0.4), Color(0, 0, 0, 0.4))
+	UISkin.fill(ci, case, 2, Color(0.08, 0.04, 0.03, 0.95), Color(0.02, 0.01, 0.01, 0.95))
+	_boss_hud.draw_rect(bar, Color(0.22, 0.06, 0.06))
+	if _boss_trail > frac:
+		_boss_hud.draw_rect(Rect2(bar.position.x + bar.size.x * frac, bar.position.y, bar.size.x * (_boss_trail - frac), bar.size.y), Color("#FFD9A0"))
+	UISkin.fill(ci, Rect2(bar.position, Vector2(bar.size.x * frac, bar.size.y)), 0, Color("#FF5A4A"), Color("#8A1414"))
+	_boss_hud.draw_rect(Rect2(bar.position, Vector2(bar.size.x * frac, 1)), Color(1, 0.8, 0.7, 0.45))
+	for k in range(1, 4):
+		var x := bar.position.x + bar.size.x * k / 4.0
+		_boss_hud.draw_line(Vector2(x, bar.position.y), Vector2(x, bar.end.y), Color(0, 0, 0, 0.45), 0.6)
+	UISkin.stroke(ci, case, 2, UISkin.OUTLINE, 1.0)
+	UISkin.stroke(ci, case.grow(-0.8), 1.5, Color(UISkin.BRONZE, 0.85), 0.7)
+	# name ribbon
+	var f := UITheme.font_title
+	var nm := str(b.name)
+	var nw := minf(f.get_string_size(nm, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x, 100.0)
+	var rr := Rect2(bar.get_center().x - nw / 2.0 - 7.0, 0.5, nw + 14.0, 8)
+	UISkin.fill(ci, rr, 1.5, UISkin.RIBBON_TOP, UISkin.RIBBON_BOT)
+	UISkin.stroke(ci, rr, 1.5, UISkin.OUTLINE, 0.8)
+	_boss_hud.draw_string(f, Vector2(rr.position.x + 7.0, 6.9), nm, HORIZONTAL_ALIGNMENT_LEFT, 100.0, 7, Color("#FFE7B0"))
+	var sk := UITheme.icon("skull")
+	if sk:
+		_boss_hud.draw_texture_rect(sk, Rect2(case.position.x - 9, case.position.y - 1, 7, 7), false, Color("#FFB0A0"))
+	# timer medallion
+	var tc := Vector2(case.end.x + 9, case.get_center().y)
+	var low := BattleSim.boss_t < 10.0
+	UISkin.circle(ci, tc, 6.4, UISkin.OUTLINE, UISkin.OUTLINE)
+	UISkin.circle(ci, tc, 5.8, UISkin.BRONZE_HI, UISkin.BRONZE_LO)
+	UISkin.circle(ci, tc, 4.6, Color("#8A1A16") if low else Color("#2A1A10"), Color("#3A0808") if low else Color("#140C08"))
+	var tt := "%d" % int(ceil(BattleSim.boss_t))
+	var fb := UITheme.font_body
+	var tw := fb.get_string_size(tt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
+	_boss_hud.draw_string(fb, tc + Vector2(-tw / 2.0, 2.5), tt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#FFD0C0") if low else Color("#FFE7B0"))
 
 
 func _draw_wave_dots() -> void:
@@ -245,15 +358,20 @@ func _process(delta: float) -> void:
 		fore.modulate = Color(tint.r, tint.g, tint.b, 0.75)
 	units_root.modulate = tint.lerp(Color.WHITE, 0.6)
 	# boss HUD
+	_plaque.queue_redraw()
 	if BattleSim.phase == "boss" and BattleSim.boss_unit != null:
-		_boss_bar.visible = true
-		_boss_name.visible = true
-		_boss_time.visible = true
+		_boss_hud.visible = true
+		_boss_hud.queue_redraw()
+		_boss_bar.visible = false
+		_boss_name.visible = false
+		_boss_time.visible = false
 		_boss_bar.max_value = BattleSim.boss_unit.max_hp
 		_boss_bar.value = max(0.0, BattleSim.boss_unit.hp)
 		_boss_time.text = "%d" % int(ceil(BattleSim.boss_t))
 		_boss_time.add_theme_color_override("font_color", UITheme.C_RED if BattleSim.boss_t < 10 else UITheme.C_TEXT)
 	else:
+		_boss_hud.visible = false
+		_boss_trail = 1.0
 		_boss_bar.visible = false
 		_boss_name.visible = false
 		_boss_time.visible = false
