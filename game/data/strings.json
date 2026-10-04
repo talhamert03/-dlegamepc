@@ -2146,5 +2146,41 @@
  "level_up_n": {
   "tr": "Seviye {n}!",
   "en": "Level {n}!"
+ },
+ "set_steam_cloud": {
+  "tr": "Steam Bulut Kayıt",
+  "en": "Steam Cloud saves"
+ },
+ "cloud_on": {
+  "tr": "Kaydın Steam Bulut'a da yedekleniyor; başka bilgisayarda kaldığın yerden devam edersin.",
+  "en": "Your save is also kept in Steam Cloud; continue on any PC."
+ },
+ "cloud_off": {
+  "tr": "Steam Bulut kapalı ya da Steam bulunamadı: kayıt yalnızca bu bilgisayarda.",
+  "en": "Steam Cloud is off or Steam is not running: the save is on this PC only."
+ },
+ "goal_lyra": {
+  "tr": "Hedef: 5. aşamaya ulaş, Lyra partine katılacak",
+  "en": "Goal: reach stage 5 and Lyra joins you"
+ },
+ "goal_hire": {
+  "tr": "Hedef: Tavernada {name} ({g} / {c} altın)",
+  "en": "Goal: hire {name} at the tavern ({g} / {c} gold)"
+ },
+ "goal_boss": {
+  "tr": "Hedef: {zone} bossunu yen",
+  "en": "Goal: defeat the boss of {zone}"
+ },
+ "goal_level": {
+  "tr": "Hedef: Seviye {n}",
+  "en": "Goal: reach level {n}"
+ },
+ "gift_lyra_title": {
+  "tr": "Yeni yoldaş!",
+  "en": "New companion!"
+ },
+ "gift_lyra_sub": {
+  "tr": "Lyra partine katıldı",
+  "en": "Lyra joined your party"
  }
 }

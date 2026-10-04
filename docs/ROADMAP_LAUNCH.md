@@ -5,11 +5,11 @@ Store page, trailer and community work come later; this list is what the game it
 ## Faz 0 — before release
 
 - [ ] **Windows test** on a real machine (overlay, click-through, Steam overlay, scaling 1.5x / 2x / 2.5x)
-- [ ] **Steam Cloud save**: save file in the Steam user folder, conflict prompt (local vs cloud, newer wins by default), backup kept
+- [x] **Steam Cloud save** (code done, see docs/STEAM_CLOUD.md; needs a real Steam test): save file in the Steam user folder, conflict prompt (local vs cloud, newer wins by default), backup kept
 - [ ] **First 30 minutes polish**
-  - [ ] first companion (Lyra) as a tutorial reward around minute 10; other tavern prices unchanged
-  - [ ] the first boss feels like an event (banner, music, slow-mo on the kill, chest rain)
-  - [ ] a clear goal on screen at all times (next unlock: hero / zone / feature)
+  - [x] first companion (Lyra) as a gift around minute 8 / stage 5; other tavern prices unchanged
+  - [x] the first boss feels like an event (dim on entrance, banner, slow-mo + gold burst on the kill)
+  - [x] a clear goal on screen (goal ribbon on the strip until level 25)
   - [ ] each early feature (blacksmith, runes, tavern, chests) unlocked with a short highlight instead of all at once
 - [ ] Steam achievements (codex achievements -> Steamworks)
 - [ ] Real Steam payments (backend /init, /finalize)
@@ -35,11 +35,11 @@ Reference look: hero/bag window, tavern, store, world map (carved wood, gold tri
 
 ## Effects / animation
 
-- [ ] Level up: light column + "Seviye Atladı" ribbon over the hero
-- [ ] Legendary / mythic drop: loot beam in rarity colour + short slow-mo
-- [ ] Boss entrance: screen darkens, name ribbon, roar; boss kill: slow-mo + gold burst
+- [x] Level up: light column + "Seviye Atladı" ribbon over the hero
+- [x] Legendary / mythic drop: loot beam in rarity colour + short slow-mo
+- [x] Boss entrance: screen darkens, name ribbon, roar; boss kill: slow-mo + gold burst
 - [ ] Hero recruit: card flip reveal in the tavern (rarity glow, SSR gets a special one)
 - [ ] Chest opening: lid burst, items fly into the bag
-- [ ] Window open/close: short scale + fade, panel tabs slide
+- [x] Window open/close: short scale + fade, panel tabs slide
 - [ ] Hover feedback on every clickable thing (glow / lift)
-- [ ] Ambient: weather per zone (snow, sand, ash), day/night tint already exists
+- [x] Ambient: weather per zone (snow, sand, ash), day/night tint already exists

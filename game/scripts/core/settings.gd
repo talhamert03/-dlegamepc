@@ -27,6 +27,7 @@ var values: Dictionary = {
 	"colorblind": false,
 	"panel_pos": {},
 	"remember_panels": false, # false: a reopened panel returns to its default spot
+	"steam_cloud": true,      # mirror the save to Steam Remote Storage when Steam is running
 	"tutorial_done": false,
 	"start_with_os": false,
 }

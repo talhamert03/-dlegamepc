@@ -933,6 +933,6 @@ func ask_quit() -> void:
 
 
 func quit_game() -> void:
-	GameState.save_game()
+	GameState.save_game(0, true)
 	Settings.save_settings()
 	get_tree().quit()

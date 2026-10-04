@@ -79,6 +79,13 @@ func refresh() -> void:
 			hb.add_child(hk)
 			_body.add_child(hb)
 			_section("set_sec_system")
+			_toggle("set_steam_cloud", "steam_cloud")
+			var cs := UITheme.para(DataDB.t("cloud_on") if SteamService.cloud_enabled() else DataDB.t("cloud_off"), _w() - 8,
+				UITheme.C_GREEN if SteamService.cloud_enabled() else UITheme.C_DIM)
+			var cm := MarginContainer.new()
+			cm.add_theme_constant_override("margin_left", 4)
+			cm.add_child(cs)
+			_body.add_child(cm)
 			_wide_button(DataDB.t("btn_save_now"), "blue", func():
 				GameState.save_game()
 				EventBus.notify.emit(DataDB.t("saved"), UITheme.C_GREEN))

@@ -50,6 +50,43 @@ func submit_score(board: String, score: int) -> void:
 		steam.call("uploadLeaderboardScore", score, true)
 
 
+# ------------------------------------------------------------------ Steam Cloud
+## Test hook: a Dictionary stands in for Steam Remote Storage when set (unit tests, no Steam).
+var fake_cloud: Variant = null
+
+
+func cloud_enabled() -> bool:
+	if fake_cloud != null:
+		return true
+	if not available or not bool(Settings.get_v("steam_cloud", true)):
+		return false
+	return bool(steam.call("isCloudEnabledForAccount")) and bool(steam.call("isCloudEnabledForApp"))
+
+
+func cloud_write(file: String, text: String) -> bool:
+	if fake_cloud != null:
+		fake_cloud[file] = text
+		return true
+	if not cloud_enabled():
+		return false
+	var buf := text.to_utf8_buffer()
+	return bool(steam.call("fileWrite", file, buf, buf.size()))
+
+
+func cloud_read(file: String) -> String:
+	if fake_cloud != null:
+		return str(fake_cloud.get(file, ""))
+	if not cloud_enabled() or not bool(steam.call("fileExists", file)):
+		return ""
+	var size := int(steam.call("getFileSize", file))
+	if size <= 0:
+		return ""
+	var res: Variant = steam.call("fileRead", file, size)
+	if res is Dictionary and res.has("buf"):
+		return (res["buf"] as PackedByteArray).get_string_from_utf8()
+	return ""
+
+
 # ------------------------------------------------------------------ payments
 func payment_mode() -> String:
 	var m := str(ProjectSettings.get_setting(PAYMENTS_SETTING, "direct"))

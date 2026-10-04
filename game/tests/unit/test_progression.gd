@@ -230,3 +230,29 @@ func test_tavern_prices() -> void:
 		GameState.unlock_hero(hid, false)
 	runner.check(int(Tavern.cost("marcus")["gold"]) > r0, "price grows past a full party")
 	runner.check(int(Tavern.cost("lyra")["gold"]) == 1000, "starter price stays fixed")
+
+
+func test_steam_cloud_newer_wins() -> void:
+	SteamService.fake_cloud = {}
+	GameState.new_game()
+	GameState.gold = 111
+	GameState.save_game(0, true)
+	runner.check(SteamService.fake_cloud.has("slot_0.json"), "save mirrored to the cloud")
+	# another PC played later: the cloud copy is newer and richer
+	var w: Dictionary = JSON.parse_string(str(SteamService.fake_cloud["slot_0.json"]))
+	var d: Dictionary = JSON.parse_string(str(w["data"]))
+	d["gold"] = 999
+	d["saved_at"] = int(d["saved_at"]) + 600
+	var body := JSON.stringify(d)
+	SteamService.fake_cloud["slot_0.json"] = JSON.stringify({"version": w["version"], "checksum": body.sha256_text(), "data": body})
+	runner.check(GameState.load_game(0) and GameState.gold == 999, "newer cloud save is loaded")
+	runner.check(FileAccess.file_exists(GameState.save_path(0) + ".before_cloud"), "local save kept as a backup")
+	# a stale cloud copy never overwrites a newer local save
+	GameState.gold = 1234
+	GameState.save_game(0)
+	d["gold"] = 5
+	d["saved_at"] = 1000
+	body = JSON.stringify(d)
+	SteamService.fake_cloud["slot_0.json"] = JSON.stringify({"version": w["version"], "checksum": body.sha256_text(), "data": body})
+	runner.check(GameState.load_game(0) and GameState.gold == 1234, "older cloud save ignored")
+	SteamService.fake_cloud = null

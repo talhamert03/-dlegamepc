@@ -692,7 +692,11 @@ func save_path(slot := 0) -> String:
 	return SAVE_DIR + "slot_%d.json" % slot
 
 
-func save_game(slot := 0) -> bool:
+var _cloud_t := -1.0e9
+
+
+## Writes the save to disk and, at most every two minutes (or when forced, e.g. on quit), to Steam Cloud.
+func save_game(slot := 0, force_cloud := false) -> bool:
 	if not loaded:
 		return false
 	DirAccess.make_dir_recursive_absolute(SAVE_DIR)
@@ -716,11 +720,45 @@ func save_game(slot := 0) -> bool:
 	f.close()
 	DirAccess.rename_absolute(tmp, path)
 	last_save_unix = int(data["saved_at"])
+	var now := Time.get_ticks_msec() / 1000.0
+	if SteamService.cloud_enabled() and (force_cloud or now - _cloud_t > 120.0):
+		_cloud_t = now
+		SteamService.cloud_write(path.get_file(), JSON.stringify(wrapper))
 	return true
+
+
+## Steam Cloud on start: if the cloud copy is valid and newer than the local save (played on another PC),
+## it replaces the local file; the local one is kept next to it as a backup. Newer always wins.
+func pull_cloud(slot := 0) -> String:
+	if not SteamService.cloud_enabled():
+		return ""
+	var path := save_path(slot)
+	var txt := SteamService.cloud_read(path.get_file())
+	if txt == "":
+		return ""
+	var cloud := _parse_wrapper(txt)
+	if cloud.is_empty():
+		return ""
+	var local := _read_save(path)
+	var c_at := int(cloud.get("saved_at", 0))
+	var l_at := int(local.get("saved_at", 0)) if not local.is_empty() else -1
+	if c_at <= l_at + 5:
+		return "local"
+	DirAccess.make_dir_recursive_absolute(SAVE_DIR)
+	if FileAccess.file_exists(path):
+		DirAccess.copy_absolute(path, path + ".before_cloud")
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	if f == null:
+		return ""
+	f.store_string(txt)
+	f.close()
+	return "cloud"
 
 
 func has_save(slot := 0) -> bool:
 	_archive_legacy(slot)
+	if not FileAccess.file_exists(save_path(slot)) and SteamService.cloud_enabled():
+		pull_cloud(slot)
 	return FileAccess.file_exists(save_path(slot)) or FileAccess.file_exists(save_path(slot) + ".bak1")
 
 
@@ -740,6 +778,9 @@ func _archive_legacy(slot: int) -> void:
 
 
 func load_game(slot := 0) -> bool:
+	var src := pull_cloud(slot)
+	if src == "cloud":
+		print("save: newer Steam Cloud copy loaded")
 	var path := save_path(slot)
 	for candidate in [path, path + ".bak1", path + ".bak2", path + ".bak3"]:
 		var d := _read_save(candidate)
@@ -752,7 +793,10 @@ func load_game(slot := 0) -> bool:
 func _read_save(path: String) -> Dictionary:
 	if not FileAccess.file_exists(path):
 		return {}
-	var txt := FileAccess.get_file_as_string(path)
+	return _parse_wrapper(FileAccess.get_file_as_string(path), path)
+
+
+func _parse_wrapper(txt: String, path := "cloud") -> Dictionary:
 	var w: Variant = JSON.parse_string(txt)
 	if not (w is Dictionary) or not w.has("data"):
 		return {}

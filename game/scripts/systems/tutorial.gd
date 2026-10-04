@@ -38,6 +38,11 @@ func _ready() -> void:
 	EventBus.hero_unlocked.connect(_on_hero_unlocked)
 	EventBus.unit_died.connect(_on_died)
 	EventBus.bark.connect(_say_bark)
+	var gt := Timer.new()
+	gt.wait_time = 15.0
+	gt.autostart = true
+	gt.timeout.connect(_check_lyra_gift)
+	add_child(gt)
 
 
 func _process(delta: float) -> void:
@@ -93,10 +98,25 @@ func _on_level(hid: String, lv: int) -> void:
 	Barks.trigger(hid, "level_up")
 
 
+## First companion as a gift around the eighth minute (or on reaching stage 5), so the first session is
+## never a long solo grind. The rest of the tavern keeps its prices.
+func _check_lyra_gift() -> void:
+	if GameState.heroes.has("lyra") or GameState.flags.get("lyra_gift", false):
+		return
+	var far := int(GameState.progress.get("zone", 0)) > 0 or BattleSim.stage >= 5
+	if far or float(GameState.totals.get("playtime", 0.0)) >= 480.0:
+		GameState.flags["lyra_gift"] = true
+		GameState.unlock_hero("lyra")
+		GameState.add_to_party("lyra")
+		AudioManager.play("recruit")
+		Toast.show_reward(SpriteLib.hero_icon("lyra"), DataDB.t("gift_lyra_title"), DataDB.t("gift_lyra_sub"))
+
+
 func _on_stage(s: int) -> void:
+	_check_lyra_gift()
 	var z := int(GameState.progress.get("zone", 0))
 	# point at the tavern once the first recruit is affordable
-	if not GameState.heroes.has("lyra") and GameState.gold >= int(Tavern.cost("lyra")["gold"]):
+	if GameState.heroes.size() == 2 and not GameState.heroes.has("pip") and GameState.gold >= int(Tavern.cost("pip")["gold"]):
 		_hint("tavern_buy", "tut_tavern_buy")
 
 

@@ -1,6 +1,43 @@
 {
- "current": "0.2.4",
+ "current": "0.2.5",
  "notes": [
+  {
+   "version": "0.2.5",
+   "title": {
+    "tr": "Fantastik Pencereler",
+    "en": "Fantasy Windows"
+   },
+   "items": [
+    {
+     "tr": "Tüm pencere çerçeveleri yenilendi: oyma ahşap, yakutlu altın köşe başlıkları, yanlarda mücevher plakaları, başlık arması ve iç süsleme.",
+     "en": "Every window frame renewed: carved wood, ruby-set gilded corner caps, gem plates, a title crest and tooled inner trim."
+    },
+    {
+     "tr": "Sekmeler sancak tarzında; Ayarlar bölümlü ve pirinç kollu düğmelerle, İstatistik hesap defteri, Görevler ilan panosu, Kodeks madalyonlar ve bestiyer kartlarıyla yeniden tasarlandı.",
+     "en": "Banner tabs; Settings, Statistics, Quests and Codex redesigned."
+    },
+    {
+     "tr": "Savaş şeridi HUD'u: oymalı bölge plakası, aşama elmasları, çerçeveli boss barı ve süre madalyonu; can barlarında hasar izi.",
+     "en": "Battle HUD: carved zone plaque, framed boss bar with a timer medallion, health bars with a damage trail."
+    },
+    {
+     "tr": "Boss girişinde ekran kararır, boss ölümünde ve efsanevi eşya düşünce kısa ağır çekim; duyurular kurdele üzerinde.",
+     "en": "Boss entrance dims the field; slow-motion beats on boss kills and legendary drops."
+    },
+    {
+     "tr": "Steam Bulut Kayıt: kayıt Steam'e de yedeklenir, başka bilgisayarda kaldığın yerden devam edersin.",
+     "en": "Steam Cloud saves."
+    },
+    {
+     "tr": "İlk dakikalar: Lyra yaklaşık 8. dakikada (ya da 5. aşamada) hediye olarak katılır; ekranda her zaman bir sonraki hedef yazar.",
+     "en": "First minutes: Lyra joins as a gift around minute 8; the next goal is always shown."
+    },
+    {
+     "tr": "Hava efektleri hafifletildi; çöl ve mağaralara ince kum ve toz eklendi.",
+     "en": "Subtler weather; light sand and dust in deserts and caves."
+    }
+   ]
+  },
   {
    "version": "0.2.4",
    "title": {

@@ -183,6 +183,8 @@ func _build_hud() -> void:
 
 var _plaque: Control
 var _boss_hud: Control
+var _goal := ""
+var _goal_t := 0
 var _boss_trail := 1.0
 
 
@@ -220,6 +222,20 @@ func _draw_plaque() -> void:
 	UISkin.fill(ci, tag, 2, tcol.lightened(0.15), tcol.darkened(0.35))
 	UISkin.stroke(ci, tag, 2, UISkin.OUTLINE, 0.8)
 	_plaque.draw_string(fb, tag.position + Vector2(4, 6.6), stage, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#FFF4DA") if boss else Color("#2A1606"))
+	# the next goal on the right during the first hours
+	if BattleSim.phase != "boss" and BattleSim.phase != "town":
+		if Time.get_ticks_msec() - _goal_t > 1000:
+			_goal_t = Time.get_ticks_msec()
+			_goal = Goals.current()
+		if _goal != "":
+			var gw := minf(fb.get_string_size(_goal, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x, 170.0)
+			var gr := Rect2(W - gw - 22, 1.5, gw + 18, 10)
+			UISkin.fill(ci, gr, 2, Color(0.1, 0.06, 0.03, 0.75), Color(0.05, 0.03, 0.02, 0.75))
+			UISkin.stroke(ci, gr, 2, Color(UISkin.BRONZE, 0.6), 0.7)
+			var fl := UITheme.icon("flag")
+			if fl:
+				_plaque.draw_texture_rect(fl, Rect2(gr.position + Vector2(3, 1.5), Vector2(7, 7)), false, Color("#FFD36A"))
+			_plaque.draw_string(fb, gr.position + Vector2(13, 7.6), _goal, HORIZONTAL_ALIGNMENT_LEFT, 170.0, 7, Color("#FFE7B0"))
 	# wave pips
 	if BattleSim.mode != "tower" and not boss and BattleSim.phase != "boss":
 		var n := BattleSim.waves_per_stage()
