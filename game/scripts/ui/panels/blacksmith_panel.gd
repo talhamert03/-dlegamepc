@@ -17,7 +17,7 @@ func build(c: Control) -> void:
 	var v := W.vbox(2)
 	v.size = c.size
 	c.add_child(v)
-	_tabs = W.tabs([DataDB.t("smith_combine"), DataDB.t("smith_enhance"), DataDB.t("smith_salvage"), DataDB.t("smith_craft")], tab, _on_tab)
+	_tabs = W.tabs([DataDB.t("smith_combine"), DataDB.t("smith_enhance"), DataDB.t("smith_salvage"), DataDB.t("smith_craft")], tab, _on_tab, (c.size.x - 6.0) / 4.0)
 	v.add_child(_tabs)
 	var lh := W.hbox(2)
 	v.add_child(lh)

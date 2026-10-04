@@ -13,7 +13,7 @@ func build(c: Control) -> void:
 	_tabs = W.tabs([DataDB.t("tab_faction"), DataDB.t("tab_guild"), DataDB.t("tab_account")], tab, func(i):
 		tab = i
 		W.set_tab_active(_tabs, i)
-		refresh())
+		refresh(), (c.size.x - 4.0) / 3.0)
 	v.add_child(_tabs)
 	var sc := W.scroll(Vector2(c.size.x, c.size.y - 16))
 	v.add_child(sc)

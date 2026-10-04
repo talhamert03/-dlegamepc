@@ -32,7 +32,7 @@ func build(c: Control) -> void:
 		slot.dropped.connect(_on_drop_equip)
 		eq.add_child(slot)
 		_equip_slots[s] = slot
-	_filters = W.tabs([DataDB.t("tab_all"), DataDB.t("filter_weapon"), DataDB.t("filter_armor"), DataDB.t("filter_acc")], filter, _on_filter)
+	_filters = W.tabs([DataDB.t("tab_all"), DataDB.t("filter_weapon"), DataDB.t("filter_armor"), DataDB.t("filter_acc")], filter, _on_filter, (c.size.x - 6.0) / 4.0)
 	v.add_child(_filters)
 	var sc := W.scroll(Vector2(c.size.x, c.size.y - 98))
 	v.add_child(sc)

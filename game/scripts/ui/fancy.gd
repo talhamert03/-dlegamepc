@@ -15,7 +15,7 @@ static func tab_button(text: String, on: bool, w := 0.0) -> Button:
 	b.set_meta("text", text)
 	var f := UITheme.font_title
 	var tw := f.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
-	b.custom_minimum_size = Vector2(maxf(w, tw + 14.0), 12)
+	b.custom_minimum_size = Vector2(w if w > 0.0 else tw + 14.0, 12)
 	b.mouse_entered.connect(b.queue_redraw)
 	b.mouse_exited.connect(b.queue_redraw)
 	b.draw.connect(func():
@@ -31,10 +31,13 @@ static func tab_button(text: String, on: bool, w := 0.0) -> Button:
 		UISkin.stroke(ci, r, 3, UISkin.OUTLINE, 1.0)
 		UISkin.stroke(ci, r.grow(-1.0), 2, Color("#F2CB7A", 0.85) if act else Color("#B08A5A", 0.35), 0.8)
 		var t: String = b.get_meta("text", "")
-		var tw2 := f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
-		var tp := Vector2((r.size.x - tw2) / 2.0, r.size.y / 2.0 + 2.9)
-		b.draw_string_outline(f, tp, t, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, 3, Color(0, 0, 0, 0.85))
-		b.draw_string(f, tp, t, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#FFE7B0") if act else Color("#D8C4A0")))
+		var fs := 8
+		while fs > 6 and f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > r.size.x - 6.0:
+			fs -= 1
+		var tw2 := minf(f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x, r.size.x - 4.0)
+		var tp := Vector2((r.size.x - tw2) / 2.0, r.size.y / 2.0 + fs * 0.36)
+		b.draw_string_outline(f, tp, t, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 4.0, fs, 3, Color(0, 0, 0, 0.85))
+		b.draw_string(f, tp, t, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 4.0, fs, Color("#FFE7B0") if act else Color("#D8C4A0")))
 	return b
 
 
