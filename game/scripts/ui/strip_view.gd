@@ -89,6 +89,12 @@ func _ready() -> void:
 	EventBus.boss_spawned.connect(_on_boss_spawned)
 	EventBus.boss_defeated.connect(func(_z):
 		_show_banner(DataDB.t("boss_defeated"), Color("#F7C948"))
+		var bu = BattleSim.boss_unit
+		var bx: float = bu.x if bu != null else W * 0.7
+		_spawn_vfx("burst", Vector2(bx, BattleSim.GROUND_Y - 14), Color("#FFD36A"), 22)
+		_spawn_vfx("levelup", Vector2(bx, BattleSim.GROUND_Y), Color("#FFE08A"), 12)
+		_shake = maxf(_shake, 0.3)
+		slowmo(0.55, 0.3)
 		AudioManager.play("loot_legendary", 0.0, 0.6)
 		AudioManager.play_music(str(BattleSim.zone().get("music", "act1"))))
 	EventBus.boss_failed.connect(func(_z): AudioManager.play_music(str(BattleSim.zone().get("music", "act1"))))
@@ -337,7 +343,8 @@ func _set_theme(theme_name: String) -> void:
 		bg_layers[l[0]].visible = not hd_bg.visible
 	fore.visible = not hd_bg.visible
 	_weather_kind = {"snow": "snow", "ice": "snow", "storm": "rain", "forest_fog": "fog", "lava": "ember", "ash": "ember",
-		"graveyard": "fog", "dark_forest": "leaf", "forest": "leaf", "void": "ember", "blood": "ember"}.get(theme_name, "")
+		"graveyard": "fog", "dark_forest": "leaf", "forest": "leaf", "void": "ember", "blood": "ember", "desert": "sand",
+		"oasis": "sand", "cave": "dust", "mine": "dust", "ice_cave": "dust", "tomb": "dust", "bones": "fog"}.get(theme_name, "")
 	_weather.clear()
 	queue_redraw()
 
@@ -378,8 +385,12 @@ func _process(delta: float) -> void:
 	if _banner_t > 0:
 		_banner_t -= delta
 		_banner.modulate.a = clamp(_banner_t, 0.0, 1.0)
+		if _banner_bg:
+			_banner_bg.modulate.a = _banner.modulate.a
 		if _banner_t <= 0:
 			_banner.visible = false
+			if _banner_bg:
+				_banner_bg.visible = false
 	UnitView.hitstop = max(0.0, UnitView.hitstop - delta)
 	if _shake > 0 and Settings.get_v("screen_shake", true):
 		_shake = max(0.0, _shake - delta)
@@ -404,21 +415,26 @@ func _draw() -> void:
 	for p in _weather:
 		match _weather_kind:
 			"snow":
-				draw_rect(Rect2(round(p[0]), round(p[1]), 1, 1), Color(1, 1, 1, 0.85))
+				draw_rect(Rect2(round(p[0]), round(p[1]), 1, 1), Color(1, 1, 1, 0.55))
 			"rain":
-				draw_line(Vector2(p[0], p[1]), Vector2(p[0] - 1, p[1] + 3), Color(0.7, 0.8, 1.0, 0.6))
+				draw_line(Vector2(p[0], p[1]), Vector2(p[0] - 1, p[1] + 3), Color(0.7, 0.8, 1.0, 0.3))
 			"ember":
-				draw_rect(Rect2(round(p[0]), round(p[1]), 1, 1), Color(1.0, 0.6, 0.2, 0.8))
+				draw_rect(Rect2(round(p[0]), round(p[1]), 1, 1), Color(1.0, 0.6, 0.2, 0.55))
 			"leaf":
-				draw_rect(Rect2(round(p[0]), round(p[1]), 2, 1), Color(0.55, 0.75, 0.3, 0.8))
+				draw_rect(Rect2(round(p[0]), round(p[1]), 2, 1), Color(0.55, 0.75, 0.3, 0.5))
 			"fog":
-				draw_rect(Rect2(round(p[0]), round(p[1]), 24, 3), Color(1, 1, 1, 0.06))
+				draw_rect(Rect2(round(p[0]), round(p[1]), 24, 3), Color(1, 1, 1, 0.045))
+			"sand":
+				draw_rect(Rect2(round(p[0]), round(p[1]), 1, 1), Color(0.95, 0.82, 0.55, 0.4))
+			"dust":
+				draw_rect(Rect2(round(p[0]), round(p[1]), 1, 1), Color(1.0, 0.95, 0.8, 0.22 + 0.15 * sin(p[2] * 9.0 + Time.get_ticks_msec() / 600.0)))
 
 
 func _update_weather(delta: float) -> void:
 	if _weather_kind == "":
 		return
-	var maxn := int(30 * float(Settings.get_v("particles", 1.0)))
+	# kept sparse on purpose: atmosphere only, never in the way of the fight
+	var maxn := int({"fog": 10, "dust": 12, "sand": 16, "rain": 22}.get(_weather_kind, 18) * float(Settings.get_v("particles", 1.0)))
 	while _weather.size() < maxn:
 		_weather.append([_rng.randf_range(0, W), _rng.randf_range(-H, H), _rng.randf_range(0.6, 1.4)])
 	var scroll_speed := 40.0 if BattleSim.phase == "travel" else 0.0
@@ -439,6 +455,12 @@ func _update_weather(delta: float) -> void:
 			"fog":
 				p[0] -= (scroll_speed * 1.2 + 4) * delta * p[2]
 				p[1] = 40 + fmod(p[2] * 37.0, 30.0)
+			"sand":
+				p[0] -= (scroll_speed + 22) * delta * p[2]
+				p[1] += sin(p[0] * 0.08) * 3.0 * delta
+			"dust":
+				p[0] -= (scroll_speed + 1.5) * delta * p[2]
+				p[1] += sin(p[0] * 0.05 + p[2]) * 1.5 * delta
 		if p[1] > H or p[1] < -H or p[0] < -30:
 			p[0] = _rng.randf_range(0, W + 30) if p[0] < -30 else p[0]
 			p[1] = -2.0 if _weather_kind != "ember" else H
@@ -725,6 +747,7 @@ func _on_item_dropped(item: Dictionary, pos: Vector2) -> void:
 		_show_banner(ItemUtil.display_name(item), ItemUtil.rarity_color(r))
 		AudioManager.play("loot_legendary", 0.0, 1.0)
 		_shake = 0.2
+		slowmo(0.35, 0.4)
 	elif rank >= ItemUtil.rarity_rank("rare"):
 		AudioManager.play("loot_rare", 0.05, 0.8)
 
@@ -743,12 +766,13 @@ func _on_level(hid: String, lv: int) -> void:
 	for u in BattleSim.heroes:
 		if u.id == hid and u.etype == "hero":
 			_spawn_vfx("levelup", Vector2(u.x, BattleSim.GROUND_Y), Color("#FFE08A"), 8)
-			_spawn_number("LEVEL UP! %d" % lv, _unit_pos(u, true) + Vector2(0, -10), Color("#FFE08A"), true)
+			_spawn_number(DataDB.t("level_up_n", {"n": lv}), _unit_pos(u, true) + Vector2(0, -10), Color("#FFE08A"), true)
 	AudioManager.play("levelup", 0.0, 0.9)
 
 
 func _on_boss_spawned(u) -> void:
 	_boss_name.text = u.name
+	_dim(0.45, 1.4)
 	_show_banner(DataDB.t("boss_appears", {"name": u.name}), Color("#FF6A5A"))
 	AudioManager.play("boss_warning", 0.0, 1.0)
 	AudioManager.play_music("boss")
@@ -823,7 +847,54 @@ func _town_sign(panel_id: String, text: String, icon_name: String) -> Button:
 	return b
 
 
+## A short slow-motion beat (boss kill, legendary drop). Real time, so it always ends.
+func slowmo(dur: float, factor: float) -> void:
+	if Engine.time_scale < 1.0:
+		return
+	Engine.time_scale = factor
+	get_tree().create_timer(dur, true, false, true).timeout.connect(func(): Engine.time_scale = 1.0)
+
+
+## Darkens the battlefield for a moment (boss entrance).
+func _dim(amount: float, dur: float) -> void:
+	if _dimmer == null:
+		_dimmer = ColorRect.new()
+		_dimmer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_dimmer.size = Vector2(W, H)
+		_dimmer.color = Color(0.05, 0.0, 0.02, 0.0)
+		hud.add_child(_dimmer)
+		hud.move_child(_dimmer, 0)
+	var tw := _dimmer.create_tween()
+	tw.tween_property(_dimmer, "color:a", amount, dur * 0.25)
+	tw.tween_interval(dur * 0.35)
+	tw.tween_property(_dimmer, "color:a", 0.0, dur * 0.4)
+
+
+var _dimmer: ColorRect
+var _banner_bg: Control
+
+
 func _show_banner(text: String, color: Color) -> void:
+	if _banner_bg == null:
+		# ribbon behind the banner text
+		_banner_bg = Control.new()
+		_banner_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_banner_bg.size = Vector2(W, 20)
+		_banner_bg.position = Vector2(0, 20)
+		_banner_bg.draw.connect(func():
+			var tw := UITheme.font_title.get_string_size(_banner.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x
+			var rr := Rect2((W - tw) / 2.0 - 14.0, 2, tw + 28.0, 16)
+			var ci := _banner_bg.get_canvas_item()
+			UISkin.fill(ci, rr.grow(1.0), 3, Color(0, 0, 0, 0.35), Color(0, 0, 0, 0.35))
+			UISkin.fill(ci, rr, 3, Color(0.16, 0.08, 0.06, 0.82), Color(0.06, 0.03, 0.02, 0.82))
+			UISkin.stroke(ci, rr, 3, UISkin.OUTLINE, 1.0)
+			UISkin.stroke(ci, rr.grow(-1.0), 2, Color(UISkin.BRONZE, 0.7), 0.7)
+			UISkin.diamond(ci, Vector2(rr.position.x - 3, rr.get_center().y), 2.4)
+			UISkin.diamond(ci, Vector2(rr.end.x + 3, rr.get_center().y), 2.4))
+		hud.add_child(_banner_bg)
+		hud.move_child(_banner_bg, _banner.get_index())
+	_banner_bg.visible = true
+	_banner_bg.queue_redraw()
 	_banner.text = text
 	_banner.add_theme_color_override("font_color", color)
 	_banner.visible = true

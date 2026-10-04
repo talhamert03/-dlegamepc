@@ -2142,5 +2142,9 @@
  "dps_none": {
   "tr": "Henüz hasar kaydı yok",
   "en": "No damage recorded yet"
+ },
+ "level_up_n": {
+  "tr": "Seviye {n}!",
+  "en": "Level {n}!"
  }
 }

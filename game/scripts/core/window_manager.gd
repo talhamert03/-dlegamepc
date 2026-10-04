@@ -285,7 +285,13 @@ func close_panel(id: String) -> void:
 		return
 	var p: PanelWindow = panels[id]
 	panels.erase(id)
-	p.queue_free()
+	# quick fade and shrink, then gone (already out of the click region)
+	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	p.pivot_offset = p.size / 2.0
+	var tw := p.create_tween().set_parallel(true)
+	tw.tween_property(p, "scale", Vector2(0.97, 0.97), 0.08)
+	tw.tween_property(p, "modulate:a", 0.0, 0.08)
+	tw.chain().tween_callback(p.queue_free)
 	hide_tooltip()
 	AudioManager.play("ui_close", 0.05, 0.5)
 	layout_changed()
@@ -296,7 +302,7 @@ func close_top_panel() -> bool:
 		return false
 	for i in range(panels_layer.get_child_count() - 1, -1, -1):
 		var p := panels_layer.get_child(i)
-		if p is PanelWindow and not p.is_queued_for_deletion():
+		if p is PanelWindow and not p.is_queued_for_deletion() and panels.get((p as PanelWindow).panel_id) == p:
 			close_panel((p as PanelWindow).panel_id)
 			return true
 	return false
