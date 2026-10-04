@@ -2206,5 +2206,13 @@
  "item_for": {
   "tr": "Sınıf: {list}",
   "en": "Class: {list}"
+ },
+ "skill_set_label": {
+  "tr": "Yetenek seti",
+  "en": "Skill set"
+ },
+ "skills_reset_tip": {
+  "tr": "Bu kahramanın tüm yetenek puanlarını ücretsiz geri al.",
+  "en": "Refund all of this hero's skill points for free."
  }
 }

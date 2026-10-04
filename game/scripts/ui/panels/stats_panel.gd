@@ -9,8 +9,8 @@ extends PanelWindow
 const PARCH_H := 98.0
 ## [unlock level, kind]: base = starting skills + ultimate, lv = skills with that req_lv, adv / spec = advancement tiers
 const ROWS := [[1, "base"], [10, "lv"], [20, "lv"], [30, "adv"], [50, "lv"], [70, "spec"]]
-const ROW_H := 30.0
-const ROW_GAP := 3.0
+const ROW_H := 28.0
+const ROW_GAP := 2.0
 const RAIL_X := 12.0
 const BOX_X := 36.0
 const HEAD_H := 34.0
@@ -107,8 +107,31 @@ func _build_skill_page(c: Control) -> void:
 	_pts_plaque.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_pts_plaque.draw.connect(_draw_plaque)
 	c.add_child(_pts_plaque)
-	# free skill respec: try builds without fear
-	var rs := UITheme.button(DataDB.t("btn_reset_free"), "red", func():
+	# second row under the plaque: the two skill bars on the left, the free respec on the right
+	var sl := UITheme.label(DataDB.t("skill_set_label"), UITheme.C_DIM, 7, UITheme.font_body)
+	sl.position = Vector2(2, 15)
+	sl.size = Vector2(UITheme.font_body.get_string_size(DataDB.t("skill_set_label"), HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x + 4, 11)
+	sl.tooltip_text = DataDB.t("skill_set_tip")
+	sl.mouse_filter = Control.MOUSE_FILTER_PASS
+	c.add_child(sl)
+	var lw := UITheme.font_body.get_string_size(DataDB.t("skill_set_label"), HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
+	for i in 2:
+		var idx := i
+		var sb := _mini_btn(["A", "B"][i], Vector2(14, 11), func():
+			var hh := _hero()
+			if hh:
+				hh.use_skill_set(idx)
+				BattleSim.refresh_hero_stats()
+				_changed(hh)
+				_paint_sets())
+		sb.position = Vector2(6 + lw + i * 16, 15)
+		sb.tooltip_text = DataDB.t("skill_set_tip")
+		sb.set_meta("set", i)
+		c.add_child(sb)
+		_set_btns.append(sb)
+	var rt := "↺ " + DataDB.t("btn_reset_free")
+	var rw := UITheme.font_body.get_string_size(rt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x + 12
+	var rs := _mini_btn(rt, Vector2(rw, 11), func():
 		var hh := _hero()
 		if hh == null:
 			return
@@ -116,30 +139,12 @@ func _build_skill_page(c: Control) -> void:
 			hh.reset_skills()
 			GameState.invalidate_stats()
 			BattleSim.refresh_hero_stats()
-			_changed(hh), DataDB.t("btn_reset_free"), true), Vector2(40, 10))
-	rs.position = Vector2(w * 0.42, 1.5)
-	rs.size = Vector2(40, 10)
-	rs.add_theme_font_size_override("font_size", 7)
+			_changed(hh), DataDB.t("btn_reset_free"), true), true)
+	rs.position = Vector2(w - rw - 1, 15)
+	rs.tooltip_text = DataDB.t("skills_reset_tip")
 	c.add_child(rs)
-	# two skill bars (farming / boss), one click to swap
-	for i in 2:
-		var idx := i
-		var sb := UITheme.button(["A", "B"][i], "brown", func():
-			var hh := _hero()
-			if hh:
-				hh.use_skill_set(idx)
-				BattleSim.refresh_hero_stats()
-				_changed(hh)
-				_paint_sets(), Vector2(12, 10))
-		sb.position = Vector2(w * 0.42 + 43 + i * 13, 1.5)
-		sb.size = Vector2(12, 10)
-		sb.add_theme_font_size_override("font_size", 7)
-		sb.tooltip_text = DataDB.t("skill_set_tip")
-		sb.set_meta("set", i)
-		c.add_child(sb)
-		_set_btns.append(sb)
 	_paint_sets()
-	_tier_top = 16.0
+	_tier_top = 29.0
 	_tiers = Control.new()
 	_tiers.position = Vector2(0, _tier_top)
 	_tiers.size = Vector2(w, ROWS.size() * ROW_H + (ROWS.size() - 1) * ROW_GAP + 4)
@@ -840,7 +845,40 @@ func _paint_sets() -> void:
 	var h := _hero()
 	for b in _set_btns:
 		if is_instance_valid(b):
-			UITheme.set_button_color(b, "gold" if h and int(b.get_meta("set")) == h.active_set else "brown")
+			b.set_meta("on", h != null and int(b.get_meta("set")) == h.active_set)
+			b.queue_redraw()
+
+
+## Small hand-drawn button for the skills toolbar (no theme minimum size, so it never overflows).
+func _mini_btn(text: String, sz: Vector2, cb: Callable, danger := false) -> Button:
+	var b := Button.new()
+	b.flat = true
+	b.focus_mode = Control.FOCUS_NONE
+	b.size = sz
+	b.custom_minimum_size = sz
+	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	b.pressed.connect(func():
+		AudioManager.play("ui_click", 0.05, 0.5)
+		cb.call())
+	b.mouse_entered.connect(b.queue_redraw)
+	b.mouse_exited.connect(b.queue_redraw)
+	b.draw.connect(func():
+		var ci := b.get_canvas_item()
+		var r := Rect2(Vector2.ZERO, b.size)
+		var on: bool = b.get_meta("on", false)
+		var hov := b.is_hovered()
+		var top := Color("#F2C55A") if on else (Color("#7A2A22") if danger else Color("#4A3020"))
+		var bot := Color("#A8661E") if on else (Color("#3A0E0C") if danger else Color("#24160C"))
+		if hov:
+			top = top.lightened(0.15)
+		UISkin.fill(ci, r, 2, top, bot)
+		UISkin.stroke(ci, r, 2, UISkin.OUTLINE, 1.0)
+		UISkin.stroke(ci, r.grow(-0.8), 1.5, Color(UISkin.BRONZE, 0.6 if hov or on else 0.35), 0.6)
+		var f := UITheme.font_body
+		var tw := f.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
+		b.draw_string(f, Vector2((r.size.x - tw) / 2.0, 8.2), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 7,
+			Color("#2A1606") if on else Color("#F3E6CC")))
+	return b
 
 
 func _host_ctl() -> Control:
