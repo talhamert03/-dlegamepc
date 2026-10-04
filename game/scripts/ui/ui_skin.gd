@@ -106,31 +106,35 @@ static func diamond(ci: RID, c: Vector2, s: float, top: Color = BRONZE_HI, bot: 
 
 
 # ------------------------------------------------------------------ composite pieces
-## Medieval window: walnut frame with an aged-gold bevel and studs, dark tooled-leather body, a leather
-## header band with a gold rule, and filigree corner pieces set with rubies.
+## Fantasy window: a carved walnut frame with a raised bevel and a groove, gilded corner caps set with
+## rubies, gem plates halfway down the sides and at the bottom, a dark leather body lit warmly from the
+## top, and a header band whose title ribbon rests on a gilded crest with scroll curls.
 static func panel(ci: RID, r: Rect2, header_h := 0.0, ribbon_w := 0.0) -> void:
 	# cast shadow
 	fill(ci, Rect2(r.position + Vector2(1, 3), r.size), 6, Color(0, 0, 0, 0.32), Color(0, 0, 0, 0.55))
-	# walnut frame with faint grain
+	# carved walnut frame: dark rim, raised middle, inner groove
 	fill(ci, r, 5, IRON_TOP, IRON_BOT)
 	var gy := r.position.y + 1.5
 	var gi := 0
 	while gy < r.end.y - 1.0:
-		var a := 0.05 + 0.04 * fposmod(sin(float(gi) * 12.9898) * 43758.5, 1.0)
-		line(ci, Vector2(r.position.x + 1, gy), Vector2(r.position.x + 4, gy), Color(0, 0, 0, a), 0.6)
-		line(ci, Vector2(r.end.x - 4, gy), Vector2(r.end.x - 1, gy), Color(0, 0, 0, a), 0.6)
+		var a := 0.05 + 0.05 * fposmod(sin(float(gi) * 12.9898) * 43758.5, 1.0)
+		line(ci, Vector2(r.position.x + 1, gy), Vector2(r.position.x + 4.2, gy), Color(0, 0, 0, a), 0.6)
+		line(ci, Vector2(r.end.x - 4.2, gy), Vector2(r.end.x - 1, gy), Color(0, 0, 0, a), 0.6)
 		gy += 2.3
 		gi += 1
 	stroke(ci, r, 5, OUTLINE, 1.2)
-	# aged-gold bevel around the frame: light upper edge, dark lower edge
-	stroke(ci, r.grow(-1.2), 4, Color(BRONZE, 0.75), 1.0)
-	line(ci, r.position + Vector2(5, 1.6), Vector2(r.end.x - 5, r.position.y + 1.6), Color(BRONZE_HI, 0.55), 0.8)
-	line(ci, Vector2(r.position.x + 5, r.end.y - 1.6), Vector2(r.end.x - 5, r.end.y - 1.6), Color(0, 0, 0, 0.45), 0.8)
-	# leather body
-	var body := r.grow(-5.0)
+	stroke(ci, r.grow(-1.0), 5, Color(1, 0.85, 0.6, 0.10), 0.8)
+	stroke(ci, r.grow(-2.6), 4, Color(BRONZE, 0.45), 0.9)
+	stroke(ci, r.grow(-4.2), 4, Color(0, 0, 0, 0.6), 0.9)
+	line(ci, r.position + Vector2(6, 1.6), Vector2(r.end.x - 6, r.position.y + 1.6), Color(BRONZE_HI, 0.5), 0.8)
+	# leather body, lit from the top centre
+	var body := r.grow(-6.0)
 	fill(ci, body, 3, BODY_TOP, BODY_BOT)
+	var glow_c := Vector2(body.get_center().x, body.position.y + (header_h if header_h > 0.0 else 0.0))
+	for k in 5:
+		var rad := minf(body.size.x * 0.55, 120.0) * (1.0 - k * 0.17)
+		RenderingServer.canvas_item_add_circle(ci, glow_c, rad, Color(1.0, 0.7, 0.4, 0.012))
 	stroke(ci, body, 3, Color(0, 0, 0, 0.9), 1.0)
-	# inner vignette: the edges of the leather darken
 	for k in 3:
 		stroke(ci, body.grow(-1.0 - k * 1.2), 3, Color(0, 0, 0, 0.16 - k * 0.04), 1.4)
 	# a sparse tooled pattern (tiny lozenges) on the leather
@@ -152,7 +156,6 @@ static func panel(ci: RID, r: Rect2, header_h := 0.0, ribbon_w := 0.0) -> void:
 	if header_h > 0.0:
 		var band := Rect2(body.position, Vector2(body.size.x, header_h))
 		fill(ci, band, 3, BAND_TOP, BAND_BOT)
-		# tooled lattice on the header leather
 		var x := band.position.x + 4.0
 		while x < band.end.x - 4.0:
 			line(ci, Vector2(x, band.position.y + 2), Vector2(minf(x + 5.0, band.end.x - 3), band.end.y - 3), Color(BRONZE_HI, 0.07), 0.7)
@@ -161,44 +164,149 @@ static func panel(ci: RID, r: Rect2, header_h := 0.0, ribbon_w := 0.0) -> void:
 		line(ci, Vector2(band.position.x, band.end.y + 0.5), Vector2(band.end.x, band.end.y + 0.5), Color(0, 0, 0, 0.85), 1.0)
 		line(ci, Vector2(band.position.x + 2, band.end.y - 0.5), Vector2(band.end.x - 2, band.end.y - 0.5), Color(BRONZE, 0.85), 1.0)
 		if ribbon_w > 0.0:
-			ribbon(ci, Rect2(Vector2(r.position.x + (r.size.x - ribbon_w) / 2.0, band.position.y + 1.5), Vector2(ribbon_w, header_h - 3.0)))
-	# gold pinstripe inside the frame
+			var rr := Rect2(Vector2(r.position.x + (r.size.x - ribbon_w) / 2.0, band.position.y + 1.5), Vector2(ribbon_w, header_h - 3.0))
+			# gilded rules running out from the crest to the frame, ending in a lozenge
+			var cy := rr.get_center().y
+			for sd in [-1.0, 1.0]:
+				var x0: float = rr.position.x - 13.0 if sd < 0 else rr.end.x + 13.0
+				var x1: float = band.position.x + 10.0 if sd < 0 else band.end.x - 22.0
+				if (x1 - x0) * sd > 8.0:
+					line(ci, Vector2(x0, cy - 1.2), Vector2(x1, cy - 1.2), Color(BRONZE, 0.55), 0.8)
+					line(ci, Vector2(x0, cy + 1.2), Vector2(x1, cy + 1.2), Color(BRONZE, 0.55), 0.8)
+					diamond(ci, Vector2(x1, cy), 2.0)
+			_crest_plate(ci, rr)
+			ribbon(ci, rr)
+	# gold pinstripe inside the frame, and a tooled double rule with corner curls on the leather
 	stroke(ci, body.grow(1.6), 4, Color(BRONZE, 0.42), 0.8)
+	var inr := Rect2(body.position + Vector2(2.5, (header_h + 2.5) if header_h > 0.0 else 2.5), body.size - Vector2(5, ((header_h + 2.5) if header_h > 0.0 else 2.5) + 2.5))
+	if inr.size.x > 40.0 and inr.size.y > 40.0:
+		stroke(ci, inr, 2, Color(BRONZE, 0.20), 0.7)
+		stroke(ci, inr.grow(-1.8), 2, Color(BRONZE, 0.12), 0.6)
+		for i in 4:
+			var cc: Vector2 = [inr.position, Vector2(inr.end.x, inr.position.y), inr.end, Vector2(inr.position.x, inr.end.y)][i]
+			var ddx := 1.0 if i == 0 or i == 3 else -1.0
+			var ddy := 1.0 if i < 2 else -1.0
+			var curl := PackedVector2Array()
+			for j in 14:
+				var a: float = (PI if ddx > 0 else 0.0) + j * 0.42 * ddx * ddy
+				curl.append(cc + Vector2(ddx * 9.0, ddy * 9.0) + Vector2(cos(a), sin(a)) * (6.0 - j * 0.32))
+			RenderingServer.canvas_item_add_polyline(ci, curl, PackedColorArray([Color(BRONZE_HI, 0.22)]), 0.9, true)
+			diamond(ci, cc + Vector2(ddx * 2.5, ddy * 2.5), 1.6, Color(BRONZE_HI, 0.5), Color(BRONZE_LO, 0.5))
 	# studs along the long edges
-	var sx := r.position.x + 28.0
-	while sx < r.end.x - 26.0:
-		for sy in [r.position.y + 2.6, r.end.y - 2.6]:
-			circle(ci, Vector2(sx, sy), 1.15, BRONZE_HI, BRONZE_LO)
-		sx += 34.0
-	var sy2 := r.position.y + 30.0
-	while sy2 < r.end.y - 26.0:
-		for sx2 in [r.position.x + 2.6, r.end.x - 2.6]:
-			circle(ci, Vector2(sx2, sy2), 1.15, BRONZE_HI, BRONZE_LO)
-		sy2 += 34.0
-	# filigree corners: a gold bracket, two scrolls and a ruby
+	var sx := r.position.x + 30.0
+	while sx < r.end.x - 28.0:
+		if absf(sx - r.get_center().x) > 14.0:
+			for sy in [r.position.y + 2.6, r.end.y - 2.6]:
+				circle(ci, Vector2(sx, sy), 1.15, BRONZE_HI, BRONZE_LO)
+		sx += 30.0
+	var sy2 := r.position.y + 32.0
+	while sy2 < r.end.y - 28.0:
+		if absf(sy2 - r.get_center().y) > 14.0:
+			for sx2 in [r.position.x + 2.6, r.end.x - 2.6]:
+				circle(ci, Vector2(sx2, sy2), 1.15, BRONZE_HI, BRONZE_LO)
+		sy2 += 30.0
+	# gem plates halfway down both sides and at the bottom centre
+	if r.size.y > 90.0:
+		for sd in [-1.0, 1.0]:
+			var gx: float = r.position.x + 2.6 if sd < 0 else r.end.x - 2.6
+			_gem_plate(ci, Vector2(gx, r.get_center().y), true)
+	if r.size.x > 90.0:
+		_gem_plate(ci, Vector2(r.get_center().x, r.end.y - 2.6), false)
+	# gilded corner caps with a ruby
 	for i in 4:
 		var c: Vector2 = [r.position, Vector2(r.end.x, r.position.y), r.end, Vector2(r.position.x, r.end.y)][i]
 		var dx := 1.0 if i == 0 or i == 3 else -1.0
 		var dy := 1.0 if i < 2 else -1.0
-		var p0: Vector2 = c + Vector2(dx * 2.5, dy * 2.5)
-		var pts := PackedVector2Array([p0 + Vector2(dx * 14.0, 0), p0 + Vector2(dx * 2.0, 0), p0, p0 + Vector2(0, dy * 2.0), p0 + Vector2(0, dy * 14.0)])
-		RenderingServer.canvas_item_add_polyline(ci, pts, PackedColorArray([OUTLINE]), 3.6, true)
-		RenderingServer.canvas_item_add_polyline(ci, pts, PackedColorArray([BRONZE]), 2.0, true)
-		RenderingServer.canvas_item_add_polyline(ci, pts, PackedColorArray([Color(BRONZE_HI, 0.7)]), 0.7, true)
-		for k in 2:
-			var sc: Vector2 = p0 + (Vector2(dx * 16.0, dy * 2.4) if k == 0 else Vector2(dx * 2.4, dy * 16.0))
-			var a0: float = atan2(dy, dx) + (PI * 0.5 if k == 0 else -PI * 0.5)
-			var arc := PackedVector2Array()
-			for j in 9:
-				var a := a0 + j * 0.5 * (1.0 if (dx * dy > 0) == (k == 0) else -1.0)
-				arc.append(sc + Vector2(cos(a), sin(a)) * (2.6 - j * 0.12))
-			RenderingServer.canvas_item_add_polyline(ci, arc, PackedColorArray([OUTLINE]), 2.0, true)
-			RenderingServer.canvas_item_add_polyline(ci, arc, PackedColorArray([BRONZE_HI]), 1.0, true)
-		var g := p0 + Vector2(dx * 2.2, dy * 2.2)
-		circle(ci, g, 3.0, OUTLINE, OUTLINE)
-		circle(ci, g, 2.4, BRONZE_HI, BRONZE_LO)
-		circle(ci, g, 1.7, Color("#FF4A4A"), Color("#7A0C18"))
-		circle(ci, g + Vector2(-0.5, -0.6), 0.6, Color(1, 1, 1, 0.85), Color(1, 1, 1, 0.4))
+		_corner_cap(ci, c, dx, dy)
+
+
+## L-shaped gilded corner cap: two tapering arms with an engraved line, a leaf scroll at each tip and a
+## ruby in a gold socket on the corner.
+static func _corner_cap(ci: RID, c: Vector2, dx: float, dy: float) -> void:
+	var o := c + Vector2(dx * 0.5, dy * 0.5)
+	var arm := 28.0
+	var plate := PackedVector2Array([o, o + Vector2(dx * arm, 0), o + Vector2(dx * (arm - 4.0), dy * 7.5), o + Vector2(dx * 13.0, dy * 8.0),
+		o + Vector2(dx * 15.0, dy * 15.0), o + Vector2(dx * 8.0, dy * 13.0), o + Vector2(dx * 7.5, dy * (arm - 4.0)), o + Vector2(0, dy * arm)])
+	var shadow := PackedVector2Array()
+	for q in plate:
+		shadow.append(q + Vector2(0.6, 1.0))
+	RenderingServer.canvas_item_add_polygon(ci, shadow, PackedColorArray([Color(0, 0, 0, 0.45)]))
+	poly(ci, plate, BRONZE_HI, BRONZE_LO)
+	var closed := plate.duplicate()
+	closed.append(plate[0])
+	RenderingServer.canvas_item_add_polyline(ci, closed, PackedColorArray([OUTLINE]), 1.0, true)
+	line(ci, o + Vector2(dx * 9.0, dy * 3.2), o + Vector2(dx * (arm - 4.5), dy * 3.2), Color(0.35, 0.2, 0.05, 0.75), 0.8)
+	line(ci, o + Vector2(dx * 3.2, dy * 9.0), o + Vector2(dx * 3.2, dy * (arm - 4.5)), Color(0.35, 0.2, 0.05, 0.75), 0.8)
+	line(ci, o + Vector2(dx * 8.0, dy * 8.0), o + Vector2(dx * 11.0, dy * 11.0), Color(0.35, 0.2, 0.05, 0.75), 0.8)
+	line(ci, o + Vector2(dx * 5.0, dy * 0.9), o + Vector2(dx * (arm - 2.0), dy * 0.9), Color(1, 0.95, 0.75, 0.45), 0.6)
+	# leaf scrolls at the tips
+	for k in 2:
+		var tip: Vector2 = o + (Vector2(dx * (arm + 1.5), dy * 2.0) if k == 0 else Vector2(dx * 2.0, dy * (arm + 1.5)))
+		var arc := PackedVector2Array()
+		var a0: float = (PI if dx < 0 else 0.0) if k == 0 else (PI * 0.5 if dy > 0 else -PI * 0.5)
+		for j in 8:
+			var a: float = a0 + j * 0.62 * (dx * dy if k == 0 else -dx * dy)
+			arc.append(tip + Vector2(cos(a), sin(a)) * (2.4 - j * 0.16))
+		RenderingServer.canvas_item_add_polyline(ci, arc, PackedColorArray([OUTLINE]), 1.9, true)
+		RenderingServer.canvas_item_add_polyline(ci, arc, PackedColorArray([BRONZE_HI]), 0.9, true)
+	var g := o + Vector2(dx * 5.0, dy * 5.0)
+	circle(ci, g, 4.1, OUTLINE, OUTLINE)
+	circle(ci, g, 3.5, BRONZE_HI, BRONZE_LO)
+	circle(ci, g, 2.6, Color("#FF5050"), Color("#6A0A14"))
+	circle(ci, g + Vector2(-0.8, -0.9), 0.85, Color(1, 1, 1, 0.9), Color(1, 1, 1, 0.5))
+
+
+## Small gilded plate with a sapphire, set into the frame (vertical on the sides, horizontal at the bottom).
+static func _gem_plate(ci: RID, c: Vector2, vertical: bool) -> void:
+	var l := 7.0
+	var w := 2.6
+	var pts: PackedVector2Array
+	if vertical:
+		pts = PackedVector2Array([c + Vector2(0, -l), c + Vector2(w, -l + 3), c + Vector2(w, l - 3), c + Vector2(0, l), c + Vector2(-w, l - 3), c + Vector2(-w, -l + 3)])
+	else:
+		pts = PackedVector2Array([c + Vector2(-l, 0), c + Vector2(-l + 3, -w), c + Vector2(l - 3, -w), c + Vector2(l, 0), c + Vector2(l - 3, w), c + Vector2(-l + 3, w)])
+	poly(ci, pts, BRONZE_HI, BRONZE_LO)
+	var closed := pts.duplicate()
+	closed.append(pts[0])
+	RenderingServer.canvas_item_add_polyline(ci, closed, PackedColorArray([OUTLINE]), 1.0, true)
+	circle(ci, c, 2.3, OUTLINE, OUTLINE)
+	circle(ci, c, 1.8, Color("#7FB8FF"), Color("#1A3A8A"))
+	circle(ci, c + Vector2(-0.5, -0.6), 0.55, Color(1, 1, 1, 0.9), Color(1, 1, 1, 0.5))
+
+
+## Gilded crest behind the title ribbon: a low arch with a jewel on top and scroll curls at both ends.
+static func _crest_plate(ci: RID, rr: Rect2) -> void:
+	var cx := rr.get_center().x
+	var top := rr.position.y - 2.5
+	var half := rr.size.x / 2.0 + 13.0
+	var pts := PackedVector2Array()
+	pts.append(Vector2(cx - half, rr.end.y + 1.5))
+	pts.append(Vector2(cx - half, rr.position.y + 3.0))
+	for k in range(1, 12):
+		var t := float(k) / 12.0
+		var x := cx - half + t * half * 2.0
+		var y := top + 2.6 * pow(absf(t - 0.5) * 2.0, 2.0)
+		pts.append(Vector2(x, y))
+	pts.append(Vector2(cx + half, rr.position.y + 3.0))
+	pts.append(Vector2(cx + half, rr.end.y + 1.5))
+	poly(ci, pts, Color("#5A3A1C"), Color("#24150A"))
+	var closed := pts.duplicate()
+	closed.append(pts[0])
+	RenderingServer.canvas_item_add_polyline(ci, closed, PackedColorArray([OUTLINE]), 1.4, true)
+	RenderingServer.canvas_item_add_polyline(ci, closed, PackedColorArray([Color(BRONZE, 0.85)]), 0.8, true)
+	# scroll curls
+	for sd in [-1.0, 1.0]:
+		var sc: Vector2 = Vector2(cx + sd * (half - 3.0), rr.get_center().y + 0.5)
+		var arc := PackedVector2Array()
+		for j in 11:
+			var a: float = -PI * 0.5 + j * 0.6 * sd
+			arc.append(sc + Vector2(cos(a), sin(a)) * (3.6 - j * 0.24))
+		RenderingServer.canvas_item_add_polyline(ci, arc, PackedColorArray([OUTLINE]), 2.2, true)
+		RenderingServer.canvas_item_add_polyline(ci, arc, PackedColorArray([BRONZE_HI]), 1.0, true)
+	# jewel on top of the arch
+	var j := Vector2(cx, top + 0.5)
+	poly(ci, PackedVector2Array([j + Vector2(0, -3.6), j + Vector2(3.2, 0), j + Vector2(0, 3.0), j + Vector2(-3.2, 0)]), BRONZE_HI, BRONZE_LO)
+	poly(ci, PackedVector2Array([j + Vector2(0, -2.2), j + Vector2(1.9, 0), j + Vector2(0, 1.8), j + Vector2(-1.9, 0)]), Color("#FF6A6A"), Color("#7A0C18"))
 
 
 ## Notched red ribbon used for panel titles.
@@ -269,10 +377,15 @@ static func ornate(ci: RID, r: Rect2) -> void:
 		diamond(ci, Vector2(o.get_center().x, y), 2.6)
 
 
+## Sunken section: a dark inset with an inner shadow on top, a gilded hairline around it and a light
+## lower lip, like a panel carved into the leather.
 static func well(ci: RID, r: Rect2) -> void:
-	fill(ci, r, 2, Color("#120C09"), Color("#1C1510"))
-	stroke(ci, r, 2, Color(0, 0, 0, 0.9), 1.0)
-	line(ci, r.position + Vector2(2, r.size.y + 0.5), Vector2(r.end.x - 2, r.end.y + 0.5), Color(1, 1, 1, 0.06), 1.0)
+	stroke(ci, r.grow(1.2), 3, Color(BRONZE, 0.32), 0.8)
+	fill(ci, r, 2, Color("#0E0907"), Color("#1A130E"))
+	line(ci, r.position + Vector2(2, 1.2), Vector2(r.end.x - 2, r.position.y + 1.2), Color(0, 0, 0, 0.7), 1.4)
+	line(ci, r.position + Vector2(1.2, 2), Vector2(r.position.x + 1.2, r.end.y - 2), Color(0, 0, 0, 0.45), 1.0)
+	stroke(ci, r, 2, Color(0, 0, 0, 0.95), 1.0)
+	line(ci, Vector2(r.position.x + 2, r.end.y + 1.6), Vector2(r.end.x - 2, r.end.y + 1.6), Color(1, 0.9, 0.7, 0.08), 0.8)
 
 
 ## Wooden button. state: normal | hover | pressed | disabled
@@ -321,10 +434,12 @@ static func medallion(ci: RID, c: Vector2, rad: float, state: String, active := 
 ## Item slot: rarity-filled square (empty slots are dark wells).
 static func slot(ci: RID, r: Rect2, rarity_col: Color, has_item: bool, hover: bool) -> void:
 	if not has_item:
-		fill(ci, r, 2, Color("#211913"), Color("#15100C"))
+		fill(ci, r, 2, Color("#4A3826"), Color("#2A1E14"))
+		var inner := r.grow(-1.4)
+		fill(ci, inner, 1.5, Color("#130D09"), Color("#1E1610"))
+		line(ci, inner.position + Vector2(1, 1.0), Vector2(inner.end.x - 1, inner.position.y + 1.0), Color(0, 0, 0, 0.65), 1.2)
 		stroke(ci, r, 2, Color(0, 0, 0, 0.95), 1.0)
-		line(ci, r.position + Vector2(2, 1.5), Vector2(r.end.x - 2, r.position.y + 1.5), Color(0, 0, 0, 0.5), 1.0)
-		line(ci, Vector2(r.position.x + 2, r.end.y - 1), Vector2(r.end.x - 2, r.end.y - 1), Color(1, 1, 1, 0.05), 1.0)
+		line(ci, r.position + Vector2(2, 0.8), Vector2(r.end.x - 2, r.position.y + 0.8), Color(BRONZE_HI, 0.18), 0.6)
 	else:
 		fill(ci, r, 2, rarity_col.lightened(0.12), rarity_col.darkened(0.35))
 		stroke(ci, r, 2, Color(0, 0, 0, 0.95), 1.0)
