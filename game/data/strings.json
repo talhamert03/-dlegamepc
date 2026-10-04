@@ -2182,5 +2182,21 @@
  "gift_lyra_sub": {
   "tr": "Lyra partine katıldı",
   "en": "Lyra joined your party"
+ },
+ "smith_pick_hero": {
+  "tr": "Kahraman:",
+  "en": "Hero:"
+ },
+ "smith_pick_item": {
+  "tr": "Güçlendirilecek eşyayı seç",
+  "en": "Pick an item to enhance"
+ },
+ "smith_pity_short": {
+  "tr": "Garanti",
+  "en": "Pity"
+ },
+ "smith_failed_short": {
+  "tr": "Başarısız",
+  "en": "Failed"
  }
 }

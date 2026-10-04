@@ -22,7 +22,7 @@ const PANELS := {
 	"portrait": {"script": "res://scripts/ui/panels/portrait_panel.gd", "size": Vector2i(150, 250), "title": "panel_portrait"},
 	"inventory": {"script": "res://scripts/ui/panels/inventory_panel.gd", "size": Vector2i(176, 250), "title": "panel_inventory"},
 	"stash": {"script": "res://scripts/ui/panels/stash_panel.gd", "size": Vector2i(180, 240), "title": "panel_stash"},
-	"blacksmith": {"script": "res://scripts/ui/panels/blacksmith_panel.gd", "size": Vector2i(200, 260), "title": "panel_blacksmith"},
+	"blacksmith": {"script": "res://scripts/ui/panels/blacksmith_panel.gd", "size": Vector2i(232, 312), "title": "panel_blacksmith"},
 	"world": {"script": "res://scripts/ui/panels/world_panel.gd", "size": Vector2i(240, 334), "title": "panel_world"},
 	"growth": {"script": "res://scripts/ui/panels/growth_panel.gd", "size": Vector2i(248, 260), "title": "panel_growth"},
 	"party": {"script": "res://scripts/ui/panels/party_panel.gd", "size": Vector2i(220, 200), "title": "panel_party"},

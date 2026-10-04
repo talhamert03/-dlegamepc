@@ -35,6 +35,10 @@
     {
      "tr": "Hava efektleri hafifletildi; çöl ve mağaralara ince kum ve toz eklendi.",
      "en": "Subtler weather; light sand and dust in deserts and caves."
+    },
+    {
+     "tr": "Demirci > Güçlendir baştan düzenlendi: kahraman seç, kuşandığı 12 eşyadan birini seç, örsün üstünde '+5 → +6' ve stat artışını gör, şans halkası, maliyet ve garanti göstergesini oku, büyük + ile güçlendir. Sonuç örsün üstünde animasyonla görünür.",
+     "en": "Blacksmith > Enhance rebuilt: pick a hero and an item, see +5 → +6 and the stat gain on the anvil, chance ring, price and pity pips, press the big +."
     }
    ]
   },

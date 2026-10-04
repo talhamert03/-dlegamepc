@@ -359,6 +359,14 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 	await get_tree().create_timer(0.5).timeout
 	if cmd.has("--town"):
 		BattleSim.enter_town()
+	if cmd.has("--gear"):
+		for hid in GameState.party:
+			if hid == "":
+				continue
+			for i in 14:
+				var it := LootSystem.generate(GameState.rng, 20, ["rare", "epic", "legendary", "magic"][i % 4], GameState.heroes[hid].cls())
+				it["enhance"] = i % 6
+				GameState.try_auto_equip(it)
 	if cmd.has("--boss"):
 		BattleSim.stage = BattleSim.stages_per_zone()
 		BattleSim.challenge_boss()
@@ -442,6 +450,9 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 		if a.begins_with("--shoptab=") and WindowManager.is_open("shop"):
 			WindowManager.panels["shop"]._tab = a.substr(10)
 			WindowManager.panels["shop"].refresh()
+			await get_tree().create_timer(0.4).timeout
+		if a.begins_with("--smithtab=") and WindowManager.is_open("blacksmith"):
+			WindowManager.panels["blacksmith"]._on_tab(int(a.substr(11)))
 			await get_tree().create_timer(0.4).timeout
 		if a == "--thanks" and WindowManager.is_open("shop"):
 			WindowManager.panels["shop"]._buy(Shop.product("supporter"), "")
