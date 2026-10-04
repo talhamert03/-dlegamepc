@@ -3,12 +3,12 @@ extends RefCounted
 ## Item handling sounds by material: blades ring out of the scabbard, plate and mail clank, bows creak and
 ## twang, leather rustles, jewellery tinkles, staves and orbs shimmer, instruments are plucked.
 
-const WEIGHT_CAT := {"heavy": "metal", "medium": "metal", "light": "cloth"}
+const WEIGHT_CAT := {"heavy": "metal", "medium": "metal", "holy": "cloth", "light": "cloth"}
 const TYPE_CAT := {
 	"sword": "blade", "greatsword": "blade", "axe": "blade", "dagger": "blade", "scythe": "blade", "dagger_off": "blade",
-	"mace": "metal", "shield": "metal",
+	"mace": "metal", "shield": "metal", "scepter": "metal",
 	"bow": "bow", "crossbow": "bow", "quiver": "bow",
-	"staff": "magic", "wand": "magic", "orb": "magic", "tome": "magic",
+	"staff": "magic", "holy_staff": "magic", "wand": "magic", "orb": "magic", "tome": "magic",
 	"lute": "music", "flute": "music",
 	"ring": "jewel", "amulet": "jewel", "charm": "jewel",
 	"belt": "cloth", "cape": "cloth",

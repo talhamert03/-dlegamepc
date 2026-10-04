@@ -256,3 +256,26 @@ func test_steam_cloud_newer_wins() -> void:
 	SteamService.fake_cloud["slot_0.json"] = JSON.stringify({"version": w["version"], "checksum": body.sha256_text(), "data": body})
 	runner.check(GameState.load_game(0) and GameState.gold == 1234, "older cloud save ignored")
 	SteamService.fake_cloud = null
+
+
+func test_class_family_items() -> void:
+	var missing: Array = []
+	var wrong_family := 0
+	for cls in DataDB.classes:
+		var fam := str(DataDB.classes[cls].get("armor", ""))
+		for i in 300:
+			var it := LootSystem.generate(GameState.rng, 34, ["rare", "epic", "legendary", "set"][i % 4], cls)
+			if SpriteLib.item_icon(it) == null:
+				var key := "%s/%s" % [it.get("btype"), it.get("weight", "")]
+				if not missing.has(key):
+					missing.append(key)
+			if it.get("cat", "") == "armor" and str(it.get("weight", "")) != fam and it.get("set", "") == "":
+				wrong_family += 1
+	runner.check(missing.is_empty(), "every class item has an icon " + str(missing))
+	runner.check(wrong_family < 40, "class drops are mostly the class family's armour (%d off)" % wrong_family)
+	var h := HeroState.new()
+	h.id = "pip"
+	h.level = 50
+	var holy := LootSystem.generate(GameState.rng, 20, "rare", "", {"cat": "armor", "btype": "chest", "slot": "chest", "weight": "holy"})
+	var plate := LootSystem.generate(GameState.rng, 20, "rare", "", {"cat": "armor", "btype": "chest", "slot": "chest", "weight": "heavy"})
+	runner.check(ItemUtil.can_equip(h, holy) and not ItemUtil.can_equip(h, plate), "a cleric wears holy vestments, not plate")

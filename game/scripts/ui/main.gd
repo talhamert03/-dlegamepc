@@ -335,9 +335,10 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			EventBus.story_completed.emit()
 	for a in cmd:
 		if a == "--loot":
-			for i in 40:
-				var r: String = ["rare", "epic", "legendary", "set", "magic"][i % 5]
-				var it := LootSystem.generate(GameState.rng, 20, r, ["knight", "archer", "cleric", "mage", "berserker"][i % 5])
+			var classes := ["knight", "archer", "cleric", "mage", "berserker", "assassin", "bard", "necromancer"]
+			for i in 48:
+				var r: String = ["rare", "epic", "legendary", "set", "magic", "epic"][i % 6]
+				var it := LootSystem.generate(GameState.rng, 34, r, classes[(i / 6) % 8])
 				GameState.bag.append(it)
 			EventBus.inventory_changed.emit()
 	for a in cmd:
@@ -372,7 +373,7 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 		BattleSim.challenge_boss()
 	if cmd.has("--tooltip"):
 		get_tree().create_timer(maxf(0.5, secs - 1.0)).timeout.connect(func():
-			var it := LootSystem.generate(GameState.rng, 20, "legendary", "knight")
+			var it := LootSystem.generate(GameState.rng, 34, "epic", "cleric", {"cat": "armor", "btype": "chest", "slot": "chest", "weight": "holy"})
 			WindowManager.show_item_tooltip(it, "kael"))
 	if cmd.has("--toast"):
 		get_tree().create_timer(maxf(0.5, secs - 1.5)).timeout.connect(func():
@@ -454,6 +455,14 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 		if a.begins_with("--smithtab=") and WindowManager.is_open("blacksmith"):
 			WindowManager.panels["blacksmith"]._on_tab(int(a.substr(11)))
 			await get_tree().create_timer(0.4).timeout
+		if a.begins_with("--panelframes=") and WindowManager.is_open("hero"):
+			# same panel, several moments: checks animated item icons (sheen)
+			var hp: Control = WindowManager.panels["hero"]
+			var sc1: float = WindowManager.ui_scale
+			for i in int(a.substr(14)):
+				await get_tree().create_timer(0.18).timeout
+				var im := get_viewport().get_texture().get_image()
+				im.get_region(Rect2i(Vector2i(hp.global_position * sc1), Vector2i(hp.size * sc1))).save_png("user://screenshots/pf_%02d.png" % i)
 		if a == "--thanks" and WindowManager.is_open("shop"):
 			WindowManager.panels["shop"]._buy(Shop.product("supporter"), "")
 			await get_tree().create_timer(3.2).timeout

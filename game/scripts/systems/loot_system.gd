@@ -66,10 +66,19 @@ static func pick_base(rng: RandomNumberGenerator, cls: String, rarity: String) -
 				offs = DataDB.items["offhands"].keys()
 			return {"cat": "offhand", "btype": offs[rng.randi() % offs.size()], "slot": "offhand"}
 		"helm", "chest", "gloves", "boots":
-			var weight: String = cd.get("armor", ["heavy", "medium", "light"][rng.randi() % 3]) if cls != "" else ["heavy", "medium", "light"][rng.randi() % 3]
-			return {"cat": "armor", "btype": cat, "slot": cat, "weight": weight}
+			return {"cat": "armor", "btype": cat, "slot": cat, "weight": _family_weight(rng, cls)}
 		_:
-			return {"cat": "acc", "btype": cat, "slot": cat}
+			var base := {"cat": "acc", "btype": cat, "slot": cat}
+			if DataDB.items["accessories"].get(cat, {}).get("family", false):
+				base["weight"] = _family_weight(rng, cls)
+			return base
+
+
+## The armour family of a class, or a random one when the drop is not aimed at a class.
+static func _family_weight(rng: RandomNumberGenerator, cls: String) -> String:
+	if cls != "":
+		return str(DataDB.class_def(cls).get("armor", "medium"))
+	return ItemUtil.FAMILY_WEIGHTS[rng.randi() % ItemUtil.FAMILY_WEIGHTS.size()]
 
 
 static func generate(rng: RandomNumberGenerator, ilvl: int, rarity: String, cls: String = "", forced: Dictionary = {}) -> Dictionary:
@@ -139,6 +148,7 @@ static func _usable_base(bt: String, cls: String, weight: String) -> bool:
 
 static func _apply_leg_base(item: Dictionary, leg: Dictionary, cls: String, rng: RandomNumberGenerator) -> Dictionary:
 	var bt: String = leg["base"]
+	item.erase("weight")   # the rolled base may have been armour
 	if DataDB.items["weapons"].has(bt):
 		item.merge({"cat": "weapon", "btype": bt, "slot": "weapon"}, true)
 	elif DataDB.items["offhands"].has(bt):
@@ -146,10 +156,12 @@ static func _apply_leg_base(item: Dictionary, leg: Dictionary, cls: String, rng:
 	elif DataDB.items["armor"].has(bt):
 		var w: String = leg.get("weight", "")
 		if w == "":
-			w = DataDB.class_def(cls).get("armor", "medium") if cls != "" else ["heavy", "medium", "light"][rng.randi() % 3]
+			w = _family_weight(rng, cls)
 		item.merge({"cat": "armor", "btype": bt, "slot": bt, "weight": w}, true)
 	else:
 		item.merge({"cat": "acc", "btype": bt, "slot": bt}, true)
+		if DataDB.items["accessories"].get(bt, {}).get("family", false):
+			item["weight"] = leg.get("weight", _family_weight(rng, cls))
 	return item
 
 
@@ -179,6 +191,8 @@ static func _pick_set_piece(rng: RandomNumberGenerator, cls: String) -> Dictiona
 			out.merge({"cat": "armor", "btype": piece, "slot": piece, "weight": cd.get("armor", "medium")})
 		_:
 			out.merge({"cat": "acc", "btype": piece, "slot": piece})
+			if DataDB.items["accessories"].get(piece, {}).get("family", false):
+				out["weight"] = cd.get("armor", "medium")
 	return out
 
 

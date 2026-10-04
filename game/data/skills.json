@@ -3756,7 +3756,7 @@
     "en": "Vigor"
    },
    "desc": {
-    "tr": "+{v} can Yenilenme %/sn",
+    "tr": "+{v} Can Yenilenmesi (%/sn)",
     "en": "+{v} HP Regen %/s"
    },
    "params": {

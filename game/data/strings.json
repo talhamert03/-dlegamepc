@@ -2198,5 +2198,13 @@
  "smith_failed_short": {
   "tr": "Başarısız",
   "en": "Failed"
+ },
+ "weight_holy": {
+  "tr": "(Kutsal)",
+  "en": "(Holy)"
+ },
+ "item_for": {
+  "tr": "Sınıf: {list}",
+  "en": "Class: {list}"
  }
 }

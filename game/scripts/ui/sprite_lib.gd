@@ -160,7 +160,7 @@ static func hero_icon(id: String) -> Texture2D:
 static func item_icon(item: Dictionary) -> Texture2D:
 	var bt: String = item.get("btype", "")
 	var tier := int(item.get("tier", 0))
-	var w: String = item.get("weight", "")
+	var w: String = item.get("weight", "") if item.get("cat", "") in ["armor", "acc"] else ""
 	# HD painted icon: plain look for tiers 0-2, ornate enchanted look from tier 3 on
 	var hd_name := ("%s_%s" % [bt, w]) if w != "" else bt
 	var hp := "res://assets/hd/items/%s_%s.png" % [hd_name, "b" if tier >= 3 else "a"]

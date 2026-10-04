@@ -65,6 +65,11 @@ func show_item(item: Dictionary, compare_hero := "") -> void:
 	if item.get("cat", "") == "armor":
 		sub += "  " + DataDB.t("weight_" + str(item.get("weight", "medium")))
 	_line(sub, UITheme.C_DIM)
+	var who := ItemUtil.usable_classes(item)
+	if who.size() > 0:
+		var fam_col := {"heavy": Color("#FF9A7A"), "light": Color("#C9A0FF"), "holy": Color("#FFE7A0"), "medium": Color("#9EE08A")}
+		var fc: Color = fam_col.get(str(item.get("weight", "")), Color("#E8C98A"))
+		_line(DataDB.t("item_for", {"list": ", ".join(who)}), fc)
 	box.add_child(UITheme.hsep(100))
 	var base: Dictionary = item.get("base", {})
 	var st := ItemUtil.item_stats(item)

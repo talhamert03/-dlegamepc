@@ -1,6 +1,35 @@
 {
- "current": "0.2.5",
+ "current": "0.2.6",
  "notes": [
+  {
+   "version": "0.2.6",
+   "title": {
+    "tr": "Sınıf Eşyaları",
+    "en": "Class Gear"
+   },
+   "items": [
+    {
+     "tr": "Her sınıf ailesinin kendi eşyaları var: Savaşçılar (Şövalye, Barbar) plaka zırh, Büyücüler (Büyücü, Nekromant) cübbe, Şifacılar (Rahibe, Ozan) yeni beyaz-altın Kutsal vestiyerler, Okçular (Okçu, Suikastçı) deri zırh giyer.",
+     "en": "Each class family has its own gear: warriors plate, mages robes, healers new white-and-gold holy vestments, rangers leather."
+    },
+    {
+     "tr": "Pelerin ve kemerler de sınıfa özel: savaşçıya kızıl, büyücüye mor, şifacıya fildişi, okçuya yeşil. Yüzük, kolye ve tılsım herkes için.",
+     "en": "Capes and belts are family pieces too; rings, amulets and charms fit everyone."
+    },
+    {
+     "tr": "Rahibe için yeni silahlar: Kutsal Asa ve Kutsal Değnek; üç yeni şifacı efsanevisi (Şafak Asası, Azize Seraphina'nın Vestiyeri, Lütuf Değneği).",
+     "en": "New cleric weapons (scepter, holy staff) and three healer legendaries."
+    },
+    {
+     "tr": "Destansı ve üstü eşyalar parlak metal gibi yansıma yapar; efsanevi, set ve mitik eşyaların çevresinde ışıltı vardır (mitik gökkuşağı renginde).",
+     "en": "Epic and better items gleam with a sweeping reflection; legendary, set and mythic items also glow."
+    },
+    {
+     "tr": "İpucunda eşyayı hangi sınıfların kullanabileceği yazar.",
+     "en": "Tooltips list the classes that can use an item."
+    }
+   ]
+  },
   {
    "version": "0.2.5",
    "title": {

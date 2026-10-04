@@ -5,7 +5,9 @@ extends RefCounted
 ## base {atk, aps, def, hp}, implicit {stat: v}, affixes [{id, v}], enhance, locked, leg, set, mythic
 
 const RARITY_ORDER := ["common", "magic", "rare", "epic", "legendary", "set", "mythic"]
-const WEIGHT_MULT := {"heavy": 1.5, "medium": 1.0, "light": 0.6}
+const WEIGHT_MULT := {"heavy": 1.5, "medium": 1.0, "holy": 0.85, "light": 0.6}
+## class families share one look: warrior plate, ranger leather, healer vestments, mage robes
+const FAMILY_WEIGHTS := ["heavy", "medium", "holy", "light"]
 
 
 static func rarity_rank(r: String) -> int:
@@ -31,8 +33,34 @@ static func base_names(item: Dictionary) -> Dictionary:
 		"armor":
 			return DataDB.items["armor"].get(bt, {}).get("names", {}).get(item.get("weight", "medium"), {})
 		"acc":
-			return DataDB.items["accessories"].get(bt, {}).get("names", {})
+			var ad: Dictionary = DataDB.items["accessories"].get(bt, {})
+			if item.get("weight", "") != "" and ad.has("names_by"):
+				return ad["names_by"].get(item["weight"], ad.get("names", {}))
+			return ad.get("names", {})
 	return {}
+
+
+## Classes that can wear / wield an item (names), for the tooltip. Empty = everyone.
+static func usable_classes(item: Dictionary) -> Array:
+	var out: Array = []
+	var cat: String = item.get("cat", "")
+	var bt: String = item.get("btype", "")
+	var w: String = item.get("weight", "")
+	if cat == "acc" and w == "":
+		return out
+	for cid in DataDB.classes:
+		var cd: Dictionary = DataDB.classes[cid]
+		var ok := false
+		match cat:
+			"weapon":
+				ok = cd.get("weapons", []).has(bt)
+			"offhand":
+				ok = cd.get("offhand", []).has("dagger" if bt == "dagger_off" else bt)
+			"armor", "acc":
+				ok = cd.get("armor", "") == w
+		if ok:
+			out.append(DataDB.tx(cd.get("name", {})))
+	return out
 
 
 static func display_name(item: Dictionary) -> String:
@@ -94,8 +122,12 @@ static func equip_problem(hero: HeroState, item: Dictionary) -> String:
 					and not ["quiver", "orb"].has(item["btype"]):
 				return DataDB.t("two_handed")
 		"armor":
-			var allowed := {"heavy": ["heavy", "medium"], "medium": ["medium", "light"], "light": ["light"]}
-			if not allowed.get(cd.get("armor", "medium"), []).has(item.get("weight", "medium")):
+			# each family wears only its own armour
+			if cd.get("armor", "medium") != item.get("weight", "medium"):
+				return DataDB.t("wrong_armor")
+		"acc":
+			# family capes and belts (jewellery has no weight and fits everyone)
+			if item.get("weight", "") != "" and cd.get("armor", "medium") != item["weight"]:
 				return DataDB.t("wrong_armor")
 	return ""
 
