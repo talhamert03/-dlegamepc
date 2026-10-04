@@ -2098,5 +2098,49 @@
  "thanks_sub": {
   "tr": "Lonca Destekçisi bonusların artık etkin.",
   "en": "Your Guild Supporter perks are now active."
+ },
+ "set_sec_view": {
+  "tr": "Dil ve Görünüm",
+  "en": "Language and Display"
+ },
+ "set_sec_window": {
+  "tr": "Pencere",
+  "en": "Window"
+ },
+ "set_sec_perf": {
+  "tr": "Performans",
+  "en": "Performance"
+ },
+ "set_sec_fx": {
+  "tr": "Efektler",
+  "en": "Effects"
+ },
+ "set_sec_audio": {
+  "tr": "Ses Düzeyi",
+  "en": "Volume"
+ },
+ "set_sec_game": {
+  "tr": "Oynanış",
+  "en": "Gameplay"
+ },
+ "set_sec_keys": {
+  "tr": "Kısayollar",
+  "en": "Hotkeys"
+ },
+ "set_sec_system": {
+  "tr": "Sistem",
+  "en": "System"
+ },
+ "dps_sec_share": {
+  "tr": "Hasar Payı",
+  "en": "Damage Share"
+ },
+ "dps_sec_pace": {
+  "tr": "Verim",
+  "en": "Pace"
+ },
+ "dps_none": {
+  "tr": "Henüz hasar kaydı yok",
+  "en": "No damage recorded yet"
  }
 }

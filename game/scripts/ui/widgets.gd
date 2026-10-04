@@ -64,18 +64,25 @@ static func stat_row(label: String, value: String, vcol: Color = UITheme.C_TEXT,
 
 ## Tab strip: returns HBox; calls cb(index) on change.
 static func tabs(names: Array, active: int, cb: Callable, w := 0) -> HBoxContainer:
-	var h := hbox(1)
+	var h := hbox(2)
 	for i in names.size():
-		var b := UITheme.button(str(names[i]), "orange" if i == active else "brown", Callable(), Vector2(w, 12))
+		var b := Fancy.tab_button(str(names[i]), i == active, w)
 		var idx := i
-		b.pressed.connect(func(): cb.call(idx))
+		b.pressed.connect(func():
+			AudioManager.play("ui_click", 0.05, 0.5)
+			cb.call(idx))
 		h.add_child(b)
 	return h
 
 
 static func set_tab_active(h: HBoxContainer, active: int) -> void:
 	for i in h.get_child_count():
-		UITheme.set_button_color(h.get_child(i), "orange" if i == active else "brown")
+		var b := h.get_child(i)
+		if b.has_meta("on"):
+			b.set_meta("on", i == active)
+			b.queue_redraw()
+		else:
+			UITheme.set_button_color(b, "orange" if i == active else "brown")
 
 
 static func icon_rect(tex: Texture2D, size := Vector2.ZERO) -> TextureRect:

@@ -377,7 +377,7 @@
     "en": "Orange Light"
    },
    "desc": {
-    "tr": "İlk efsanevi itemi bul",
+    "tr": "İlk efsanevi eşyayı bul",
     "en": "Find your first legendary"
    },
    "cond": {
@@ -415,7 +415,7 @@
     "en": "Impossible Luck"
    },
    "desc": {
-    "tr": "İlk mitik itemi bul",
+    "tr": "İlk mitik eşyayı bul",
     "en": "Find your first mythic"
    },
    "cond": {
@@ -472,7 +472,7 @@
     "en": "Shining Steel"
    },
    "desc": {
-    "tr": "Bir itemi +10 yap",
+    "tr": "Bir eşyayı +10 yap",
     "en": "Enhance an item to +10"
    },
    "cond": {
@@ -490,7 +490,7 @@
     "en": "Perfection"
    },
    "desc": {
-    "tr": "Bir itemi +15 yap",
+    "tr": "Bir eşyayı +15 yap",
     "en": "Enhance an item to +15"
    },
    "cond": {

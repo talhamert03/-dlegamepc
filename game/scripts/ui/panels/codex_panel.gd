@@ -13,7 +13,7 @@ func build(c: Control) -> void:
 	_tabs = W.tabs([DataDB.t("tab_achievements"), DataDB.t("tab_bestiary"), DataDB.t("tab_news")], tab, func(i):
 		tab = i
 		W.set_tab_active(_tabs, i)
-		refresh())
+		refresh(), (c.size.x - 4.0) / 3.0)
 	v.add_child(_tabs)
 	var sc := W.scroll(Vector2(c.size.x, c.size.y - 16))
 	v.add_child(sc)
@@ -23,29 +23,52 @@ func build(c: Control) -> void:
 	refresh()
 
 
+## Achievement: a medallion (gold star when earned, dark lock otherwise), the name and its condition.
+func _achievement_row(a: Dictionary, w: float) -> Control:
+	var got: bool = GameState.achievements.has(a["id"])
+	var c := Control.new()
+	c.custom_minimum_size = Vector2(w, 22)
+	var name := DataDB.tx(a["name"])
+	var desc := DataDB.tx(a.get("desc", {}))
+	c.draw.connect(func():
+		var ci := c.get_canvas_item()
+		var r := Rect2(Vector2(0, 1), c.size - Vector2(0, 2))
+		UISkin.fill(ci, r, 2, Color(0.35, 0.25, 0.12, 0.25) if got else Color(0, 0, 0, 0.18), Color(0, 0, 0, 0.1))
+		UISkin.stroke(ci, r, 2, Color(UISkin.BRONZE, 0.35) if got else Color(0, 0, 0, 0.4), 0.7)
+		var m := Vector2(11, c.size.y / 2.0)
+		UISkin.circle(ci, m, 8.0, UISkin.OUTLINE, UISkin.OUTLINE)
+		UISkin.circle(ci, m, 7.4, UISkin.BRONZE_HI if got else Color("#5A5250"), UISkin.BRONZE_LO if got else Color("#2A2422"))
+		UISkin.circle(ci, m, 5.4, Color("#7A3A12") if got else Color("#1E1A18"), Color("#3A1A08") if got else Color("#121010"))
+		var ic := UITheme.icon("star" if got else "lock")
+		if ic:
+			c.draw_texture_rect(ic, Rect2(m - Vector2(3.5, 3.5), Vector2(7, 7)), false, Color("#FFE08A") if got else Color(0.6, 0.56, 0.52))
+		var fb := UITheme.font_body
+		c.draw_string(fb, Vector2(23, 10), name, HORIZONTAL_ALIGNMENT_LEFT, c.size.x - 26, 8, UITheme.C_GOLD if got else UITheme.C_TEXT)
+		c.draw_string(fb, Vector2(23, 19), desc, HORIZONTAL_ALIGNMENT_LEFT, c.size.x - 26, 7, UITheme.C_DIM))
+	return c
+
+
 func refresh() -> void:
 	if _body == null:
 		return
 	for ch in _body.get_children():
 		ch.queue_free()
+	var w := _body.custom_minimum_size.x
 	if tab == 0:
 		var done := GameState.achievements.size()
-		_body.add_child(UITheme.label("%d / %d" % [done, DataDB.achievements.size()], UITheme.C_GOLD))
-		for a in DataDB.achievements:
-			var got: bool = GameState.achievements.has(a["id"])
-			var row := W.hbox(2)
-			var ic := W.icon_rect(UITheme.icon("star" if got else "lock"))
-			ic.custom_minimum_size = Vector2(8, 8)
-			row.add_child(ic)
-			var l := UITheme.label(DataDB.tx(a["name"]), UITheme.C_GOLD if got else UITheme.C_TEXT)
-			l.custom_minimum_size = Vector2(80, 0)
-			l.clip_text = true
-			row.add_child(l)
-			var d := UITheme.label(DataDB.tx(a.get("desc", {})), UITheme.C_DIM)
-			d.clip_text = true
-			d.custom_minimum_size = Vector2(110, 0)
-			row.add_child(d)
-			_body.add_child(row)
+		var tot := DataDB.achievements.size()
+		_body.add_child(Fancy.bar(w, 10, float(done) / maxf(1.0, tot), Color("#E8B84A"), "%d / %d" % [done, tot]))
+		_body.add_child(W.spacer(0, 2))
+		# unlocked first, then the rest in their natural order
+		var list: Array = []
+		for a0 in DataDB.achievements:
+			if GameState.achievements.has(a0["id"]):
+				list.append(a0)
+		for a0 in DataDB.achievements:
+			if not GameState.achievements.has(a0["id"]):
+				list.append(a0)
+		for a in list:
+			_body.add_child(_achievement_row(a, w))
 	elif tab == 2:
 		# patch notes: what changed, newest first
 		for n in DataDB.patch_notes.get("notes", []):
@@ -60,21 +83,39 @@ func refresh() -> void:
 				_body.add_child(l)
 	else:
 		var seen: Dictionary = GameState.codex.get("enemies", {})
-		_body.add_child(UITheme.label("%d / %d" % [seen.size(), DataDB.enemies.size() + DataDB.bosses.size()], UITheme.C_GOLD))
-		var g := W.grid(10, 1)
+		var tot2 := DataDB.enemies.size() + DataDB.bosses.size()
+		_body.add_child(Fancy.bar(w, 10, float(seen.size()) / maxf(1.0, tot2), Color("#C0392B"), "%d / %d" % [seen.size(), tot2]))
+		_body.add_child(W.spacer(0, 2))
+		var cols := 7
+		var cell := floorf((w - (cols - 1) * 2.0) / cols)
+		var g := W.grid(cols, 2)
 		_body.add_child(g)
 		for eid in DataDB.enemies.keys() + DataDB.bosses.keys():
-			var t := TextureRect.new()
-			t.custom_minimum_size = Vector2(20, 20)
-			t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-			t.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-			var sf := SpriteLib.frames_for("enemy", eid)
-			if sf and sf.has_animation("idle"):
-				t.texture = sf.get_frame_texture("idle", 0)
+			var known := seen.has(eid)
+			var boss := DataDB.bosses.has(eid)
+			var tex := SpriteLib.chibi_frame("enemies", str(eid))
+			if tex == null:
+				tex = SpriteLib.hd_sprite("enemies", str(eid))
 			var d2 := DataDB.enemy_def(eid)
-			if seen.has(eid):
-				t.tooltip_text = "%s  x%d" % [DataDB.tx(d2.get("name", {})), int(seen[eid])]
-			else:
-				t.modulate = Color(0, 0, 0, 0.7)
-				t.tooltip_text = "???"
-			g.add_child(t)
+			var card := Control.new()
+			card.custom_minimum_size = Vector2(cell, cell + 2)
+			card.mouse_filter = Control.MOUSE_FILTER_STOP
+			card.tooltip_text = ("%s  ×%d" % [DataDB.tx(d2.get("name", {})), int(seen[eid])]) if known else "???"
+			card.draw.connect(func():
+				var ci := card.get_canvas_item()
+				var r := Rect2(Vector2.ZERO, card.size)
+				UISkin.slot(ci, r, Color.WHITE, false, false)
+				if tex:
+					var tr := r.grow(-2.5)
+					var asp := float(tex.get_width()) / float(tex.get_height())
+					var dw := minf(tr.size.x, tr.size.y * asp)
+					var dh := dw / asp
+					var dr := Rect2(tr.position + Vector2((tr.size.x - dw) / 2.0, tr.size.y - dh), Vector2(dw, dh))
+					card.draw_texture_rect(tex, Rect2(dr.position + Vector2(dw, 0), Vector2(-dw, dh)), false,
+						Color.WHITE if known else Color(0.05, 0.04, 0.06, 0.85))
+				if boss:
+					UISkin.stroke(ci, r.grow(-0.5), 2, Color("#E0574A", 0.9), 1.0)
+				if not known:
+					var f := UITheme.font_title
+					card.draw_string(f, Vector2(r.size.x / 2.0 - 3, r.size.y / 2.0 + 4), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(0.8, 0.7, 0.55, 0.6)))
+			g.add_child(card)
