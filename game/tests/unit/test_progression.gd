@@ -279,3 +279,18 @@ func test_class_family_items() -> void:
 	var holy := LootSystem.generate(GameState.rng, 20, "rare", "", {"cat": "armor", "btype": "chest", "slot": "chest", "weight": "holy"})
 	var plate := LootSystem.generate(GameState.rng, 20, "rare", "", {"cat": "armor", "btype": "chest", "slot": "chest", "weight": "heavy"})
 	runner.check(ItemUtil.can_equip(h, holy) and not ItemUtil.can_equip(h, plate), "a cleric wears holy vestments, not plate")
+
+
+func test_steam_achievement_ids() -> void:
+	var seen := {}
+	var bad: Array = []
+	var re := RegEx.new()
+	re.compile("^[A-Z0-9_]+$")
+	for a in DataDB.achievements:
+		var id := str(a.get("id", ""))
+		if re.search(id) == null or seen.has(id) or id.length() > 64:
+			bad.append(id)
+		seen[id] = true
+		if DataDB.tx(a.get("name", {})) == "" or str(a.get("name", {}).get("en", "")) == "":
+			bad.append(id + " (name)")
+	runner.check(bad.is_empty(), "achievement ids are valid Steam API names " + str(bad))

@@ -23,6 +23,8 @@ func _ready() -> void:
 	if available and steam.has_signal("microtransaction_auth_response"):
 		steam.connect("microtransaction_auth_response", _on_txn_auth)
 	EventBus.zone_changed.connect(func(_z): update_presence())
+	# achievements earned while Steam was not running are pushed once the save is loaded
+	get_tree().create_timer(5.0).timeout.connect(sync_achievements)
 
 
 func _process(_d: float) -> void:
@@ -34,6 +36,23 @@ func _on_achievement(ach_id: String) -> void:
 	if available:
 		steam.call("setAchievement", ach_id)
 		steam.call("storeStats")
+
+
+## Sends every achievement the save already holds (played offline, or before Steam was wired) to Steam.
+## Steam ignores ones that are already set, so this is safe to call any time.
+func sync_achievements() -> int:
+	if not available:
+		return 0
+	var n := 0
+	for ach_id in GameState.achievements:
+		var st: Variant = steam.call("getAchievement", str(ach_id))
+		if st is Dictionary and bool(st.get("achieved", false)):
+			continue
+		steam.call("setAchievement", str(ach_id))
+		n += 1
+	if n > 0:
+		steam.call("storeStats")
+	return n
 
 
 func update_presence() -> void:

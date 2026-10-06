@@ -29,7 +29,7 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - [x] 3. Pets window redesign (stable stalls, name plates, owned glow, clear bonuses)
 - [x] 4. Stash window redesign (iron-bound chest interior, tab plates, sort/filter)
 - [x] 5. Blacksmith: Combine, Salvage and Craft tabs rebuilt to the Enhance tab's standard
-- [ ] 6. Steam achievements wired (ids, unlock calls, offline queue, docs for Steamworks setup)
+- [x] 6. Steam achievements wired (ids, unlock calls, offline queue, docs for Steamworks setup)
 - [ ] 7. Text / translation sweep: every string TR+EN, terms, clipping at 1.5x/2x, tooltips
 - [ ] 8. Economy check with the balance bot: gold/XP curves, tavern prices, blacksmith costs, shop value
 - [ ] 9. Full playthrough Normal -> Nightmare -> Hell (bot + manual screenshots): walls, boredom spots, fixes
@@ -54,3 +54,4 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - 2026-10-06 shift 1 — #3 pets stable: stalls with plates, collection bar, detail card with level pips; window 236x262.
 - 2026-10-06 shift 1 — #4 stash: chest-interior bed, tab plates (coin/gem/lock), capacity bar, Sort, centred unlock price; window 206x262.
 - 2026-10-06 shift 1 — #5 blacksmith combine/salvage/craft rebuilt to the enhance standard; Fancy.small_button added.
+- 2026-10-06 shift 1 — #6 Steam achievements: startup sync for offline unlocks, 41 icon pairs + CSV (steam/achievements), docs/STEAM_ACHIEVEMENTS.md, id format test. Needs a real Steam build to verify.

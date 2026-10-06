@@ -1,0 +1,42 @@
+api_name,name_en,desc_en,name_tr,desc_tr,icon,icon_locked
+ACH_FIRST_BLOOD,First Blood,Defeat your first enemy,İlk Kan,İlk düşmanı öldür,ACH_FIRST_BLOOD.jpg,ACH_FIRST_BLOOD_locked.jpg
+ACH_FULL_PARTY,Full Squad,Field a party of five,Tam Kadro,5 kişilik partiyi tamamla,ACH_FULL_PARTY.jpg,ACH_FULL_PARTY_locked.jpg
+ACH_GOBLIN_KING,Whose Crown?,Defeat the Goblin King,Taç Kimin?,Goblin Kralı'nı yen,ACH_GOBLIN_KING.jpg,ACH_GOBLIN_KING_locked.jpg
+ACH_ICE_WITCH,Spring Has Come,Defeat the Ice Witch,Bahar Geldi,Buz Cadısı'nı yen,ACH_ICE_WITCH.jpg,ACH_ICE_WITCH_locked.jpg
+ACH_TRAITOR,Betrayal,Defeat Corvus,İhanet,Corvus'u yen,ACH_TRAITOR.jpg,ACH_TRAITOR_locked.jpg
+ACH_MORVATH,Crystal Saved,Defeat Morvath on Normal,Kristal Kurtarıldı,Normal'de Morvath'ı yen,ACH_MORVATH.jpg,ACH_MORVATH_locked.jpg
+ACH_NIGHTMARE,Wake From Nightmares,Finish Nightmare,Kâbuslardan Uyan,Kabus'u bitir,ACH_NIGHTMARE.jpg,ACH_NIGHTMARE_locked.jpg
+ACH_HELL,Back From Hell,Finish Hell,Cehennemden Dönen,Cehennem'i bitir,ACH_HELL.jpg,ACH_HELL_locked.jpg
+ACH_LV10,Level 10,Reach level 10,Seviye 10,Bir kahramanı 10. seviyeye çıkar,ACH_LV10.jpg,ACH_LV10_locked.jpg
+ACH_LV25,Level 25,Reach level 25,Seviye 25,Bir kahramanı 25. seviyeye çıkar,ACH_LV25.jpg,ACH_LV25_locked.jpg
+ACH_LV50,Level 50,Reach level 50,Seviye 50,Bir kahramanı 50. seviyeye çıkar,ACH_LV50.jpg,ACH_LV50_locked.jpg
+ACH_LV75,Level 75,Reach level 75,Seviye 75,Bir kahramanı 75. seviyeye çıkar,ACH_LV75.jpg,ACH_LV75_locked.jpg
+ACH_LV100,Level 100,Reach level 100,Seviye 100,Bir kahramanı 100. seviyeye çıkar,ACH_LV100.jpg,ACH_LV100_locked.jpg
+ACH_KILLS_1000,Slaughter I,Defeat 1000 enemies,Katliam I,1000 düşman öldür,ACH_KILLS_1000.jpg,ACH_KILLS_1000_locked.jpg
+ACH_KILLS_10000,Slaughter II,Defeat 10000 enemies,Katliam II,10000 düşman öldür,ACH_KILLS_10000.jpg,ACH_KILLS_10000_locked.jpg
+ACH_KILLS_100000,Slaughter III,Defeat 100000 enemies,Katliam III,100000 düşman öldür,ACH_KILLS_100000.jpg,ACH_KILLS_100000_locked.jpg
+ACH_KILLS_1000000,Slaughter IV,Defeat 1000000 enemies,Katliam IV,1000000 düşman öldür,ACH_KILLS_1000000.jpg,ACH_KILLS_1000000_locked.jpg
+ACH_GOLD_10000,Treasure I,Earn 10000 gold,Hazine I,Toplam 10000 altın kazan,ACH_GOLD_10000.jpg,ACH_GOLD_10000_locked.jpg
+ACH_GOLD_1000000,Treasure II,Earn 1000000 gold,Hazine II,Toplam 1000000 altın kazan,ACH_GOLD_1000000.jpg,ACH_GOLD_1000000_locked.jpg
+ACH_GOLD_100000000,Treasure III,Earn 100000000 gold,Hazine III,Toplam 100000000 altın kazan,ACH_GOLD_100000000.jpg,ACH_GOLD_100000000_locked.jpg
+ACH_FIRST_LEGENDARY,Orange Light,Find your first legendary,Turuncu Işık,İlk efsanevi eşyayı bul,ACH_FIRST_LEGENDARY.jpg,ACH_FIRST_LEGENDARY_locked.jpg
+ACH_LEGENDARY_25,Legend Collector,Find 25 legendaries,Efsane Koleksiyoncusu,25 efsanevi bul,ACH_LEGENDARY_25.jpg,ACH_LEGENDARY_25_locked.jpg
+ACH_FIRST_MYTHIC,Impossible Luck,Find your first mythic,İmkânsız Şans,İlk mitik eşyayı bul,ACH_FIRST_MYTHIC.jpg,ACH_FIRST_MYTHIC_locked.jpg
+ACH_COMBINE_1,Smith Apprentice,First combine,Demirci Çırağı,İlk birleştirme,ACH_COMBINE_1.jpg,ACH_COMBINE_1_locked.jpg
+ACH_COMBINE_50,Master Smith,50 combines,Usta Demirci,50 birleştirme,ACH_COMBINE_50.jpg,ACH_COMBINE_50_locked.jpg
+ACH_ENHANCE_10,Shining Steel,Enhance an item to +10,Parlak Çelik,Bir eşyayı +10 yap,ACH_ENHANCE_10.jpg,ACH_ENHANCE_10_locked.jpg
+ACH_ENHANCE_15,Perfection,Enhance an item to +15,Mükemmeliyet,Bir eşyayı +15 yap,ACH_ENHANCE_15.jpg,ACH_ENHANCE_15_locked.jpg
+ACH_HEROES_10,Growing Guild,Collect 10 heroes,Lonca Büyüyor,10 kahraman topla,ACH_HEROES_10.jpg,ACH_HEROES_10_locked.jpg
+ACH_HEROES_25,Crowded Guild,Collect 25 heroes,Kalabalık Lonca,25 kahraman topla,ACH_HEROES_25.jpg,ACH_HEROES_25_locked.jpg
+ACH_ALL_HEROES,Guild Legend,Collect all 48 heroes,Lonca Efsanesi,48 kahramanın hepsini topla,ACH_ALL_HEROES.jpg,ACH_ALL_HEROES_locked.jpg
+ACH_FACTION_FULL,Loyalty,Complete a faction,Sadakat,Bir fraksiyonu 8/8 tamamla,ACH_FACTION_FULL.jpg,ACH_FACTION_FULL_locked.jpg
+ACH_3STAR,Rising Star,Raise a hero to 3 stars,Yükselen Yıldız,Bir kahramanı 3 yıldız yap,ACH_3STAR.jpg,ACH_3STAR_locked.jpg
+ACH_6STAR,Six Stars,Raise a hero to 6 stars,Altı Yıldız,Bir kahramanı 6 yıldız yap,ACH_6STAR.jpg,ACH_6STAR_locked.jpg
+ACH_ADVANCE_1,New Path,First class advancement,Yeni Yol,İlk sınıf ilerlemesi,ACH_ADVANCE_1.jpg,ACH_ADVANCE_1_locked.jpg
+ACH_ADVANCE_2,Specialist,Second class advancement,Uzman,İkinci sınıf ilerlemesi,ACH_ADVANCE_2.jpg,ACH_ADVANCE_2_locked.jpg
+ACH_GUILD_20,Guild Hall,20 Guild Hall levels,Lonca Salonu,Lonca Salonu'nda 20 seviye,ACH_GUILD_20.jpg,ACH_GUILD_20_locked.jpg
+ACH_BOSSES_100,Boss Hunter,Defeat 100 bosses,Boss Avcısı,100 boss yen,ACH_BOSSES_100.jpg,ACH_BOSSES_100_locked.jpg
+ACH_DEATHS_100,Not Immortal,Fall 100 times,Ölümsüz Değiliz,100 kez düş,ACH_DEATHS_100.jpg,ACH_DEATHS_100_locked.jpg
+ACH_OFFLINE_12H,Sleeping Guild,12 hours of offline progress,Uyuyan Lonca,12 saat çevrimdışı ilerleme,ACH_OFFLINE_12H.jpg,ACH_OFFLINE_12H_locked.jpg
+ACH_PLAY_10H,Loyal Guildmaster,Play for 10 hours,Sadık Lonca Başkanı,10 saat oyna,ACH_PLAY_10H.jpg,ACH_PLAY_10H_locked.jpg
+ACH_NIGHTMARE_OPEN,Step Into Darkness,Unlock Nightmare,Karanlığa Adım,Kabus zorluğunu aç,ACH_NIGHTMARE_OPEN.jpg,ACH_NIGHTMARE_OPEN_locked.jpg
