@@ -17,7 +17,7 @@ var _cls: Label
 var _lvl: Label
 var _hdps: Label
 var _xp: ProgressBar
-var _stars: Label
+var _stars: Control
 var _party_row: Control
 var _tabs: HBoxContainer
 var _page: Control
@@ -112,12 +112,8 @@ func build(c: Control) -> void:
 	_hdps.mouse_filter = Control.MOUSE_FILTER_STOP
 	_hdps.tooltip_text = DataDB.t("hero_dps_tip")
 	c.add_child(_hdps)
-	_stars = UITheme.label("", Color("#FFD84A"), 7)
-	_stars.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
-	_stars.add_theme_constant_override("outline_size", 2)
-	_stars.position = Vector2(px + pw - 40, 58)
-	_stars.size = Vector2(37, 9)
-	_stars.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_stars = _star_plate()
+	_stars.position = Vector2(px + pw - 47, 59)
 	c.add_child(_stars)
 	_xp = UITheme.bar(int(pw), 3, Color("#F2B33D"))
 	_xp.position = Vector2(px, 75)
@@ -211,6 +207,91 @@ func build(c: Control) -> void:
 	refresh()
 
 
+## Six stars under the portrait. Lit stars are earned; when the next one is affordable the next empty star
+## pulses. Click: confirm card with the price and what a star gives (soul shards are the only sink).
+func _star_plate() -> Control:
+	var c := Control.new()
+	c.size = Vector2(44, 10)
+	c.mouse_filter = Control.MOUSE_FILTER_STOP
+	c.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	c.mouse_entered.connect(func(): c.set_meta("hov", true); c.queue_redraw())
+	c.mouse_exited.connect(func(): c.set_meta("hov", false); c.queue_redraw())
+	c.gui_input.connect(func(e: InputEvent):
+		if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
+			_ask_star_up())
+	c.draw.connect(func():
+		var hid := W.current_hero()
+		if not GameState.heroes.has(hid):
+			return
+		var h: HeroState = GameState.heroes[hid]
+		var ready := _star_ready(hid)
+		var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 220.0)
+		if c.get_meta("hov", false):
+			UISkin.fill(c.get_canvas_item(), Rect2(Vector2.ZERO, c.size), 3, Color(1, 0.85, 0.4, 0.22), Color(1, 0.7, 0.2, 0.12))
+		for k in 6:
+			var ctr := Vector2(4.0 + k * 7.2, 5.0)
+			var on := k < h.stars
+			var nxt := ready and k == h.stars
+			if nxt:
+				c.draw_circle(ctr, 4.6, Color(1, 0.85, 0.3, 0.25 + 0.35 * pulse))
+			_draw_star(c, ctr, 3.9, Color(0, 0, 0, 0.85))
+			var col := Color("#FFD84A") if on else (Color("#FFE89A", 0.55 + 0.45 * pulse) if nxt else Color("#4A4038"))
+			_draw_star(c, ctr, 3.0, col)
+			if on:
+				_draw_star(c, ctr + Vector2(-0.4, -0.5), 1.3, Color(1, 1, 0.9, 0.7)))
+	return c
+
+
+func _draw_star(c: Control, ctr: Vector2, r: float, col: Color) -> void:
+	var pts := PackedVector2Array()
+	for i in 10:
+		var a := -PI / 2.0 + i * PI / 5.0
+		pts.append(ctr + Vector2(cos(a), sin(a)) * (r if i % 2 == 0 else r * 0.45))
+	c.draw_colored_polygon(pts, col)
+
+
+func _star_ready(hid: String) -> bool:
+	if not GameState.heroes.has(hid):
+		return false
+	var h: HeroState = GameState.heroes[hid]
+	if h.stars >= 6:
+		return false
+	var cost := Tavern.star_cost(h)
+	return GameState.gold >= int(cost["gold"]) and GameState.has_material("soul_shard", int(cost["soul_shard"]))
+
+
+func _star_tip(h: HeroState) -> String:
+	if h.stars >= 6:
+		return DataDB.t("star_max", {"name": h.display_name()})
+	var cost := Tavern.star_cost(h)
+	return DataDB.t("star_tip", {"n": h.stars, "s": int(cost["soul_shard"]), "have": int(GameState.materials.get("soul_shard", 0)),
+		"g": F.fmt_num(int(cost["gold"]))})
+
+
+func _ask_star_up() -> void:
+	var hid := W.current_hero()
+	if not GameState.heroes.has(hid):
+		return
+	var h: HeroState = GameState.heroes[hid]
+	if h.stars >= 6:
+		EventBus.notify.emit(DataDB.t("star_max", {"name": h.display_name()}), UITheme.C_GOLD)
+		return
+	if not _star_ready(hid):
+		AudioManager.play("smith_fail", 0.05, 0.4)
+		var need := Tavern.star_cost(h)
+		EventBus.notify.emit(DataDB.t("star_need", {"s": int(need["soul_shard"]), "have": int(GameState.materials.get("soul_shard", 0)),
+			"g": F.fmt_num(int(need["gold"]))}), UITheme.C_RED)
+		return
+	var cost := Tavern.star_cost(h)
+	W.confirm(_host, DataDB.t("star_up_ask", {"name": h.display_name(), "n": h.stars + 1,
+		"s": int(cost["soul_shard"]), "g": F.fmt_num(int(cost["gold"]))}), func():
+			if Tavern.star_up(h):
+				BattleSim.refresh_hero_stats()
+				AudioManager.play("levelup", 0.0, 0.6)
+				EventBus.notify.emit(DataDB.t("starred", {"name": h.display_name(), "n": h.stars}), UITheme.C_GOLD)
+				refresh(), DataDB.t("btn_star_up"))
+
+
 func _arrow(t: String, cb: Callable) -> Button:
 	var b := UITheme.button(t, "orange", cb, Vector2(13, 11))
 	b.add_theme_font_size_override("font_size", 9)
@@ -271,6 +352,8 @@ func _cycle_hero(dir: int) -> void:
 
 func _process(_d: float) -> void:
 	var hid := W.current_hero()
+	if _stars and Engine.get_process_frames() % 4 == 0 and _star_ready(hid):
+		_stars.queue_redraw()
 	if _hdps and Engine.get_process_frames() % 30 == 0:
 		var d := BattleSim.hero_dps(hid)
 		_hdps.text = ("⚔ %s DPS" % F.fmt_num(d)) if d > 0.0 and GameState.party.has(hid) else ""
@@ -312,7 +395,8 @@ func refresh() -> void:
 		set_panel_title(DataDB.t("panel_hero"))
 		_cls.text = "%s · %s" % [h.display_name(), h.class_title()]
 		_lvl.text = F.lv(h.level, "dot") + ("  ✦P%d" % h.paragon if h.paragon > 0 else "")
-		_stars.text = "★".repeat(h.stars)
+		_stars.tooltip_text = _star_tip(h)
+		_stars.queue_redraw()
 		var tex := SpriteLib.portrait(hid)
 		if tex:
 			# head-and-shoulders crop of the full-body illustration

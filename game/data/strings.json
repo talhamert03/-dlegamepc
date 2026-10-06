@@ -2274,5 +2274,10 @@
  "fx_block": {
   "tr": "BLOK",
   "en": "BLOCK"
- }
+ },
+  "star_tip": {"tr": "Yıldız {n}/6 — tıkla ve yükselt\nSonraki yıldız: {s} Ruh Parçası (sende {have}) + {g} altın\nHer yıldız: temel değerler +%8, imza bonusu +%20\nRuh Parçası: boss görevleri, kristal ve kraliyet sandıkları", "en": "Stars {n}/6 — click to raise\nNext star: {s} Soul Shards (you have {have}) + {g} gold\nEach star: base stats +8%, signature bonus +20%\nSoul Shards: boss quests, crystal and royal chests"},
+  "star_need": {"tr": "Yıldız için {s} Ruh Parçası (sende {have}) ve {g} altın gerekli", "en": "A star needs {s} Soul Shards (you have {have}) and {g} gold"},
+  "star_max": {"tr": "{name} en yüksek yıldızda!", "en": "{name} is at max stars!"},
+  "star_up_ask": {"tr": "{name} {n}. yıldıza yükselsin mi?\n{s} Ruh Parçası + {g} altın\nTemel değerler +%8, imza bonusu +%20", "en": "Raise {name} to {n} stars?\n{s} Soul Shards + {g} gold\nBase stats +8%, signature bonus +20%"},
+  "btn_star_up": {"tr": "Yükselt", "en": "Raise"}
 }

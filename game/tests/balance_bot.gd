@@ -52,6 +52,28 @@ func _bot_actions() -> void:
 			h.advancement = 2
 			h.spec = "a"
 			h.skill_points += 3
+	# like a real player: once the party is full, buy rarer heroes and swap them in for a plain one
+	# of the same armour family (keeps healer/ranger/mage/warrior balance)
+	if GameState.party_count() >= 5:
+		var best := ""
+		for hid in Tavern.roster():
+			if GameState.heroes.has(hid) or Tavern.rarity(hid) == "R" or not Tavern.can_afford(hid):
+				continue
+			if best == "" or ["R", "SR", "SSR"].find(Tavern.rarity(hid)) > ["R", "SR", "SSR"].find(Tavern.rarity(best)):
+				best = hid
+		if best != "":
+			var fam := str(DataDB.class_def(str(DataDB.hero_def(best).get("class", ""))).get("armor", ""))
+			var out := ""
+			for ph in GameState.party_heroes():
+				if Tavern.rarity(ph.id) == "R" and str(ph.class_def().get("armor", "")) == fam:
+					out = ph.id
+					break
+			if out != "" and Tavern.recruit(best):
+				var j: int = GameState.party.find(best)
+				if j >= 0:
+					GameState.party[j] = ""
+				GameState.set_party_slot(GameState.party.find(out), best)
+				print("  recruit %s (%s) for %s at %s" % [best, Tavern.rarity(best), out, F.fmt_num(GameState.gold)])
 	# equip better items from the bag
 	for it in GameState.bag.duplicate():
 		GameState.bag.erase(it)
@@ -59,9 +81,9 @@ func _bot_actions() -> void:
 			GameState.add_gold(ItemUtil.sell_price(it))
 	# enhance weapons a bit
 	for h in GameState.party_heroes():
-		for slot in ["weapon", "chest"]:
+		for slot in ["weapon", "chest", "helm", "gloves", "boots", "offhand"]:
 			var it: Dictionary = h.equipment.get(slot, {})
-			if not it.is_empty() and int(it.get("enhance", 0)) < 9:
+			if not it.is_empty() and int(it.get("enhance", 0)) < 12:
 				var info := Blacksmith.enhance_info(it)
 				if not info.is_empty() and GameState.gold > int(info["cost"]) * 3:
 					Blacksmith.enhance(it)
