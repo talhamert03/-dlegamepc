@@ -18,14 +18,11 @@ signal mini_changed(on: bool)
 const PANELS := {
 	"hero": {"script": "res://scripts/ui/panels/hero_main_panel.gd", "size": Vector2i(252, 334), "title": "panel_hero"},
 	"stats": {"script": "res://scripts/ui/panels/stats_panel.gd", "size": Vector2i(214, 334), "title": "panel_stats"},
-	"skills": {"script": "res://scripts/ui/panels/hero_panel.gd", "size": Vector2i(196, 334), "title": "panel_skills"},
-	"portrait": {"script": "res://scripts/ui/panels/portrait_panel.gd", "size": Vector2i(150, 250), "title": "panel_portrait"},
 	"inventory": {"script": "res://scripts/ui/panels/inventory_panel.gd", "size": Vector2i(176, 250), "title": "panel_inventory"},
 	"stash": {"script": "res://scripts/ui/panels/stash_panel.gd", "size": Vector2i(206, 262), "title": "panel_stash"},
 	"blacksmith": {"script": "res://scripts/ui/panels/blacksmith_panel.gd", "size": Vector2i(232, 312), "title": "panel_blacksmith"},
 	"world": {"script": "res://scripts/ui/panels/world_panel.gd", "size": Vector2i(240, 334), "title": "panel_world"},
 	"growth": {"script": "res://scripts/ui/panels/growth_panel.gd", "size": Vector2i(248, 260), "title": "panel_growth"},
-	"party": {"script": "res://scripts/ui/panels/party_panel.gd", "size": Vector2i(220, 200), "title": "panel_party"},
 	"tavern": {"script": "res://scripts/ui/panels/tavern_panel.gd", "size": Vector2i(332, 300), "title": "panel_tavern"},
 	"settings": {"script": "res://scripts/ui/panels/settings_panel.gd", "size": Vector2i(236, 250), "title": "panel_settings"},
 	"away": {"script": "res://scripts/ui/panels/away_panel.gd", "size": Vector2i(220, 236), "title": "panel_away"},
@@ -43,9 +40,9 @@ const GROUPS := {"hero": ["hero"], "bag": ["hero"], "world": ["world"], "growth"
 ## a reopened panel comes back here.
 const HOME := {
 	"hero": "center", "ending": "center", "runes": "center",
-	"away": "left", "stats": "left", "skills": "left", "stash": "left", "blacksmith": "left", "pets": "left", "dps": "left",
+	"away": "left", "stats": "left", "stash": "left", "blacksmith": "left", "pets": "left", "dps": "left",
 	"world": "right", "growth": "right", "tavern": "right", "quests": "right", "codex": "right", "settings": "right",
-	"party": "right", "inventory": "right", "portrait": "left", "chests": "right", "shop": "center",
+	"inventory": "right", "chests": "right", "shop": "center",
 }
 
 var ui_scale: float = 2.0
@@ -356,20 +353,17 @@ func _free_spot(id: String, home_pos: Vector2, w: Vector2) -> Vector2:
 		xs.append(r.end.x + GAP)
 		xs.append(r.position.x - GAP - w.x)
 	xs.sort_custom(func(a, b): return absf(a - home_pos.x) < absf(b - home_pos.x))
-	for skip_portrait in [false, true]:
-		for x in xs:
-			if x < 0 or x + w.x > area.x:
-				continue
-			var cand := Rect2(Vector2(x, home_pos.y), w)
-			var hit := false
-			for o in others:
-				if skip_portrait and o[0] == "portrait":
-					continue
-				if cand.grow(-0.5).intersects(o[1]):
-					hit = true
-					break
-			if not hit:
-				return clamp_to_area(cand.position, w)
+	for x in xs:
+		if x < 0 or x + w.x > area.x:
+			continue
+		var cand := Rect2(Vector2(x, home_pos.y), w)
+		var hit := false
+		for o in others:
+			if cand.grow(-0.5).intersects(o[1]):
+				hit = true
+				break
+		if not hit:
+			return clamp_to_area(cand.position, w)
 	return clamp_to_area(home_pos, w)
 
 

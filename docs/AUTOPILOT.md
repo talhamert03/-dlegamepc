@@ -44,7 +44,7 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - [x] 18. Surfaces not yet reviewed: title screen, taskbar mini bar, item tooltip, right-click menu, confirm cards, toasts
 - [x] 19. Resistance clarity: party resistances vs the zone's damage types (world card, status), red warning when short
 - [ ] 20. Seal economy: can a player reach SSR heroes (8 seals at lv30)? seal income per hour, tavern pacing
-- [ ] 21. Remove the unreachable windows (party, portrait, old skills) after moving anything still useful
+- [x] 21. Remove the unreachable windows (party, portrait, old skills) after moving anything still useful
 - [ ] 22. Session variety: daily quest pool, achievement pacing over the first 10 hours, small surprises
 
 ## Questions for the owner
@@ -75,3 +75,4 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - 2026-10-06 shift 1 — #16 accessibility: the unused `colorblind` setting now draws a rarity shape on every item slot (toggle in Settings), full hotkey list. Text size = the UI scale option (2x-5x). Key rebinding not built (hotkeys are listed read-only).
 - 2026-10-06 shift 1 — #17 polish: every window shot in English; fixed the skill cooldown spilling out of the card, the 'E' equipped marker, the empty chests pedestal. Found three windows nothing opens (party, portrait, old skills window) — their features live in Hero / Status now.
 - 2026-10-06 shift 1 — #18 surfaces: title menu gets ornate plaque buttons (Fancy.plaque_button), bulk sell rows drawn (checkbox, rarity gem, count), confirm cards use the wooden buttons; tooltip, toasts, context menu already custom. #19: already covered by ZoneInfo (readiness verdict, weakest hero's effective resistance, stuck hints naming the element and target).
+- 2026-10-06 shift 1 — #21: removed party_panel, portrait_panel and the old hero_panel (skills) — nothing opened them; star-up already moved to the Hero window, skills live in Status, formation in the Hero window.
