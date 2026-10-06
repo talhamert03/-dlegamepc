@@ -15,7 +15,10 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 6. Turkish first: every new text has `tr` and `en` in `data/strings.json`; consistent terms (eşya, yetenek, can…).
 7. Keep the premium look: UISkin / Fancy controls, carved frames, no plain web-like widgets.
 8. Patch notes: add the player-facing changes of the day to `data/patch_notes.json`.
-9. When a shift ends (time, usage limit or a natural stop), leave the tree clean and the log updated.
+9. A shift is a full working block, not one task: after an item is finished, go straight to the next one and keep
+   going until the usage limit stops the session or the next shift is about to start. Never end a shift early
+   because "a step is done". Commit + push after every finished step (small commits), so a cut-off by the usage
+   limit loses at most the step in progress; the next shift picks it up from the log.
 10. When the backlog is empty, play the game again end to end (bot + screenshots), find the weakest part and add
     new items — the work only ends when the game is ready to ship.
 
