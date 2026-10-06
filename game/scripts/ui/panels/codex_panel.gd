@@ -93,10 +93,11 @@ func refresh() -> void:
 		for eid in DataDB.enemies.keys() + DataDB.bosses.keys():
 			var known := seen.has(eid)
 			var boss := DataDB.bosses.has(eid)
-			var tex := SpriteLib.chibi_frame("enemies", str(eid))
-			if tex == null:
-				tex = SpriteLib.hd_sprite("enemies", str(eid))
 			var d2 := DataDB.enemy_def(eid)
+			var sheet := str(d2.get("visual", {}).get("sheet", eid))   # variants (treasure goblin) reuse a sheet
+			var tex := SpriteLib.chibi_frame("enemies", sheet)
+			if tex == null:
+				tex = SpriteLib.hd_sprite("enemies", sheet)
 			var card := Control.new()
 			card.custom_minimum_size = Vector2(cell, cell + 2)
 			card.mouse_filter = Control.MOUSE_FILTER_STOP
