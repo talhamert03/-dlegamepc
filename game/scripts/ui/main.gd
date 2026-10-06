@@ -387,6 +387,9 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 				var it := LootSystem.generate(GameState.rng, 20, ["rare", "epic", "legendary", "magic"][i % 4], GameState.heroes[hid].cls())
 				it["enhance"] = i % 6
 				GameState.try_auto_equip(it)
+	if cmd.has("--questdone"):
+		for q in GameState.flags.get("daily", {}).get("list", []).slice(0, 2):
+			GameState.totals[q["stat"]] = float(q["start"]) + float(q["target"])
 	if cmd.has("--treasure"):
 		EventBus.wave_spawned.connect(func(_w):
 			if not BattleSim.enemies.any(func(e): return e.tags.has("treasure")):

@@ -28,6 +28,16 @@ func refresh() -> void:
 	var list: Array = GameState.flags.get("daily", {}).get("list", [])
 	for i in list.size():
 		_body.add_child(_notice(i, list[i], w))
+	# when the board refreshes (local midnight)
+	var clock := Label.new()
+	clock.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	clock.custom_minimum_size = Vector2(w, 10)
+	clock.add_theme_font_override("font", UITheme.font_body)
+	clock.add_theme_font_size_override("font_size", 7)
+	clock.add_theme_color_override("font_color", UITheme.C_DIM)
+	clock.set_meta("refresh_clock", true)
+	_body.add_child(clock)
+	_tick_clock(clock)
 
 
 func _notice(i: int, q: Dictionary, w: float) -> Control:
@@ -125,3 +135,26 @@ func _notice(i: int, q: Dictionary, w: float) -> Control:
 		b.add_child(tm)
 	c.add_child(b)
 	return c
+
+
+var _clock_t := 0.0
+
+
+func _process(delta: float) -> void:
+	_clock_t += delta
+	if _clock_t < 1.0 or _body == null:
+		return
+	_clock_t = 0.0
+	for ch in _body.get_children():
+		if ch.has_meta("refresh_clock"):
+			_tick_clock(ch)
+	if Quests.today() != str(GameState.flags.get("daily", {}).get("date", "")):
+		refresh()
+
+
+func _tick_clock(l: Label) -> void:
+	var t := Time.get_time_dict_from_system()
+	var left := 86400 - (int(t["hour"]) * 3600 + int(t["minute"]) * 60 + int(t["second"]))
+	var txt := ("%d sa %d dk" % [left / 3600, (left % 3600) / 60]) if DataDB.lang == "tr" else ("%dh %dm" % [left / 3600, (left % 3600) / 60])
+	l.text = "⌛ " + DataDB.t("refresh_in", {"t": txt})
+

@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Görevler penceresi günlük görevlerin yenilenmesine kalan süreyi gösteriyor; gece yarısı tahta kendiliğinden yenileniyor.", "en": "The Quests window shows time left until the daily refresh and renews itself at midnight."},
     {"tr": "Eşya ipuçları ikonlu başlıkla açılıyor; çift yüzde işareti hatası (+%15 % Savunma) düzeltildi. Başarımlar ödüllerini gösteriyor, Bestiyer ipuçları canavarın elementini ve yaşadığı bölgeyi söylüyor. Yenilikler sekmesi kart kart okunuyor.", "en": "Item tooltips open with an icon header; the double percent sign bug is fixed. Achievements show their rewards, bestiary tips name the element and home zone. What's New reads as cards."},
     {"tr": "Hedef şeridi artık oyun boyunca yol gösteriyor: boş parti yuvası, sınıf yükseltmeye hazır kahraman, sıradaki zorluk ve Kule'nin sıradaki ödül katı.", "en": "The goal ribbon now guides you all game: an empty party slot, a hero ready to advance, the next difficulty and the Tower's next reward floor."},
     {"tr": "Kahramanlar daha çok konuşuyor: her sınıfa yeni replikler (boss yenince, efsanevi eşya düşünce, sakin anlarda, gece geç saatte). Toplam 150'den fazla satır.", "en": "Heroes talk more: new lines for every class (after a boss, on a legendary drop, in quiet moments, late at night), over 150 in total."},
