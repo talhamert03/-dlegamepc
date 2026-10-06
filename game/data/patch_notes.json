@@ -19,6 +19,10 @@
     {
      "tr": "Evcil Dostlar penceresi ahır gibi tasarlandı: isim levhalı bölmeler, bulunmayan dostlar gölge olarak görünür, aktif dost yeşil çerçeveli; seçili dostun seviye elmasları, bonusu ve hikâyesi ayrı kartta.",
      "en": "Pets window redesigned as a stable with name plates, level pips and a detail card."
+    },
+    {
+     "tr": "Depo yenilendi: demir kaplı sandık içi görünümü, sekmelerde açılış şekli (altın ya da mağaza) simgesi, doluluk barı ve yeni Sırala düğmesi (nadirlik, yuva, seviye).",
+     "en": "Stash redesigned as an iron-bound chest, with tab plates, a capacity bar and a new Sort button."
     }
    ]
   },

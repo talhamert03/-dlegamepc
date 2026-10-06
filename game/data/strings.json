@@ -384,12 +384,12 @@
   "en": "Sell"
  },
  "btn_to_bag": {
-  "tr": "Çantaya",
-  "en": "To Bag"
+  "tr": "Tümü Çantaya",
+  "en": "All to Bag"
  },
  "btn_to_stash": {
-  "tr": "Depoya",
-  "en": "To Stash"
+  "tr": "Tümü Depoya",
+  "en": "All to Stash"
  },
  "btn_unequip": {
   "tr": "Çıkar",
@@ -2230,5 +2230,25 @@
  "pet_toggle_tip": {
   "tr": "Aktif dost arkada savaşır ve bonusunu partiye verir. Tekrar tıklayınca bırakır.",
   "en": "The active pet fights behind the party and grants its bonus. Click again to dismiss."
+ },
+ "btn_sort": {
+  "tr": "Sırala",
+  "en": "Sort"
+ },
+ "stash_sort_tip": {
+  "tr": "Bu sekmeyi nadirlik, yuva ve seviyeye göre sırala.",
+  "en": "Sort this tab by rarity, slot and level."
+ },
+ "stash_to_bag_tip": {
+  "tr": "Bu sekmedeki her şeyi çantaya taşı.",
+  "en": "Move everything in this tab to the bag."
+ },
+ "stash_to_stash_tip": {
+  "tr": "Çantadaki kilitsiz eşyaları bu sekmeye taşı.",
+  "en": "Move unlocked bag items into this tab."
+ },
+ "stash_capacity": {
+  "tr": "{n} / {m} yuva",
+  "en": "{n} / {m} slots"
  }
 }

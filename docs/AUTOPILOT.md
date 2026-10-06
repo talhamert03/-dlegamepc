@@ -27,7 +27,7 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - [x] 1. Tavern: card-flip reveal when a hero is recruited (rarity glow, special SSR reveal, sound)
 - [x] 2. Chest opening: lid burst, rarity light, items fly into the bag, skippable
 - [x] 3. Pets window redesign (stable stalls, name plates, owned glow, clear bonuses)
-- [ ] 4. Stash window redesign (iron-bound chest interior, tab plates, sort/filter)
+- [x] 4. Stash window redesign (iron-bound chest interior, tab plates, sort/filter)
 - [ ] 5. Blacksmith: Combine, Salvage and Craft tabs rebuilt to the Enhance tab's standard
 - [ ] 6. Steam achievements wired (ids, unlock calls, offline queue, docs for Steamworks setup)
 - [ ] 7. Text / translation sweep: every string TR+EN, terms, clipping at 1.5x/2x, tooltips
@@ -52,3 +52,4 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - 2026-10-06 shift 1 — #1 hero card-flip reveal (tavern + store), rarity-specific build-up, frames checked.
 - 2026-10-06 shift 1 — #2 chest opening: seam light, rays, sparks/coins, rewards leap out, best-item beam, click to skip. (Fly-to-bag dropped: chests live in their own tab.)
 - 2026-10-06 shift 1 — #3 pets stable: stalls with plates, collection bar, detail card with level pips; window 236x262.
+- 2026-10-06 shift 1 — #4 stash: chest-interior bed, tab plates (coin/gem/lock), capacity bar, Sort, centred unlock price; window 206x262.
