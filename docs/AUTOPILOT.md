@@ -50,6 +50,45 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - [x] 24. Treasure goblin achievements (catch 1 / 25) + Steam icon kit refresh
 - [x] 25. Personal join / level-up lines for every recruitable hero (48), from their descriptions
 
+## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
+
+Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and EN, before/after kept in the log.
+
+**A. HD quality**
+- [ ] 26. Battle backgrounds: 128 strips are 480x84 and blur at 4K — upscale to >= 1920x336 (AI upscale if credits allow, otherwise a careful Lanczos + detail pass), keep the parallax layers
+- [ ] 27. Item icons (100 painted, 96 px) and skill icons (159, 96 px): 192 px masters where possible, sharper mipmaps, check every icon at 5x
+- [ ] 28. Hero portraits / full art (48, 315x560 and 202x360): upscale for tavern cards, recruit reveal and Hero window at 4K
+- [ ] 29. Enemy and boss paintings (112, 322x360) and pets (10): upscale, check the living-illustration rig still lines up
+- [ ] 30. UI glyph icons (76, 80 px, ui_hd): redraw or upscale to 160 px, one consistent stroke weight and lighting
+- [ ] 31. Fonts at every scale: hinting / oversampling check, no blurry 7 px text at 2x, pixel-snapped labels
+
+**B. Windows (frames and layout)**
+- [ ] 32. Window frame v2: richer carved corners, per-window crest in the title ribbon, subtle animated rim light on focus
+- [ ] 33. Hero window: equipment slots with slot-shaped silhouettes, portrait frame ornament, party switcher chips
+- [ ] 34. Status window: attribute rows with engraved plates, skill tree tier pillars, detail card art
+- [ ] 35. Blacksmith, Stash, Pets, Chests: second pass to the same finish (materials shelf, anvil scene, stable lights)
+- [ ] 36. World map: hand-painted map look per act, path animation between nodes, cleared-zone laurel
+- [ ] 37. Tavern and Shop: card hover lift, rarity foil on SR/SSR cards, shelf lighting
+- [ ] 38. Growth, Runes, Quests, Codex, Settings, DPS, Away: consistency audit (spacing grid, section plaques, scroll bars)
+- [ ] 39. Scroll bars, tabs, sliders, toggles, tooltips: one themed set everywhere (no default Godot widget left)
+
+**C. Menus and screens**
+- [ ] 40. Title screen: animated key art (light rays, drifting embers), logo shine, menu plaque hover/press animation
+- [ ] 41. Intro cinematic: panel transitions, text reveal, music sync, skip button style
+- [ ] 42. Ending screen, confirm cards, context menu, toasts, recruit reveal: final polish pass
+- [ ] 43. Bottom control panel (taskbar side): medallion icons redrawn, hover glow, notification badges
+
+**D. Icons and identity**
+- [ ] 44. App / taskbar / tray icon at 16-256 px, Steam library capsule set (header, capsule, hero, logo)
+- [ ] 45. Status effect, element and stat icons: one family (fire, cold, lightning, chaos, holy, stun, poison...)
+- [ ] 46. Currency and material icons (gold, seals, shards, badges, dusts, essences): redraw as a matched set
+
+**E. Battle strip**
+- [ ] 47. Unit readability at 2x-5x: outline, shadow, HP bar style, name plates for elites/bosses
+- [ ] 48. Skill VFX second pass per class (impact frames, glow, particles at high scale)
+- [ ] 49. HUD plaques (zone, goal ribbon, boss bar) re-rendered crisp at 5x
+- [ ] 50. Weather and zone atmosphere per act, kept subtle
+
 ## Questions for the owner
 
 - **Difficulty pacing (bot, updated 2026-10-06 night):** with boss fatigue and treasure goblins the baseline bot now
@@ -94,3 +133,4 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - 2026-10-06 shift 3 — Windows export (Godot 4.4.1 templates) builds cleanly: one 236 MB exe with the pack embedded. Not run on Windows (no machine here).
 - 2026-10-06 shift 3 — achievements show rewards, bestiary tips (kills, element, zones), quest refresh countdown + midnight renewal, daily gift countdown, unused PopupMenu helper removed. 24 h regression bot: clean, 36 boss fails (fatigue working).
 - 2026-10-06 shift 3 — 48 h baseline vs Hell res -45 what-if: baseline reaches Hell a4_z10 at 47 h; softer res gave no gain -> recommend no change.
+- 2026-10-07 — owner asked for a full visual overhaul list: items 26-50 added (HD quality, windows, menus, icons, battle strip). Shifts now start at 12:00.
