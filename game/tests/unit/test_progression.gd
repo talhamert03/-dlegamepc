@@ -327,3 +327,12 @@ func test_barks_have_both_languages() -> void:
 					if str(l.get("tr", "")) == "" or str(l.get("en", "")) == "":
 						bad += 1
 	runner.check(bad == 0, "every bark has tr and en (%d missing)" % bad)
+
+
+func test_every_hero_has_a_join_line() -> void:
+	var d: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/barks.json"))
+	var missing: Array = []
+	for hid in DataDB.hero_order:
+		if d.get("heroes", {}).get(hid, {}).get("join", []).is_empty():
+			missing.append(hid)
+	runner.check(missing.is_empty(), "join line for every hero " + str(missing))

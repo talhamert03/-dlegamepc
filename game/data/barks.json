@@ -754,6 +754,12 @@
      "tr": "Lonca kaptanı olarak bu iyi bir gün!",
      "en": "A good day for the guild captain!"
     }
+   ],
+   "join": [
+    {
+     "tr": "Lonca kaptanı olarak bu bölüğü ben toplayacağım.",
+     "en": "As guild captain, I'll pull this company together."
+    }
    ]
   },
   "nova": {
@@ -769,6 +775,334 @@
     {
      "tr": "Şarkı söylerken cebinizi korursanız iyi olur.",
      "en": "Watch your pockets while I sing."
+    }
+   ]
+  },
+  "aurelia": {
+   "join": [
+    {
+     "tr": "İmparatoriçe adına: bu sefer benim emrimde.",
+     "en": "In the Empress' name: this campaign is under my command."
+    }
+   ]
+  },
+  "gareth": {
+   "join": [
+    {
+     "tr": "Otuz yıl savaştım. Bir sefer daha neyse.",
+     "en": "Thirty years of war. One more march, why not."
+    }
+   ]
+  },
+  "cassia": {
+   "join": [
+    {
+     "tr": "Bir ok, bir düşman. Ücretimi peşin alırım.",
+     "en": "One arrow, one enemy. I take my pay up front."
+    }
+   ]
+  },
+  "leon": {
+   "join": [
+    {
+     "tr": "Saray sıkıcıydı. Siz daha iyi bir şarkı olursunuz.",
+     "en": "The court was boring. You'll make a better song."
+    }
+   ]
+  },
+  "marcus": {
+   "join": [
+    {
+     "tr": "Ordunun papazı her zaman en önde dua eder.",
+     "en": "An army chaplain prays from the front line."
+    }
+   ]
+  },
+  "vesper": {
+   "join": [
+    {
+     "tr": "Akademi notlarım hazır. Deney... yani sefer başlasın.",
+     "en": "Academy notes ready. Let the experiment... I mean the quest begin."
+    }
+   ]
+  },
+  "draven": {
+   "join": [
+    {
+     "tr": "Savaş beyi olarak tek kural: geri adım yok.",
+     "en": "As warlord I have one rule: no step back."
+    }
+   ]
+  },
+  "seraphina": {
+   "join": [
+    {
+     "tr": "Melekler sizi izliyor. Ben de.",
+     "en": "The angels are watching over you. So am I."
+    }
+   ]
+  },
+  "tristan": {
+   "join": [
+    {
+     "tr": "Kutsal Kalkan sizi koruyacak, söz.",
+     "en": "The Holy Shield will guard you, I swear it."
+    }
+   ]
+  },
+  "elowen": {
+   "join": [
+    {
+     "tr": "Işık okum yolunu asla şaşırmaz.",
+     "en": "My arrow of light never loses its way."
+    }
+   ]
+  },
+  "oswin": {
+   "join": [
+    {
+     "tr": "Bir ilahi ile başlayalım, kardeşler.",
+     "en": "Let us begin with a hymn, friends."
+    }
+   ]
+  },
+  "lucia": {
+   "join": [
+    {
+     "tr": "Güneş ateşi elimde. Gölgeler kaçsın.",
+     "en": "Sunfire in my hands. Let the shadows run."
+    }
+   ]
+  },
+  "hale": {
+   "join": [
+    {
+     "tr": "Engizisyon her şeyi görür. Sizi de.",
+     "en": "The Inquisition sees all. You too."
+    }
+   ]
+  },
+  "aldric": {
+   "join": [
+    {
+     "tr": "Krallığın kalkanı artık bu lonca için kalkıyor.",
+     "en": "The Kingdom's shield now rises for this guild."
+    }
+   ]
+  },
+  "thalos": {
+   "join": [
+    {
+     "tr": "Bilgelik paylaşılınca büyür. Gelin, öğreteyim.",
+     "en": "Wisdom grows when shared. Come, I'll teach you."
+    }
+   ]
+  },
+  "fizz": {
+   "join": [
+    {
+     "tr": "Tik-tak, tik-tak! Saat işliyor, ritim tutuyor!",
+     "en": "Tick-tock, tick-tock! The clock is ticking, the beat is on!"
+    }
+   ]
+  },
+  "iris": {
+   "join": [
+    {
+     "tr": "Kristal oklarım ışığı kırar. Düşmanları da.",
+     "en": "My crystal arrows split the light. And enemies."
+    }
+   ]
+  },
+  "mordecai": {
+   "join": [
+    {
+     "tr": "Yasak bilgiler... Merak etmeyin, çoğu zararsız.",
+     "en": "Forbidden lore... Don't worry, most of it is harmless."
+    }
+   ]
+  },
+  "selene": {
+   "join": [
+    {
+     "tr": "Ay ışığı yaralarınızı sarar. Gece bizimdir.",
+     "en": "Moonlight will bind your wounds. The night is ours."
+    }
+   ]
+  },
+  "rook": {
+   "join": [
+    {
+     "tr": "Rün zırhım hazır. Vurun bakalım.",
+     "en": "My rune armour is ready. Go on, hit it."
+    }
+   ]
+  },
+  "zephyr": {
+   "join": [
+    {
+     "tr": "Rüzgâr gibi gelirim, rüzgâr gibi kesersin. Yani ben keserim.",
+     "en": "I come like the wind and cut like it."
+    }
+   ]
+  },
+  "lilith": {
+   "join": [
+    {
+     "tr": "İblis kanı damarlarımda. Sorun mu var?",
+     "en": "Demon blood in my veins. Is that a problem?"
+    }
+   ]
+  },
+  "morrigan": {
+   "join": [
+    {
+     "tr": "Kargalarım sizi buldu. Ben de geldim.",
+     "en": "My crows found you. So I came along."
+    }
+   ]
+  },
+  "grimm": {
+   "join": [
+    {
+     "tr": "Lanetli güç... Hissediyor musunuz? Ben her gün.",
+     "en": "Cursed strength... Can you feel it? I do, every day."
+    }
+   ]
+  },
+  "nyx": {
+   "join": [
+    {
+     "tr": "Karanlık da iyileştirir. Sadece biraz soğuk.",
+     "en": "Darkness heals too. It's just a little cold."
+    }
+   ]
+  },
+  "malakar": {
+   "join": [
+    {
+     "tr": "Kemik Kral sizinle. Ordum da öyle.",
+     "en": "The Bone King stands with you. So does my army."
+    }
+   ]
+  },
+  "ezra": {
+   "join": [
+    {
+     "tr": "Ağıtlarım düşmanlar için. Size neşeli çalarım.",
+     "en": "My laments are for enemies. For you I play cheerful."
+    }
+   ]
+  },
+  "kharon": {
+   "join": [
+    {
+     "tr": "Ölümün kapısını ben bekliyorum. Kimse geçemez.",
+     "en": "I guard Death's Door. No one gets through."
+    }
+   ]
+  },
+  "thorne": {
+   "join": [
+    {
+     "tr": "Ormanın kalbi sizi seçti. Ben de onunla geldim.",
+     "en": "The heart of the forest chose you. I came with it."
+    }
+   ]
+  },
+  "kira": {
+   "join": [
+    {
+     "tr": "Miyav. Şaka şaka. Ama çok hızlıyım.",
+     "en": "Meow. Kidding. But I am very fast."
+    }
+   ]
+  },
+  "ursa": {
+   "join": [
+    {
+     "tr": "Ayı gücüyle geliyorum! Bal var mı?",
+     "en": "Here with the strength of a bear! Any honey?"
+    }
+   ]
+  },
+  "oakheart": {
+   "join": [
+    {
+     "tr": "Güneşte biraz durayım, sonra iyileştiririm.",
+     "en": "Let me soak up some sun, then I'll heal."
+    }
+   ]
+  },
+  "raka": {
+   "join": [
+    {
+     "tr": "Avcı Kral av peşinde. Bugün av sizin düşmanlarınız.",
+     "en": "The Hunter King is on the prowl. Today, your foes are the prey."
+    }
+   ]
+  },
+  "fern": {
+   "join": [
+    {
+     "tr": "Orman şarkısı başlasın. Kuşlar da katılır.",
+     "en": "Let the forest song begin. The birds will join in."
+    }
+   ]
+  },
+  "raven": {
+   "join": [
+    {
+     "tr": "Lonca bıçağı hizmetinizde. Fiyatı sonra konuşuruz.",
+     "en": "The guild blade at your service. We'll talk price later."
+    }
+   ]
+  },
+  "nyxara": {
+   "join": [
+    {
+     "tr": "Gölge Kraliçesi bir loncaya katılıyor. Ne günler.",
+     "en": "The Shadow Queen joins a guild. What times."
+    }
+   ]
+  },
+  "silas": {
+   "join": [
+    {
+     "tr": "Altın kokusu aldım. Sanırım doğru yerdeyim.",
+     "en": "I smell gold. I think I'm in the right place."
+    }
+   ]
+  },
+  "dahlia": {
+   "join": [
+    {
+     "tr": "Kan gülü açar, düşman solar.",
+     "en": "The blood rose blooms, the enemy withers."
+    }
+   ]
+  },
+  "mags": {
+   "join": [
+    {
+     "tr": "Otlarım, merhemlerim, bir de bastonum. Yeter de artar.",
+     "en": "My herbs, my salves and my cane. More than enough."
+    }
+   ]
+  },
+  "viktor": {
+   "join": [
+    {
+     "tr": "Sokak dövüşünde kural yok. Burada da olmasın.",
+     "en": "Street fights have no rules. Let's keep it that way."
+    }
+   ]
+  },
+  "masked": {
+   "join": [
+    {
+     "tr": "Bir kart çek. Şanslı mısın? Ben hep şanslıyım.",
+     "en": "Pick a card. Feeling lucky? I always am."
     }
    ]
   }

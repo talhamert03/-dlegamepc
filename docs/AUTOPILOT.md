@@ -48,7 +48,7 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - [x] 22. Session variety: daily quest pool, achievement pacing over the first 10 hours, small surprises
 - [x] 23. Hero barks: merged pools, wire legendary / idle / night / boss-down, 100+ class lines
 - [x] 24. Treasure goblin achievements (catch 1 / 25) + Steam icon kit refresh
-- [ ] 25. Personal join / level-up lines for every recruitable hero (48), from their descriptions
+- [x] 25. Personal join / level-up lines for every recruitable hero (48), from their descriptions
 
 ## Questions for the owner
 
@@ -88,3 +88,4 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - 2026-10-06 shift 1 — #22 variety: daily pool 6 -> 9 (chests, elites, salvage), Treasure Goblin event (0.8% of waves from zone 2: approaches, lingers 1.4 s, runs; caught = 12x elite gold + golden chest), gilded look and flee turn.
 - 2026-10-06 shift 1 — #23 barks: 15 -> 151 lines; legendary/idle/night lines were never triggered, now wired (boss down, legendary drop, idle every 2-4 min).
 - 2026-10-06 shift 1 — #24: ACH_TREASURE_1, ACH_TREASURE_25, ACH_ELITES_500 (44 achievements), Steam icon kit + CSV regenerated. New Steamworks entries needed when the app is set up.
+- 2026-10-06 shift 1 — #25: a personal join line for all 48 heroes (from signature + faction), always spoken on joining; test guards it. Barks: 193 lines.

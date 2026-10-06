@@ -207,7 +207,7 @@ func _on_zone_unlocked(_zid: String) -> void:
 
 
 func _on_hero_unlocked(hid: String) -> void:
-	Barks.trigger(hid, "join")
+	Barks.trigger(hid, "join", 1.0)
 
 
 func _on_died(u) -> void:
