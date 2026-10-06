@@ -3,9 +3,14 @@ extends Node
 ## First-session guidance + early story joins (Lyra, Pip) and hero barks.
 
 var main: Control
-var bubble: PanelContainer
+var bubble: Control
 var bubble_label: Label
 var bubble_t := 0.0
+var _speaker := "kael"
+var _tail_x := 0.0
+const PAD := 4.0
+const PORTRAIT := 18.0
+const TEXT_W := 200.0
 var shown: Dictionary = {}
 var _bark_cd := 0.0
 
@@ -19,14 +24,15 @@ static func start_if_needed(m: Control) -> void:
 
 func _ready() -> void:
 	shown = GameState.flags.get("tut", {})
-	bubble = PanelContainer.new()
-	bubble.add_theme_stylebox_override("panel", UITheme.box("tooltip", 3, 3))
+	bubble = Control.new()
 	bubble.visible = false
 	bubble.z_index = 60
 	bubble.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	bubble_label = UITheme.label("", UITheme.C_TEXT)
+	bubble.draw.connect(_draw_bubble)
+	bubble_label = UITheme.label("", Color("#F3E6CC"), 8, UITheme.font_body)
 	bubble_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	bubble_label.custom_minimum_size = Vector2(150, 0)
+	bubble_label.custom_minimum_size = Vector2(TEXT_W, 0)
+	bubble_label.position = Vector2(PAD * 2 + PORTRAIT, PAD)
 	bubble.add_child(bubble_label)
 	main.add_child(bubble)
 	EventBus.wave_spawned.connect(_on_wave)
@@ -38,6 +44,7 @@ func _ready() -> void:
 	EventBus.hero_unlocked.connect(_on_hero_unlocked)
 	EventBus.unit_died.connect(_on_died)
 	EventBus.bark.connect(_say_bark)
+	EventBus.chest_dropped.connect(func(_k, _p): _tip("chest", "tut_chest"))
 	var gt := Timer.new()
 	gt.wait_time = 15.0
 	gt.autostart = true
@@ -49,6 +56,8 @@ func _process(delta: float) -> void:
 	_bark_cd -= delta
 	if bubble_t > 0:
 		bubble_t -= delta
+		if bubble_t < 0.25:
+			bubble.modulate.a = maxf(0.0, bubble_t / 0.25)
 		if bubble_t <= 0:
 			bubble.visible = false
 
@@ -61,17 +70,57 @@ func _hint(key: String, text_key: String, args: Dictionary = {}) -> void:
 	_show_bubble(DataDB.t(text_key, args), "kael", 7.0)
 
 
+## Feature tips that outlive the tutorial: each shows once, the first time the feature matters.
+func _tip(key: String, text_key: String) -> void:
+	if shown.has(key) or bubble_t > 0.0:
+		return
+	shown[key] = true
+	GameState.flags["tut"] = shown
+	_show_bubble(DataDB.t(text_key), "kael", 7.0)
+
+
 func _show_bubble(text: String, hero_id: String, dur: float) -> void:
+	_speaker = hero_id
 	bubble_label.text = text
-	bubble.visible = true
-	bubble.reset_size()
+	bubble_label.size = Vector2(TEXT_W, 0)
+	bubble_label.reset_size()
+	var h := maxf(bubble_label.get_combined_minimum_size().y + PAD * 2, PORTRAIT + PAD * 2)
+	bubble.size = Vector2(TEXT_W + PORTRAIT + PAD * 3, h)
 	var x := 150.0
 	for u in BattleSim.heroes:
 		if u.id == hero_id:
 			x = u.x
-	var w := bubble.get_combined_minimum_size().x
-	bubble.position = Vector2(clamp(x - w / 2.0, 20.0, 395.0 - w), 12)
+	var w := bubble.size.x
+	bubble.position = Vector2(clamp(x - w / 2.0, 20.0, 395.0 - w), 13)
+	_tail_x = clampf(x - bubble.position.x, 10.0, w - 10.0)
+	bubble.pivot_offset = Vector2(_tail_x, h)
+	bubble.visible = true
+	bubble.modulate.a = 1.0
+	bubble.scale = Vector2(0.6, 0.6)
+	var tw := bubble.create_tween()
+	tw.tween_property(bubble, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	bubble.queue_redraw()
 	bubble_t = dur
+
+
+## Speech bubble: dark leather card with a bronze rim, the speaker's portrait chip and a tail pointing down at them.
+func _draw_bubble() -> void:
+	var ci := bubble.get_canvas_item()
+	var r := Rect2(Vector2.ZERO, bubble.size)
+	UISkin.fill(ci, Rect2(r.position + Vector2(0, 2), r.size), 4, Color(0, 0, 0, 0.35), Color(0, 0, 0, 0.35))
+	var tail := PackedVector2Array([Vector2(_tail_x - 5, r.end.y - 1), Vector2(_tail_x + 5, r.end.y - 1), Vector2(_tail_x, r.end.y + 6)])
+	bubble.draw_colored_polygon(PackedVector2Array([tail[0] + Vector2(-1.2, 0), tail[1] + Vector2(1.2, 0), tail[2] + Vector2(0, 1.6)]), UISkin.OUTLINE)
+	UISkin.fill(ci, r, 4, Color("#3A2C22"), Color("#1E1610"))
+	bubble.draw_colored_polygon(tail, Color("#1E1610"))
+	UISkin.stroke(ci, r, 4, UISkin.OUTLINE, 1.0)
+	UISkin.stroke(ci, r.grow(-1.2), 3, Color(UISkin.BRONZE, 0.7), 0.8)
+	var pr := Rect2(PAD, PAD, PORTRAIT, PORTRAIT)
+	UISkin.fill(ci, pr, 3, Color("#4A3826"), Color("#22180F"))
+	var ic := SpriteLib.hero_icon(_speaker)
+	if ic:
+		bubble.draw_texture_rect(ic, pr.grow(-1.0), false)
+	UISkin.stroke(ci, pr, 3, UISkin.OUTLINE, 1.0)
+	UISkin.stroke(ci, pr.grow(-0.8), 2, Color(UISkin.BRONZE_HI, 0.6), 0.6)
 
 
 func _say_bark(hero_id: String, text: String) -> void:
@@ -95,6 +144,10 @@ func _on_level(hid: String, lv: int) -> void:
 		_hint("stats", "tut_stats")
 	elif lv == 3:
 		_hint("skills_pts", "tut_skills")
+	elif lv == 8:
+		_tip("smith", "tut_smith")
+	if lv >= 4 and Runes.points_spent() == 0 and Runes.any_affordable():
+		_tip("runes", "tut_runes")
 	Barks.trigger(hid, "level_up")
 
 
