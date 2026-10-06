@@ -48,6 +48,25 @@ func _achievement_row(a: Dictionary, w: float) -> Control:
 	return c
 
 
+## One change in the patch notes: a dark card, a gold diamond, the text wrapped in the reading font.
+func _note_card(text: String, w: float) -> Control:
+	var card := MarginContainer.new()
+	card.custom_minimum_size = Vector2(w, 0)
+	for side in ["left", "right", "top", "bottom"]:
+		card.add_theme_constant_override("margin_" + side, 3)
+	card.add_theme_constant_override("margin_left", 12)
+	var l := UITheme.para(text, w - 16, Color("#EADFC8"), 8)
+	l.add_theme_font_override("font", UITheme.font_read)
+	card.add_child(l)
+	card.draw.connect(func():
+		var ci := card.get_canvas_item()
+		var r := Rect2(Vector2.ZERO, card.size)
+		UISkin.fill(ci, r, 3, Color("#2A1F18"), Color("#18110C"))
+		UISkin.stroke(ci, r, 3, Color(0, 0, 0, 0.8), 1.0)
+		UISkin.diamond(ci, Vector2(6, 8), 2.4, Color("#FFE08A"), Color("#B07420")))
+	return card
+
+
 func refresh() -> void:
 	if _body == null:
 		return
@@ -70,17 +89,12 @@ func refresh() -> void:
 		for a in list:
 			_body.add_child(_achievement_row(a, w))
 	elif tab == 2:
-		# patch notes: what changed, newest first
+		# patch notes: a version plaque, then one card per change in the reading font, newest first
 		for n in DataDB.patch_notes.get("notes", []):
-			var head := UITheme.label("v%s  %s" % [str(n.get("version", "")), DataDB.tx(n.get("title", {}))], UITheme.C_GOLD, 8, UITheme.font_title)
-			head.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-			head.custom_minimum_size = Vector2(_body.custom_minimum_size.x, 0)
-			_body.add_child(head)
+			_body.add_child(Fancy.section("v%s · %s" % [str(n.get("version", "")), DataDB.tx(n.get("title", {}))], w))
 			for it in n.get("items", []):
-				var l := UITheme.label("• " + DataDB.tx(it), UITheme.C_TEXT, 7, UITheme.font_body)
-				l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-				l.custom_minimum_size = Vector2(_body.custom_minimum_size.x, 0)
-				_body.add_child(l)
+				_body.add_child(_note_card(DataDB.tx(it), w))
+			_body.add_child(W.spacer(0, 4))
 	else:
 		var seen: Dictionary = GameState.codex.get("enemies", {})
 		var tot2 := DataDB.enemies.size() + DataDB.bosses.size()

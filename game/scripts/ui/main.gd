@@ -406,6 +406,13 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 		get_tree().create_timer(maxf(0.5, secs - 1.5)).timeout.connect(func():
 			Toast.show_reward(null, DataDB.t("toast_daily"), "1× " + Chests.display_name("iron"), "iron"))
 	for a in cmd:
+		if a.begins_with("--codextab="):
+			get_tree().create_timer(1.0).timeout.connect(func():
+				if WindowManager.is_open("codex"):
+					var cp = WindowManager.panels["codex"]
+					cp.tab = int(a.substr(11))
+					W.set_tab_active(cp._tabs, cp.tab)
+					cp.refresh())
 		if a.begins_with("--growthtab="):
 			get_tree().create_timer(1.0).timeout.connect(func():
 				if WindowManager.is_open("growth"):
