@@ -336,3 +336,14 @@ func test_every_hero_has_a_join_line() -> void:
 		if d.get("heroes", {}).get(hid, {}).get("join", []).is_empty():
 			missing.append(hid)
 	runner.check(missing.is_empty(), "join line for every hero " + str(missing))
+
+
+func test_goal_ribbon_after_level_25() -> void:
+	GameState.new_game()
+	GameState.heroes["kael"].level = 40
+	BattleSim.quiet = true
+	BattleSim.start()
+	var g := Goals.current()
+	runner.check(g != "" and not g.begins_with("goal_"), "a goal is shown past level 25: " + g)
+	BattleSim.stop()
+	BattleSim.quiet = false

@@ -2301,5 +2301,9 @@
   "quest_salvage": {"tr": "{n} eşya parçala", "en": "Salvage {n} items"},
   "treasure_appears": {"tr": "Bir Hazine Goblini belirdi! Kaçmadan yakala!", "en": "A Treasure Goblin appeared! Catch it before it runs!"},
   "treasure_escaped": {"tr": "Hazine Goblini kaçtı...", "en": "The Treasure Goblin got away..."},
-  "treasure_caught": {"tr": "Hazine Goblini yakalandı! +{g} altın ve Altın Sandık", "en": "Treasure Goblin caught! +{g} gold and a Golden Chest"}
+  "treasure_caught": {"tr": "Hazine Goblini yakalandı! +{g} altın ve Altın Sandık", "en": "Treasure Goblin caught! +{g} gold and a Golden Chest"},
+  "goal_fill_party": {"tr": "Hedef: Partideki boş yuvayı doldur", "en": "Goal: fill the empty party slot"},
+  "goal_advance": {"tr": "Hedef: {name} sınıf yükseltmeye hazır", "en": "Goal: {name} can advance class"},
+  "goal_difficulty": {"tr": "Hedef: {diff} zorluğunu aç", "en": "Goal: unlock {diff}"},
+  "goal_tower": {"tr": "Hedef: Sonsuz Kule {n}. kat", "en": "Goal: Endless Tower floor {n}"}
 }
