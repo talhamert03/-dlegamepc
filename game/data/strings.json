@@ -15,10 +15,6 @@
   "tr": "Dünya",
   "en": "World"
  },
- "btn_party": {
-  "tr": "Parti",
-  "en": "Party"
- },
  "btn_tavern": {
   "tr": "Taverna",
   "en": "Tavern"
@@ -30,10 +26,6 @@
  "panel_hero": {
   "tr": "Kahraman",
   "en": "Hero"
- },
- "panel_portrait": {
-  "tr": "Portre",
-  "en": "Portrait"
  },
  "panel_inventory": {
   "tr": "Envanter",
@@ -54,10 +46,6 @@
  "panel_growth": {
   "tr": "Gelişim",
   "en": "Growth"
- },
- "panel_party": {
-  "tr": "Parti",
-  "en": "Party"
  },
  "panel_tavern": {
   "tr": "Taverna",
@@ -287,10 +275,6 @@
   "tr": "Dünya {n}",
   "en": "World {n}"
  },
- "adv_req": {
-  "tr": "Sv. {lv} ilerlemesi",
-  "en": "Lv {lv} advancement"
- },
  "advanced": {
   "tr": "{name} artık {cls}!",
   "en": "{name} is now a {cls}!"
@@ -323,10 +307,6 @@
   "tr": "{name} +{n} seviye!",
   "en": "{name} +{n} levels!"
  },
- "away_time": {
-  "tr": "{h} saat {m} dakika yoktun",
-  "en": "You were away {h}h {m}m"
- },
  "away_xp": {
   "tr": "Kahraman tecrübesi",
   "en": "Hero XP"
@@ -334,10 +314,6 @@
  "boss": {
   "tr": "Boss",
   "en": "Boss"
- },
- "btn_advance": {
-  "tr": "İlerle!",
-  "en": "Advance!"
  },
  "btn_auto": {
   "tr": "Oto",
@@ -367,10 +343,6 @@
   "tr": "Yenile",
   "en": "Refresh"
  },
- "btn_remove": {
-  "tr": "Çıkar",
-  "en": "Remove"
- },
  "btn_reset": {
   "tr": "Sıfırla",
   "en": "Reset"
@@ -398,10 +370,6 @@
  "buy_tab": {
   "tr": "Sekme aç: {g}",
   "en": "Unlock tab: {g}"
- },
- "choose_spec": {
-  "tr": "Uzmanlığını seç:",
-  "en": "Choose your specialization:"
  },
  "claimed": {
   "tr": "Alındı",
@@ -943,10 +911,6 @@
   "tr": "Taverna 8. seviyede açılır.",
   "en": "The Tavern opens at Lv 8."
  },
- "tier_base": {
-  "tr": "Temel",
-  "en": "Base"
- },
  "tip_sell_junk": {
   "tr": "Seçtiğin nadirlikteki tüm eşyaları sat (kilitliler hariç)",
   "en": "Sell every item of the rarities you pick (locked ones are kept)"
@@ -1199,10 +1163,6 @@
   "tr": "Pencere yerlerini hatırla",
   "en": "Remember panel spots"
  },
- "panel_skills": {
-  "tr": "Yetenekler",
-  "en": "Skills"
- },
  "tab_formation": {
   "tr": "Diziliş",
   "en": "Formation"
@@ -1210,10 +1170,6 @@
  "tip_open_stats": {
   "tr": "Özellikler",
   "en": "Stats"
- },
- "tip_open_skills": {
-  "tr": "Yetenekler",
-  "en": "Skills"
  },
  "front": {
   "tr": "Ön",
@@ -1959,10 +1915,6 @@
   "tr": "Eşya Sv.",
   "en": "iLvl"
  },
- "away_hourglass": {
-  "tr": "Zaman Kum Saati: kazançlar x2",
-  "en": "Hourglass of Ages: gains x2"
- },
  "shop_inspect": {
   "tr": "İncele",
   "en": "Details"
@@ -2275,35 +2227,128 @@
   "tr": "BLOK",
   "en": "BLOCK"
  },
-  "star_tip": {"tr": "Yıldız {n}/6 — tıkla ve yükselt\nSonraki yıldız: {s} Ruh Parçası (sende {have}) + {g} altın\nHer yıldız: temel değerler +%8, imza bonusu +%20\nRuh Parçası: boss görevleri, kristal ve kraliyet sandıkları", "en": "Stars {n}/6 — click to raise\nNext star: {s} Soul Shards (you have {have}) + {g} gold\nEach star: base stats +8%, signature bonus +20%\nSoul Shards: boss quests, crystal and royal chests"},
-  "star_need": {"tr": "Yıldız için {s} Ruh Parçası (sende {have}) ve {g} altın gerekli", "en": "A star needs {s} Soul Shards (you have {have}) and {g} gold"},
-  "star_max": {"tr": "{name} en yüksek yıldızda!", "en": "{name} is at max stars!"},
-  "star_up_ask": {"tr": "{name} {n}. yıldıza yükselsin mi?\n{s} Ruh Parçası + {g} altın\nTemel değerler +%8, imza bonusu +%20", "en": "Raise {name} to {n} stars?\n{s} Soul Shards + {g} gold\nBase stats +8%, signature bonus +20%"},
-  "btn_star_up": {"tr": "Yükselt", "en": "Raise"},
-  "away_dur": {"tr": "{h} sa {m} dk", "en": "{h}h {m}m"},
-  "away_head": {"tr": "Yokluk süren", "en": "Time away"},
-  "away_levels": {"tr": "Seviye atladı", "en": "Levelled up"},
-  "away_sold": {"tr": "Çanta dolunca satılan eşyalar: +{g} altın", "en": "Sold when the bag was full: +{g} gold"},
-  "guild_max": {"tr": "En yüksek", "en": "Maxed"},
-  "guild_cost_tip": {"tr": "Bedel: {g} altın + {b} Lonca Nişanı", "en": "Cost: {g} gold + {b} Guild Badges"},
-  "account_bonus_none": {"tr": "Henüz hesap bonusu yok. Başarımlar ve Lonca yükseltmeleri kalıcı bonus verir.", "en": "No account bonuses yet. Achievements and Guild upgrades give permanent bonuses."},
-  "boss_fatigue": {"tr": "Yorgun -%{p}", "en": "Weary -{p}%"},
-  "boss_fatigue_note": {"tr": "Boss yoruldu: her başarısız denemede %3 eksik canla başlar (en fazla %30).", "en": "The boss tires: each failed try it starts with 3% less HP (up to 30%)."},
-  "tut_chest": {"tr": "Sandık düştü! Kahraman penceresindeki Sandıklar sekmesinden açabilirsin.", "en": "A chest dropped! Open it from the Chests tab in the Hero window."},
-  "tut_smith": {"tr": "Demirci seni bekliyor: Kahraman penceresinin altındaki çekiçle eşyalarını güçlendir, birleştir ya da parçala.", "en": "The blacksmith awaits: use the hammer under the Hero window to enhance, combine or salvage gear."},
-  "tut_runes": {"tr": "İlk Liderlik Rününü alabilirsin! Alttaki menüden Rünler penceresini aç.", "en": "You can buy your first Leadership Rune! Open the Runes window from the menu."},
-  "achievement_toast": {"tr": "Başarım Açıldı", "en": "Achievement Unlocked"},
-  "tower_rewards": {"tr": "Her yeni kat: Yıldız Tozu (+13…+15 güçlendirme için)\nKat {a}: Lonca Nişanı ve evcil dost şansı\nKat {b}: Mitik Öz (mitik birleştirme için) ve 3 kat evcil şansı", "en": "Each new floor: Star Dust (for +13…+15 enhancing)\nFloor {a}: Guild Badge and a pet chance\nFloor {b}: Mythic Essence (mythic combine) and triple pet chance"},
-  "set_colorblind": {"tr": "Nadirlik işaretleri (renk körü)", "en": "Rarity marks (colour-blind)"},
-  "skill_equipped": {"tr": "Kuşanılmış yetenek", "en": "Equipped skill"},
-  "quest_chests": {"tr": "{n} sandık aç", "en": "Open {n} chests"},
-  "quest_elites": {"tr": "{n} elit düşman avla", "en": "Hunt {n} elite enemies"},
-  "quest_salvage": {"tr": "{n} eşya parçala", "en": "Salvage {n} items"},
-  "treasure_appears": {"tr": "Bir Hazine Goblini belirdi! Kaçmadan yakala!", "en": "A Treasure Goblin appeared! Catch it before it runs!"},
-  "treasure_escaped": {"tr": "Hazine Goblini kaçtı...", "en": "The Treasure Goblin got away..."},
-  "treasure_caught": {"tr": "Hazine Goblini yakalandı! +{g} altın ve Altın Sandık", "en": "Treasure Goblin caught! +{g} gold and a Golden Chest"},
-  "goal_fill_party": {"tr": "Hedef: Partideki boş yuvayı doldur", "en": "Goal: fill the empty party slot"},
-  "goal_advance": {"tr": "Hedef: {name} sınıf yükseltmeye hazır", "en": "Goal: {name} can advance class"},
-  "goal_difficulty": {"tr": "Hedef: {diff} zorluğunu aç", "en": "Goal: unlock {diff}"},
-  "goal_tower": {"tr": "Hedef: Sonsuz Kule {n}. kat", "en": "Goal: Endless Tower floor {n}"}
+ "star_tip": {
+  "tr": "Yıldız {n}/6 — tıkla ve yükselt\nSonraki yıldız: {s} Ruh Parçası (sende {have}) + {g} altın\nHer yıldız: temel değerler +%8, imza bonusu +%20\nRuh Parçası: boss görevleri, kristal ve kraliyet sandıkları",
+  "en": "Stars {n}/6 — click to raise\nNext star: {s} Soul Shards (you have {have}) + {g} gold\nEach star: base stats +8%, signature bonus +20%\nSoul Shards: boss quests, crystal and royal chests"
+ },
+ "star_need": {
+  "tr": "Yıldız için {s} Ruh Parçası (sende {have}) ve {g} altın gerekli",
+  "en": "A star needs {s} Soul Shards (you have {have}) and {g} gold"
+ },
+ "star_max": {
+  "tr": "{name} en yüksek yıldızda!",
+  "en": "{name} is at max stars!"
+ },
+ "star_up_ask": {
+  "tr": "{name} {n}. yıldıza yükselsin mi?\n{s} Ruh Parçası + {g} altın\nTemel değerler +%8, imza bonusu +%20",
+  "en": "Raise {name} to {n} stars?\n{s} Soul Shards + {g} gold\nBase stats +8%, signature bonus +20%"
+ },
+ "btn_star_up": {
+  "tr": "Yükselt",
+  "en": "Raise"
+ },
+ "away_dur": {
+  "tr": "{h} sa {m} dk",
+  "en": "{h}h {m}m"
+ },
+ "away_head": {
+  "tr": "Yokluk süren",
+  "en": "Time away"
+ },
+ "away_levels": {
+  "tr": "Seviye atladı",
+  "en": "Levelled up"
+ },
+ "away_sold": {
+  "tr": "Çanta dolunca satılan eşyalar: +{g} altın",
+  "en": "Sold when the bag was full: +{g} gold"
+ },
+ "guild_max": {
+  "tr": "En yüksek",
+  "en": "Maxed"
+ },
+ "guild_cost_tip": {
+  "tr": "Bedel: {g} altın + {b} Lonca Nişanı",
+  "en": "Cost: {g} gold + {b} Guild Badges"
+ },
+ "account_bonus_none": {
+  "tr": "Henüz hesap bonusu yok. Başarımlar ve Lonca yükseltmeleri kalıcı bonus verir.",
+  "en": "No account bonuses yet. Achievements and Guild upgrades give permanent bonuses."
+ },
+ "boss_fatigue": {
+  "tr": "Yorgun -%{p}",
+  "en": "Weary -{p}%"
+ },
+ "boss_fatigue_note": {
+  "tr": "Boss yoruldu: her başarısız denemede %3 eksik canla başlar (en fazla %30).",
+  "en": "The boss tires: each failed try it starts with 3% less HP (up to 30%)."
+ },
+ "tut_chest": {
+  "tr": "Sandık düştü! Kahraman penceresindeki Sandıklar sekmesinden açabilirsin.",
+  "en": "A chest dropped! Open it from the Chests tab in the Hero window."
+ },
+ "tut_smith": {
+  "tr": "Demirci seni bekliyor: Kahraman penceresinin altındaki çekiçle eşyalarını güçlendir, birleştir ya da parçala.",
+  "en": "The blacksmith awaits: use the hammer under the Hero window to enhance, combine or salvage gear."
+ },
+ "tut_runes": {
+  "tr": "İlk Liderlik Rününü alabilirsin! Alttaki menüden Rünler penceresini aç.",
+  "en": "You can buy your first Leadership Rune! Open the Runes window from the menu."
+ },
+ "achievement_toast": {
+  "tr": "Başarım Açıldı",
+  "en": "Achievement Unlocked"
+ },
+ "tower_rewards": {
+  "tr": "Her yeni kat: Yıldız Tozu (+13…+15 güçlendirme için)\nKat {a}: Lonca Nişanı ve evcil dost şansı\nKat {b}: Mitik Öz (mitik birleştirme için) ve 3 kat evcil şansı",
+  "en": "Each new floor: Star Dust (for +13…+15 enhancing)\nFloor {a}: Guild Badge and a pet chance\nFloor {b}: Mythic Essence (mythic combine) and triple pet chance"
+ },
+ "set_colorblind": {
+  "tr": "Nadirlik işaretleri (renk körü)",
+  "en": "Rarity marks (colour-blind)"
+ },
+ "skill_equipped": {
+  "tr": "Kuşanılmış yetenek",
+  "en": "Equipped skill"
+ },
+ "quest_chests": {
+  "tr": "{n} sandık aç",
+  "en": "Open {n} chests"
+ },
+ "quest_elites": {
+  "tr": "{n} elit düşman avla",
+  "en": "Hunt {n} elite enemies"
+ },
+ "quest_salvage": {
+  "tr": "{n} eşya parçala",
+  "en": "Salvage {n} items"
+ },
+ "treasure_appears": {
+  "tr": "Bir Hazine Goblini belirdi! Kaçmadan yakala!",
+  "en": "A Treasure Goblin appeared! Catch it before it runs!"
+ },
+ "treasure_escaped": {
+  "tr": "Hazine Goblini kaçtı...",
+  "en": "The Treasure Goblin got away..."
+ },
+ "treasure_caught": {
+  "tr": "Hazine Goblini yakalandı! +{g} altın ve Altın Sandık",
+  "en": "Treasure Goblin caught! +{g} gold and a Golden Chest"
+ },
+ "goal_fill_party": {
+  "tr": "Hedef: Partideki boş yuvayı doldur",
+  "en": "Goal: fill the empty party slot"
+ },
+ "goal_advance": {
+  "tr": "Hedef: {name} sınıf yükseltmeye hazır",
+  "en": "Goal: {name} can advance class"
+ },
+ "goal_difficulty": {
+  "tr": "Hedef: {diff} zorluğunu aç",
+  "en": "Goal: unlock {diff}"
+ },
+ "goal_tower": {
+  "tr": "Hedef: Sonsuz Kule {n}. kat",
+  "en": "Goal: Endless Tower floor {n}"
+ }
 }
