@@ -387,6 +387,12 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 				var it := LootSystem.generate(GameState.rng, 20, ["rare", "epic", "legendary", "magic"][i % 4], GameState.heroes[hid].cls())
 				it["enhance"] = i % 6
 				GameState.try_auto_equip(it)
+	for a in cmd:
+		if a.begins_with("--cleared="):
+			var n := int(a.substr(10))
+			for zi in n:
+				GameState.progress["cleared"]["0_%s" % str(DataDB.zones[zi]["id"])] = true
+			GameState.progress["max_zone"][0] = mini(n, DataDB.zones.size() - 1)
 	if cmd.has("--questdone"):
 		for q in GameState.flags.get("daily", {}).get("list", []).slice(0, 2):
 			GameState.totals[q["stat"]] = float(q["start"]) + float(q["target"])
