@@ -294,3 +294,14 @@ func test_steam_achievement_ids() -> void:
 		if DataDB.tx(a.get("name", {})) == "" or str(a.get("name", {}).get("en", "")) == "":
 			bad.append(id + " (name)")
 	runner.check(bad.is_empty(), "achievement ids are valid Steam API names " + str(bad))
+
+
+func test_data_files_parse() -> void:
+	var bad: Array = []
+	for f in DirAccess.get_files_at("res://data"):
+		if not f.ends_with(".json"):
+			continue
+		var j := JSON.new()
+		if j.parse(FileAccess.get_file_as_string("res://data/" + f)) != OK:
+			bad.append("%s:%d" % [f, j.get_error_line()])
+	runner.check(bad.is_empty(), "every data/*.json parses " + str(bad))
