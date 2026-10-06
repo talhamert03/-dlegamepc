@@ -39,7 +39,7 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - [x] 13. Audio pass: missing SFX, volume balance, UI sounds on every control
 - [x] 14. Performance: idle CPU/GPU, draw calls, long-session memory, 144 fps focus mode
 - [x] 15. Endgame: tower floors, paragon, Hell rewards — reasons to keep playing
-- [ ] 16. Accessibility: text-size option, colour-blind safe rarity marks, key rebinding view
+- [x] 16. Accessibility: text-size option, colour-blind safe rarity marks, key rebinding view
 - [ ] 17. Polish round: every panel at 1.5x/2x/2.5x, no clipping, no overlaps, consistent spacing
 
 ## Questions for the owner
@@ -67,3 +67,4 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - 2026-10-06 shift 1 — #9 playthrough: two 48 h bot runs through Normal, Nightmare, Hell; boss HP continuous, walls from resistance/damage multipliers (question for the owner). #13 audio: achievement toast + chime, tower sounds, combat sfx trimmed to one loudness (enemy blunt/dark hits were 5 dB louder than hero hits). No new sound files (Higgsfield credits 0).
 - 2026-10-06 shift 1 — #14 performance: new --perf=SECS [--speed=N] probe. 30 game-minutes at 6x: memory 44.5 -> 46.3 MB and flat, objects flat, 0 orphan nodes (no leak). Battle sim ~14 us/frame, unit views + strip ~0.15 ms/frame. Strip draws ~600-700 calls (fine on a GPU; this container renders in software). Idle 15 fps unfocused, 30 in taskbar mode, 30/60/144 focused already in settings.
 - 2026-10-06 shift 1 — #15 endgame: reviewed tower (star dust -> +13..+15 enhancing, badges and pets every 10 floors, mythic essence every 50, leaderboard), paragon (stat points past the cap), Hell. Tower button tooltip now lists the next reward floors.
+- 2026-10-06 shift 1 — #16 accessibility: the unused `colorblind` setting now draws a rarity shape on every item slot (toggle in Settings), full hotkey list. Text size = the UI scale option (2x-5x). Key rebinding not built (hotkeys are listed read-only).

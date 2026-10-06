@@ -508,8 +508,8 @@
   "en": "High"
  },
  "hotkeys_help": {
-  "tr": "H Kahraman, I Çanta, M Harita, G Gelişim, P Parti, T Taverna, Ctrl+Shift+H gizle",
-  "en": "H Hero, I Bag, M Map, G Growth, P Party, T Tavern, Ctrl+Shift+H hide"
+  "tr": "H / I Kahraman ve çanta · C Durum · R Rünler · M Dünya · G Gelişim · P Diziliş · T Taverna · J Görevler · D Hasar · E Evcil dostlar · Esc pencereyi kapat · Ctrl+Shift+H gizle",
+  "en": "H / I Hero and bag · C Status · R Runes · M World · G Growth · P Formation · T Tavern · J Quests · D Damage · E Pets · Esc close window · Ctrl+Shift+H hide"
  },
  "how_to_get_tavern": {
   "tr": "Tavernadan alınır",
@@ -2293,5 +2293,6 @@
   "tut_smith": {"tr": "Demirci seni bekliyor: Kahraman penceresinin altındaki çekiçle eşyalarını güçlendir, birleştir ya da parçala.", "en": "The blacksmith awaits: use the hammer under the Hero window to enhance, combine or salvage gear."},
   "tut_runes": {"tr": "İlk Liderlik Rününü alabilirsin! Alttaki menüden Rünler penceresini aç.", "en": "You can buy your first Leadership Rune! Open the Runes window from the menu."},
   "achievement_toast": {"tr": "Başarım Açıldı", "en": "Achievement Unlocked"},
-  "tower_rewards": {"tr": "Her yeni kat: Yıldız Tozu (+13…+15 güçlendirme için)\nKat {a}: Lonca Nişanı ve evcil dost şansı\nKat {b}: Mitik Öz (mitik birleştirme için) ve 3 kat evcil şansı", "en": "Each new floor: Star Dust (for +13…+15 enhancing)\nFloor {a}: Guild Badge and a pet chance\nFloor {b}: Mythic Essence (mythic combine) and triple pet chance"}
+  "tower_rewards": {"tr": "Her yeni kat: Yıldız Tozu (+13…+15 güçlendirme için)\nKat {a}: Lonca Nişanı ve evcil dost şansı\nKat {b}: Mitik Öz (mitik birleştirme için) ve 3 kat evcil şansı", "en": "Each new floor: Star Dust (for +13…+15 enhancing)\nFloor {a}: Guild Badge and a pet chance\nFloor {b}: Mythic Essence (mythic combine) and triple pet chance"},
+  "set_colorblind": {"tr": "Nadirlik işaretleri (renk körü)", "en": "Rarity marks (colour-blind)"}
 }

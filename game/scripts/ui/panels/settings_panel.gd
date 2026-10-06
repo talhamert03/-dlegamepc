@@ -53,6 +53,7 @@ func refresh() -> void:
 			_section("set_sec_fx")
 			_choice("set_dmg_numbers", "dmg_numbers", [0, 1, 2], [DataDB.t("off"), DataDB.t("crits"), DataDB.t("all")])
 			_toggle("set_shake", "screen_shake")
+			_toggle("set_colorblind", "colorblind", func(_v): get_tree().call_group("item_slots", "queue_redraw"))
 			_choice("set_particles", "particles", [0.0, 0.5, 1.0], [DataDB.t("off"), DataDB.t("low"), DataDB.t("high")])
 			_gap()
 			_wide_button(DataDB.t("reset_layout"), "brown", func(): WindowManager.reset_layout())

@@ -140,6 +140,35 @@ func _draw() -> void:
 			draw_texture_rect(ic, Rect2(o, Vector2(isz, isz)), false, Color(1, 1, 1, 0.4) if dim else Color.WHITE)
 
 
+## Colour-blind aid: a shape per rarity on the right edge (corners hold enhance, upgrade, class and lock marks)
+## (magic dot, rare triangle, epic diamond, set square, legendary star, mythic four-point star).
+func _rarity_mark(rar: String) -> void:
+	var c := Vector2(size.x - 4.0, roundf(size.y / 2.0))
+	var pts := PackedVector2Array()
+	match rar:
+		"magic":
+			for k in 10:
+				pts.append(c + Vector2.from_angle(k * TAU / 10.0) * 1.8)
+		"rare":
+			pts = PackedVector2Array([c + Vector2(0, -2.4), c + Vector2(2.3, 1.8), c + Vector2(-2.3, 1.8)])
+		"epic":
+			pts = PackedVector2Array([c + Vector2(0, -2.6), c + Vector2(2.2, 0), c + Vector2(0, 2.6), c + Vector2(-2.2, 0)])
+		"set":
+			pts = PackedVector2Array([c + Vector2(-2, -2), c + Vector2(2, -2), c + Vector2(2, 2), c + Vector2(-2, 2)])
+		"legendary", "mythic":
+			var n := 5 if rar == "legendary" else 4
+			for k in n * 2:
+				var a := -PI / 2.0 + k * PI / n
+				pts.append(c + Vector2.from_angle(a) * (2.8 if k % 2 == 0 else 1.1))
+		_:
+			return
+	var outline := PackedVector2Array()
+	for p in pts:
+		outline.append(c + (p - c) * 1.55)
+	_over.draw_colored_polygon(outline, Color(0, 0, 0, 0.85))
+	_over.draw_colored_polygon(pts, Color.WHITE)
+
+
 ## Everything drawn above the icon: enhance level, lock, selection, drag target, flash, upgrade arrow.
 func _draw_over() -> void:
 	if item.is_empty() and not selected and _drag_target != self:
@@ -150,6 +179,8 @@ func _draw_over() -> void:
 	if enh > 0:
 		_over.draw_string_outline(UITheme.font_body, Vector2(2, 8), "+%d" % enh, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, 2, Color(0, 0, 0, 0.8))
 		_over.draw_string(UITheme.font_body, Vector2(2, 8), "+%d" % enh, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#B6FFC8"))
+	if bool(Settings.get_v("colorblind", false)) and not item.is_empty():
+		_rarity_mark(str(item.get("rarity", "common")))
 	if item.get("locked", false):
 		_over.draw_texture_rect(UITheme.icon("lock"), Rect2(size.x - 7, size.y - 7, 6, 6), false, Color(1, 1, 1, 0.9))
 	if selected:
