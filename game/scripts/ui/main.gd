@@ -393,6 +393,13 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 		get_tree().create_timer(maxf(0.5, secs - 1.5)).timeout.connect(func():
 			Toast.show_reward(null, DataDB.t("toast_daily"), "1× " + Chests.display_name("iron"), "iron"))
 	for a in cmd:
+		if a.begins_with("--growthtab="):
+			get_tree().create_timer(1.0).timeout.connect(func():
+				if WindowManager.is_open("growth"):
+					var gp = WindowManager.panels["growth"]
+					gp.tab = int(a.substr(12))
+					W.set_tab_active(gp._tabs, gp.tab)
+					gp.refresh())
 		if a.begins_with("--stashtab="):
 			GameState.stash_tabs = 3
 			get_tree().create_timer(1.0).timeout.connect(func():

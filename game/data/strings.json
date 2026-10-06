@@ -2283,5 +2283,8 @@
   "away_dur": {"tr": "{h} sa {m} dk", "en": "{h}h {m}m"},
   "away_head": {"tr": "Yokluk süren", "en": "Time away"},
   "away_levels": {"tr": "Seviye atladı", "en": "Levelled up"},
-  "away_sold": {"tr": "Çanta dolunca satılan eşyalar: +{g} altın", "en": "Sold when the bag was full: +{g} gold"}
+  "away_sold": {"tr": "Çanta dolunca satılan eşyalar: +{g} altın", "en": "Sold when the bag was full: +{g} gold"},
+  "guild_max": {"tr": "En yüksek", "en": "Maxed"},
+  "guild_cost_tip": {"tr": "Bedel: {g} altın + {b} Lonca Nişanı", "en": "Cost: {g} gold + {b} Guild Badges"},
+  "account_bonus_none": {"tr": "Henüz hesap bonusu yok. Başarımlar ve Lonca yükseltmeleri kalıcı bonus verir.", "en": "No account bonuses yet. Achievements and Guild upgrades give permanent bonuses."}
 }
