@@ -1264,6 +1264,7 @@ func _on_enemy_killed(e: Combatant) -> void:
 	for m in drops["materials"]:
 		GameState.add_material(m, int(drops["materials"][m]))
 	if e.tags.has("treasure"):
+		GameState.totals["treasure"] = int(GameState.totals.get("treasure", 0)) + 1
 		var bonus := int(F.gold_per_kill(e.level, "elite") * 12.0 * (1.0 + gf / n / 100.0))
 		GameState.add_gold(bonus)
 		session["gold"] = int(session["gold"]) + bonus

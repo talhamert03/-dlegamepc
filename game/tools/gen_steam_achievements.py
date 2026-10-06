@@ -23,7 +23,7 @@ CAT = {
     "boss": ("skull", (220, 70, 60)), "level": ("star", (120, 220, 120)), "heroes": ("people", (90, 160, 255)),
     "party": ("people", (90, 200, 255)), "enhance": ("hammer", (255, 170, 60)), "stars": ("star", (255, 210, 80)),
     "advance": ("crown", (200, 140, 255)), "faction": ("flag", (220, 90, 80)), "guild": ("flag", (230, 180, 80)),
-    "zone": ("map", (110, 200, 120)),
+    "zone": ("map", (110, 200, 120)), "treasure": ("gold", (255, 200, 60)), "elites": ("sword", (170, 90, 230)),
 }
 
 

@@ -757,6 +757,65 @@
    "reward": {
     "gold": 5000
    }
+  },
+  {
+   "id": "ACH_TREASURE_1",
+   "name": {
+    "tr": "Altın Sırtlı",
+    "en": "Gilded Back"
+   },
+   "desc": {
+    "tr": "Bir Hazine Goblini yakala",
+    "en": "Catch a Treasure Goblin"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "treasure",
+    "n": 1
+   },
+   "reward": {
+    "gold": 2000
+   }
+  },
+  {
+   "id": "ACH_TREASURE_25",
+   "name": {
+    "tr": "Hazine Avcısı",
+    "en": "Treasure Hunter"
+   },
+   "desc": {
+    "tr": "25 Hazine Goblini yakala",
+    "en": "Catch 25 Treasure Goblins"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "treasure",
+    "n": 25
+   },
+   "reward": {
+    "gold": 20000,
+    "soul_shard": 10
+   }
+  },
+  {
+   "id": "ACH_ELITES_500",
+   "name": {
+    "tr": "Elit Avcı",
+    "en": "Elite Hunter"
+   },
+   "desc": {
+    "tr": "500 elit düşman yen",
+    "en": "Defeat 500 elite enemies"
+   },
+   "cond": {
+    "type": "total",
+    "stat": "elites",
+    "n": 500
+   },
+   "reward": {
+    "gold": 8000,
+    "shiny_essence": 5
+   }
   }
  ]
 }
