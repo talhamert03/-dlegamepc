@@ -46,6 +46,9 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - [x] 20. Seal economy: can a player reach SSR heroes (8 seals at lv30)? seal income per hour, tavern pacing
 - [x] 21. Remove the unreachable windows (party, portrait, old skills) after moving anything still useful
 - [x] 22. Session variety: daily quest pool, achievement pacing over the first 10 hours, small surprises
+- [x] 23. Hero barks: merged pools, wire legendary / idle / night / boss-down, 100+ class lines
+- [ ] 24. Treasure goblin achievements (catch 1 / 25) + Steam icon kit refresh
+- [ ] 25. Personal join / level-up lines for every recruitable hero (48), from their descriptions
 
 ## Questions for the owner
 
@@ -83,3 +86,4 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - 2026-10-06 shift 1 — #21: removed party_panel, portrait_panel and the old hero_panel (skills) — nothing opened them; star-up already moved to the Hero window, skills live in Status, formation in the Hero window.
 - 2026-10-06 shift 1 — #20 seals: plentiful (100+ by day 2), never the gate -> question for the owner.
 - 2026-10-06 shift 1 — #22 variety: daily pool 6 -> 9 (chests, elites, salvage), Treasure Goblin event (0.8% of waves from zone 2: approaches, lingers 1.4 s, runs; caught = 12x elite gold + golden chest), gilded look and flee turn.
+- 2026-10-06 shift 1 — #23 barks: 15 -> 151 lines; legendary/idle/night lines were never triggered, now wired (boss down, legendary drop, idle every 2-4 min).
