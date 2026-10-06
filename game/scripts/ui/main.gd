@@ -383,6 +383,8 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 				it["enhance"] = i % 6
 				GameState.try_auto_equip(it)
 	if cmd.has("--boss"):
+		if cmd.has("--bossfails"):
+			BattleSim.boss_fail_count = 4
 		BattleSim.stage = BattleSim.stages_per_zone()
 		BattleSim.challenge_boss()
 	if cmd.has("--tooltip"):

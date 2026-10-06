@@ -2286,5 +2286,7 @@
   "away_sold": {"tr": "Çanta dolunca satılan eşyalar: +{g} altın", "en": "Sold when the bag was full: +{g} gold"},
   "guild_max": {"tr": "En yüksek", "en": "Maxed"},
   "guild_cost_tip": {"tr": "Bedel: {g} altın + {b} Lonca Nişanı", "en": "Cost: {g} gold + {b} Guild Badges"},
-  "account_bonus_none": {"tr": "Henüz hesap bonusu yok. Başarımlar ve Lonca yükseltmeleri kalıcı bonus verir.", "en": "No account bonuses yet. Achievements and Guild upgrades give permanent bonuses."}
+  "account_bonus_none": {"tr": "Henüz hesap bonusu yok. Başarımlar ve Lonca yükseltmeleri kalıcı bonus verir.", "en": "No account bonuses yet. Achievements and Guild upgrades give permanent bonuses."},
+  "boss_fatigue": {"tr": "Yorgun -%{p}", "en": "Weary -{p}%"},
+  "boss_fatigue_note": {"tr": "Boss yoruldu: her başarısız denemede %3 eksik canla başlar (en fazla %30).", "en": "The boss tires: each failed try it starts with 3% less HP (up to 30%)."}
 }

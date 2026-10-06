@@ -175,6 +175,8 @@
   "stages_per_zone": 10,
   "waves_per_stage": 7,
   "boss_time": 90,
+  "boss_pity_per_fail": 0.03,
+  "boss_pity_max": 0.3,
   "elite_chance": 0.2,
   "wave_min": 3,
   "wave_max": 5

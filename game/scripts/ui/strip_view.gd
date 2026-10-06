@@ -292,6 +292,14 @@ func _draw_boss_hud() -> void:
 	var fb := UITheme.font_body
 	var tw := fb.get_string_size(tt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
 	_boss_hud.draw_string(fb, tc + Vector2(-tw / 2.0, 2.5), tt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#FFD0C0") if low else Color("#FFE7B0"))
+	# boss fatigue tag: the boss starts weaker after failed tries
+	if BattleSim.boss_pity > 0.0:
+		var pt := DataDB.t("boss_fatigue", {"p": int(round(BattleSim.boss_pity * 100))})
+		var pw := fb.get_string_size(pt, HORIZONTAL_ALIGNMENT_LEFT, -1, 6).x
+		var pr := Rect2(case.end.x - pw - 6, case.end.y + 2, pw + 6, 8)
+		UISkin.fill(ci, pr, 2, Color("#5A3A10"), Color("#2A1A06"))
+		UISkin.stroke(ci, pr, 2, UISkin.OUTLINE, 0.8)
+		_boss_hud.draw_string(fb, Vector2(pr.position.x + 3, pr.end.y - 2), pt, HORIZONTAL_ALIGNMENT_LEFT, -1, 6, Color("#FFC870"))
 
 
 func _draw_wave_dots() -> void:

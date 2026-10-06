@@ -26,6 +26,8 @@ var difficulty := 0
 var boss_t := 0.0
 var boss_unit: Combatant = null
 var boss_fail_count := 0
+## Boss fatigue: after failed tries the same boss starts with this much HP missing (resets on a kill or zone change).
+var boss_pity := 0.0
 var rng := RandomNumberGenerator.new()
 var scroll := 0.0            # background scroll position (px)
 var session := {"kills": 0, "xp": 0.0, "gold": 0}
@@ -443,6 +445,12 @@ func _spawn_boss() -> void:
 	var et: String = bd.get("type", "boss")
 	boss_unit = _spawn_enemy(bid, lv, et, SPAWN_X)
 	boss_unit.mech_t = 6.0
+	boss_pity = 0.0
+	if mode == "zone" and boss_fail_count > 0:
+		boss_pity = minf(float(DataDB.bal("stage.boss_pity_max", 0.3)), float(DataDB.bal("stage.boss_pity_per_fail", 0.03)) * boss_fail_count)
+		boss_unit.hp = boss_unit.max_hp * (1.0 - boss_pity)
+		if boss_fail_count == 1 and not quiet:
+			EventBus.notify.emit(DataDB.t("boss_fatigue_note"), Color("#FFC870"))
 	var roster: Array = z.get("enemies", [])
 	for i in 2:
 		if roster.size() > 0:

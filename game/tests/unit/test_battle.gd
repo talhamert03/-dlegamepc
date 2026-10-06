@@ -57,3 +57,23 @@ func test_tower_runs() -> void:
 	runner.check(BattleSim.mode == "zone", "left tower")
 	BattleSim.stop()
 	BattleSim.quiet = false
+
+
+func test_boss_fatigue_after_fails() -> void:
+	GameState.new_game()
+	BattleSim.quiet = true
+	BattleSim.start()
+	BattleSim.boss_fail_count = 0
+	BattleSim._spawn_boss()
+	runner.check(is_equal_approx(BattleSim.boss_unit.hp, BattleSim.boss_unit.max_hp), "fresh boss at full HP")
+	BattleSim._clear_enemies()
+	BattleSim.boss_fail_count = 3
+	BattleSim._spawn_boss()
+	runner.check(absf(BattleSim.boss_unit.hp / BattleSim.boss_unit.max_hp - 0.91) < 0.001, "3 fails -> 9% weaker")
+	BattleSim._clear_enemies()
+	BattleSim.boss_fail_count = 50
+	BattleSim._spawn_boss()
+	runner.check(BattleSim.boss_unit.hp / BattleSim.boss_unit.max_hp > 0.69, "fatigue capped at 30%")
+	BattleSim.boss_fail_count = 0
+	BattleSim.stop()
+	BattleSim.quiet = false
