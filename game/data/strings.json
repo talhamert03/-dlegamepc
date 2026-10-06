@@ -2294,5 +2294,6 @@
   "tut_runes": {"tr": "İlk Liderlik Rününü alabilirsin! Alttaki menüden Rünler penceresini aç.", "en": "You can buy your first Leadership Rune! Open the Runes window from the menu."},
   "achievement_toast": {"tr": "Başarım Açıldı", "en": "Achievement Unlocked"},
   "tower_rewards": {"tr": "Her yeni kat: Yıldız Tozu (+13…+15 güçlendirme için)\nKat {a}: Lonca Nişanı ve evcil dost şansı\nKat {b}: Mitik Öz (mitik birleştirme için) ve 3 kat evcil şansı", "en": "Each new floor: Star Dust (for +13…+15 enhancing)\nFloor {a}: Guild Badge and a pet chance\nFloor {b}: Mythic Essence (mythic combine) and triple pet chance"},
-  "set_colorblind": {"tr": "Nadirlik işaretleri (renk körü)", "en": "Rarity marks (colour-blind)"}
+  "set_colorblind": {"tr": "Nadirlik işaretleri (renk körü)", "en": "Rarity marks (colour-blind)"},
+  "skill_equipped": {"tr": "Kuşanılmış yetenek", "en": "Equipped skill"}
 }

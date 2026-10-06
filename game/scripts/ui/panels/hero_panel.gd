@@ -103,8 +103,16 @@ func _skill_button(h: HeroState, sid: String, locked: bool) -> Control:
 		outline.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		b.add_child(outline)
 	if h.equipped_skills.has(sid):
-		var e := UITheme.label("E", UITheme.C_GREEN)
-		e.position = Vector2(2, -1)
+		# equipped: small green check badge on the icon's top-right corner
+		var e := Control.new()
+		e.position = Vector2(14, 0)
+		e.size = Vector2(8, 8)
+		e.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		e.draw.connect(func():
+			UISkin.circle(e.get_canvas_item(), Vector2(4, 4), 3.8, UISkin.OUTLINE, UISkin.OUTLINE)
+			UISkin.circle(e.get_canvas_item(), Vector2(4, 4), 3.0, Color("#7CFF9A"), Color("#2A9A4A"))
+			e.draw_polyline(PackedVector2Array([Vector2(2.3, 4.1), Vector2(3.6, 5.4), Vector2(5.9, 2.7)]), Color("#0A2A12"), 1.1, true))
+		e.tooltip_text = DataDB.t("skill_equipped")
 		b.add_child(e)
 	var l := UITheme.label("%d/%d" % [lv, int(sd.get("max", 1))], UITheme.C_TEXT if not locked else UITheme.C_DIM)
 	l.position = Vector2(2, 18)
@@ -157,8 +165,13 @@ func _build_detail(h: HeroState) -> void:
 	nm.size = Vector2(content.size.x - 30, 9)
 	nm.clip_text = true
 	_top.add_child(nm)
-	var typ := UITheme.label(DataDB.t("skill_" + str(sd.get("type", "active"))), UITheme.C_DIM)
+	var tline := DataDB.t("skill_" + str(sd.get("type", "active")))
+	if sd.has("cd"):
+		tline += "  ·  " + DataDB.t("cooldown", {"s": "%.1f" % float(sd["cd"])})
+	var typ := UITheme.label(tline, UITheme.C_DIM)
 	typ.position = Vector2(28, 10)
+	typ.size = Vector2(content.size.x - 32, 9)
+	typ.clip_text = true
 	_top.add_child(typ)
 	var desc := UITheme.label(describe(sd, max(1, lv)), UITheme.C_TEXT)
 	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -173,12 +186,6 @@ func _build_detail(h: HeroState) -> void:
 		nxt.size = Vector2(content.size.x - 6, 9)
 		nxt.clip_text = true
 		_top.add_child(nxt)
-	if sd.has("cd"):
-		var cd := UITheme.label(DataDB.t("cooldown", {"s": "%.1f" % float(sd["cd"])}), UITheme.C_BLUE)
-		cd.position = Vector2(content.size.x - 60, 10)
-		cd.size = Vector2(56, 9)
-		cd.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		_top.add_child(cd)
 	var bh := W.hbox(2)
 	bh.position = Vector2(3, 56)
 	_top.add_child(bh)
