@@ -24,6 +24,10 @@ func build(c: Control) -> void:
 
 
 ## Achievement: a medallion (gold star when earned, dark lock otherwise), the name and its condition.
+const REWARD_ICON := {"gold": "gold", "tavern_seal": "crown", "soul_shard": "gem", "iron_scrap": "hammer",
+	"guild_badge": "flag", "shiny_essence": "sparkle", "star_dust": "star", "mythic_essence": "gem"}
+
+
 func _achievement_row(a: Dictionary, w: float) -> Control:
 	var got: bool = GameState.achievements.has(a["id"])
 	var c := Control.new()
@@ -43,8 +47,23 @@ func _achievement_row(a: Dictionary, w: float) -> Control:
 		if ic:
 			c.draw_texture_rect(ic, Rect2(m - Vector2(3.5, 3.5), Vector2(7, 7)), false, Color("#FFE08A") if got else Color(0.6, 0.56, 0.52))
 		var fb := UITheme.font_body
-		c.draw_string(fb, Vector2(23, 10), name, HORIZONTAL_ALIGNMENT_LEFT, c.size.x - 26, 8, UITheme.C_GOLD if got else UITheme.C_TEXT)
-		c.draw_string(fb, Vector2(23, 19), desc, HORIZONTAL_ALIGNMENT_LEFT, c.size.x - 26, 7, UITheme.C_DIM))
+		# reward chip on the right: the first reward with its icon
+		var rx := c.size.x - 4.0
+		var rw: Dictionary = a.get("reward", {})
+		if not rw.is_empty():
+			var k0: String = str(rw.keys()[0])
+			var amt := F.fmt_num(int(rw[k0])) + ("+" if rw.size() > 1 else "")
+			var aw := fb.get_string_size(amt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
+			var chip := Rect2(c.size.x - aw - 18, c.size.y / 2.0 - 5, aw + 14, 10)
+			UISkin.fill(ci, chip, 3, Color(0, 0, 0, 0.35), Color(0, 0, 0, 0.25))
+			var ric := UITheme.icon(REWARD_ICON.get(k0, "gem"))
+			if ric:
+				c.draw_texture_rect(ric, Rect2(chip.position + Vector2(2, 1.5), Vector2(7, 7)), false, Color(1, 1, 1, 1.0 if got else 0.5))
+			c.draw_string(fb, Vector2(chip.position.x + 11, chip.end.y - 2.4), amt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7,
+				Color("#FFD86A") if not got else Color("#9C8A6A"))
+			rx = chip.position.x - 3
+		c.draw_string(fb, Vector2(23, 10), name, HORIZONTAL_ALIGNMENT_LEFT, rx - 23, 8, UITheme.C_GOLD if got else UITheme.C_TEXT)
+		c.draw_string(fb, Vector2(23, 19), desc, HORIZONTAL_ALIGNMENT_LEFT, rx - 23, 7, UITheme.C_DIM))
 	return c
 
 
