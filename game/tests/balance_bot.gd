@@ -36,6 +36,11 @@ func _ready() -> void:
 
 
 func _bot_actions() -> void:
+	# the tutorial gives Lyra around minute 8 (Tutorial._check_lyra_gift)
+	if not GameState.heroes.has("lyra") and not GameState.flags.get("lyra_gift", false):
+		GameState.flags["lyra_gift"] = true
+		GameState.unlock_hero("lyra")
+		GameState.add_to_party("lyra")
 	# recruit the cheapest affordable hero (story heroes first) while the party has room
 	var by_price := Tavern.roster()
 	by_price.sort_custom(func(a, b): return int(Tavern.cost(a)["gold"]) < int(Tavern.cost(b)["gold"]))
