@@ -2218,5 +2218,17 @@
  "recruit_joined": {
   "tr": "{name} partine katıldı!",
   "en": "{name} joins your party!"
+ },
+ "pets_collection": {
+  "tr": "Koleksiyon {n}/{m} · {b} Altın",
+  "en": "Collection {n}/{m} · {b} gold"
+ },
+ "pet_per_level": {
+  "tr": "sv başına {v}",
+  "en": "{v} per level"
+ },
+ "pet_toggle_tip": {
+  "tr": "Aktif dost arkada savaşır ve bonusunu partiye verir. Tekrar tıklayınca bırakır.",
+  "en": "The active pet fights behind the party and grants its bonus. Click again to dismiss."
  }
 }

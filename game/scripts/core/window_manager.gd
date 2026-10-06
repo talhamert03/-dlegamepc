@@ -33,7 +33,7 @@ const PANELS := {
 	"quests": {"script": "res://scripts/ui/panels/quests_panel.gd", "size": Vector2i(220, 236), "title": "panel_quests"},
 	"codex": {"script": "res://scripts/ui/panels/codex_panel.gd", "size": Vector2i(232, 240), "title": "panel_codex"},
 	"ending": {"script": "res://scripts/ui/panels/ending_panel.gd", "size": Vector2i(250, 150), "title": "panel_ending"},
-	"pets": {"script": "res://scripts/ui/panels/pets_panel.gd", "size": Vector2i(210, 190), "title": "panel_pets"},
+	"pets": {"script": "res://scripts/ui/panels/pets_panel.gd", "size": Vector2i(236, 262), "title": "panel_pets"},
 	"runes": {"script": "res://scripts/ui/panels/runes_panel.gd", "size": Vector2i(440, 300), "title": "panel_runes"},
 	"chests": {"script": "res://scripts/ui/panels/chests_panel.gd", "size": Vector2i(236, 222), "title": "panel_chests"},
 	"shop": {"script": "res://scripts/ui/panels/shop_panel.gd", "size": Vector2i(332, 300), "title": "panel_shop"},
