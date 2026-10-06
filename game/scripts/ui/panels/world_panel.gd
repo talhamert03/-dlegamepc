@@ -128,7 +128,11 @@ func _build_top(c: Control, w: float) -> void:
 	tb.mouse_default_cursor_shape = Control.CURSOR_ARROW if locked else Control.CURSOR_POINTING_HAND
 	tb.position = Vector2(dw + 4.0, 0)
 	tb.size = Vector2(w - dw - 4.0, TOP_H)
-	tb.tooltip_text = DataDB.t("tower_locked") if locked else DataDB.t("tower_best", {"n": int(GameState.progress.get("tower_best", 0))})
+	var best := int(GameState.progress.get("tower_best", 0))
+	var nx10 := (best / 10 + 1) * 10
+	var nx50 := (best / 50 + 1) * 50
+	tb.tooltip_text = DataDB.t("tower_locked") if locked else DataDB.t("tower_best", {"n": best}) + "\n" + \
+		DataDB.t("tower_rewards", {"a": nx10, "b": nx50})
 	tb.pressed.connect(func():
 		if BattleSim.mode == "tower":
 			AudioManager.play("ui_travel", 0.05, 0.6)
