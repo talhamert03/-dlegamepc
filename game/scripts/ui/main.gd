@@ -49,6 +49,9 @@ func _ready() -> void:
 
 func _boot() -> void:
 	var cmd := OS.get_cmdline_user_args()
+	for a in cmd:
+		if a.begins_with("--lang="):
+			DataDB.set_lang(a.substr(7))
 	if cmd.has("--title") or (not cmd.has("--fresh") and not GameState.has_save()):
 		await _run_title()
 		GameState.new_game()

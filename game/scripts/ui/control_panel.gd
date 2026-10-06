@@ -138,7 +138,7 @@ func _refresh() -> void:
 	_gold.text = F.fmt_num(GameState.gold)
 	var pd := BattleSim.party_dps()
 	_dps.text = ("⚔ " + F.fmt_num(pd)) if pd > 0.0 else ""
-	_lvl.text = "Lv%d" % GameState.max_hero_level()
+	_lvl.text = F.lv(GameState.max_hero_level(), "tight")
 	var sp := false
 	var kp := false
 	for h in GameState.heroes.values():

@@ -311,7 +311,7 @@ func refresh() -> void:
 	if h:
 		set_panel_title(DataDB.t("panel_hero"))
 		_cls.text = "%s · %s" % [h.display_name(), h.class_title()]
-		_lvl.text = ("Lv.%d" % h.level) + ("  ✦P%d" % h.paragon if h.paragon > 0 else "")
+		_lvl.text = F.lv(h.level, "dot") + ("  ✦P%d" % h.paragon if h.paragon > 0 else "")
 		_stars.text = "★".repeat(h.stars)
 		var tex := SpriteLib.portrait(hid)
 		if tex:

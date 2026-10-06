@@ -27,6 +27,10 @@
     {
      "tr": "Demirci'nin Birleştir, Parçala ve Üret sekmeleri yenilendi: birleştirmede dönen rün çemberi ve çıkacak nadirliğin önizlemesi, parçalamada her nadirliğin neye dönüşeceği, üretimde yuva simgeleri, kademe seçici ve sonuç olasılıkları; hepsi büyük yuvarlak eylem butonuyla.",
      "en": "Blacksmith Combine, Salvage and Craft tabs rebuilt (rune circle with result preview, salvage yields, slot icons, tier picker, result odds)."
+    },
+    {
+     "tr": "Metin taraması: seviye etiketleri her yerde 'Sv' (İngilizcede 'Lv'), savaş yazıları Türkçe (ISKA, BLOK), uzun başlıklar artık taşmıyor.",
+     "en": "Text sweep: consistent level tags, translated combat text, long titles no longer overflow."
     }
    ]
   },

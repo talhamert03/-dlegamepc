@@ -86,7 +86,7 @@ func refresh() -> void:
 		b2.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		b2.custom_minimum_size = Vector2(20, 20)
 		b2.focus_mode = Control.FOCUS_NONE
-		b2.tooltip_text = "%s  Lv %d  %s" % [h.display_name(), h.level, h.class_title()]
+		b2.tooltip_text = "%s  %s  %s" % [h.display_name(), F.lv(h.level), h.class_title()]
 		var ic2 := W.icon_rect(SpriteLib.hero_icon(hid))
 		ic2.size = Vector2(20, 20)
 		b2.add_child(ic2)
@@ -105,7 +105,7 @@ func refresh() -> void:
 	var shid: String = GameState.party[sel_slot]
 	if shid != "":
 		var h2: HeroState = GameState.heroes[shid]
-		_info.add_child(UITheme.label("%s - %s Lv %d  %s" % [h2.display_name(), h2.class_title(), h2.level, "*".repeat(h2.stars)], UITheme.C_TEXT))
+		_info.add_child(UITheme.label("%s - %s %s  %s" % [h2.display_name(), h2.class_title(), F.lv(h2.level), "*".repeat(h2.stars)], UITheme.C_TEXT))
 		var row := W.hbox(2)
 		_info.add_child(row)
 		if h2.stars < 6:

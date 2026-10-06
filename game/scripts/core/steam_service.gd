@@ -59,7 +59,7 @@ func update_presence() -> void:
 	if not available:
 		return
 	var z: Dictionary = DataDB.zone(int(GameState.progress.get("zone", 0)))
-	var txt := "%s - Lv %d" % [DataDB.tx(z.get("name", {})), GameState.max_hero_level()]
+	var txt := "%s - %s" % [DataDB.tx(z.get("name", {})), F.lv(GameState.max_hero_level())]
 	steam.call("setRichPresence", "steam_display", txt)
 
 

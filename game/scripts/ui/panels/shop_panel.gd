@@ -154,9 +154,12 @@ func _draw_header(n: Control) -> void:
 	UISkin.diamond(ci, Vector2(sr.end.x - 9, sr.get_center().y), 2.6)
 	var f := UITheme.font_title
 	var title := DataDB.t("shop_sign")
-	var tw := f.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, 12).x
-	n.draw_string_outline(f, Vector2(w / 2.0 - tw / 2.0, sr.position.y + 16), title, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, 3, Color(0, 0, 0, 0.9))
-	n.draw_string(f, Vector2(w / 2.0 - tw / 2.0, sr.position.y + 16), title, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("#FFD978"))
+	var fs := 12
+	while fs > 8 and f.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > sr.size.x - 26:
+		fs -= 1
+	var tw := f.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	n.draw_string_outline(f, Vector2(w / 2.0 - tw / 2.0, sr.position.y + 16), title, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 3, Color(0, 0, 0, 0.9))
+	n.draw_string(f, Vector2(w / 2.0 - tw / 2.0, sr.position.y + 16), title, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("#FFD978"))
 	var sub := DataDB.t("shop_motto")
 	var fb := UITheme.font_body
 	var sw2 := fb.get_string_size(sub, HORIZONTAL_ALIGNMENT_LEFT, -1, 6).x

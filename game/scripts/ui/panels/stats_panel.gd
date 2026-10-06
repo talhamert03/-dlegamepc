@@ -246,7 +246,7 @@ func _head_input(ev: InputEvent) -> void:
 		for i in ids2.size():
 			if _avatar_rect(i, ids2.size()).has_point(ev.position):
 				var hh: HeroState = GameState.heroes[str(ids2[i])]
-				tip = "%s · %s · Lv %d" % [hh.display_name(), hh.class_title(), hh.level]
+				tip = "%s · %s · %s" % [hh.display_name(), hh.class_title(), F.lv(hh.level)]
 		_head.tooltip_text = tip
 
 

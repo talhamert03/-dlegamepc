@@ -429,7 +429,11 @@ func _draw_detail() -> void:
 		_detail.draw_texture_rect(tex, ir.grow(-4.0), false, bc.lightened(0.35) if rk > 0 else Color(0.15, 0.14, 0.17))
 	UISkin.stroke(ci, ir, 3, bc, 1.2)
 	var f := UITheme.font_title
-	_detail.draw_string(f, Vector2(32, 15), Runes.display_name(id), HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 36, 9, bc.lightened(0.2))
+	var rn := Runes.display_name(id)
+	var rfs := 9
+	while rfs > 6 and f.get_string_size(rn, HORIZONTAL_ALIGNMENT_LEFT, -1, rfs).x > r.size.x - 36:
+		rfs -= 1
+	_detail.draw_string(f, Vector2(32, 15), rn, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 36, rfs, bc.lightened(0.2))
 	_detail.draw_string(UITheme.font_body, Vector2(32, 26), "%d / %d  ·  " % [rk, mx] + Runes.reach_text(id), HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 36, 7, UITheme.C_DIM)
 	var fb := UITheme.font_body
 	var now := _bonus_text(st, Runes.per(id) * rk) if rk > 0 else "—"

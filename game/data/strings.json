@@ -597,11 +597,11 @@
  },
  "quest_combines": {
   "tr": "{n} kez birleştir",
-  "en": "Combine {n} times"
+  "en": "Combine items {n}×"
  },
  "quest_enhances": {
   "tr": "{n} kez güçlendir",
-  "en": "Enhance {n} times"
+  "en": "Enhance items {n}×"
  },
  "quest_gold": {
   "tr": "{n} altın kazan",
@@ -1432,8 +1432,8 @@
   "en": "All"
  },
  "tavern_hint": {
-  "tr": "Kahramanlar yalnızca burada alınır. İlk yoldaşlar ucuzdur; parti dolunca her yeni kahraman fiyatları artırır.",
-  "en": "Heroes are only recruited here. The first companions are cheap; past a full party every recruit raises prices."
+  "tr": "İlk yoldaşlar ucuzdur; parti dolunca fiyatlar artar.",
+  "en": "First companions are cheap; prices rise past a full party."
  },
  "tavern_confirm": {
   "tr": "{name} partiye katılsın mı?\\n{cost}",
@@ -2266,5 +2266,13 @@
  "smith_craft_odds": {
   "tr": "Sonuç:",
   "en": "Result:"
+ },
+ "fx_miss": {
+  "tr": "ISKA",
+  "en": "MISS"
+ },
+ "fx_block": {
+  "tr": "BLOK",
+  "en": "BLOCK"
  }
 }

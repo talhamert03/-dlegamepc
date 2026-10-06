@@ -591,7 +591,7 @@ func _on_damage(src, tgt, amount: float, crit: bool, element: String, kind: Stri
 		return
 	var pos := _unit_pos(tgt)
 	if kind == "miss":
-		_spawn_number("MISS", pos, Color("#A8A8B8"))
+		_spawn_number(DataDB.t("fx_miss"), pos, Color("#A8A8B8"))
 		return
 	var col := UITheme.element_color(element)
 	if tgt.is_hero_side():
@@ -600,7 +600,7 @@ func _on_damage(src, tgt, amount: float, crit: bool, element: String, kind: Stri
 	if crit:
 		txt += "!"
 	if kind == "block":
-		_spawn_number("BLOCK", pos + Vector2(0, -6), Color("#8FB4FF"))
+		_spawn_number(DataDB.t("fx_block"), pos + Vector2(0, -6), Color("#8FB4FF"))
 	_spawn_number(txt, pos, Color("#FFD84A") if crit and not tgt.is_hero_side() else col, crit)
 	if kind != "dot":
 		AudioManager.play("crit" if crit else _hit_sound(src, element), 0.08, 0.55 if not crit else 0.75)

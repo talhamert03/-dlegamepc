@@ -128,6 +128,17 @@ static func stat_reset_cost(level: int, resets_done: int) -> int:
 
 
 ## Percent in the player's language: "%12,5" in Turkish, "12.5%" in English (whole numbers drop the decimal).
+## Level tag in the game's language: "Sv 12" / "Lv 12". style: "space" | "dot" ("Sv.12") | "tight" ("Sv12").
+static func lv(n: int, style := "space") -> String:
+	var p := "Sv" if DataDB.lang == "tr" else "Lv"
+	match style:
+		"dot":
+			return "%s.%d" % [p, n]
+		"tight":
+			return "%s%d" % [p, n]
+	return "%s %d" % [p, n]
+
+
 static func pct(v: float, plus := false) -> String:
 	var whole := absf(v - round(v)) < 0.05
 	var num := ("%d" % int(round(v))) if whole else ("%.1f" % v)

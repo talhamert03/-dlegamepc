@@ -43,7 +43,7 @@ func build(c: Control) -> void:
 	plate.position = Vector2(2, 207)
 	plate.size = Vector2(c.size.x - 4, 16)
 	c.add_child(plate)
-	_lvl = UITheme.title_label("Lv.1")
+	_lvl = UITheme.title_label(F.lv(1, "dot"))
 	_lvl.position = Vector2(6, 207)
 	c.add_child(_lvl)
 	_xpl = UITheme.label("", UITheme.C_TEXT)
@@ -108,7 +108,7 @@ func refresh() -> void:
 	_name.add_theme_color_override("font_color", {"R": UITheme.C_TEXT, "SR": UITheme.C_BLUE, "SSR": UITheme.C_ORANGE}.get(h.def().get("rarity", "R"), UITheme.C_TEXT))
 	_stars.text = "★".repeat(h.stars) + "☆".repeat(6 - h.stars)
 	_fac.text = DataDB.tx(DataDB.factions.get(h.def().get("faction", ""), {}).get("name", {}))
-	_lvl.text = "Lv.%d" % h.level
+	_lvl.text = F.lv(h.level, "dot")
 	_glass.queue_redraw()
 
 

@@ -153,7 +153,7 @@ func rebuild() -> void:
 		var hid: String = GameState.party[slot]
 		if hid != "":
 			var h: HeroState = GameState.heroes[hid]
-			b.tooltip_text = "%s · %s · Lv %d" % [h.display_name(), h.class_title(), h.level]
+			b.tooltip_text = "%s · %s · %s" % [h.display_name(), h.class_title(), F.lv(h.level)]
 			_chibi(hid)
 		var s := slot
 		b.button_down.connect(func(): _begin(str(GameState.party[s]), s))
@@ -197,7 +197,7 @@ func _card(hid: String, cw: float) -> Control:
 	b.flat = true
 	b.focus_mode = Control.FOCUS_NONE
 	b.size = Vector2(cw, cw + 8)
-	b.tooltip_text = "%s · %s · Lv %d" % [h.display_name(), h.class_title(), h.level]
+	b.tooltip_text = "%s · %s · %s" % [h.display_name(), h.class_title(), F.lv(h.level)]
 	b.mouse_default_cursor_shape = Control.CURSOR_DRAG
 	b.draw.connect(func():
 		var ci := b.get_canvas_item()
@@ -213,7 +213,7 @@ func _card(hid: String, cw: float) -> Control:
 			UISkin.stroke(ci, badge, 2, Color(0, 0, 0, 0.9), 1.0)
 			b.draw_string(UITheme.font_body, badge.position + Vector2(2.4, 7.5), str(in_party + 1), HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color.WHITE)
 		var f := UITheme.font_body
-		var lv := "Lv%d" % h.level
+		var lv := F.lv(h.level, "tight")
 		var tw := f.get_string_size(lv, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
 		b.draw_string(f, Vector2((cw - tw) / 2.0, cw + 7), lv, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, UITheme.C_DIM))
 	b.mouse_entered.connect(b.queue_redraw)

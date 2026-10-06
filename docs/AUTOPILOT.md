@@ -30,7 +30,7 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - [x] 4. Stash window redesign (iron-bound chest interior, tab plates, sort/filter)
 - [x] 5. Blacksmith: Combine, Salvage and Craft tabs rebuilt to the Enhance tab's standard
 - [x] 6. Steam achievements wired (ids, unlock calls, offline queue, docs for Steamworks setup)
-- [ ] 7. Text / translation sweep: every string TR+EN, terms, clipping at 1.5x/2x, tooltips
+- [x] 7. Text / translation sweep: every string TR+EN, terms, clipping at 1.5x/2x, tooltips
 - [ ] 8. Economy check with the balance bot: gold/XP curves, tavern prices, blacksmith costs, shop value
 - [ ] 9. Full playthrough Normal -> Nightmare -> Hell (bot + manual screenshots): walls, boredom spots, fixes
 - [ ] 10. First-hour experience pass: pacing, tutorial hints, unlock highlights, goal ribbon wording
@@ -55,3 +55,4 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - 2026-10-06 shift 1 — #4 stash: chest-interior bed, tab plates (coin/gem/lock), capacity bar, Sort, centred unlock price; window 206x262.
 - 2026-10-06 shift 1 — #5 blacksmith combine/salvage/craft rebuilt to the enhance standard; Fancy.small_button added.
 - 2026-10-06 shift 1 — #6 Steam achievements: startup sync for offline unlocks, 41 icon pairs + CSV (steam/achievements), docs/STEAM_ACHIEVEMENTS.md, id format test. Needs a real Steam build to verify.
+- 2026-10-06 shift 1 — #7 text sweep: tools/i18n_audit.py (no missing keys, no half translations), F.lv() for level tags, MISS/BLOCK translated, EN overflow fixes (shop sign, rune title, tavern hint, quest wording).

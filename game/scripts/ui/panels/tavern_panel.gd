@@ -130,6 +130,7 @@ func _build_top() -> void:
 	hint.position = Vector2(0, 16)
 	hint.size = Vector2(_top.size.x, 10)
 	hint.clip_text = true
+	hint.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	_top.add_child(hint)
 
 
@@ -181,7 +182,7 @@ func _card(hid: String, pos: Vector2) -> void:
 	_cards.append(c)
 	if owned:
 		var in_party := GameState.party.has(hid)
-		var lv := UITheme.label("Lv %d" % GameState.heroes[hid].level, UITheme.C_GOLD, 8, UITheme.font_body)
+		var lv := UITheme.label(F.lv(GameState.heroes[hid].level), UITheme.C_GOLD, 8, UITheme.font_body)
 		lv.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		lv.position = Vector2(4, 4)
 		lv.size = Vector2(CARD.x - 8, 12)

@@ -149,7 +149,7 @@ func _build_detail(h: HeroState) -> void:
 	ic.position = Vector2(4, 4)
 	ic.size = Vector2(20, 20)
 	_top.add_child(ic)
-	var lvl := UITheme.label("Lv.%d/%d" % [lv, int(sd.get("max", 1))], UITheme.C_TEXT)
+	var lvl := UITheme.label(F.lv(lv, "dot") + "/%d" % int(sd.get("max", 1)), UITheme.C_TEXT)
 	lvl.position = Vector2(3, 25)
 	_top.add_child(lvl)
 	var nm := UITheme.label(DataDB.tx(sd.get("name", {})), UITheme.C_GOLD)
