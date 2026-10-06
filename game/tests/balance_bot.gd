@@ -9,6 +9,12 @@ func _ready() -> void:
 	for a in OS.get_cmdline_user_args():
 		if a.begins_with("--hours="):
 			hours = float(a.substr(8))
+		# what-if: override the resistance penalty per difficulty, e.g. --res=0,-30,-45
+		if a.begins_with("--res="):
+			var pen: Array = []
+			for v in a.substr(6).split(","):
+				pen.append(float(v))
+			DataDB.balance["enemy"]["difficulty_res"] = pen
 	Settings.values["tutorial_done"] = true
 	GameState.new_game()
 	BattleSim.quiet = true
