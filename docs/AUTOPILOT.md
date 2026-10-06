@@ -64,6 +64,9 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
   seals pace SR/SSR; (c) give seals a second use (e.g. reroll the tavern's featured hero, or buy hero star shards).
   I lean to (b) or (c). Your call.
 
+- **Download size:** the Windows build is 236 MB, almost all of it lossless HD textures (152 MB imported). Switching the
+  HD art to lossy WebP (quality ~0.9) would likely cut the build to ~100 MB with barely visible change. Want it?
+
 ## Shift log
 
 - 2026-10-06 — plan written, schedule set (4 shifts a day, Europe/Istanbul 08:52 / 12:52 / 16:52 / 20:52).
