@@ -44,11 +44,12 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 
 ## Questions for the owner
 
-- **Nightmare pacing (bot, 2026-10-06):** Normal takes ~10 h, Nightmare ~14 h. Two walls right after entering
-  Nightmare: the a1_z01 boss (~1.5 h of near misses) and a1_z04 Mushroom Cave (~4 h of party wipes from the chaos
-  caster Toxic Shroom against the -30% Nightmare resistance; it breaks once SR heroes join). Options: (a) keep it —
-  the stuck hints already point at chaos resistance; (b) soften the first Nightmare act (e.g. difficulty_res -20
-  instead of -30 for act 1, or difficulty_mult 1.15 there). I lean to (b) for act 1 only. Your call.
+- **Difficulty pacing (bot, two 48 h runs, 2026-10-06):** Normal ~10 h, Nightmare ~20 h, Hell still in act 2-3
+  after 48 h. Boss HP is continuous across difficulties (Nightmare's last boss 11.2M, Hell's first 9.4M); the walls
+  at each new difficulty come from the resistance penalty (-30 / -60) and the 1.25x / 1.5x damage, so they hit
+  players who ignore resistances. I added boss fatigue (3% per failed try, max 30%) which removes the near-miss
+  grind but not the real power walls. Options: (a) keep as is — Hell should be a long-term goal; (b) soften the
+  first act of each difficulty (e.g. Hell act 1 resistance -45). I lean to (a) plus better resistance hints. Your call.
 
 ## Shift log
 
