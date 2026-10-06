@@ -41,6 +41,11 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - [x] 15. Endgame: tower floors, paragon, Hell rewards — reasons to keep playing
 - [x] 16. Accessibility: text-size option, colour-blind safe rarity marks, key rebinding view
 - [x] 17. Polish round: every panel at 1.5x/2x/2.5x, no clipping, no overlaps, consistent spacing
+- [ ] 18. Surfaces not yet reviewed: title screen, taskbar mini bar, item tooltip, right-click menu, confirm cards, toasts
+- [ ] 19. Resistance clarity: party resistances vs the zone's damage types (world card, status), red warning when short
+- [ ] 20. Seal economy: can a player reach SSR heroes (8 seals at lv30)? seal income per hour, tavern pacing
+- [ ] 21. Remove the unreachable windows (party, portrait, old skills) after moving anything still useful
+- [ ] 22. Session variety: daily quest pool, achievement pacing over the first 10 hours, small surprises
 
 ## Questions for the owner
 

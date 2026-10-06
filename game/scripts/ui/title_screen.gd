@@ -65,14 +65,12 @@ func _ready() -> void:
 	var bw := clampf(_frame.size.x * 0.17, 84.0, 120.0)
 	_buttons = HBoxContainer.new()
 	_buttons.add_theme_constant_override("separation", 8)
-	_buttons.size = Vector2(bw * 3 + 16, 20)
+	_buttons.size = Vector2(bw * 3 + 16, 24)
 	_buttons.position = Vector2(_frame.position.x + (_frame.size.x - _buttons.size.x) / 2.0, _frame.end.y - _frame.size.y * 0.115)
 	add_child(_buttons)
-	for d in [["title_new", "orange", _start_intro], ["title_settings", "brown", func(): WindowManager.toggle_panel("settings")],
-			["tray_quit", "red", func(): WindowManager.quit_game()]]:
-		var b := UITheme.button(DataDB.t(d[0]), d[1], d[2], Vector2(bw, 18))
-		b.add_theme_font_size_override("font_size", 10)
-		_buttons.add_child(b)
+	for d in [["title_new", Color("#FFC14A"), _start_intro], ["title_settings", Color("#9FC8FF"), func(): WindowManager.toggle_panel("settings")],
+			["tray_quit", Color("#FF6A5A"), func(): WindowManager.quit_game()]]:
+		_buttons.add_child(Fancy.plaque_button(DataDB.t(d[0]), d[1], d[2], Vector2(bw, 24)))
 	_buttons.modulate.a = 0.0
 	_text = UITheme.label("", Color("#F7EBCF"), int(clampf(_frame.size.y * 0.05, 12.0, 19.0)), UITheme.font_read)
 	_text.position = Vector2(_frame.position.x + _frame.size.x * 0.08, _frame.end.y - _frame.size.y * 0.13)

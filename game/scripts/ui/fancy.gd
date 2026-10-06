@@ -264,3 +264,48 @@ static func small_button(text: String, kind: String, cb: Callable, sz: Vector2) 
 		var tw := f.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 		b.draw_string(f, Vector2((r.size.x - tw) / 2.0, r.position.y + r.size.y / 2.0 + fs * 0.36), text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, tc))
 	return b
+
+
+## Large menu plaque (title screen): dark leather plate in a bronze bevel with gem studs at both ends, the
+## label in the title font; hover lifts it and lights the rim in the accent colour.
+static func plaque_button(text: String, accent: Color, cb: Callable, sz: Vector2) -> Button:
+	var b := Button.new()
+	b.flat = true
+	b.focus_mode = Control.FOCUS_NONE
+	b.size = sz
+	b.custom_minimum_size = sz
+	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	b.pressed.connect(func():
+		AudioManager.play("ui_click", 0.05, 0.6)
+		cb.call())
+	b.mouse_entered.connect(func():
+		AudioManager.play("ui_click", 0.15, 0.15)
+		b.queue_redraw())
+	for sig in [b.mouse_exited, b.button_down, b.button_up]:
+		sig.connect(b.queue_redraw)
+	b.draw.connect(func():
+		var ci := b.get_canvas_item()
+		var hov := b.is_hovered()
+		var lift := -1.0 if hov and not b.button_pressed else (1.0 if b.button_pressed else 0.0)
+		var r := Rect2(Vector2(6, 1 + lift), b.size - Vector2(12, 3))
+		if hov:
+			for k in 3:
+				UISkin.fill(ci, r.grow(3.0 - k), 5, Color(accent, 0.07), Color(accent, 0.07))
+		UISkin.fill(ci, Rect2(r.position + Vector2(0, 2), r.size), 4, Color(0, 0, 0, 0.45), Color(0, 0, 0, 0.45))
+		UISkin.fill(ci, r, 4, UISkin.BRONZE_HI, UISkin.BRONZE_LO)
+		var inner := r.grow(-2.0)
+		UISkin.fill(ci, inner, 3, Color("#3A2618").lerp(accent, 0.18 if hov else 0.08), Color("#170E08"))
+		UISkin.stroke(ci, inner, 3, Color(0, 0, 0, 0.8), 1.0)
+		UISkin.line(ci, inner.position + Vector2(4, 1.5), Vector2(inner.end.x - 4, inner.position.y + 1.5), Color(1, 0.9, 0.7, 0.18), 1.0)
+		UISkin.stroke(ci, r, 4, UISkin.OUTLINE, 1.0)
+		for sx in [r.position.x, r.end.x]:
+			UISkin.diamond(ci, Vector2(sx, r.get_center().y), 4.2)
+			UISkin.diamond(ci, Vector2(sx, r.get_center().y), 2.2, accent.lightened(0.3), accent.darkened(0.3))
+		var f := UITheme.font_title
+		var fs := int(clampf(b.size.y * 0.46, 9.0, 14.0))
+		var tw := f.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		var tp := Vector2((b.size.x - tw) / 2.0, r.get_center().y + fs * 0.36)
+		b.draw_string_outline(f, tp, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 3, Color(0, 0, 0, 0.85))
+		b.draw_string(f, tp, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("#FFF2D0") if hov else Color("#F0DDB4")))
+	return b
+
