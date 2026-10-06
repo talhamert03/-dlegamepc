@@ -131,10 +131,13 @@ func _build_top(c: Control, w: float) -> void:
 	tb.tooltip_text = DataDB.t("tower_locked") if locked else DataDB.t("tower_best", {"n": int(GameState.progress.get("tower_best", 0))})
 	tb.pressed.connect(func():
 		if BattleSim.mode == "tower":
+			AudioManager.play("ui_travel", 0.05, 0.6)
 			BattleSim.leave_tower()
 		elif BattleSim.tower_unlocked():
+			AudioManager.play("ui_travel", 0.05, 0.6)
 			BattleSim.enter_tower()
 		else:
+			AudioManager.play("smith_fail", 0.05, 0.35)
 			EventBus.notify.emit(DataDB.t("tower_locked"), UITheme.C_RED))
 	tb.mouse_entered.connect(tb.queue_redraw)
 	tb.mouse_exited.connect(tb.queue_redraw)

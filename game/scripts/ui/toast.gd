@@ -17,7 +17,7 @@ static var _live: Array = []
 
 
 ## icon: a texture, or chest: a chest kind drawn with ChestArt.
-static func show_reward(icon: Texture2D, title: String, sub := "", chest := "") -> void:
+static func show_reward(icon: Texture2D, title: String, sub := "", chest := "", sound := "") -> void:
 	var layer: Control = WindowManager.top_layer
 	if layer == null:
 		return
@@ -35,7 +35,7 @@ static func show_reward(icon: Texture2D, title: String, sub := "", chest := "") 
 	_live.append(t)
 	layer.add_child(t)
 	t._place()
-	AudioManager.play("chest_drop" if chest != "" else "coin", 0.05, 0.8)
+	AudioManager.play(sound if sound != "" else ("chest_drop" if chest != "" else "coin"), 0.05, 0.8)
 	WindowManager.layout_changed()
 
 

@@ -85,7 +85,10 @@ static func check_achievements() -> void:
 		if _met(a):
 			GameState.achievements[id] = TimeService.unix_now()
 			EventBus.achievement_unlocked.emit(id)
-			EventBus.notify.emit(DataDB.t("achievement", {"name": DataDB.tx(a["name"])}), UITheme.C_GOLD)
+			if WindowManager.top_layer != null:
+				Toast.show_reward(UITheme.icon("crown"), DataDB.t("achievement_toast"), DataDB.tx(a["name"]), "", "loot_rare")
+			else:
+				EventBus.notify.emit(DataDB.t("achievement", {"name": DataDB.tx(a["name"])}), UITheme.C_GOLD)
 			var rw: Dictionary = a.get("reward", {})
 			for k in rw:
 				if k == "gold":
