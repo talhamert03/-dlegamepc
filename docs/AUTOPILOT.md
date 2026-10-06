@@ -33,8 +33,8 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - [x] 7. Text / translation sweep: every string TR+EN, terms, clipping at 1.5x/2x, tooltips
 - [x] 8. Economy check with the balance bot: gold/XP curves, tavern prices, blacksmith costs, shop value
 - [ ] 9. Full playthrough Normal -> Nightmare -> Hell (bot + manual screenshots): walls, boredom spots, fixes
-- [ ] 10. First-hour experience pass: pacing, tutorial hints, unlock highlights, goal ribbon wording
-- [ ] 11. Combat feel: per-class hit effects, crit feedback, skill VFX audit, boss telegraphs
+- [x] 10. First-hour experience pass: pacing, tutorial hints, unlock highlights, goal ribbon wording
+- [x] 11. Combat feel: per-class hit effects, crit feedback, skill VFX audit, boss telegraphs
 - [x] 12. Remaining windows audit: away report, growth, runes, party, portrait — premium consistency
 - [ ] 13. Audio pass: missing SFX, volume balance, UI sounds on every control
 - [ ] 14. Performance: idle CPU/GPU, draw calls, long-session memory, 144 fps focus mode
@@ -62,3 +62,4 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - 2026-10-06 shift 1 — #7 text sweep: tools/i18n_audit.py (no missing keys, no half translations), F.lv() for level tags, MISS/BLOCK translated, EN overflow fixes (shop sign, rune title, tavern hint, quest wording).
 - 2026-10-06 shift 1 — #8 economy: bot now recruits SR/SSR like a player and enhances 6 slots; 24 h run: Normal ~10 h, Nightmare done at ~23.5 h, Hell starts. Gold no longer hoarded. Found and fixed: hero star-up (soul shard sink + 2 achievements) was only in an unreachable window — now a star plate under the portrait in the Hero window. Nightmare walls -> question for the owner.
 - 2026-10-06 shift 1 — #12 windows: away report rebuilt (time plaque, counting tiles, level-up chips, loot pop-in), growth guild cards + account tiles, language-switch script error fixed. Party and portrait windows are not reachable from any button (formation lives in the Hero window) — left in place, star-up moved out of them.
+- 2026-10-06 shift 1 — #10 first hour: speech bubbles with portraits, one-time tips (chests, smith, runes) that survive the tutorial end, bot gets the Lyra gift. #11 combat: audited hit/crit/hitstop/shake/telegraph paths (all present), damage numbers now stack instead of overlapping. Boss fatigue added (3%/fail, max 30%).

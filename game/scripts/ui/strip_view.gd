@@ -572,8 +572,13 @@ func _spawn_number(text: String, pos: Vector2, color: Color, big := false) -> vo
 	l.add_theme_font_size_override("font_size", 12 if big else 9)
 	var sz := l.get_minimum_size()
 	l.pivot_offset = sz / 2.0
-	l.position = (pos - Vector2(sz.x / 2.0, sz.y * 0.6)).round()
-	_active_nums.append({"l": l, "t": 0.0, "life": 0.95 if big else 0.75, "vx": _rng.randf_range(-10, 10), "y0": l.position.y, "big": big})
+	# numbers that land on the same spot within a moment stack upwards instead of covering each other
+	var stack := 0
+	for n in _active_nums:
+		if float(n["t"]) < 0.22 and absf(float(n["x0"]) - pos.x) < 16.0:
+			stack += 1
+	l.position = (pos - Vector2(sz.x / 2.0, sz.y * 0.6 + 7.0 * mini(stack, 3))).round()
+	_active_nums.append({"l": l, "t": 0.0, "life": 0.95 if big else 0.75, "vx": _rng.randf_range(-10, 10), "y0": l.position.y, "big": big, "x0": pos.x})
 
 
 func _update_numbers(delta: float) -> void:
