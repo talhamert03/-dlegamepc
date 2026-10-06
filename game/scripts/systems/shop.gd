@@ -133,7 +133,9 @@ static func block_reason(p: Dictionary, hero_id := "") -> String:
 				return DataDB.t("shop_bought")
 		"daily":
 			if not daily_ready():
-				return DataDB.t("shop_daily_taken")
+				var left := 86400 - int(TimeService.unix_now()) % 86400
+				var t := ("%d sa %d dk" % [left / 3600, (left % 3600) / 60]) if DataDB.lang == "tr" else ("%dh %dm" % [left / 3600, (left % 3600) / 60])
+				return DataDB.t("shop_daily_taken", {"t": t})
 			if Chests.count() >= Chests.MAX_HELD:
 				return DataDB.t("shop_chests_full")
 		"bundle":

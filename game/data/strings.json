@@ -1804,8 +1804,8 @@
   "en": "Free"
  },
  "shop_daily_taken": {
-  "tr": "Yarın yine gel",
-  "en": "Come back tomorrow"
+  "tr": "Yeni hediye: {t}",
+  "en": "Next gift: {t}"
  },
  "shop_daily_gift": {
   "tr": "Günlük Hediye",
