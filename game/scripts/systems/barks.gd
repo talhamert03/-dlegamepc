@@ -28,3 +28,11 @@ static func trigger(hero_id: String, event: String, chance := 0.6) -> void:
 		return
 	var l: Variant = lines[randi() % lines.size()]
 	EventBus.bark.emit(hero_id, DataDB.tx(l))
+
+
+## The hero's own first line for an event (no randomness), "" if they have none. Used by the recruit card.
+static func line(hero_id: String, event: String) -> String:
+	_load()
+	var lines: Array = _data.get("heroes", {}).get(hero_id, {}).get(event, [])
+	return DataDB.tx(lines[0]) if lines.size() > 0 else ""
+

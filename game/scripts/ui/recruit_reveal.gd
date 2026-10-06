@@ -159,6 +159,15 @@ func _draw() -> void:
 		var y := c.y + CARD.y * 0.5 + 22
 		draw_string_outline(f, Vector2(c.x - w / 2.0, y), nm, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, 4, Color(0, 0, 0, a2))
 		draw_string(f, Vector2(c.x - w / 2.0, y), nm, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(_col.lightened(0.35), a2))
+		# the hero's own greeting, in the reading font, a beat after the name
+		var quote := Barks.line(hid, "join")
+		if quote != "" and ft > 0.55:
+			var a3 := clampf((ft - 0.55) / 0.5, 0.0, 1.0)
+			var fr := UITheme.font_read
+			var qt := "“" + quote + "”"
+			var qw := minf(fr.get_string_size(qt, HORIZONTAL_ALIGNMENT_LEFT, -1, 9).x, size.x - 24.0)
+			draw_string_outline(fr, Vector2(c.x - qw / 2.0, y + 14), qt, HORIZONTAL_ALIGNMENT_LEFT, size.x - 24.0, 9, 3, Color(0, 0, 0, 0.8 * a3))
+			draw_string(fr, Vector2(c.x - qw / 2.0, y + 14), qt, HORIZONTAL_ALIGNMENT_LEFT, size.x - 24.0, 9, Color(0.95, 0.9, 0.8, a3))
 		if ft > 0.8:
 			var hint := DataDB.t("click_continue")
 			var fb := UITheme.font_body
