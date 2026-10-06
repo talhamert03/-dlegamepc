@@ -601,20 +601,46 @@ func _sell_dialog() -> void:
 		for it in GameState.bag:
 			if str(it.get("rarity", "")) == rr and not it.get("locked", false):
 				cnt += 1
-		var b := UITheme.button("", "brown", Callable(), Vector2(176, 14))
+		# rarity row: drawn checkbox, rarity gem, name, how many would go
+		var b := Button.new()
+		b.flat = true
 		b.toggle_mode = true
+		b.focus_mode = Control.FOCUS_NONE
 		b.button_pressed = picks[rr]
-		b.text = ("☑  " if picks[rr] else "☐  ") + ItemUtil.rarity_name(rr) + "  (%d)" % cnt
-		b.add_theme_color_override("font_color", ItemUtil.rarity_color(rr))
+		b.size = Vector2(176, 14)
+		b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		var rcol := ItemUtil.rarity_color(rr)
+		var label := ItemUtil.rarity_name(rr)
+		for sig in [b.mouse_entered, b.mouse_exited]:
+			sig.connect(b.queue_redraw)
+		b.draw.connect(func():
+			var ci := b.get_canvas_item()
+			var rect := Rect2(Vector2.ZERO, b.size)
+			var on := b.button_pressed
+			UISkin.fill(ci, rect, 3, Color("#3A2A20") if on else Color("#241A14"), Color("#1A120C"))
+			UISkin.stroke(ci, rect, 3, UISkin.OUTLINE, 1.0)
+			if b.is_hovered():
+				UISkin.stroke(ci, rect.grow(-1.0), 2, Color(rcol, 0.45), 0.8)
+			var box := Rect2(5, 3, 8, 8)
+			UISkin.fill(ci, box, 1.5, Color("#120C08"), Color("#2A1E14"))
+			UISkin.stroke(ci, box, 1.5, Color(UISkin.BRONZE, 0.9), 0.8)
+			if on:
+				b.draw_polyline(PackedVector2Array([Vector2(6.6, 7.2), Vector2(8.6, 9.2), Vector2(12, 4.6)]), Color("#8CFF7A"), 1.4, true)
+			UISkin.diamond(ci, Vector2(21, 7), 3.0, rcol.lightened(0.25), rcol.darkened(0.35))
+			var fb := UITheme.font_body
+			b.draw_string(fb, Vector2(28, 10), label, HORIZONTAL_ALIGNMENT_LEFT, 110, 8, rcol if on else Color(rcol, 0.6))
+			var ct := str(cnt)
+			var cw := fb.get_string_size(ct, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
+			b.draw_string(fb, Vector2(rect.size.x - cw - 6, 10), ct, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#E8D8B8") if on else UITheme.C_DIM))
 		b.toggled.connect(func(on: bool):
 			picks[rr] = on
-			b.text = ("☑  " if on else "☐  ") + ItemUtil.rarity_name(rr) + "  (%d)" % cnt
+			AudioManager.play("ui_click", 0.05, 0.4)
+			b.queue_redraw()
 			recount.call())
 		card.add_child(b)
 		b.position = Vector2(10, y)
-		b.size = Vector2(176, 14)
 		y += 16.0
-	go = UITheme.button(DataDB.t("btn_sell"), "red", func():
+	go = Fancy.small_button(DataDB.t("btn_sell"), "red", func():
 		var total := 0
 		for it in GameState.bag.duplicate():
 			if not it.get("locked", false) and picks.get(str(it.get("rarity", "common")), false):
@@ -622,13 +648,11 @@ func _sell_dialog() -> void:
 		veil.queue_free()
 		if total > 0:
 			EventBus.notify.emit(DataDB.t("sold_for", {"g": F.fmt_num(total)}), UITheme.C_GOLD)
-			AudioManager.play("coin", 0.05, 0.8), Vector2(84, 14))
+			AudioManager.play("coin", 0.05, 0.8), Vector2(84, 15))
 	card.add_child(go)
-	go.size = Vector2(84, 14)
 	go.position = Vector2(10, 124)
-	var no := UITheme.button(DataDB.t("btn_cancel"), "brown", func(): veil.queue_free(), Vector2(84, 14))
+	var no := Fancy.small_button(DataDB.t("btn_cancel"), "brown", func(): veil.queue_free(), Vector2(84, 15))
 	card.add_child(no)
-	no.size = Vector2(84, 14)
 	no.position = Vector2(102, 124)
 	recount.call()
 

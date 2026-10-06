@@ -187,14 +187,12 @@ static func confirm(host: Control, text: String, on_yes: Callable, yes_text := "
 	l.position = Vector2(8, 7)
 	l.size = Vector2(w - 16, 34)
 	card.add_child(l)
-	var yes := UITheme.button(yes_text if yes_text != "" else DataDB.t("btn_yes"), "red" if danger else "gold", func():
+	var yes := Fancy.small_button(yes_text if yes_text != "" else DataDB.t("btn_yes"), "red" if danger else "gold", func():
 		veil.queue_free()
-		on_yes.call(), Vector2(64, 14))
+		on_yes.call(), Vector2(64, 15))
 	card.add_child(yes)
-	yes.size = Vector2(64, 14)
 	yes.position = Vector2(w / 2.0 - 68, 46)
-	var no := UITheme.button(DataDB.t("btn_cancel"), "brown", func(): veil.queue_free(), Vector2(64, 14))
+	var no := Fancy.small_button(DataDB.t("btn_cancel"), "brown", func(): veil.queue_free(), Vector2(64, 15))
 	card.add_child(no)
-	no.size = Vector2(64, 14)
 	no.position = Vector2(w / 2.0 + 4, 46)
 	return veil
