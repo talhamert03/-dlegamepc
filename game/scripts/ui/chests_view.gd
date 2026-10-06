@@ -70,7 +70,7 @@ func _build(c: Control) -> void:
 	_hint = UITheme.label(DataDB.t("chest_empty"), UITheme.C_DIM, 8)
 	_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_hint.position = Vector2(8, 40)
+	_hint.position = Vector2(8, 16)
 	_hint.size = Vector2(w - 16, 40)
 	c.add_child(_hint)
 	EventBus.chests_changed.connect(func():
@@ -192,6 +192,19 @@ func _draw_stage() -> void:
 	UISkin.stroke(ci, r, 4, Color(0, 0, 0, 0.9), 1.0)
 	UISkin.stroke(ci, r.grow(-1.5), 3, Color(UISkin.BRONZE, 0.4), 1.0)
 	if kind == "":
+		# empty pedestal: a faint dashed chest outline waiting for loot
+		var bw := cw * 0.9
+		var body := Rect2(w / 2.0 - bw / 2.0, SHOW_H * 0.7 - bw * 0.42, bw, bw * 0.42)
+		var gc := Color(0.75, 0.65, 0.85, 0.22)
+		_stage.draw_dashed_line(body.position, Vector2(body.end.x, body.position.y), gc, 1.0, 3.0)
+		_stage.draw_dashed_line(Vector2(body.position.x, body.position.y), Vector2(body.position.x, body.end.y), gc, 1.0, 3.0)
+		_stage.draw_dashed_line(Vector2(body.end.x, body.position.y), body.end, gc, 1.0, 3.0)
+		var lid := PackedVector2Array()
+		for k in 13:
+			var a := PI + PI * k / 12.0
+			lid.append(Vector2(w / 2.0 + cos(a) * bw / 2.0, body.position.y + sin(a) * bw * 0.22))
+		for k in range(0, 12, 2):
+			_stage.draw_line(lid[k], lid[k + 1], gc, 1.0, true)
 		return
 	var foot := Vector2(w / 2.0, SHOW_H * 0.7 + 1)
 	var open := 0.0
