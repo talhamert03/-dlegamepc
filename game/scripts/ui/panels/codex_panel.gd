@@ -28,6 +28,21 @@ const REWARD_ICON := {"gold": "gold", "tavern_seal": "crown", "soul_shard": "gem
 	"guild_badge": "flag", "shiny_essence": "sparkle", "star_dust": "star", "mythic_essence": "gem"}
 
 
+## Bestiary tooltip: name, how many fell, its element and where it lives.
+func _beast_tip(eid: String, d: Dictionary, kills: int) -> String:
+	var lines: Array = [DataDB.tx(d.get("name", {})), DataDB.t("beast_kills", {"n": F.fmt_num(kills)})]
+	var el := str(d.get("element", "physical"))
+	if el != "physical" and el != "":
+		lines.append(DataDB.t("beast_element", {"el": ZoneInfo.ELEMENT_ICON.get(el, "") + " " + ZoneInfo.element_name(el)}))
+	var where: Array = []
+	for z in DataDB.zones:
+		if z.get("boss", "") == eid or z.get("enemies", []).has(eid):
+			where.append(DataDB.tx(z.get("name", {})))
+	if where.size() > 0:
+		lines.append(DataDB.t("beast_where", {"z": ", ".join(where.slice(0, 3))}))
+	return "\n".join(lines)
+
+
 func _achievement_row(a: Dictionary, w: float) -> Control:
 	var got: bool = GameState.achievements.has(a["id"])
 	var c := Control.new()
@@ -134,7 +149,7 @@ func refresh() -> void:
 			var card := Control.new()
 			card.custom_minimum_size = Vector2(cell, cell + 2)
 			card.mouse_filter = Control.MOUSE_FILTER_STOP
-			card.tooltip_text = ("%s  ×%d" % [DataDB.tx(d2.get("name", {})), int(seen[eid])]) if known else "???"
+			card.tooltip_text = _beast_tip(str(eid), d2, int(seen[eid])) if known else "???"
 			card.draw.connect(func():
 				var ci := card.get_canvas_item()
 				var r := Rect2(Vector2.ZERO, card.size)

@@ -2350,5 +2350,17 @@
  "goal_tower": {
   "tr": "Hedef: Sonsuz Kule {n}. kat",
   "en": "Goal: Endless Tower floor {n}"
+ },
+ "beast_kills": {
+  "tr": "Yenilen: {n}",
+  "en": "Defeated: {n}"
+ },
+ "beast_element": {
+  "tr": "Element: {el}",
+  "en": "Element: {el}"
+ },
+ "beast_where": {
+  "tr": "Görüldüğü yer: {z}",
+  "en": "Found in: {z}"
  }
 }
