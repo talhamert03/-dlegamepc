@@ -69,6 +69,9 @@ func _boot() -> void:
 			p.set_report(away)
 	if not cmd.has("--screenshot") or cmd.has("--tutorial"):
 		Tutorial.start_if_needed(strip_root)
+	for a in cmd:
+		if a.begins_with("--perf="):
+			_perf_probe(float(a.substr(7)), cmd)
 	if cmd.has("--screenshot"):
 		_screenshot_mode(cmd)
 
@@ -573,6 +576,24 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 		if is_instance_valid(w):
 			img.get_region(Rect2i(Vector2i(w.position * sc), Vector2i(w.size * sc))).save_png(out + "panel_%s.png" % id)
 	print("SCREENSHOTS_DONE ", ProjectSettings.globalize_path(out))
+	get_tree().quit()
+
+
+## Performance probe: runs the game (optionally sped up with --speed=N) and prints frame time, draw calls,
+## nodes, objects, orphans and memory every 10 s, then quits. Used to look for leaks in long sessions.
+func _perf_probe(secs: float, cmd: Array) -> void:
+	for a in cmd:
+		if a.begins_with("--speed="):
+			Engine.time_scale = float(a.substr(8))
+	print("perf | t | fps | frame_ms | draws | nodes | objects | orphans | mem_mb")
+	var t := 0.0
+	while t < secs:
+		await get_tree().create_timer(10.0 * Engine.time_scale).timeout
+		t += 10.0
+		print("perf | %d | %d | %.2f | %d | %d | %d | %d | %.1f" % [int(t), int(Performance.get_monitor(Performance.TIME_FPS)),
+			Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0, int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)),
+			int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT)), int(Performance.get_monitor(Performance.OBJECT_COUNT)),
+			int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)), Performance.get_monitor(Performance.MEMORY_STATIC) / 1048576.0])
 	get_tree().quit()
 
 

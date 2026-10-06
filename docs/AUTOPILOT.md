@@ -37,7 +37,7 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - [x] 11. Combat feel: per-class hit effects, crit feedback, skill VFX audit, boss telegraphs
 - [x] 12. Remaining windows audit: away report, growth, runes, party, portrait — premium consistency
 - [x] 13. Audio pass: missing SFX, volume balance, UI sounds on every control
-- [ ] 14. Performance: idle CPU/GPU, draw calls, long-session memory, 144 fps focus mode
+- [x] 14. Performance: idle CPU/GPU, draw calls, long-session memory, 144 fps focus mode
 - [ ] 15. Endgame: tower floors, paragon, Hell rewards — reasons to keep playing
 - [ ] 16. Accessibility: text-size option, colour-blind safe rarity marks, key rebinding view
 - [ ] 17. Polish round: every panel at 1.5x/2x/2.5x, no clipping, no overlaps, consistent spacing
@@ -65,3 +65,4 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - 2026-10-06 shift 1 — #12 windows: away report rebuilt (time plaque, counting tiles, level-up chips, loot pop-in), growth guild cards + account tiles, language-switch script error fixed. Party and portrait windows are not reachable from any button (formation lives in the Hero window) — left in place, star-up moved out of them.
 - 2026-10-06 shift 1 — #10 first hour: speech bubbles with portraits, one-time tips (chests, smith, runes) that survive the tutorial end, bot gets the Lyra gift. #11 combat: audited hit/crit/hitstop/shake/telegraph paths (all present), damage numbers now stack instead of overlapping. Boss fatigue added (3%/fail, max 30%).
 - 2026-10-06 shift 1 — #9 playthrough: two 48 h bot runs through Normal, Nightmare, Hell; boss HP continuous, walls from resistance/damage multipliers (question for the owner). #13 audio: achievement toast + chime, tower sounds, combat sfx trimmed to one loudness (enemy blunt/dark hits were 5 dB louder than hero hits). No new sound files (Higgsfield credits 0).
+- 2026-10-06 shift 1 — #14 performance: new --perf=SECS [--speed=N] probe. 30 game-minutes at 6x: memory 44.5 -> 46.3 MB and flat, objects flat, 0 orphan nodes (no leak). Battle sim ~14 us/frame, unit views + strip ~0.15 ms/frame. Strip draws ~600-700 calls (fine on a GPU; this container renders in software). Idle 15 fps unfocused, 30 in taskbar mode, 30/60/144 focused already in settings.
