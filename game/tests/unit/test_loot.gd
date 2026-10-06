@@ -49,3 +49,12 @@ func test_item_find_increases_rare_rate() -> void:
 		if ItemUtil.rarity_rank(LootSystem.roll_rarity(rng, 200.0, 0)) >= 2:
 			boosted += 1
 	runner.check(boosted > base * 1.5, "item find boosts rares %d vs %d" % [boosted, base])
+
+
+func test_affix_labels_have_one_percent_sign() -> void:
+	var bad: Array = []
+	for id in DataDB.items.get("affixes", {}):
+		var t := ItemUtil.affix_label(str(id), 10.0)
+		if t.count("%") > 1:
+			bad.append(t)
+	runner.check(bad.is_empty(), "affix labels show a single % " + str(bad))

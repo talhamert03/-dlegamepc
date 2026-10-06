@@ -59,12 +59,35 @@ func show_item(item: Dictionary, compare_hero := "") -> void:
 		return
 	var r: String = item.get("rarity", "common")
 	var col := ItemUtil.rarity_color(r)
-	_line(ItemUtil.display_name(item), col, UITheme.font_title, 10)
 	var slot_name: String = DataDB.tx(DataDB.items["slot_names"].get(item.get("slot", "") if item.get("slot", "") != "ring" else "ring1", {}))
 	var sub := "%s %s  ·  %s %d" % [ItemUtil.rarity_name(r), slot_name, DataDB.t("item_level_short"), int(item.get("ilvl", 1))]
 	if item.get("cat", "") == "armor":
 		sub += "  " + DataDB.t("weight_" + str(item.get("weight", "medium")))
-	_line(sub, UITheme.C_DIM)
+	# header: the item in a rarity-lit slot beside its name and kind
+	var head := HBoxContainer.new()
+	head.add_theme_constant_override("separation", 5)
+	head.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(head)
+	var ic := Control.new()
+	ic.custom_minimum_size = Vector2(26, 26)
+	ic.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var tex := SpriteLib.item_icon(item)
+	ic.draw.connect(func():
+		var rr := Rect2(Vector2.ZERO, ic.size)
+		for k in 3:
+			UISkin.fill(ic.get_canvas_item(), rr.grow(2.0 - k), 4, Color(col, 0.08), Color(col, 0.08))
+		UISkin.slot(ic.get_canvas_item(), rr, UISkin.rarity_fill(r), true, false)
+		if tex:
+			ic.draw_texture_rect(tex, rr.grow(-2.5), false))
+	head.add_child(ic)
+	var names := VBoxContainer.new()
+	names.add_theme_constant_override("separation", 0)
+	names.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	names.alignment = BoxContainer.ALIGNMENT_CENTER
+	head.add_child(names)
+	var nl := UITheme.label(ItemUtil.display_name(item), col, 10, UITheme.font_title)
+	names.add_child(nl)
+	names.add_child(UITheme.label(sub, UITheme.C_DIM, 8))
 	var who := ItemUtil.usable_classes(item)
 	if who.size() > 0:
 		var fam_col := {"heavy": Color("#FF9A7A"), "light": Color("#C9A0FF"), "holy": Color("#FFE7A0"), "medium": Color("#9EE08A")}

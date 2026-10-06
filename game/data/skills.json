@@ -3756,8 +3756,8 @@
     "en": "Vigor"
    },
    "desc": {
-    "tr": "+{v} Can Yenilenmesi (%/sn)",
-    "en": "+{v} HP Regen %/s"
+    "tr": "Saniyede canın %{v} kadarı yenilenir",
+    "en": "Regenerates {v}% of life per second"
    },
    "params": {
     "v": [
