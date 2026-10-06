@@ -2250,5 +2250,21 @@
  "stash_capacity": {
   "tr": "{n} / {m} yuva",
   "en": "{n} / {m} slots"
+ },
+ "smith_for_hero": {
+  "tr": "Kimin için:",
+  "en": "For:"
+ },
+ "smith_bag_count": {
+  "tr": "çantada {n}",
+  "en": "{n} in bag"
+ },
+ "smith_tier": {
+  "tr": "Kademe {t} · Sv {lv}",
+  "en": "Tier {t} · Lv {lv}"
+ },
+ "smith_craft_odds": {
+  "tr": "Sonuç:",
+  "en": "Result:"
  }
 }

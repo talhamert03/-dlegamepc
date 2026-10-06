@@ -91,18 +91,81 @@ func refresh() -> void:
 			WindowManager.panels[pid].refresh()
 
 
+const RARITY_CYCLE := ["common", "magic", "rare", "epic", "legendary"]
+const CRAFT_SLOTS := [["any", "star"], ["weapon", "sword"], ["helm", "crown"], ["chest", "shield"], ["gloves", "hammer"],
+	["boots", "boot"], ["ring", "gem"], ["amulet", "sparkle"]]
+
+
+## Hero row shared by the tabs: whose class decides what a combine or a craft produces.
+func _hero_row(note_key: String) -> void:
+	var hid := W.current_hero()
+	var hr := W.hbox(4)
+	var hl := UITheme.label(DataDB.t(note_key), UITheme.C_DIM, 8, UITheme.font_body)
+	hl.custom_minimum_size = Vector2(0, 20)
+	hl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	hr.add_child(hl)
+	hr.add_child(W.hero_selector(hid, func(nh: String):
+		W.select_hero(nh)
+		enh_target = {}
+		refresh()))
+	_body.add_child(hr)
+
+
+## Combine: nine items of one rarity laid in a rune circle become one of the next rarity.
 func _build_combine() -> void:
-	var hint := UITheme.label(DataDB.t("smith_combine_hint"), UITheme.C_DIM)
-	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.custom_minimum_size = Vector2(content.size.x, 0)
-	_body.add_child(hint)
-	var center := CenterContainer.new()
-	center.custom_minimum_size = Vector2(content.size.x, 64)
-	_body.add_child(center)
-	var g := W.grid(3, 2)
-	center.add_child(g)
+	var w := content.size.x
+	_hero_row("smith_for_hero")
+	var r := ""
+	if picks.size() > 0:
+		r = GameState.bag[GameState.find_bag_index(picks[0])].get("rarity", "common")
+	var cur_r := r if r != "" else _auto_rarity
+	var nr := Blacksmith.next_rarity(cur_r)
+	var stage := Control.new()
+	stage.custom_minimum_size = Vector2(w, 92)
+	stage.clip_contents = true
+	var gx := 18.0
+	var gy := 7.0
+	stage.draw.connect(func():
+		var ci := stage.get_canvas_item()
+		var rr := Rect2(Vector2.ZERO, stage.size)
+		UISkin.well(ci, rr)
+		var col := ItemUtil.rarity_color(cur_r)
+		var c := Vector2(gx + 39, gy + 39)
+		# rune circle under the grid, turning slowly, brighter as it fills
+		var fill := picks.size() / 9.0
+		for k in 4:
+			stage.draw_circle(c, 44.0 - k * 8.0, Color(col, 0.03 + 0.04 * fill))
+		stage.draw_arc(c, 44, 0, TAU, 48, Color(col, 0.35 + 0.4 * fill), 1.2, true)
+		stage.draw_arc(c, 40, 0, TAU, 48, Color(col, 0.2 + 0.3 * fill), 0.8, true)
+		for k in 12:
+			var a := _ct * 0.3 + k * TAU / 12.0
+			var p := c + Vector2.from_angle(a) * 42.0
+			stage.draw_rect(Rect2(p - Vector2(1.2, 1.2), Vector2(2.4, 2.4)), Color(col.lightened(0.3), 0.4 + 0.5 * fill))
+		# arrow and the result to come
+		var ax := gx + 92.0
+		stage.draw_colored_polygon(PackedVector2Array([Vector2(ax, c.y - 3), Vector2(ax + 16, c.y - 3), Vector2(ax + 16, c.y - 8), Vector2(ax + 26, c.y),
+			Vector2(ax + 16, c.y + 8), Vector2(ax + 16, c.y + 3), Vector2(ax, c.y + 3)]), Color("#E8C27A", 0.5 + 0.5 * fill))
+		var res := Rect2(ax + 34, c.y - 17, 34, 34)
+		var ncol := ItemUtil.rarity_color(nr) if nr != "" else UITheme.C_DIM
+		for k in 4:
+			UISkin.fill(ci, res.grow(2.0 + k * 2.0), 4, Color(ncol, 0.06 + 0.04 * sin(_ct * 3.0)), Color(ncol, 0.03))
+		UISkin.slot(ci, res, UISkin.rarity_fill(nr if nr != "" else "common"), true, false)
+		var f := UITheme.font_title
+		stage.draw_string(f, res.get_center() + Vector2(-4, 5), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(1, 1, 1, 0.85))
+		var nm := ItemUtil.rarity_name(nr) if nr != "" else "—"
+		var fb := UITheme.font_body
+		var tw := fb.get_string_size(nm, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
+		stage.draw_string(fb, Vector2(res.get_center().x - tw / 2.0, res.end.y + 11), nm, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, ncol)
+		var cnt := "%d / 9" % picks.size()
+		var cw2 := fb.get_string_size(cnt, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
+		stage.draw_string(fb, Vector2(res.get_center().x - cw2 / 2.0, res.position.y - 5), cnt, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, UITheme.C_GOLD if picks.size() == 9 else UITheme.C_DIM))
+	_body.add_child(stage)
+	_stage = stage
+	var g := W.grid(3, 3)
+	g.position = Vector2(gx, gy)
+	stage.add_child(g)
 	for i in 9:
-		var s := ItemSlot.new()
+		var s := ItemSlot.new(24.0)
 		s.source = "combine"
 		if i < picks.size():
 			var bi := GameState.find_bag_index(picks[i])
@@ -113,34 +176,142 @@ func _build_combine() -> void:
 				picks.erase(sl.key)
 				refresh())
 		g.add_child(s)
-	var r := ""
-	if picks.size() > 0:
-		r = GameState.bag[GameState.find_bag_index(picks[0])].get("rarity", "common")
+	# rarity gems, auto-fill and clear
+	var tools := Control.new()
+	tools.custom_minimum_size = Vector2(w, 16)
+	_body.add_child(tools)
+	for i in RARITY_CYCLE.size():
+		var rid: String = RARITY_CYCLE[i]
+		var gb := Button.new()
+		gb.flat = true
+		gb.focus_mode = Control.FOCUS_NONE
+		gb.size = Vector2(15, 15)
+		gb.position = Vector2(i * 17.0, 0)
+		gb.tooltip_text = ItemUtil.rarity_name(rid) + " · " + DataDB.t("smith_bag_count", {"n": GameState.bag.filter(func(it): return it.get("rarity", "") == rid and not it.get("locked", false)).size()})
+		gb.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		gb.pressed.connect(func():
+			_auto_rarity = rid
+			AudioManager.play("ui_click", 0.05, 0.5)
+			refresh())
+		gb.draw.connect(func():
+			var ci := gb.get_canvas_item()
+			var on := rid == _auto_rarity
+			var col := ItemUtil.rarity_color(rid)
+			var c := Vector2(7.5, 7.5)
+			if on:
+				UISkin.ring(ci, c, 7.2, Color("#FFE45C"), 1.4)
+			UISkin.diamond(ci, c, 5.2 if on else 4.4, col.lightened(0.25), col.darkened(0.4)))
+		tools.add_child(gb)
+	var af := Fancy.small_button(DataDB.t("smith_autofill"), "gold", _autofill, Vector2(62, 14))
+	tools.add_child(af)
+	af.position = Vector2(w - 62 - 50, 1)
+	var cl := Fancy.small_button(DataDB.t("btn_clear"), "brown", func():
+		picks.clear()
+		refresh(), Vector2(46, 14))
+	tools.add_child(cl)
+	cl.position = Vector2(w - 46, 1)
 	var pity := int(GameState.blacksmith.get("pity", 0))
 	var maxp := int(DataDB.bal("combine.pity", 10))
-	var chance := Blacksmith.combine_chance(r if r != "" else _auto_rarity)
-	_body.add_child(W.stat_row("%d/9" % picks.size(), DataDB.t("smith_success", {"p": int(round(chance * 100))}), UITheme.C_GREEN, UITheme.C_TEXT, int(content.size.x)))
-	_body.add_child(UITheme.label(DataDB.t("smith_pity", {"n": pity, "m": maxp}), UITheme.C_DIM))
-	_body.add_child(_roll_log("combine"))
-	var row := W.hbox(2)
-	_body.add_child(row)
-	var rar_btn := UITheme.button(ItemUtil.rarity_name(_auto_rarity), "brown", Callable(), Vector2(40, 12))
-	rar_btn.add_theme_color_override("font_color", ItemUtil.rarity_color(_auto_rarity))
-	rar_btn.pressed.connect(func():
-		var order := ["common", "magic", "rare", "epic", "legendary"]
-		_auto_rarity = order[(order.find(_auto_rarity) + 1) % order.size()]
-		refresh())
-	row.add_child(rar_btn)
-	row.add_child(UITheme.button(DataDB.t("smith_autofill"), "orange", _autofill))
-	row.add_child(UITheme.button(DataDB.t("btn_clear"), "brown", func():
-		picks.clear()
-		refresh()))
-	var cb := UITheme.button(DataDB.t("smith_combine"), "gold", _do_combine, Vector2(content.size.x, 13))
+	var chance := Blacksmith.combine_chance(cur_r)
+	_body.add_child(_odds_strip(chance, pity, maxp, "combine", w))
 	var prob := Blacksmith.combine_problem(picks)
-	cb.disabled = prob != ""
-	if prob != "" and picks.size() == 9:
-		cb.tooltip_text = DataDB.t(prob)
-	_body.add_child(cb)
+	_body.add_child(_round_action("merge", DataDB.t("smith_combine"), prob == "", DataDB.t(prob) if prob != "" else "", _do_combine, w))
+
+
+## Chance ring + pity pips + recent roll dots in one line (combine).
+func _odds_strip(chance: float, fails: int, pity: int, kind: String, w: float) -> Control:
+	var c := Control.new()
+	c.custom_minimum_size = Vector2(w, 26)
+	c.mouse_filter = Control.MOUSE_FILTER_STOP
+	c.tooltip_text = DataDB.t("smith_pity", {"n": fails, "m": pity})
+	var log: Array = []
+	for e in GameState.blacksmith.get("log", []):
+		if str(e.get("k", "")) == kind and log.size() < 8:
+			log.append(e)
+	c.draw.connect(func():
+		var ci := c.get_canvas_item()
+		var fb := UITheme.font_body
+		var rc := Vector2(12, 13)
+		var col := UITheme.C_GREEN if chance >= 0.7 else (Color("#FFC94A") if chance >= 0.4 else Color("#FF7A6A"))
+		c.draw_circle(rc, 12.0, UISkin.OUTLINE)
+		c.draw_circle(rc, 11.0, Color("#1A120C"))
+		c.draw_arc(rc, 9.0, -PI / 2.0, -PI / 2.0 + TAU, 32, Color(0.25, 0.18, 0.12), 3.0, true)
+		c.draw_arc(rc, 9.0, -PI / 2.0, -PI / 2.0 + TAU * chance, 32, col, 3.0, true)
+		var pt := "%%%d" % int(round(chance * 100.0)) if DataDB.lang == "tr" else "%d%%" % int(round(chance * 100.0))
+		var pw := fb.get_string_size(pt, HORIZONTAL_ALIGNMENT_LEFT, -1, 6).x
+		c.draw_string(fb, rc + Vector2(-pw / 2.0, 2.2), pt, HORIZONTAL_ALIGNMENT_LEFT, -1, 6, col)
+		c.draw_string(fb, Vector2(30, 10), DataDB.t("smith_success", {"p": int(round(chance * 100.0))}), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)
+		c.draw_string(fb, Vector2(30, 22), DataDB.t("smith_pity_short"), HORIZONTAL_ALIGNMENT_LEFT, -1, 7, UITheme.C_DIM)
+		var px := 30.0 + fb.get_string_size(DataDB.t("smith_pity_short"), HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x + 6.0
+		for i in pity:
+			var on := i < fails
+			UISkin.diamond(ci, Vector2(px + i * 7.0, 19.5), 2.4, Color("#FFE08A") if on else Color("#4A3A30"), Color("#B07420") if on else Color("#241A14"))
+		var lx := w - 4.0
+		for e in log:
+			lx -= 7.0
+			c.draw_circle(Vector2(lx, 19.5), 2.4, Color("#6FE08A") if e.get("ok", false) else Color("#FF6A5A")))
+	return c
+
+
+## Big round action button (merge / hammer / plus) with its label, or the reason it cannot be pressed.
+func _round_action(glyph: String, label: String, ok: bool, reason: String, cb: Callable, w: float) -> Control:
+	var row := Control.new()
+	row.custom_minimum_size = Vector2(w, 46)
+	var b := Button.new()
+	b.flat = true
+	b.focus_mode = Control.FOCUS_NONE
+	b.size = Vector2(30, 30)
+	b.position = Vector2((w - 30) / 2.0, 2)
+	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND if ok else Control.CURSOR_ARROW
+	b.tooltip_text = label if ok else reason
+	b.disabled = not ok
+	for sig in [b.mouse_entered, b.mouse_exited, b.button_down, b.button_up]:
+		sig.connect(b.queue_redraw)
+	b.pressed.connect(cb)
+	b.draw.connect(func():
+		var ci := b.get_canvas_item()
+		var c := Vector2(15, 15 + (1.0 if b.button_pressed else 0.0))
+		var hov := b.is_hovered() and ok
+		if ok:
+			var p := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 300.0)
+			b.draw_circle(c, 15.0, Color(1.0, 0.85, 0.4, 0.12 + 0.12 * p))
+		UISkin.circle(ci, c + Vector2(0, 1.2), 13.4, Color(0, 0, 0, 0.5), Color(0, 0, 0, 0.5))
+		UISkin.circle(ci, c, 13.2, UISkin.OUTLINE, UISkin.OUTLINE)
+		UISkin.circle(ci, c, 12.4, (UISkin.BRONZE_HI if hov else UISkin.BRONZE) if ok else Color("#5A5650"), UISkin.BRONZE_LO if ok else Color("#2A2622"))
+		var inner_top := {"plus": Color("#2E8A3E"), "merge": Color("#6A3AB0"), "hammer": Color("#B0602A"), "salvage": Color("#A03030")}.get(glyph, Color("#2E8A3E"))
+		UISkin.circle(ci, c, 9.4, inner_top if ok else Color("#2A2826"), inner_top.darkened(0.5) if ok else Color("#161412"))
+		UISkin.ring(ci, c, 9.4, Color(0, 0, 0, 0.6), 1.0)
+		var pc := Color("#F4ECFF") if ok else Color("#6A6660")
+		match glyph:
+			"plus":
+				b.draw_rect(Rect2(c.x - 5.5, c.y - 1.4, 11, 2.8), pc)
+				b.draw_rect(Rect2(c.x - 1.4, c.y - 5.5, 2.8, 11), pc)
+			"merge":
+				for k in 3:
+					var a := -PI / 2.0 + k * TAU / 3.0 + Time.get_ticks_msec() / 900.0
+					var p0 := c + Vector2.from_angle(a) * 6.0
+					b.draw_line(p0, c + Vector2.from_angle(a) * 2.0, pc, 1.4, true)
+					b.draw_circle(p0, 1.5, pc)
+				b.draw_circle(c, 2.2, pc)
+			"hammer":
+				var ic := UITheme.icon("hammer")
+				if ic:
+					b.draw_texture_rect(ic, Rect2(c - Vector2(6, 6), Vector2(12, 12)), false, pc)
+		b.draw_circle(c + Vector2(-3, -4), 2.2, Color(1, 1, 1, 0.2)))
+	if ok:
+		var tm := Timer.new()
+		tm.wait_time = 0.05
+		tm.autostart = true
+		tm.timeout.connect(b.queue_redraw)
+		b.add_child(tm)
+	row.add_child(b)
+	var lab := UITheme.label(label if ok else reason, Color("#FFE7B0") if ok else Color("#FF8A7A"), 8, UITheme.font_title if ok else UITheme.font_body)
+	lab.position = Vector2(0, 34)
+	lab.size = Vector2(w, 11)
+	lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lab.clip_text = true
+	row.add_child(lab)
+	return row
 
 
 func _autofill() -> void:
@@ -173,9 +344,13 @@ var _stage: Control
 var _fx := ""          # "ok" | "fail" after a roll, drawn over the anvil
 var _fx_t := 9.0
 var _fx_lv := 0
+var _ct := 0.0         # clock for the combine rune circle
 
 
 func _process(delta: float) -> void:
+	_ct += delta
+	if tab == 0 and is_instance_valid(_stage):
+		_stage.queue_redraw()
 	if _fx_t < 1.6:
 		_fx_t += delta
 		if is_instance_valid(_stage):
@@ -475,82 +650,181 @@ func _do_enhance() -> void:
 	refresh()
 
 
+const MAT_ICON2 := {"iron_scrap": "hammer", "shiny_essence": "sparkle", "epic_essence": "gem", "legendary_essence": "flame",
+	"star_dust": "star", "mythic_essence": "gem", "soul_shard": "gem", "tavern_seal": "crown", "guild_badge": "flag"}
+
+
+## Salvage: one row per rarity (what is in the bag and what it melts into), then the material pouch.
 func _build_salvage() -> void:
-	var hint := UITheme.label(DataDB.t("smith_salvage_hint"), UITheme.C_DIM)
-	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.custom_minimum_size = Vector2(content.size.x, 0)
-	_body.add_child(hint)
+	var w := content.size.x
+	_body.add_child(UITheme.para(DataDB.t("smith_salvage_hint"), w, UITheme.C_DIM))
 	for r in ["common", "magic", "rare", "epic"]:
 		var n: int = GameState.bag.filter(func(it): return it.get("rarity", "") == r and not it.get("locked", false)).size()
-		var row := W.hbox(2)
-		var l := UITheme.label("%s (%d)" % [ItemUtil.rarity_name(r), n], ItemUtil.rarity_color(r))
-		l.custom_minimum_size = Vector2(80, 0)
-		row.add_child(l)
+		var yields: Dictionary = DataDB.items.get("salvage", {}).get(r, {})
+		var row := Control.new()
+		row.custom_minimum_size = Vector2(w, 22)
+		var col := ItemUtil.rarity_color(r)
 		var rr: String = r
-		var b := UITheme.button(DataDB.t("ctx_salvage"), "brown", func():
+		row.draw.connect(func():
+			var ci := row.get_canvas_item()
+			var rect := Rect2(Vector2(0, 1), row.size - Vector2(0, 2))
+			UISkin.fill(ci, rect, 2, Color(col, 0.12), Color(0, 0, 0, 0.25))
+			UISkin.stroke(ci, rect, 2, Color(col, 0.45), 0.8)
+			UISkin.diamond(ci, Vector2(8, 11), 4.0, col.lightened(0.25), col.darkened(0.4))
+			var fb := UITheme.font_body
+			row.draw_string(fb, Vector2(16, 14), "%s  ×%d" % [ItemUtil.rarity_name(rr), n], HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col if n > 0 else UITheme.C_DIM)
+			var x := 92.0
+			row.draw_string(fb, Vector2(x, 14), "→", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, UITheme.C_DIM)
+			x += 10.0
+			for m in yields:
+				var ic := UITheme.icon(MAT_ICON2.get(m, "gem"))
+				if ic:
+					row.draw_texture_rect(ic, Rect2(x, 6, 9, 9), false, Color(str(DataDB.items["materials"][m].get("color", "#FFFFFF"))))
+				var t := "×%d" % (int(yields[m]) * maxi(n, 1))
+				row.draw_string(fb, Vector2(x + 11, 14), t, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, UITheme.C_TEXT if n > 0 else UITheme.C_DIM)
+				x += 34.0)
+		var b := Fancy.small_button(DataDB.t("ctx_salvage"), "red", func():
 			var k := Blacksmith.salvage_rarities([rr])
 			EventBus.notify.emit(DataDB.t("salvaged_n", {"n": k}), UITheme.C_TEXT)
-			refresh())
+			AudioManager.play("smith_fail", 0.05, 0.5)
+			refresh(), Vector2(50, 14))
 		b.disabled = n == 0
 		row.add_child(b)
+		b.position = Vector2(w - 53, 4)
 		_body.add_child(row)
-	_body.add_child(UITheme.hsep(int(content.size.x)))
-	_body.add_child(UITheme.label(DataDB.t("materials"), UITheme.C_GOLD))
-	var g := W.grid(2, 1)
+	_body.add_child(Fancy.section(DataDB.t("materials"), w))
+	var g := W.grid(2, 2)
 	_body.add_child(g)
 	for m in DataDB.items.get("materials", {}):
 		var n2 := int(GameState.materials.get(m, 0))
-		var l2 := UITheme.label("%s: %d" % [ItemUtil.material_name(m), n2], Color(str(DataDB.items["materials"][m].get("color", "#FFFFFF"))) if n2 > 0 else UITheme.C_DIM)
-		l2.custom_minimum_size = Vector2(76, 0)
-		l2.clip_text = true
-		g.add_child(l2)
+		var mc := Color(str(DataDB.items["materials"][m].get("color", "#FFFFFF")))
+		var chip := Control.new()
+		chip.custom_minimum_size = Vector2((w - 2) / 2.0, 15)
+		chip.mouse_filter = Control.MOUSE_FILTER_STOP
+		chip.tooltip_text = ItemUtil.material_name(m)
+		var mm: String = m
+		chip.draw.connect(func():
+			var ci := chip.get_canvas_item()
+			var r2 := Rect2(Vector2.ZERO, chip.size)
+			UISkin.well(ci, r2)
+			var ic := UITheme.icon(MAT_ICON2.get(mm, "gem"))
+			if ic:
+				chip.draw_texture_rect(ic, Rect2(3, 3, 10, 10), false, mc if n2 > 0 else Color(mc, 0.35))
+			var fb := UITheme.font_body
+			var nm := ItemUtil.material_name(mm)
+			chip.draw_string(fb, Vector2(15, 11), nm, HORIZONTAL_ALIGNMENT_LEFT, r2.size.x - 36, 7, UITheme.C_TEXT if n2 > 0 else UITheme.C_DIM)
+			var t := F.fmt_num(n2)
+			var tw := fb.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
+			chip.draw_string(fb, Vector2(r2.size.x - tw - 3, 11), t, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, mc if n2 > 0 else UITheme.C_DIM))
+		g.add_child(chip)
 
 
+## Craft: pick a slot and a tier, see the price and the odds, strike the anvil.
 func _build_craft() -> void:
-	var hint := UITheme.label(DataDB.t("smith_craft_hint"), UITheme.C_DIM)
-	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.custom_minimum_size = Vector2(content.size.x, 0)
-	_body.add_child(hint)
-	var slots := ["any", "weapon", "helm", "chest", "gloves", "boots", "ring", "amulet"]
-	var g := W.grid(4, 1)
-	_body.add_child(g)
-	for s in slots:
-		var nm := DataDB.t("tab_all") if s == "any" else DataDB.tx(DataDB.items["slot_names"].get(s if s != "ring" else "ring1", {}))
-		var ss: String = s
-		var b := UITheme.button(nm, "orange" if s == craft_slot else "brown", func():
-			craft_slot = ss
-			refresh(), Vector2(37, 12))
-		g.add_child(b)
+	var w := content.size.x
+	_hero_row("smith_for_hero")
+	var sb := Control.new()
+	sb.custom_minimum_size = Vector2(w, 24)
+	_body.add_child(sb)
+	var bw := 24.0
+	var gap := (w - bw * CRAFT_SLOTS.size()) / (CRAFT_SLOTS.size() - 1)
+	for i in CRAFT_SLOTS.size():
+		var sid: String = CRAFT_SLOTS[i][0]
+		var icn: String = CRAFT_SLOTS[i][1]
+		var b := Button.new()
+		b.flat = true
+		b.focus_mode = Control.FOCUS_NONE
+		b.size = Vector2(bw, bw)
+		b.position = Vector2(i * (bw + gap), 0)
+		b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		b.tooltip_text = DataDB.t("tab_all") if sid == "any" else DataDB.tx(DataDB.items["slot_names"].get(sid if sid != "ring" else "ring1", {}))
+		b.pressed.connect(func():
+			craft_slot = sid
+			AudioManager.play("ui_click", 0.05, 0.5)
+			refresh())
+		b.mouse_entered.connect(b.queue_redraw)
+		b.mouse_exited.connect(b.queue_redraw)
+		b.draw.connect(func():
+			var ci := b.get_canvas_item()
+			var on := craft_slot == sid
+			UISkin.slot(ci, Rect2(Vector2.ZERO, b.size), Color.WHITE, false, b.is_hovered())
+			var ic := UITheme.icon(icn)
+			if ic:
+				b.draw_texture_rect(ic, Rect2(6, 6, 12, 12), false, Color("#FFE08A") if on else Color(0.85, 0.8, 0.7, 0.7))
+			if on:
+				UISkin.stroke(ci, Rect2(Vector2.ZERO, b.size).grow(-0.5), 2, Color("#FFE45C"), 1.6))
+		sb.add_child(b)
 	var tl: Array = DataDB.bal("items.tier_levels", [1])
 	var max_tier := 0
 	for i in tl.size():
 		if GameState.max_hero_level() + 5 >= int(tl[i]):
 			max_tier = i
 	craft_tier = min(craft_tier, max_tier)
-	var th := W.hbox(2)
-	_body.add_child(th)
-	th.add_child(UITheme.button("<", "brown", func():
+	var tier_row := Control.new()
+	tier_row.custom_minimum_size = Vector2(w, 18)
+	_body.add_child(tier_row)
+	var lb := Fancy.small_button("‹", "brown", func():
 		craft_tier = max(0, craft_tier - 1)
-		refresh(), Vector2(12, 12)))
-	th.add_child(UITheme.label("T%d (Lv %d)" % [craft_tier + 1, int(tl[craft_tier])], UITheme.C_TEXT))
-	th.add_child(UITheme.button(">", "brown", func():
+		refresh(), Vector2(18, 16))
+	lb.disabled = craft_tier <= 0
+	tier_row.add_child(lb)
+	lb.position = Vector2(w / 2.0 - 60, 1)
+	var rb := Fancy.small_button("›", "brown", func():
 		craft_tier = min(max_tier, craft_tier + 1)
-		refresh(), Vector2(12, 12)))
+		refresh(), Vector2(18, 16))
+	rb.disabled = craft_tier >= max_tier
+	tier_row.add_child(rb)
+	rb.position = Vector2(w / 2.0 + 42, 1)
+	var tt := DataDB.t("smith_tier", {"t": craft_tier + 1, "lv": int(tl[craft_tier])})
+	tier_row.draw.connect(func():
+		var ci := tier_row.get_canvas_item()
+		var pr := Rect2(w / 2.0 - 40, 1, 80, 16)
+		UISkin.fill(ci, pr, 3, Color("#3A2616"), Color("#1A0F08"))
+		UISkin.stroke(ci, pr, 3, UISkin.OUTLINE, 1.0)
+		UISkin.stroke(ci, pr.grow(-1.0), 2, Color(UISkin.BRONZE, 0.6), 0.7)
+		var f := UITheme.font_title
+		var tw := f.get_string_size(tt, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
+		tier_row.draw_string(f, Vector2(w / 2.0 - tw / 2.0, 12.5), tt, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#FFE7B0")))
 	var c := Blacksmith.craft_cost(craft_tier)
-	_body.add_child(W.stat_row(DataDB.t("gold"), F.fmt_num(int(c["gold"])), UITheme.C_GOLD if GameState.gold >= int(c["gold"]) else UITheme.C_RED, UITheme.C_TEXT, int(content.size.x)))
-	for m in ["iron_scrap", "shiny_essence"]:
-		if int(c[m]) > 0:
-			var have := int(GameState.materials.get(m, 0))
-			_body.add_child(W.stat_row(ItemUtil.material_name(m), "%d / %d" % [int(c[m]), have], UITheme.C_TEXT if have >= int(c[m]) else UITheme.C_RED, UITheme.C_TEXT, int(content.size.x)))
-	var b2 := UITheme.button(DataDB.t("smith_craft"), "gold", func():
+	var info := Control.new()
+	info.custom_minimum_size = Vector2(w, 46)
+	info.draw.connect(func():
+		var ci := info.get_canvas_item()
+		UISkin.well(ci, Rect2(Vector2.ZERO, info.size))
+		var fb := UITheme.font_body
+		# odds of the result
+		var x := 6.0
+		info.draw_string(fb, Vector2(x, 12), DataDB.t("smith_craft_odds"), HORIZONTAL_ALIGNMENT_LEFT, -1, 7, UITheme.C_DIM)
+		UISkin.diamond(ci, Vector2(x + 4, 22), 3.2, ItemUtil.rarity_color("rare").lightened(0.2), ItemUtil.rarity_color("rare").darkened(0.4))
+		info.draw_string(fb, Vector2(x + 10, 25), ItemUtil.rarity_name("rare") + " %85", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, ItemUtil.rarity_color("rare"))
+		UISkin.diamond(ci, Vector2(x + 4, 34), 3.2, ItemUtil.rarity_color("epic").lightened(0.2), ItemUtil.rarity_color("epic").darkened(0.4))
+		info.draw_string(fb, Vector2(x + 10, 37), ItemUtil.rarity_name("epic") + " %15", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, ItemUtil.rarity_color("epic"))
+		# price
+		x = w * 0.5
+		var lines := [["gold", F.fmt_num(int(c["gold"])), GameState.gold >= int(c["gold"]), UITheme.C_GOLD]]
+		for m in ["iron_scrap", "shiny_essence"]:
+			if int(c[m]) > 0:
+				var have := int(GameState.materials.get(m, 0))
+				lines.append([MAT_ICON2.get(m, "gem"), "%d / %d" % [have, int(c[m])], have >= int(c[m]), Color(str(DataDB.items["materials"][m].get("color", "#FFFFFF")))])
+		var y := 6.0
+		for ln in lines:
+			var ic := UITheme.icon(str(ln[0]))
+			if ic:
+				info.draw_texture_rect(ic, Rect2(x, y, 9, 9), false, ln[3])
+			info.draw_string(fb, Vector2(x + 12, y + 8), str(ln[1]), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, UITheme.C_TEXT if ln[2] else UITheme.C_RED)
+			y += 12.0)
+	_body.add_child(info)
+	var ok := GameState.gold >= int(c["gold"]) and GameState.has_material("iron_scrap", int(c["iron_scrap"])) and GameState.has_material("shiny_essence", int(c["shiny_essence"]))
+	var reason := DataDB.t("not_enough_gold") if GameState.gold < int(c["gold"]) else DataDB.t("not_enough_mats")
+	_body.add_child(_round_action("hammer", DataDB.t("smith_craft"), ok, reason, func():
 		var cls: String = GameState.heroes[W.current_hero()].cls() if W.current_hero() != "" else ""
 		var it := Blacksmith.craft(cls, craft_slot, craft_tier)
 		if it.is_empty():
 			EventBus.notify.emit(DataDB.t("not_enough_mats"), UITheme.C_RED)
 		else:
 			EventBus.notify.emit(DataDB.t("smith_crafted", {"name": ItemUtil.display_name(it)}), ItemUtil.rarity_color(it["rarity"]))
-		refresh(), Vector2(content.size.x, 13))
-	_body.add_child(b2)
+			AudioManager.play("smith_success")
+		refresh(), w))
 
 
 ## Last rolls of a kind with the chance they had: "✓ 75%  ✗ 40%  ✓ 52%".

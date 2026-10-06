@@ -23,6 +23,10 @@
     {
      "tr": "Depo yenilendi: demir kaplı sandık içi görünümü, sekmelerde açılış şekli (altın ya da mağaza) simgesi, doluluk barı ve yeni Sırala düğmesi (nadirlik, yuva, seviye).",
      "en": "Stash redesigned as an iron-bound chest, with tab plates, a capacity bar and a new Sort button."
+    },
+    {
+     "tr": "Demirci'nin Birleştir, Parçala ve Üret sekmeleri yenilendi: birleştirmede dönen rün çemberi ve çıkacak nadirliğin önizlemesi, parçalamada her nadirliğin neye dönüşeceği, üretimde yuva simgeleri, kademe seçici ve sonuç olasılıkları; hepsi büyük yuvarlak eylem butonuyla.",
+     "en": "Blacksmith Combine, Salvage and Craft tabs rebuilt (rune circle with result preview, salvage yields, slot icons, tier picker, result odds)."
     }
    ]
   },
