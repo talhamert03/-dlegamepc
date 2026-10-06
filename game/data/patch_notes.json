@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Sen Yokken raporu yenilendi: süre plakası, sayarak yükselen ödül kutucukları, seviye atlayan kahramanların portreleri ve tek tek beliren en iyi ganimet.", "en": "New away report: time plaque, counting reward tiles, portraits of heroes who levelled up and the best loot popping in."},
     {"tr": "Kahraman yıldızları artık Kahraman penceresinden yükseltilebiliyor: portrenin altındaki yıldızlara tıkla. Ruh Parçası ve altın yetince sıradaki yıldız parlar.", "en": "Hero stars can now be raised from the Hero window: click the stars under the portrait. The next star glows when you can afford it."},
     {
      "tr": "Yeni kahraman açılışı: kart karanlıktan yükselir, titrer ve flaşla çevrilir; SR mavi, SSR altın ışınlarla daha uzun bir gerilimle açılır. Mağazadan alınan kahramanlarda da görünür.",

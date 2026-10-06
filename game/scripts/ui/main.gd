@@ -404,7 +404,7 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			items.append(LootSystem.generate(GameState.rng, 10, ["rare", "epic", "magic", "rare", "common"][i], "mage"))
 		var ap := WindowManager.open_panel("away")
 		ap.set_report({"seconds": 1500, "eff": 0.4, "kills": 250, "xp": 3200.0, "gold": 1800, "item_count": 6,
-			"levels": {"lyra": 1, "nova": 1, "pip": 1, "kael": 1}, "items": items})
+			"levels": {"lyra": 1, "nova": 1, "pip": 1, "kael": 1}, "items": items, "sold": 420})
 	for p in panels:
 		if p != "":
 			WindowManager.open_panel(p)

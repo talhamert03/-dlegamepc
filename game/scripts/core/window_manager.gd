@@ -28,7 +28,7 @@ const PANELS := {
 	"party": {"script": "res://scripts/ui/panels/party_panel.gd", "size": Vector2i(220, 200), "title": "panel_party"},
 	"tavern": {"script": "res://scripts/ui/panels/tavern_panel.gd", "size": Vector2i(332, 300), "title": "panel_tavern"},
 	"settings": {"script": "res://scripts/ui/panels/settings_panel.gd", "size": Vector2i(236, 250), "title": "panel_settings"},
-	"away": {"script": "res://scripts/ui/panels/away_panel.gd", "size": Vector2i(220, 214), "title": "panel_away"},
+	"away": {"script": "res://scripts/ui/panels/away_panel.gd", "size": Vector2i(220, 236), "title": "panel_away"},
 	"dps": {"script": "res://scripts/ui/panels/dps_panel.gd", "size": Vector2i(210, 214), "title": "panel_dps"},
 	"quests": {"script": "res://scripts/ui/panels/quests_panel.gd", "size": Vector2i(220, 236), "title": "panel_quests"},
 	"codex": {"script": "res://scripts/ui/panels/codex_panel.gd", "size": Vector2i(232, 240), "title": "panel_codex"},

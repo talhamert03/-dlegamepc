@@ -2279,5 +2279,9 @@
   "star_need": {"tr": "Yıldız için {s} Ruh Parçası (sende {have}) ve {g} altın gerekli", "en": "A star needs {s} Soul Shards (you have {have}) and {g} gold"},
   "star_max": {"tr": "{name} en yüksek yıldızda!", "en": "{name} is at max stars!"},
   "star_up_ask": {"tr": "{name} {n}. yıldıza yükselsin mi?\n{s} Ruh Parçası + {g} altın\nTemel değerler +%8, imza bonusu +%20", "en": "Raise {name} to {n} stars?\n{s} Soul Shards + {g} gold\nBase stats +8%, signature bonus +20%"},
-  "btn_star_up": {"tr": "Yükselt", "en": "Raise"}
+  "btn_star_up": {"tr": "Yükselt", "en": "Raise"},
+  "away_dur": {"tr": "{h} sa {m} dk", "en": "{h}h {m}m"},
+  "away_head": {"tr": "Yokluk süren", "en": "Time away"},
+  "away_levels": {"tr": "Seviye atladı", "en": "Levelled up"},
+  "away_sold": {"tr": "Çanta dolunca satılan eşyalar: +{g} altın", "en": "Sold when the bag was full: +{g} gold"}
 }

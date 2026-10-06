@@ -109,7 +109,6 @@ func _ready() -> void:
 func _relabel() -> void:
 	for d in [["hero", "btn_hero"], ["stats", "panel_stats"], ["runes", "tip_runes"], ["world", "btn_world"], ["growth", "btn_growth"], ["tavern", "btn_tavern"]]:
 		_btns[d[0]].tooltip_text = DataDB.t(d[1])
-	_btns["tavern"].text = DataDB.t("btn_tavern")
 
 
 var _tick := 0
