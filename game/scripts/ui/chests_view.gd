@@ -18,6 +18,10 @@ var _anim := 0.0          # opening timeline (s); < 0 = idle
 var _open_kind := ""
 var _result: Dictionary = {}
 var _queue := 0           # chests left in an "open all" run
+var _shake_t := 0.45      # build-up length: rarer chests tremble longer
+var _parts: Array = []    # sparks and coins: [pos, vel, age, life, size, colour]
+var _rng := RandomNumberGenerator.new()
+var _best_x := -1.0       # reward column that gets a light beam (legendary and better)
 
 
 func _ready() -> void:
@@ -31,8 +35,12 @@ func _build(c: Control) -> void:
 	var w := c.size.x
 	_stage = Control.new()
 	_stage.size = Vector2(w, SHOW_H)
-	_stage.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_stage.mouse_filter = Control.MOUSE_FILTER_STOP
 	_stage.draw.connect(_draw_stage)
+	# a click during the build-up throws the lid open at once
+	_stage.gui_input.connect(func(e: InputEvent):
+		if e is InputEventMouseButton and e.pressed and _anim >= 0.0 and _anim < _shake_t:
+			_anim = _shake_t)
 	c.add_child(_stage)
 	_name = UITheme.label("", UITheme.C_TITLE, 11, UITheme.font_title)
 	_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -143,15 +151,22 @@ func _process(delta: float) -> void:
 	if _anim >= 0.0:
 		var before := _anim
 		_anim += delta
-		if before < 0.55 and _anim >= 0.55:
+		if before < _shake_t and _anim >= _shake_t:
+			_burst()
+		if before < _shake_t + 0.1 and _anim >= _shake_t + 0.1:
 			_reveal()
-		if _anim >= 1.6:
+		if _anim >= _shake_t + 1.45:
 			_anim = -1.0
 			if _queue > 0:
 				_queue -= 1
 				_begin_open()
 			else:
 				refresh()
+	for p in _parts:
+		p[2] += delta
+		p[0] += p[1] * delta
+		p[1].y += 140.0 * delta
+	_parts = _parts.filter(func(p): return p[2] < p[3])
 	if _stage:
 		_stage.queue_redraw()
 	if _shelf:
@@ -180,20 +195,69 @@ func _draw_stage() -> void:
 		return
 	var foot := Vector2(w / 2.0, SHOW_H * 0.7 + 1)
 	var open := 0.0
+	var build := 0.0
 	if _anim >= 0.0:
-		if _anim < 0.45:
-			var k2 := _anim / 0.45
-			foot.x += sin(_anim * 60.0) * 2.2 * k2
-			foot.y -= absf(sin(_anim * 30.0)) * 1.5 * k2
+		if _anim < _shake_t:
+			build = _anim / _shake_t
+			foot.x += sin(_anim * 60.0) * 2.4 * build
+			foot.y -= absf(sin(_anim * 30.0)) * 1.8 * build
 		else:
-			open = clampf((_anim - 0.45) / 0.25, 0.0, 1.0)
+			open = clampf((_anim - _shake_t) / 0.25, 0.0, 1.0)
 	elif not _result.is_empty():
 		open = 1.0
+	# light rays climbing out of the open chest, turning slowly, fading after the burst
+	var ray_a := 0.0
+	if _anim >= _shake_t:
+		ray_a = clampf((_anim - _shake_t) / 0.2, 0.0, 1.0) * clampf(1.0 - (_anim - _shake_t - 0.6) / 0.8, 0.25, 1.0)
+	elif _anim < 0.0 and not _result.is_empty():
+		ray_a = 0.25
+	if ray_a > 0.0:
+		var src := foot - Vector2(0, cw * 0.42)
+		var nr := 7 + Chests.rank(kind) * 2
+		for k in nr:
+			var a := -PI / 2.0 + (k - (nr - 1) / 2.0) * 0.22 + sin(_t * 0.8 + k) * 0.04
+			var ln := SHOW_H * (0.55 + 0.12 * sin(_t * 2.0 + k * 1.7))
+			_stage.draw_colored_polygon(PackedVector2Array([src + Vector2(-3, 0), src + Vector2(3, 0),
+				src + Vector2.from_angle(a + 0.05) * ln, src + Vector2.from_angle(a - 0.05) * ln]), Color(col.lightened(0.3), 0.10 * ray_a))
 	ChestArt.draw(_stage, foot, cw, kind, open, _t)
+	# during the build-up light leaks through the lid seam
+	if build > 0.0:
+		var sy := foot.y - cw * 0.5
+		_stage.draw_rect(Rect2(foot.x - cw * 0.46, sy - 1.0, cw * 0.92, 2.0), Color(col.lightened(0.5), 0.7 * build))
+		for k in 5:
+			var bx := foot.x - cw * 0.4 + k * cw * 0.2 + sin(_t * 9.0 + k) * 2.0
+			var bl := 8.0 + 14.0 * build * (0.6 + 0.4 * sin(_t * 13.0 + k * 2.0))
+			_stage.draw_colored_polygon(PackedVector2Array([Vector2(bx - 1.2, sy), Vector2(bx + 1.2, sy), Vector2(bx + 3.5, sy - bl), Vector2(bx - 3.5, sy - bl)]),
+				Color(col.lightened(0.4), 0.35 * build))
 	# burst flash when the lid flies open
-	if _anim >= 0.45 and _anim < 0.9:
-		var f := 1.0 - (_anim - 0.45) / 0.45
+	if _anim >= _shake_t and _anim < _shake_t + 0.45:
+		var f := 1.0 - (_anim - _shake_t) / 0.45
 		_stage.draw_circle(foot - Vector2(0, 30), 90.0 * (1.0 - f) + 10.0, Color(col, 0.35 * f))
+	# beam behind the best reward
+	if _best_x >= 0.0 and not _result.is_empty():
+		var bt := clampf((_anim - _shake_t - 0.3) / 0.4, 0.0, 1.0) if _anim >= 0.0 else 1.0
+		var by := SHOW_H - 31.0
+		var bcol := Color("#FF9A3A")
+		_stage.draw_colored_polygon(PackedVector2Array([Vector2(_best_x - 6, by + 26), Vector2(_best_x + 6, by + 26),
+			Vector2(_best_x + 2.5, by - 60), Vector2(_best_x - 2.5, by - 60)]), Color(bcol, 0.22 * bt * (0.8 + 0.2 * sin(_t * 6.0))))
+	# sparks and coins
+	for p in _parts:
+		var k3: float = 1.0 - float(p[2]) / float(p[3])
+		_stage.draw_circle(p[0], float(p[4]) * (0.5 + 0.5 * k3), Color(p[5], k3))
+
+
+func _burst() -> void:
+	var w := _stage.size.x
+	var cw := clampf(SHOW_H * 0.52, 40.0, 66.0)
+	var src := Vector2(w / 2.0, SHOW_H * 0.7 - cw * 0.45)
+	var col := Chests.color(_open_kind)
+	var n := 18 + Chests.rank(_open_kind) * 10
+	for i in n:
+		var a := -PI / 2.0 + _rng.randf_range(-1.1, 1.1)
+		var gold := i % 3 == 0
+		_parts.append([src + Vector2(_rng.randf_range(-cw * 0.3, cw * 0.3), 0), Vector2.from_angle(a) * _rng.randf_range(60, 150), 0.0,
+			_rng.randf_range(0.6, 1.2), _rng.randf_range(1.2, 2.4) if gold else _rng.randf_range(0.8, 1.6),
+			Color("#FFD36A") if gold else col.lightened(0.4)])
 
 
 func _on_open() -> void:
@@ -218,6 +282,9 @@ func _begin_open() -> void:
 		_queue = 0
 		return
 	_open_kind = str(GameState.chests[_sel]["k"])
+	# rarer chests keep you waiting a little longer; "open all" keeps a brisk pace
+	_shake_t = 0.3 if _queue > 0 else 0.45 + 0.15 * Chests.rank(_open_kind)
+	_best_x = -1.0
 	_result = {}
 	_clear_rewards()
 	_name.text = Chests.display_name(_open_kind)
@@ -259,6 +326,8 @@ func _show_rewards() -> void:
 	var gap := 3.0
 	var total := cards.size() * cw + (cards.size() - 1) * gap
 	var x0 := (_rewards.size.x - total) / 2.0
+	var mouth := Vector2(_rewards.size.x / 2.0 - cw / 2.0, SHOW_H * 0.7 - clampf(SHOW_H * 0.52, 40.0, 66.0) * 0.45 - _rewards.position.y - cw / 2.0)
+	var best_rank := ItemUtil.rarity_rank("legendary") - 1
 	for i in cards.size():
 		var cd: Array = cards[i]
 		var holder: Control
@@ -273,16 +342,25 @@ func _show_rewards() -> void:
 			_:
 				var mid: String = cd[1][0]
 				holder = _icon_card(UITheme.icon(_mat_icon(mid)), "x%d" % int(cd[1][1]), UITheme.C_TEXT, ItemUtil.material_name(mid))
-		holder.position = Vector2(x0 + i * (cw + gap), 2)
+		var dest := Vector2(x0 + i * (cw + gap), 2)
+		if cd[0] == "item":
+			var rr := ItemUtil.rarity_rank(str(cd[1][0].get("rarity", "common")))
+			if rr > best_rank:
+				best_rank = rr
+				_best_x = dest.x + cw / 2.0
+		# each reward leaps out of the chest mouth and lands in its place
+		holder.position = mouth
 		_rewards.add_child(holder)
 		holder.modulate.a = 0.0
-		holder.scale = Vector2(0.6, 0.6)
+		holder.scale = Vector2(0.4, 0.4)
 		holder.pivot_offset = Vector2(cw / 2.0, cw / 2.0)
 		var tw := holder.create_tween()
-		tw.tween_interval(0.08 * i)
+		tw.tween_interval(0.09 * i)
 		tw.set_parallel(true)
-		tw.tween_property(holder, "modulate:a", 1.0, 0.15)
-		tw.tween_property(holder, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		tw.tween_property(holder, "modulate:a", 1.0, 0.12)
+		tw.tween_property(holder, "position:x", dest.x, 0.38).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		tw.tween_property(holder, "position:y", dest.y, 0.38).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+		tw.tween_property(holder, "scale", Vector2.ONE, 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _icon_card(tex: Texture2D, txt: String, col: Color, tip: String) -> Control:

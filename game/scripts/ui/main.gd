@@ -289,6 +289,17 @@ var _drag_start := Vector2.ZERO
 
 
 # ------------------------------------------------------------------ automated screenshots (CI / docs)
+## Saves a panel at several moments (seconds from now) as <prefix>_<t>.png: checks animations.
+func _grab_frames(p: Control, times: Array, prefix: String) -> void:
+	var sc: float = WindowManager.ui_scale
+	var t0 := 0.0
+	for at in times:
+		await get_tree().create_timer(float(at) - t0).timeout
+		t0 = float(at)
+		var im := get_viewport().get_texture().get_image()
+		im.get_region(Rect2i(Vector2i(p.global_position * sc), Vector2i(p.size * sc))).save_png("user://screenshots/%s_%.2f.png" % [prefix, float(at)])
+
+
 func _screenshot_mode(cmd: PackedStringArray) -> void:
 	var secs := 6.0
 	for a in cmd:
@@ -466,13 +477,7 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 		if a.begins_with("--revealtest=") and WindowManager.is_open("tavern"):
 			var tp: Control = WindowManager.panels["tavern"]
 			RecruitReveal.show_over(tp._host, a.substr(13))
-			var sc2: float = WindowManager.ui_scale
-			var t0 := 0.0
-			for at in [0.3, 1.1, 1.9, 2.15, 2.6, 3.4]:
-				await get_tree().create_timer(at - t0).timeout
-				t0 = at
-				var im2 := get_viewport().get_texture().get_image()
-				im2.get_region(Rect2i(Vector2i(tp.global_position * sc2), Vector2i(tp.size * sc2))).save_png("user://screenshots/rv_%.2f.png" % at)
+			await _grab_frames(tp, [0.3, 1.1, 1.9, 2.15, 2.6, 3.4], "rv")
 		if a == "--thanks" and WindowManager.is_open("shop"):
 			WindowManager.panels["shop"]._buy(Shop.product("supporter"), "")
 			await get_tree().create_timer(3.2).timeout
@@ -522,8 +527,10 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			WindowManager.panels["hero"]._sell_dialog()
 			await get_tree().create_timer(0.3).timeout
 		if a == "--chestopen" and WindowManager.is_open("chests"):
-			WindowManager.panels["chests"]._on_open()
-			await get_tree().create_timer(1.0).timeout
+			var cp: Control = WindowManager.panels["chests"]
+			var cv: ChestsView = cp.find_children("*", "ChestsView", true, false)[0]
+			cv._on_open()
+			await _grab_frames(cp, [0.35, 0.8, 1.15, 1.35, 1.7, 2.6], "co")
 	for a in cmd:
 		if a.begins_with("--fxtest="):
 			var sc1: float = WindowManager.ui_scale

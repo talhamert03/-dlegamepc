@@ -25,7 +25,7 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 ## Backlog (in order)
 
 - [x] 1. Tavern: card-flip reveal when a hero is recruited (rarity glow, special SSR reveal, sound)
-- [ ] 2. Chest opening: lid burst, rarity light, items fly into the bag, skippable
+- [x] 2. Chest opening: lid burst, rarity light, items fly into the bag, skippable
 - [ ] 3. Pets window redesign (stable stalls, name plates, owned glow, clear bonuses)
 - [ ] 4. Stash window redesign (iron-bound chest interior, tab plates, sort/filter)
 - [ ] 5. Blacksmith: Combine, Salvage and Craft tabs rebuilt to the Enhance tab's standard
@@ -50,3 +50,4 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 
 - 2026-10-06 — plan written, schedule set (4 shifts a day, Europe/Istanbul 08:52 / 12:52 / 16:52 / 20:52).
 - 2026-10-06 shift 1 — #1 hero card-flip reveal (tavern + store), rarity-specific build-up, frames checked.
+- 2026-10-06 shift 1 — #2 chest opening: seam light, rays, sparks/coins, rewards leap out, best-item beam, click to skip. (Fly-to-bag dropped: chests live in their own tab.)
