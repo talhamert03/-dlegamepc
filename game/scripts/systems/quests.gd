@@ -9,6 +9,9 @@ const DAILY_POOL := [
 	{"id": "combines", "stat": "combines", "base": 1, "per_lv": 0, "reward": {"gold": 60, "shiny_essence": 2}},
 	{"id": "enhances", "stat": "enhances", "base": 3, "per_lv": 0, "reward": {"gold": 60, "iron_scrap": 15}},
 	{"id": "gold", "stat": "gold", "base": 2000, "per_lv": 200, "reward": {"tavern_seal": 1, "guild_badge": 1}},
+	{"id": "chests", "stat": "chests_opened", "base": 2, "per_lv": 0, "reward": {"gold": 60, "soul_shard": 2}},
+	{"id": "elites", "stat": "elites", "base": 20, "per_lv": 0.4, "reward": {"gold": 50, "shiny_essence": 2}},
+	{"id": "salvage", "stat": "salvaged", "base": 8, "per_lv": 0, "reward": {"gold": 40, "iron_scrap": 20}},
 ]
 
 

@@ -529,6 +529,7 @@ func salvage_item(uid: String) -> bool:
 		return false
 	_salvage_mats(bag[idx])
 	bag.remove_at(idx)
+	totals["salvaged"] = int(totals.get("salvaged", 0)) + 1
 	EventBus.inventory_changed.emit()
 	return true
 

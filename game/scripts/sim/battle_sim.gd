@@ -1186,6 +1186,8 @@ func _on_enemy_killed(e: Combatant) -> void:
 	session["kills"] = int(session["kills"]) + 1
 	_rate_acc["kills"] = int(_rate_acc["kills"]) + 1
 	GameState.totals["kills"] = int(GameState.totals.get("kills", 0)) + 1
+	if e.etype == "elite":
+		GameState.totals["elites"] = int(GameState.totals.get("elites", 0)) + 1
 	GameState.codex["enemies"][e.id] = int(GameState.codex["enemies"].get(e.id, 0)) + 1
 	var xp := F.xp_per_kill(e.level, e.etype)
 	GameState.grant_kill_xp(e.level, e.etype)

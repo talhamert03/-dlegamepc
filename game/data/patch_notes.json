@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Yeni günlük görevler: sandık aç, elit düşman avla, eşya parçala. Günlük görev havuzu 6'dan 9'a çıktı.", "en": "New daily quests: open chests, hunt elites, salvage items. The daily pool grows from 6 to 9."},
     {"tr": "Erişilebilirlik: Ayarlar > Görünüm'de nadirlik işaretleri (renk körü) seçeneği; açıkken her eşyada nadirliğe özel bir şekil görünür. Kısayol listesi tamamlandı.", "en": "Accessibility: rarity marks option (colour-blind) in Settings > View adds a shape per rarity on every item. Full hotkey list in settings."},
     {"tr": "İpucu ve konuşma balonları yenilendi: konuşan kahramanın portresi, bronz çerçeve ve yumuşak açılış. Sandık, demirci ve rünler için ilk seferde birer kısa ipucu eklendi.", "en": "New hint and speech bubbles with the speaker's portrait and a bronze frame; one-time tips for chests, the blacksmith and runes."},
     {"tr": "Boss yorgunluğu: aynı bossa her başarısız denemede boss %3 eksik canla başlar (en fazla %30), boss çubuğunun altında görünür. Kıl payı kaçan zaferler artık saatlerce sürmüyor.", "en": "Boss fatigue: each failed try against the same boss makes it start with 3% less HP (up to 30%), shown under the boss bar. Near misses no longer drag on for hours."},

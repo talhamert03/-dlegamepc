@@ -305,3 +305,11 @@ func test_data_files_parse() -> void:
 		if j.parse(FileAccess.get_file_as_string("res://data/" + f)) != OK:
 			bad.append("%s:%d" % [f, j.get_error_line()])
 	runner.check(bad.is_empty(), "every data/*.json parses " + str(bad))
+
+
+func test_daily_quests_have_text() -> void:
+	var bad: Array = []
+	for q in Quests.DAILY_POOL:
+		if DataDB.t("quest_" + str(q["id"]), {"n": 1}).begins_with("quest_"):
+			bad.append(q["id"])
+	runner.check(bad.is_empty(), "every daily quest has a title " + str(bad))
