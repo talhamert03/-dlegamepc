@@ -45,6 +45,15 @@ func _ready() -> void:
 	EventBus.unit_died.connect(_on_died)
 	EventBus.bark.connect(_say_bark)
 	EventBus.chest_dropped.connect(func(_k, _p): _tip("chest", "tut_chest"))
+	EventBus.boss_defeated.connect(func(_z): _party_bark("boss_down", 0.7))
+	var it := Timer.new()
+	it.wait_time = 170.0
+	it.autostart = true
+	it.timeout.connect(func():
+		it.wait_time = randf_range(140.0, 260.0)
+		var hr := int(Time.get_datetime_dict_from_system()["hour"])
+		_party_bark("night" if hr < 5 else "idle", 0.8))
+	add_child(it)
 	var gt := Timer.new()
 	gt.wait_time = 15.0
 	gt.autostart = true
@@ -135,8 +144,17 @@ func _on_wave(w: int) -> void:
 		_hint("intro", "tut_intro")
 
 
-func _on_item(_item: Dictionary, _p: Vector2) -> void:
+func _on_item(item: Dictionary, _p: Vector2) -> void:
 	_hint("item", "tut_item")
+	if str(item.get("rarity", "")) in ["legendary", "mythic"]:
+		_party_bark("legendary", 0.9)
+
+
+## A random hero of the party says something about the moment.
+func _party_bark(event: String, chance: float) -> void:
+	var ph := GameState.party_heroes()
+	if ph.size() > 0:
+		Barks.trigger(ph[randi() % ph.size()].id, event, chance)
 
 
 func _on_level(hid: String, lv: int) -> void:

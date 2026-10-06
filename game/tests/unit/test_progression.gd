@@ -313,3 +313,17 @@ func test_daily_quests_have_text() -> void:
 		if DataDB.t("quest_" + str(q["id"]), {"n": 1}).begins_with("quest_"):
 			bad.append(q["id"])
 	runner.check(bad.is_empty(), "every daily quest has a title " + str(bad))
+
+
+func test_barks_have_both_languages() -> void:
+	var d: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/barks.json"))
+	var bad := 0
+	for group in ["generic", "classes", "heroes"]:
+		var g: Dictionary = d.get(group, {})
+		var pools: Array = [g] if group == "generic" else g.values()
+		for pool in pools:
+			for ev in pool:
+				for l in pool[ev]:
+					if str(l.get("tr", "")) == "" or str(l.get("en", "")) == "":
+						bad += 1
+	runner.check(bad == 0, "every bark has tr and en (%d missing)" % bad)

@@ -1,30 +1,776 @@
 {
-  "generic": {
-    "level_up": [{"tr": "Daha güçlüyüm!", "en": "I feel stronger!"}, {"tr": "Bir seviye daha!", "en": "Another level!"}, {"tr": "Bu antrenman işe yarıyor.", "en": "This training pays off."}],
-    "boss": [{"tr": "İşte büyük olan geliyor!", "en": "Here comes the big one!"}, {"tr": "Dikkat, boss!", "en": "Careful, a boss!"}, {"tr": "Hazır olun!", "en": "Get ready!"}],
-    "join": [{"tr": "Lonca'ya katılmaktan onur duyarım!", "en": "Honored to join the guild!"}, {"tr": "Merhaba ekip!", "en": "Hello team!"}],
-    "ally_down": [{"tr": "Dayan! Birazdan kalkarsın!", "en": "Hang on! You'll be up soon!"}, {"tr": "Arkadaşımızı düşürdüler!", "en": "They got one of us!"}],
-    "legendary": [{"tr": "O ışık... efsanevi mi?!", "en": "That light... legendary?!"}, {"tr": "Vay be! Şuna bak!", "en": "Whoa! Look at that!"}],
-    "idle": [{"tr": "Hâlâ orada mısın?", "en": "Are you still there?"}, {"tr": "Biz iyiyiz, sen işine bak!", "en": "We're fine, focus on your work!"}],
-    "night": [{"tr": "Gece çöktü, dikkatli olun.", "en": "Night has fallen, stay sharp."}]
+ "generic": {
+  "level_up": [
+   {
+    "tr": "Daha güçlüyüm!",
+    "en": "I feel stronger!"
+   },
+   {
+    "tr": "Bir seviye daha!",
+    "en": "Another level!"
+   },
+   {
+    "tr": "Bu antrenman işe yarıyor.",
+    "en": "This training pays off."
+   }
+  ],
+  "boss": [
+   {
+    "tr": "İşte büyük olan geliyor!",
+    "en": "Here comes the big one!"
+   },
+   {
+    "tr": "Dikkat, boss!",
+    "en": "Careful, a boss!"
+   },
+   {
+    "tr": "Hazır olun!",
+    "en": "Get ready!"
+   }
+  ],
+  "join": [
+   {
+    "tr": "Lonca'ya katılmaktan onur duyarım!",
+    "en": "Honored to join the guild!"
+   },
+   {
+    "tr": "Merhaba ekip!",
+    "en": "Hello team!"
+   }
+  ],
+  "ally_down": [
+   {
+    "tr": "Dayan! Birazdan kalkarsın!",
+    "en": "Hang on! You'll be up soon!"
+   },
+   {
+    "tr": "Arkadaşımızı düşürdüler!",
+    "en": "They got one of us!"
+   }
+  ],
+  "legendary": [
+   {
+    "tr": "O ışık... efsanevi mi?!",
+    "en": "That light... legendary?!"
+   },
+   {
+    "tr": "Vay be! Şuna bak!",
+    "en": "Whoa! Look at that!"
+   }
+  ],
+  "idle": [
+   {
+    "tr": "Hâlâ orada mısın?",
+    "en": "Are you still there?"
+   },
+   {
+    "tr": "Biz iyiyiz, sen işine bak!",
+    "en": "We're fine, focus on your work!"
+   }
+  ],
+  "night": [
+   {
+    "tr": "Gece çöktü, dikkatli olun.",
+    "en": "Night has fallen, stay sharp."
+   },
+   {
+    "tr": "Bu saatte hâlâ ayakta mısın?",
+    "en": "Still up at this hour?"
+   },
+   {
+    "tr": "Gece nöbeti bizde, sen uyu.",
+    "en": "We've got the night watch, get some sleep."
+   }
+  ],
+  "boss_down": [
+   {
+    "tr": "Başardık!",
+    "en": "We did it!"
+   },
+   {
+    "tr": "Bir canavar daha tarihe karıştı.",
+    "en": "Another monster for the history books."
+   },
+   {
+    "tr": "Ganimet zamanı!",
+    "en": "Loot time!"
+   }
+  ]
+ },
+ "classes": {
+  "knight": {
+   "level_up": [
+    {
+     "tr": "Kalkanım daha da sağlam!",
+     "en": "My shield grows stronger!"
+    },
+    {
+     "tr": "Bir adım daha, bir kalkan daha.",
+     "en": "One more step, one more shield."
+    },
+    {
+     "tr": "Lonca bu gücü hak ediyor.",
+     "en": "The guild deserves this strength."
+    }
+   ],
+   "boss": [
+    {
+     "tr": "Arkama geçin!",
+     "en": "Get behind me!"
+    },
+    {
+     "tr": "Hepiniz arkamda kalın!",
+     "en": "Stay behind me, all of you!"
+    },
+    {
+     "tr": "Bu kadar büyük olmak zorunda mıydın?",
+     "en": "Did you have to be this big?"
+    }
+   ],
+   "ally_down": [
+    {
+     "tr": "Dayan! Seni geri getireceğiz.",
+     "en": "Hold on! We'll bring you back."
+    },
+    {
+     "tr": "Kalkanımı daha geniş tutmalıydım...",
+     "en": "I should have held my shield wider..."
+    }
+   ],
+   "legendary": [
+    {
+     "tr": "Bu, bir şövalyeye yakışır.",
+     "en": "Now that's fit for a knight."
+    },
+    {
+     "tr": "Ustası kim yaptıysa, bir gün elini sıkacağım.",
+     "en": "Whoever forged this, I'll shake their hand one day."
+    }
+   ],
+   "idle": [
+    {
+     "tr": "Nöbet bende. Siz işinize bakın.",
+     "en": "I'm on watch. Get on with your work."
+    },
+    {
+     "tr": "Zırhım biraz paslanıyor, sanki.",
+     "en": "My armour's rusting a bit, I think."
+    },
+    {
+     "tr": "Bir gün bu kalkan bir ejderhayı durduracak.",
+     "en": "One day this shield will stop a dragon."
+    }
+   ],
+   "boss_down": [
+    {
+     "tr": "Lonca için!",
+     "en": "For the guild!"
+    },
+    {
+     "tr": "Yere düşenler kalkmaz. Biz kalkarız.",
+     "en": "The fallen stay down. We get up."
+    }
+   ]
   },
-  "classes": {
-    "knight": {"level_up": [{"tr": "Kalkanım daha da sağlam!", "en": "My shield grows stronger!"}], "boss": [{"tr": "Arkama geçin!", "en": "Get behind me!"}]},
-    "berserker": {"level_up": [{"tr": "DAHA FAZLA!", "en": "MORE!"}], "boss": [{"tr": "Sonunda değerli bir rakip!", "en": "Finally, a worthy foe!"}]},
-    "archer": {"level_up": [{"tr": "Oklarım daha keskin.", "en": "My arrows fly truer."}], "boss": [{"tr": "Hedef kilitlendi.", "en": "Target locked."}]},
-    "assassin": {"level_up": [{"tr": "Gölgeler beni seviyor.", "en": "The shadows like me."}], "boss": [{"tr": "Zayıf noktasını buldum.", "en": "Found its weak spot."}]},
-    "mage": {"level_up": [{"tr": "Yeni bir büyü öğrendim!", "en": "I learned a new spell!"}], "boss": [{"tr": "Ateş topu zamanı!", "en": "Fireball time!"}]},
-    "necromancer": {"level_up": [{"tr": "Ruhlar fısıldıyor...", "en": "The spirits whisper..."}], "boss": [{"tr": "Ölüler bize yardım edecek.", "en": "The dead will aid us."}]},
-    "cleric": {"level_up": [{"tr": "Işık benimle!", "en": "The light is with me!"}], "boss": [{"tr": "Sizi iyileştireceğim, merak etmeyin!", "en": "I'll heal you, don't worry!"}]},
-    "bard": {"level_up": [{"tr": "Bu bir şarkıya değer!", "en": "This deserves a song!"}], "boss": [{"tr": "Savaş marşı çalıyorum!", "en": "Playing the war march!"}]}
+  "berserker": {
+   "level_up": [
+    {
+     "tr": "DAHA FAZLA!",
+     "en": "MORE!"
+    },
+    {
+     "tr": "KAS! DAHA ÇOK KAS!",
+     "en": "MUSCLE! MORE MUSCLE!"
+    },
+    {
+     "tr": "Baltam daha ağır geliyor. Güzel.",
+     "en": "My axe feels heavier. Good."
+    }
+   ],
+   "boss": [
+    {
+     "tr": "Sonunda değerli bir rakip!",
+     "en": "Finally, a worthy foe!"
+    },
+    {
+     "tr": "İŞTE BU! Kocaman bir hedef!",
+     "en": "THAT'S IT! A huge target!"
+    },
+    {
+     "tr": "Ben ilk vuruyorum, itiraz eden?",
+     "en": "I hit first. Objections?"
+    }
+   ],
+   "ally_down": [
+    {
+     "tr": "KİM YAPTI BUNU?!",
+     "en": "WHO DID THAT?!"
+    },
+    {
+     "tr": "Kalk! Daha bira içecektik!",
+     "en": "Get up! We still had ale to drink!"
+    }
+   ],
+   "legendary": [
+    {
+     "tr": "Parlıyor! Kırabilir miyim?",
+     "en": "It's shiny! Can I break it?"
+    },
+    {
+     "tr": "Bununla bir dağı ikiye bölerim.",
+     "en": "With this I'll split a mountain."
+    }
+   ],
+   "idle": [
+    {
+     "tr": "Sıkıldım. Biri bana goblin getirsin.",
+     "en": "Bored. Someone bring me a goblin."
+    },
+    {
+     "tr": "Baltamı biledim. Üç kere.",
+     "en": "Sharpened my axe. Three times."
+    },
+    {
+     "tr": "Sessizlik... Hiç sevmem.",
+     "en": "Silence... I hate it."
+    }
+   ],
+   "boss_down": [
+    {
+     "tr": "HAHAHA! SIRADAKİ!",
+     "en": "HAHAHA! NEXT!"
+    },
+    {
+     "tr": "Bu kadar mı? Isınıyordum!",
+     "en": "That's it? I was just warming up!"
+    }
+   ]
   },
-  "heroes": {
-    "pip": {"level_up": [{"tr": "Dua ettim, seviye geldi! Tesadüf mü?", "en": "I prayed and I leveled! Coincidence?"}], "join": [{"tr": "Ups, iyileştirme yerine şimşek attım...", "en": "Oops, cast lightning instead of a heal..."}]},
-    "vex": {"level_up": [{"tr": "Bonbon bu seviyeyi beğendi.", "en": "Bonbon likes this level."}], "join": [{"tr": "Korkmayın, kafatası zararsız. Çoğunlukla.", "en": "Don't worry, the skull is harmless. Mostly."}]},
-    "bjorn": {"boss": [{"tr": "DAHA FAZLA GOBLİN!", "en": "MORE GOBLINS!"}], "join": [{"tr": "Düelloyu kazandınız. Baltam artık sizin!", "en": "You won the duel. My axe is yours!"}]},
-    "lyra": {"level_up": [{"tr": "Yıldızlar nişan almama yardım ediyor.", "en": "The stars help my aim."}], "join": [{"tr": "Bu slime'lar beni bekliyordu sanırım.", "en": "These slimes were waiting for me."}]},
-    "kael": {"level_up": [{"tr": "Lonca kaptanı olarak bu iyi bir gün!", "en": "A good day for the guild captain!"}]},
-    "nova": {"join": [{"tr": "Öz Kulesi'nin öğrencisi Nova, hizmetinizde!", "en": "Nova of the Tower, at your service!"}]},
-    "finn": {"join": [{"tr": "Şarkı söylerken cebinizi korursanız iyi olur.", "en": "Watch your pockets while I sing."}]}
+  "archer": {
+   "level_up": [
+    {
+     "tr": "Oklarım daha keskin.",
+     "en": "My arrows fly truer."
+    },
+    {
+     "tr": "Rüzgârı daha iyi okuyorum artık.",
+     "en": "I read the wind better now."
+    },
+    {
+     "tr": "Bir ok, bir hedef. Hep böyle.",
+     "en": "One arrow, one target. Always."
+    }
+   ],
+   "boss": [
+    {
+     "tr": "Hedef kilitlendi.",
+     "en": "Target locked."
+    },
+    {
+     "tr": "Gözüne nişan alıyorum.",
+     "en": "Aiming for the eye."
+    },
+    {
+     "tr": "Büyük olan daha kolay vurulur.",
+     "en": "The big ones are easier to hit."
+    }
+   ],
+   "ally_down": [
+    {
+     "tr": "Seni koruyamadım... Affet.",
+     "en": "I couldn't cover you... Forgive me."
+    },
+    {
+     "tr": "Okların geri kalanı senin için.",
+     "en": "The rest of my arrows are for you."
+    }
+   ],
+   "legendary": [
+    {
+     "tr": "Elf ustalarının işi bu!",
+     "en": "This is elven craftsmanship!"
+    },
+    {
+     "tr": "Bu yayla ay ışığını bile vururum.",
+     "en": "With this bow I could hit moonlight."
+    }
+   ],
+   "idle": [
+    {
+     "tr": "Ağaçlar fısıldıyor, duyuyor musunuz?",
+     "en": "The trees whisper, can you hear?"
+    },
+    {
+     "tr": "Okları sayıyorum. Yine eksik.",
+     "en": "Counting arrows. Short again."
+    },
+    {
+     "tr": "Uzakta bir kartal var. Güzel.",
+     "en": "There's an eagle far off. Lovely."
+    }
+   ],
+   "boss_down": [
+    {
+     "tr": "Tam isabet.",
+     "en": "Bullseye."
+    },
+    {
+     "tr": "Ormanın intikamı alındı.",
+     "en": "The forest is avenged."
+    }
+   ]
+  },
+  "assassin": {
+   "level_up": [
+    {
+     "tr": "Gölgeler beni seviyor.",
+     "en": "The shadows like me."
+    },
+    {
+     "tr": "Daha sessiz. Daha hızlı.",
+     "en": "Quieter. Faster."
+    },
+    {
+     "tr": "Kimse fark etmedi. Mükemmel.",
+     "en": "Nobody noticed. Perfect."
+    }
+   ],
+   "boss": [
+    {
+     "tr": "Zayıf noktasını buldum.",
+     "en": "Found its weak spot."
+    },
+    {
+     "tr": "Büyük gölge, büyük açık.",
+     "en": "Big shadow, big opening."
+    },
+    {
+     "tr": "Arkasına geçmem yeter.",
+     "en": "I just need to get behind it."
+    }
+   ],
+   "ally_down": [
+    {
+     "tr": "Bunu kimin yaptığını biliyorum.",
+     "en": "I know who did that."
+    },
+    {
+     "tr": "Not aldım. Ödeyecek.",
+     "en": "Noted. It will pay."
+    }
+   ],
+   "legendary": [
+    {
+     "tr": "Bu hançer adımı fısıldıyor.",
+     "en": "This dagger whispers my name."
+    },
+    {
+     "tr": "Satmayacağım. Sorma bile.",
+     "en": "Not selling it. Don't ask."
+    }
+   ],
+   "idle": [
+    {
+     "tr": "Ben burada değilim. Hiç olmadım.",
+     "en": "I'm not here. Never was."
+    },
+    {
+     "tr": "Cebindeki o altın... şaka şaka.",
+     "en": "That gold in your pocket... kidding."
+    },
+    {
+     "tr": "Gölgeler bugün sakin.",
+     "en": "The shadows are calm today."
+    }
+   ],
+   "boss_down": [
+    {
+     "tr": "Hiç görmedi bile.",
+     "en": "Never even saw me."
+    },
+    {
+     "tr": "Temiz iş.",
+     "en": "Clean work."
+    }
+   ]
+  },
+  "mage": {
+   "level_up": [
+    {
+     "tr": "Yeni bir büyü öğrendim!",
+     "en": "I learned a new spell!"
+    },
+    {
+     "tr": "Formül tuttu! Yani... tutmalıydı.",
+     "en": "The formula worked! I mean... it should have."
+    },
+    {
+     "tr": "Kafamda yeni bir büyü kıpırdıyor.",
+     "en": "A new spell is stirring in my head."
+    }
+   ],
+   "boss": [
+    {
+     "tr": "Ateş topu zamanı!",
+     "en": "Fireball time!"
+    },
+    {
+     "tr": "Büyük düşman, büyük büyü!",
+     "en": "Big foe, big spell!"
+    },
+    {
+     "tr": "Kaşlarımı yakmamaya çalışacağım.",
+     "en": "I'll try not to burn my eyebrows."
+    }
+   ],
+   "ally_down": [
+    {
+     "tr": "Hayır hayır, bu hesapta yoktu!",
+     "en": "No no, that wasn't in the calculation!"
+    },
+    {
+     "tr": "Kitapta bunun çaresi vardı...",
+     "en": "The book had a cure for this..."
+    }
+   ],
+   "legendary": [
+    {
+     "tr": "Bu asa titreşiyor! Ya da ben.",
+     "en": "This staff is humming! Or I am."
+    },
+    {
+     "tr": "Kule bunu görse kıskanırdı.",
+     "en": "The Tower would be jealous."
+    }
+   ],
+   "idle": [
+    {
+     "tr": "Teori: slime'lar aslında sıvı.",
+     "en": "Theory: slimes are basically liquid."
+    },
+    {
+     "tr": "Biri benim ateş topu notlarımı gördü mü?",
+     "en": "Has anyone seen my fireball notes?"
+    },
+    {
+     "tr": "Sessizlik büyü çalışmak için ideal.",
+     "en": "Silence is ideal for spell study."
+    }
+   ],
+   "boss_down": [
+    {
+     "tr": "Bilim kazandı!",
+     "en": "Science wins!"
+    },
+    {
+     "tr": "Ve işte böyle patlar.",
+     "en": "And that's how it goes boom."
+    }
+   ]
+  },
+  "necromancer": {
+   "level_up": [
+    {
+     "tr": "Ruhlar fısıldıyor...",
+     "en": "The spirits whisper..."
+    },
+    {
+     "tr": "Ölüler bile alkışlıyor.",
+     "en": "Even the dead applaud."
+    },
+    {
+     "tr": "Bonbon bir dişini daha buldu.",
+     "en": "Bonbon found another tooth."
+    }
+   ],
+   "boss": [
+    {
+     "tr": "Ölüler bize yardım edecek.",
+     "en": "The dead will aid us."
+    },
+    {
+     "tr": "Yakında bize katılacaksın.",
+     "en": "Soon you'll join us."
+    },
+    {
+     "tr": "Ne güzel bir iskelet olur...",
+     "en": "What a lovely skeleton you'll make..."
+    }
+   ],
+   "ally_down": [
+    {
+     "tr": "Merak etme, ölüm sadece bir mola.",
+     "en": "Don't worry, death is just a break."
+    },
+    {
+     "tr": "Ruhunu tutuyorum, git bir yere.",
+     "en": "I've got your soul, don't wander off."
+    }
+   ],
+   "legendary": [
+    {
+     "tr": "Bunun eski sahibi... hâlâ etrafta.",
+     "en": "Its old owner... is still around."
+    },
+    {
+     "tr": "Mezarlar böyle hazineler saklar.",
+     "en": "Graves hide treasures like this."
+    }
+   ],
+   "idle": [
+    {
+     "tr": "Bonbon, kafatasını ısırma.",
+     "en": "Bonbon, don't bite the skull."
+    },
+    {
+     "tr": "Mezarlıklar ne huzurlu yerler.",
+     "en": "Graveyards are so peaceful."
+    },
+    {
+     "tr": "Üşüdüm. Yine.",
+     "en": "I'm cold. Again."
+    }
+   ],
+   "boss_down": [
+    {
+     "tr": "Bir hizmetkâr daha.",
+     "en": "One more servant."
+    },
+    {
+     "tr": "Huzur içinde yatma.",
+     "en": "Rest in pieces."
+    }
+   ]
+  },
+  "cleric": {
+   "level_up": [
+    {
+     "tr": "Işık benimle!",
+     "en": "The light is with me!"
+    },
+    {
+     "tr": "Işık beni seçti! Ya da yanlış kişiye çarptı.",
+     "en": "The light chose me! Or hit the wrong person."
+    },
+    {
+     "tr": "Dualarım daha güçlü artık. Sanırım.",
+     "en": "My prayers are stronger now. I think."
+    }
+   ],
+   "boss": [
+    {
+     "tr": "Sizi iyileştireceğim, merak etmeyin!",
+     "en": "I'll heal you, don't worry!"
+    },
+    {
+     "tr": "Herkes yanımda kalsın, iyileştiriyorum!",
+     "en": "Everyone stay close, healing!"
+    },
+    {
+     "tr": "Işık, şimdi tam zamanı!",
+     "en": "Light, now would be great!"
+    }
+   ],
+   "ally_down": [
+    {
+     "tr": "Hemen geliyorum, kıpırdama!",
+     "en": "Coming right now, don't move!"
+    },
+    {
+     "tr": "Bu benim suçum, iyileştirme geç kaldı!",
+     "en": "My fault, the heal was late!"
+    }
+   ],
+   "legendary": [
+    {
+     "tr": "Kutsanmış! Ya da sadece çok parlak.",
+     "en": "Blessed! Or just very shiny."
+    },
+    {
+     "tr": "Tapınak bunu sergilemek isterdi.",
+     "en": "The temple would want to display this."
+    }
+   ],
+   "idle": [
+    {
+     "tr": "Herkes iyi mi? Kimsenin canı azalmadı mı?",
+     "en": "Everyone fine? Nobody's hurt?"
+    },
+    {
+     "tr": "Sessiz bir dua... Ups, şimşek.",
+     "en": "A quiet prayer... Oops, lightning."
+    },
+    {
+     "tr": "Biraz su içmeyi unutmayın!",
+     "en": "Remember to drink some water!"
+    }
+   ],
+   "boss_down": [
+    {
+     "tr": "Işık için!",
+     "en": "For the light!"
+    },
+    {
+     "tr": "Herkes ayakta! Neredeyse herkes.",
+     "en": "Everyone's standing! Almost everyone."
+    }
+   ]
+  },
+  "bard": {
+   "level_up": [
+    {
+     "tr": "Bu bir şarkıya değer!",
+     "en": "This deserves a song!"
+    },
+    {
+     "tr": "Bu anı bir şarkıya koyacağım!",
+     "en": "I'll put this moment in a song!"
+    },
+    {
+     "tr": "Yeni bir nota buldum!",
+     "en": "I found a new note!"
+    }
+   ],
+   "boss": [
+    {
+     "tr": "Savaş marşı çalıyorum!",
+     "en": "Playing the war march!"
+    },
+    {
+     "tr": "Destansı bir şarkının başlangıcı!",
+     "en": "The start of an epic ballad!"
+    },
+    {
+     "tr": "Ritim tutun, çalıyorum!",
+     "en": "Keep the rhythm, I'm playing!"
+    }
+   ],
+   "ally_down": [
+    {
+     "tr": "Bu şarkının hüzünlü kısmı değil!",
+     "en": "This isn't the sad part of the song!"
+    },
+    {
+     "tr": "Kalk, nakarat geliyor!",
+     "en": "Get up, the chorus is coming!"
+    }
+   ],
+   "legendary": [
+    {
+     "tr": "Bunun hakkında üç kıta yazarım.",
+     "en": "I'll write three verses about this."
+    },
+    {
+     "tr": "Meyhanede anlatacağım hikâye!",
+     "en": "A tale for the tavern!"
+    }
+   ],
+   "idle": [
+    {
+     "tr": "La la la... şöyle mi, böyle mi?",
+     "en": "La la la... like this or that?"
+    },
+    {
+     "tr": "Bir mandolin teli daha koptu.",
+     "en": "Another mandolin string snapped."
+    },
+    {
+     "tr": "Kimse şarkı istemedi mi?",
+     "en": "Nobody wants a song?"
+    }
+   ],
+   "boss_down": [
+    {
+     "tr": "Ve perde! Alkışlar!",
+     "en": "And curtain! Applause!"
+    },
+    {
+     "tr": "Bu kıta altın değerinde.",
+     "en": "This verse is worth gold."
+    }
+   ]
   }
+ },
+ "heroes": {
+  "pip": {
+   "level_up": [
+    {
+     "tr": "Dua ettim, seviye geldi! Tesadüf mü?",
+     "en": "I prayed and I leveled! Coincidence?"
+    }
+   ],
+   "join": [
+    {
+     "tr": "Ups, iyileştirme yerine şimşek attım...",
+     "en": "Oops, cast lightning instead of a heal..."
+    }
+   ]
+  },
+  "vex": {
+   "level_up": [
+    {
+     "tr": "Bonbon bu seviyeyi beğendi.",
+     "en": "Bonbon likes this level."
+    }
+   ],
+   "join": [
+    {
+     "tr": "Korkmayın, kafatası zararsız. Çoğunlukla.",
+     "en": "Don't worry, the skull is harmless. Mostly."
+    }
+   ]
+  },
+  "bjorn": {
+   "boss": [
+    {
+     "tr": "DAHA FAZLA GOBLİN!",
+     "en": "MORE GOBLINS!"
+    }
+   ],
+   "join": [
+    {
+     "tr": "Düelloyu kazandınız. Baltam artık sizin!",
+     "en": "You won the duel. My axe is yours!"
+    }
+   ]
+  },
+  "lyra": {
+   "level_up": [
+    {
+     "tr": "Yıldızlar nişan almama yardım ediyor.",
+     "en": "The stars help my aim."
+    }
+   ],
+   "join": [
+    {
+     "tr": "Bu slime'lar beni bekliyordu sanırım.",
+     "en": "These slimes were waiting for me."
+    }
+   ]
+  },
+  "kael": {
+   "level_up": [
+    {
+     "tr": "Lonca kaptanı olarak bu iyi bir gün!",
+     "en": "A good day for the guild captain!"
+    }
+   ]
+  },
+  "nova": {
+   "join": [
+    {
+     "tr": "Öz Kulesi'nin öğrencisi Nova, hizmetinizde!",
+     "en": "Nova of the Tower, at your service!"
+    }
+   ]
+  },
+  "finn": {
+   "join": [
+    {
+     "tr": "Şarkı söylerken cebinizi korursanız iyi olur.",
+     "en": "Watch your pockets while I sing."
+    }
+   ]
+  }
+ }
 }
