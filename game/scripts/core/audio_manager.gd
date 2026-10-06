@@ -4,6 +4,10 @@ extends Node
 const SFX_DIR := "res://assets/audio/sfx/"
 const MUSIC_DIR := "res://assets/audio/music/"
 const POOL := 12
+## Per-file trim (dB) so combat sounds sit at one loudness: measured mean volume vs a -20 dB target, only
+## the loud ones are pulled down (raising the quiet ones would clip their peaks).
+const TRIM := {"hit_blunt0": -5.3, "hit_blunt1": -5.0, "magic_dark": -5.1, "magic_fire": -3.4, "magic_holy": -3.0,
+	"chop": -2.4, "swing0": -2.1, "swing1": -2.3, "crit": -1.7, "arrow_fly": -1.5}
 
 var _players: Array = []
 var _music_a: AudioStreamPlayer
@@ -63,7 +67,7 @@ func play(name: String, pitch_var := 0.08, vol := 1.0) -> void:
 	for p in _players:
 		if not p.playing:
 			p.stream = s
-			p.volume_db = linear_to_db(v)
+			p.volume_db = linear_to_db(v) + float(TRIM.get(name, 0.0))
 			p.pitch_scale = 1.0 + randf_range(-pitch_var, pitch_var)
 			p.play()
 			return
