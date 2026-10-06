@@ -52,12 +52,9 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 
 ## Questions for the owner
 
-- **Difficulty pacing (bot, two 48 h runs, 2026-10-06):** Normal ~10 h, Nightmare ~20 h, Hell still in act 2-3
-  after 48 h. Boss HP is continuous across difficulties (Nightmare's last boss 11.2M, Hell's first 9.4M); the walls
-  at each new difficulty come from the resistance penalty (-30 / -60) and the 1.25x / 1.5x damage, so they hit
-  players who ignore resistances. I added boss fatigue (3% per failed try, max 30%) which removes the near-miss
-  grind but not the real power walls. Options: (a) keep as is — Hell should be a long-term goal; (b) soften the
-  first act of each difficulty (e.g. Hell act 1 resistance -45). I lean to (a) plus better resistance hints. Your call.
+- **Difficulty pacing (bot, updated 2026-10-06 night):** with boss fatigue and treasure goblins the baseline bot now
+  reaches Hell's final boss at ~47 h (Normal ~9 h, Nightmare ~22 h). A what-if run with Hell resistance -45 instead of
+  -60 was not faster (run-to-run luck dominates). I now recommend keeping the penalties as they are. Your call.
 
 - **Tavern seals pile up (bot, 30 h):** 22 seals by hour 2, 64 by hour 10, 107 by hour 29, while SR costs 2 and SSR 8.
   Seals never gate recruiting; gold does (SSR base 1.2M). Options: (a) leave it; (b) raise seal costs (SR 5, SSR 20) so
@@ -96,3 +93,4 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - 2026-10-06 shift 3 — codex What's New as cards in the reading font; strings of removed windows dropped; item tooltip header with icon in a rarity-lit slot; fixed double % in affix labels ('+%15 % Savunma'), test guards it; static check of all 159 skill texts clean; runes window reviewed at mid game.
 - 2026-10-06 shift 3 — Windows export (Godot 4.4.1 templates) builds cleanly: one 236 MB exe with the pack embedded. Not run on Windows (no machine here).
 - 2026-10-06 shift 3 — achievements show rewards, bestiary tips (kills, element, zones), quest refresh countdown + midnight renewal, daily gift countdown, unused PopupMenu helper removed. 24 h regression bot: clean, 36 boss fails (fatigue working).
+- 2026-10-06 shift 3 — 48 h baseline vs Hell res -45 what-if: baseline reaches Hell a4_z10 at 47 h; softer res gave no gain -> recommend no change.
