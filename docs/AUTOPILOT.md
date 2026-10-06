@@ -41,8 +41,8 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - [x] 15. Endgame: tower floors, paragon, Hell rewards — reasons to keep playing
 - [x] 16. Accessibility: text-size option, colour-blind safe rarity marks, key rebinding view
 - [x] 17. Polish round: every panel at 1.5x/2x/2.5x, no clipping, no overlaps, consistent spacing
-- [ ] 18. Surfaces not yet reviewed: title screen, taskbar mini bar, item tooltip, right-click menu, confirm cards, toasts
-- [ ] 19. Resistance clarity: party resistances vs the zone's damage types (world card, status), red warning when short
+- [x] 18. Surfaces not yet reviewed: title screen, taskbar mini bar, item tooltip, right-click menu, confirm cards, toasts
+- [x] 19. Resistance clarity: party resistances vs the zone's damage types (world card, status), red warning when short
 - [ ] 20. Seal economy: can a player reach SSR heroes (8 seals at lv30)? seal income per hour, tavern pacing
 - [ ] 21. Remove the unreachable windows (party, portrait, old skills) after moving anything still useful
 - [ ] 22. Session variety: daily quest pool, achievement pacing over the first 10 hours, small surprises
@@ -74,3 +74,4 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - 2026-10-06 shift 1 — #15 endgame: reviewed tower (star dust -> +13..+15 enhancing, badges and pets every 10 floors, mythic essence every 50, leaderboard), paragon (stat points past the cap), Hell. Tower button tooltip now lists the next reward floors.
 - 2026-10-06 shift 1 — #16 accessibility: the unused `colorblind` setting now draws a rarity shape on every item slot (toggle in Settings), full hotkey list. Text size = the UI scale option (2x-5x). Key rebinding not built (hotkeys are listed read-only).
 - 2026-10-06 shift 1 — #17 polish: every window shot in English; fixed the skill cooldown spilling out of the card, the 'E' equipped marker, the empty chests pedestal. Found three windows nothing opens (party, portrait, old skills window) — their features live in Hero / Status now.
+- 2026-10-06 shift 1 — #18 surfaces: title menu gets ornate plaque buttons (Fancy.plaque_button), bulk sell rows drawn (checkbox, rarity gem, count), confirm cards use the wooden buttons; tooltip, toasts, context menu already custom. #19: already covered by ZoneInfo (readiness verdict, weakest hero's effective resistance, stuck hints naming the element and target).

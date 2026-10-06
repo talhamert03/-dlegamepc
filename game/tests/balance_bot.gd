@@ -23,7 +23,7 @@ func _ready() -> void:
 	var t := 0.0
 	var step := 900.0
 	var fails_prev := 0
-	print("time  | zone            | st | lv  | heroes | kills  | deaths | gold | runes | earned")
+	print("time  | zone            | st | lv  | heroes | kills  | deaths | gold | runes | earned | seals")
 	while t < hours * 3600.0:
 		BattleSim.simulate(step)
 		t += step
@@ -31,7 +31,7 @@ func _ready() -> void:
 		var z := DataDB.zone(BattleSim.zone_idx)
 		print("%5.2fh | %-15s | %2d | %3d | %6d | %6d | %6d | %s" % [t / 3600.0, str(z.get("id", "")) + " d" + str(BattleSim.difficulty),
 			BattleSim.stage, GameState.max_hero_level(), GameState.heroes.size(), int(GameState.totals["kills"]),
-			int(GameState.totals["deaths"]), F.fmt_num(GameState.gold) + " | " + str(Runes.points_spent()) + " | " + F.fmt_num(int(GameState.totals.get("gold", 0)))])
+			int(GameState.totals["deaths"]), F.fmt_num(GameState.gold) + " | " + str(Runes.points_spent()) + " | " + F.fmt_num(int(GameState.totals.get("gold", 0))) + " | " + str(int(GameState.materials.get("tavern_seal", 0)))])
 	get_tree().quit()
 
 
