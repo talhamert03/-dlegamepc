@@ -90,3 +90,4 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - 2026-10-06 shift 1 — #24: ACH_TREASURE_1, ACH_TREASURE_25, ACH_ELITES_500 (44 achievements), Steam icon kit + CSV regenerated. New Steamworks entries needed when the app is set up.
 - 2026-10-06 shift 1 — #25: a personal join line for all 48 heroes (from signature + faction), always spoken on joining; test guards it. Barks: 193 lines.
 - 2026-10-06 shift 1 — goal ribbon after level 25: zone boss, empty party slot, class advancement, next difficulty, tower reward floor; long goals shrink to fit. Recruit card shows the hero's greeting.
+- 2026-10-06 shift 3 — codex What's New as cards in the reading font; strings of removed windows dropped; item tooltip header with icon in a rarity-lit slot; fixed double % in affix labels ('+%15 % Savunma'), test guards it; static check of all 159 skill texts clean; runes window reviewed at mid game.
