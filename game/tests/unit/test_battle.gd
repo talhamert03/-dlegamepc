@@ -77,3 +77,26 @@ func test_boss_fatigue_after_fails() -> void:
 	BattleSim.boss_fail_count = 0
 	BattleSim.stop()
 	BattleSim.quiet = false
+
+
+func test_treasure_goblin_runs_or_pays() -> void:
+	GameState.new_game()
+	BattleSim.quiet = true
+	BattleSim.start()
+	BattleSim._clear_enemies()
+	# it runs off the right edge if nobody catches it
+	var g := BattleSim._spawn_enemy("treasure_goblin", 10, "elite", BattleSim.SPAWN_X)
+	g.mech_t = 0.0
+	g.set_meta("fleeing", true)
+	for i in 400:
+		BattleSim._treasure_move(g, 0.05, 0.0)
+	runner.check(not g.alive, "the goblin escapes")
+	# caught: gold and a golden chest
+	var g2 := BattleSim._spawn_enemy("treasure_goblin", 10, "elite", BattleSim.SPAWN_X)
+	var gold0 := GameState.gold
+	var chests0 := GameState.chests.size()
+	BattleSim._on_enemy_killed(g2)
+	runner.check(GameState.gold - gold0 > int(F.gold_per_kill(10, "elite") * 10), "big gold for the goblin")
+	runner.check(GameState.chests.size() > chests0, "a chest for the goblin")
+	BattleSim.stop()
+	BattleSim.quiet = false

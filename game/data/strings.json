@@ -2298,5 +2298,8 @@
   "skill_equipped": {"tr": "Kuşanılmış yetenek", "en": "Equipped skill"},
   "quest_chests": {"tr": "{n} sandık aç", "en": "Open {n} chests"},
   "quest_elites": {"tr": "{n} elit düşman avla", "en": "Hunt {n} elite enemies"},
-  "quest_salvage": {"tr": "{n} eşya parçala", "en": "Salvage {n} items"}
+  "quest_salvage": {"tr": "{n} eşya parçala", "en": "Salvage {n} items"},
+  "treasure_appears": {"tr": "Bir Hazine Goblini belirdi! Kaçmadan yakala!", "en": "A Treasure Goblin appeared! Catch it before it runs!"},
+  "treasure_escaped": {"tr": "Hazine Goblini kaçtı...", "en": "The Treasure Goblin got away..."},
+  "treasure_caught": {"tr": "Hazine Goblini yakalandı! +{g} altın ve Altın Sandık", "en": "Treasure Goblin caught! +{g} gold and a Golden Chest"}
 }

@@ -87,7 +87,9 @@ func setup(u: Combatant) -> void:
 		EventBus.equipment_changed.connect(func(hid):
 			if hid == sheet_id and is_instance_valid(self):
 				Costumes.apply(mat, sheet_id))
-	if kind == "enemy" and vis.get("elite", false):
+	if kind == "enemy" and vis.get("treasure", false):
+		mat.set_shader_parameter("outline_color", Color(1.0, 0.85, 0.3, 0.95))
+	elif kind == "enemy" and vis.get("elite", false):
 		mat.set_shader_parameter("outline_color", Color(0.75, 0.4, 1.0, 0.9))
 	elif kind == "enemy" and vis.get("boss", false):
 		mat.set_shader_parameter("outline_color", Color(1.0, 0.35, 0.25, 0.8))
@@ -109,6 +111,11 @@ func setup(u: Combatant) -> void:
 	if kind == "enemy" and vis.get("elite", false):
 		_bar_w = 22
 	z_index = 10 if kind != "enemy" else 9
+	if vis.get("treasure", false):
+		# gilded: warm the painting towards gold and let it shimmer
+		mat.set_shader_parameter("tint", Color(1.35, 1.12, 0.55))
+		mat.set_shader_parameter("glow", Color(1.0, 0.78, 0.25, 0.22))
+		mat.set_shader_parameter("outline_color", Color(1.0, 0.85, 0.3, 0.95))
 	position = Vector2(round(u.x), BattleSim.GROUND_Y)
 	_base_x = position.x
 
@@ -290,6 +297,8 @@ func _target_x() -> float:
 func _process(delta: float) -> void:
 	if unit == null:
 		return
+	if unit.get_meta("fleeing", false) and _facing < 0.0:
+		_facing = 1.0     # the treasure goblin turns tail
 	var target_x: float = round(unit.x)
 	_base_x = lerp(_base_x, target_x, min(1.0, delta * 14.0)) if abs(_base_x - target_x) < 30 else target_x
 	position.x = round(_base_x + _dash_off * _facing)

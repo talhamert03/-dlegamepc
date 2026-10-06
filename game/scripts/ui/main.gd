@@ -387,6 +387,12 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 				var it := LootSystem.generate(GameState.rng, 20, ["rare", "epic", "legendary", "magic"][i % 4], GameState.heroes[hid].cls())
 				it["enhance"] = i % 6
 				GameState.try_auto_equip(it)
+	if cmd.has("--treasure"):
+		EventBus.wave_spawned.connect(func(_w):
+			if not BattleSim.enemies.any(func(e): return e.tags.has("treasure")):
+				var g := BattleSim._spawn_enemy("treasure_goblin", maxi(1, GameState.max_hero_level()), "elite", BattleSim.SPAWN_X + 4.0)
+				g.mech_t = 1.6
+				EventBus.notify.emit(DataDB.t("treasure_appears"), Color("#FFD24A")), CONNECT_ONE_SHOT)
 	if cmd.has("--boss"):
 		if cmd.has("--bossfails"):
 			BattleSim.boss_fail_count = 4

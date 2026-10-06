@@ -1,5 +1,19 @@
 {
  "enemies": {
+  "treasure_goblin": {
+   "id": "treasure_goblin",
+   "name": {"tr": "Hazine Goblini", "en": "Treasure Goblin"},
+   "arch": "weak",
+   "element": "physical",
+   "res": {},
+   "visual": {"rig": "goblin", "sheet": "goblin_apprentice", "tint": "#FFD24A", "color": "#E8C048"},
+   "tags": ["treasure"],
+   "hp": 0.6,
+   "atk": 0.0,
+   "aps": 0.0,
+   "range": 22,
+   "target": "front"
+  },
   "slime_green": {
    "id": "slime_green",
    "name": {

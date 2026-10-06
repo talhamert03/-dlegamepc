@@ -43,9 +43,9 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - [x] 17. Polish round: every panel at 1.5x/2x/2.5x, no clipping, no overlaps, consistent spacing
 - [x] 18. Surfaces not yet reviewed: title screen, taskbar mini bar, item tooltip, right-click menu, confirm cards, toasts
 - [x] 19. Resistance clarity: party resistances vs the zone's damage types (world card, status), red warning when short
-- [ ] 20. Seal economy: can a player reach SSR heroes (8 seals at lv30)? seal income per hour, tavern pacing
+- [x] 20. Seal economy: can a player reach SSR heroes (8 seals at lv30)? seal income per hour, tavern pacing
 - [x] 21. Remove the unreachable windows (party, portrait, old skills) after moving anything still useful
-- [ ] 22. Session variety: daily quest pool, achievement pacing over the first 10 hours, small surprises
+- [x] 22. Session variety: daily quest pool, achievement pacing over the first 10 hours, small surprises
 
 ## Questions for the owner
 
@@ -55,6 +55,11 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
   players who ignore resistances. I added boss fatigue (3% per failed try, max 30%) which removes the near-miss
   grind but not the real power walls. Options: (a) keep as is — Hell should be a long-term goal; (b) soften the
   first act of each difficulty (e.g. Hell act 1 resistance -45). I lean to (a) plus better resistance hints. Your call.
+
+- **Tavern seals pile up (bot, 30 h):** 22 seals by hour 2, 64 by hour 10, 107 by hour 29, while SR costs 2 and SSR 8.
+  Seals never gate recruiting; gold does (SSR base 1.2M). Options: (a) leave it; (b) raise seal costs (SR 5, SSR 20) so
+  seals pace SR/SSR; (c) give seals a second use (e.g. reroll the tavern's featured hero, or buy hero star shards).
+  I lean to (b) or (c). Your call.
 
 ## Shift log
 
@@ -76,3 +81,5 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 - 2026-10-06 shift 1 — #17 polish: every window shot in English; fixed the skill cooldown spilling out of the card, the 'E' equipped marker, the empty chests pedestal. Found three windows nothing opens (party, portrait, old skills window) — their features live in Hero / Status now.
 - 2026-10-06 shift 1 — #18 surfaces: title menu gets ornate plaque buttons (Fancy.plaque_button), bulk sell rows drawn (checkbox, rarity gem, count), confirm cards use the wooden buttons; tooltip, toasts, context menu already custom. #19: already covered by ZoneInfo (readiness verdict, weakest hero's effective resistance, stuck hints naming the element and target).
 - 2026-10-06 shift 1 — #21: removed party_panel, portrait_panel and the old hero_panel (skills) — nothing opened them; star-up already moved to the Hero window, skills live in Status, formation in the Hero window.
+- 2026-10-06 shift 1 — #20 seals: plentiful (100+ by day 2), never the gate -> question for the owner.
+- 2026-10-06 shift 1 — #22 variety: daily pool 6 -> 9 (chests, elites, salvage), Treasure Goblin event (0.8% of waves from zone 2: approaches, lingers 1.4 s, runs; caught = 12x elite gold + golden chest), gilded look and flee turn.

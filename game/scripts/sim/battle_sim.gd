@@ -401,9 +401,50 @@ func _next_wave() -> void:
 		var eid: String = roster[rng.randi() % roster.size()] if roster.size() > 0 else "slime_green"
 		var et := "elite" if i == elite_idx else "normal"
 		_spawn_enemy(eid, lv, et, SPAWN_X + i * 18.0 + rng.randf() * 6.0)
+	_maybe_treasure(lv)
 	_set_phase("fight")
 	if not quiet:
 		EventBus.wave_spawned.emit(wave)
+
+
+## A rare treasure goblin joins a wave: it never attacks, comes in for a moment, then turns and runs.
+## Catch it for a pile of gold and a golden chest; let it reach the edge and it is gone.
+func _maybe_treasure(lv: int) -> void:
+	if mode != "zone" or (zone_idx == 0 and difficulty == 0):
+		return
+	if rng.randf() >= float(DataDB.bal("stage.treasure_chance", 0.008)):
+		return
+	var g := _spawn_enemy("treasure_goblin", lv, "elite", SPAWN_X + 4.0)
+	g.mech_t = 1.4
+	if not quiet:
+		AudioManager.play("coins", 0.05, 0.7)
+		EventBus.notify.emit(DataDB.t("treasure_appears"), Color("#FFD24A"))
+
+
+func _treasure_move(e: Combatant, dt: float, stop_x: float) -> void:
+	# comes in close to the party, lingers a moment (mech_t), then turns and runs for the edge
+	var spd := float(DataDB.bal("combat.enemy_walk_speed", 34))
+	var near := maxf(stop_x, front_hero_x() + 60.0)
+	if e.x > near + 0.5 and e.mech_t > 0.0 and e.get_meta("fleeing", false) == false:
+		e.x = maxf(near, e.x - spd * dt)
+		if e.anim != "run":
+			e.set_anim("run")
+		return
+	if e.mech_t > 0.0:
+		e.mech_t -= dt
+		if e.anim != "idle":
+			e.set_anim("idle")
+		return
+	e.set_meta("fleeing", true)
+	e.x += spd * 0.75 * dt
+	if e.anim != "run":
+		e.set_anim("run")
+	if e.x > SPAWN_X + 30.0:
+		e.alive = false
+		e.dead_t = 0.0
+		if not quiet:
+			EventBus.unit_died.emit(e)
+			EventBus.notify.emit(DataDB.t("treasure_escaped"), Color("#C9B08A"))
 
 
 func _spawn_enemy(eid: String, lv: int, etype: String, x: float) -> Combatant:
@@ -428,7 +469,8 @@ func _spawn_enemy(eid: String, lv: int, etype: String, x: float) -> Combatant:
 	u.projectile = d.get("projectile", "")
 	u.tags = d.get("tags", [])
 	u.mech = d.get("mech", [])
-	u.visual = {"kind": "enemy", "id": eid, "def": d.get("visual", {}), "elite": etype == "elite", "boss": etype == "boss" or etype == "actboss"}
+	u.visual = {"kind": "enemy", "id": str(d.get("visual", {}).get("sheet", eid)), "def": d.get("visual", {}), "elite": etype == "elite",
+		"boss": etype == "boss" or etype == "actboss", "treasure": u.tags.has("treasure")}
 	u.atk_cd = rng.randf_range(0.2, 1.0)
 	enemies.append(u)
 	if not quiet:
@@ -505,6 +547,9 @@ func _update_combat(dt: float) -> void:
 		if not e.alive:
 			continue
 		var stop_x: float = fx + max(float(e.stats.get("range", 24)), 20.0) + (rank * 13.0 if bool(e.stats.get("melee", true)) else 0.0)
+		if e.tags.has("treasure"):
+			_treasure_move(e, dt, stop_x)
+			continue
 		if e.x > stop_x and not e.is_stunned():
 			var spd := float(DataDB.bal("combat.enemy_walk_speed", 34)) * (0.7 if e.has_status("chill") else 1.0)
 			if e.etype == "boss" or e.etype == "actboss":
@@ -1218,6 +1263,15 @@ func _on_enemy_killed(e: Combatant) -> void:
 				ItemUtil.rarity_color(it["rarity"]))
 	for m in drops["materials"]:
 		GameState.add_material(m, int(drops["materials"][m]))
+	if e.tags.has("treasure"):
+		var bonus := int(F.gold_per_kill(e.level, "elite") * 12.0 * (1.0 + gf / n / 100.0))
+		GameState.add_gold(bonus)
+		session["gold"] = int(session["gold"]) + bonus
+		Chests.add("gold", e.level)
+		if not quiet:
+			EventBus.chest_dropped.emit("gold", Vector2(e.x, GROUND_Y))
+			AudioManager.play("loot_legendary", 0.0, 0.7)
+			EventBus.notify.emit(DataDB.t("treasure_caught", {"g": F.fmt_num(g + bonus)}), Color("#FFD24A"))
 	var ck := Chests.roll(GameState.rng, e.etype, iff / n)
 	if ck != "":
 		Chests.add(ck, e.level)

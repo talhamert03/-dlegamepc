@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Hazine Goblini: ikinci bölgeden itibaren nadiren altın bir goblin dalgaya katılır, yaklaşır, oyalanır ve kaçar. Kaçmadan yakalarsan bol altın ve Altın Sandık bırakır.", "en": "Treasure Goblin: from the second zone on, a rare golden goblin joins a wave, lingers, then runs. Catch it for a pile of gold and a Golden Chest."},
     {"tr": "Yeni günlük görevler: sandık aç, elit düşman avla, eşya parçala. Günlük görev havuzu 6'dan 9'a çıktı.", "en": "New daily quests: open chests, hunt elites, salvage items. The daily pool grows from 6 to 9."},
     {"tr": "Erişilebilirlik: Ayarlar > Görünüm'de nadirlik işaretleri (renk körü) seçeneği; açıkken her eşyada nadirliğe özel bir şekil görünür. Kısayol listesi tamamlandı.", "en": "Accessibility: rarity marks option (colour-blind) in Settings > View adds a shape per rarity on every item. Full hotkey list in settings."},
     {"tr": "İpucu ve konuşma balonları yenilendi: konuşan kahramanın portresi, bronz çerçeve ve yumuşak açılış. Sandık, demirci ve rünler için ilk seferde birer kısa ipucu eklendi.", "en": "New hint and speech bubbles with the speaker's portrait and a bronze frame; one-time tips for chests, the blacksmith and runes."},
