@@ -848,8 +848,8 @@ func _toast(res: Dictionary) -> void:
 			Toast.show_reward(UITheme.icon("gold"), DataDB.t("toast_bought"), "+" + F.fmt_num(int(res.get("gold", 0))) + " " + DataDB.t("gold"))
 		"hero_random", "hero_pick":
 			var hid := str(res.get("hero", ""))
-			AudioManager.play("recruit")
 			Toast.show_reward(SpriteLib.hero_icon(hid), DataDB.t("toast_new_hero"), str(DataDB.hero_def(hid).get("name", hid)))
+			RecruitReveal.show_over(_host, hid)
 		"bundle":
 			var names: Array = []
 			for h in res.get("heroes", []):

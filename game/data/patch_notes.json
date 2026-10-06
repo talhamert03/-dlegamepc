@@ -1,6 +1,19 @@
 {
- "current": "0.2.6",
+ "current": "0.2.7",
  "notes": [
+  {
+   "version": "0.2.7",
+   "title": {
+    "tr": "Cila ve Animasyonlar",
+    "en": "Polish and Animations"
+   },
+   "items": [
+    {
+     "tr": "Yeni kahraman açılışı: kart karanlıktan yükselir, titrer ve flaşla çevrilir; SR mavi, SSR altın ışınlarla daha uzun bir gerilimle açılır. Mağazadan alınan kahramanlarda da görünür.",
+     "en": "New hero reveal: a card rises, trembles and flips; SR blue, SSR golden with turning rays. Also for store heroes."
+    }
+   ]
+  },
   {
    "version": "0.2.6",
    "title": {

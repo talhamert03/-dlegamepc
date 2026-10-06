@@ -226,7 +226,7 @@ func _ask(hid: String) -> void:
 	var ctxt := F.fmt_num(int(cost["gold"])) + " " + DataDB.t("gold") + ("  +%d %s" % [int(cost["tavern_seal"]), DataDB.t("seal_name")] if int(cost["tavern_seal"]) > 0 else "")
 	W.confirm(_host, DataDB.t("tavern_confirm", {"name": str(DataDB.hero_def(hid).get("name", hid)), "cost": ctxt}), func():
 		if Tavern.recruit(hid):
-			AudioManager.play("recruit")
 			refresh()
+			RecruitReveal.show_over(_host, hid)
 		else:
 			EventBus.notify.emit(DataDB.t("not_enough_gold"), UITheme.C_RED), DataDB.t("btn_recruit"))

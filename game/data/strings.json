@@ -2214,5 +2214,9 @@
  "skills_reset_tip": {
   "tr": "Bu kahramanın tüm yetenek puanlarını ücretsiz geri al.",
   "en": "Refund all of this hero's skill points for free."
+ },
+ "recruit_joined": {
+  "tr": "{name} partine katıldı!",
+  "en": "{name} joins your party!"
  }
 }

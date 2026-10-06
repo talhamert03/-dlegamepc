@@ -463,6 +463,16 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 				await get_tree().create_timer(0.18).timeout
 				var im := get_viewport().get_texture().get_image()
 				im.get_region(Rect2i(Vector2i(hp.global_position * sc1), Vector2i(hp.size * sc1))).save_png("user://screenshots/pf_%02d.png" % i)
+		if a.begins_with("--revealtest=") and WindowManager.is_open("tavern"):
+			var tp: Control = WindowManager.panels["tavern"]
+			RecruitReveal.show_over(tp._host, a.substr(13))
+			var sc2: float = WindowManager.ui_scale
+			var t0 := 0.0
+			for at in [0.3, 1.1, 1.9, 2.15, 2.6, 3.4]:
+				await get_tree().create_timer(at - t0).timeout
+				t0 = at
+				var im2 := get_viewport().get_texture().get_image()
+				im2.get_region(Rect2i(Vector2i(tp.global_position * sc2), Vector2i(tp.size * sc2))).save_png("user://screenshots/rv_%.2f.png" % at)
 		if a == "--thanks" and WindowManager.is_open("shop"):
 			WindowManager.panels["shop"]._buy(Shop.product("supporter"), "")
 			await get_tree().create_timer(3.2).timeout
