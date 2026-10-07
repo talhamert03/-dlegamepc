@@ -123,9 +123,20 @@ func _draw_header(n: Control) -> void:
 	# two shelves with curios
 	for side in [0, 1]:
 		var x0: float = 34.0 if side == 0 else w - 112.0
+		# warm lantern spill across the niche, brighter on the lantern side
+		var lx0: float = 16.0 if side == 0 else w - 16.0
+		var flk := 0.85 + 0.15 * sin(_t * 9.0 + lx0) * sin(_t * 5.3 + lx0 * 0.3)
+		for k in 5:
+			var rad := 46.0 - k * 8.0
+			n.draw_circle(Vector2(lerpf(x0, x0 + 78.0, 0.2 if side == 0 else 0.8), 24.0), rad, Color(1.0, 0.72, 0.35, 0.028 * flk))
 		for row in 2:
 			var sy := 17.0 + row * 17.0
 			UISkin.fill(ci, Rect2(x0, sy, 78, 3), 1, Color("#8A5A32"), Color("#4A2C16"))
+			# lit top edge of the plank, fading away from the lantern
+			for seg in 6:
+				var sx := x0 + seg * 13.0
+				var near := 1.0 - float(seg if side == 0 else 5 - seg) / 6.0
+				n.draw_line(Vector2(sx, sy + 0.4), Vector2(sx + 13.0, sy + 0.4), Color(1.0, 0.85, 0.55, 0.45 * near * flk), 0.8)
 			n.draw_line(Vector2(x0, sy + 3.5), Vector2(x0 + 78, sy + 3.5), Color(0, 0, 0, 0.45), 1.0)
 			for j in 5:
 				var cx := x0 + 7.0 + j * 15.5

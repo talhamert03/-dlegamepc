@@ -429,6 +429,13 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 					gp.tab = int(a.substr(12))
 					W.set_tab_active(gp._tabs, gp.tab)
 					gp.refresh())
+		if a.begins_with("--tavernfilter="):
+			get_tree().create_timer(1.0).timeout.connect(func():
+				if WindowManager.is_open("tavern"):
+					var tp = WindowManager.panels["tavern"]
+					tp._filter = a.substr(15)
+					tp._build_top()
+					tp.refresh())
 		if a.begins_with("--stashtab="):
 			GameState.stash_tabs = 3
 			get_tree().create_timer(1.0).timeout.connect(func():

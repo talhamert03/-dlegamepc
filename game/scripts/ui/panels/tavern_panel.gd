@@ -150,30 +150,47 @@ func _card(hid: String, pos: Vector2) -> void:
 	c.tooltip_text = "%s · %s\n%s\n✦ %s: +%s %s" % [str(d.get("name", hid)), DataDB.tx(DataDB.class_def(d["class"]).get("name", {})),
 		DataDB.tx(DataDB.class_def(d["class"]).get("role", {})), DataDB.tx(sig.get("name", {})),
 		StatNames.fmt(str(sig.get("stat", "")), float(sig.get("value", 0))), StatNames.label(str(sig.get("stat", "")))]
+	c.mouse_entered.connect(func(): c.set_meta("hov", true))
+	c.mouse_exited.connect(func(): c.set_meta("hov", false))
+	var seed := float(hid.length()) * 0.73
 	c.draw.connect(func():
 		var ci := c.get_canvas_item()
 		var r := Rect2(Vector2.ZERO, c.size)
-		UISkin.fill(ci, r, 4, fac.darkened(0.3), Color("#100E14"))
+		var hov: bool = c.get_meta("hov", false)
+		UISkin.fill(ci, r, 4, fac.darkened(0.3 if not hov else 0.15), Color("#100E14"))
 		for k in 5:
-			c.draw_circle(Vector2(r.size.x / 2.0, r.size.y * 0.33), r.size.x * (0.6 - k * 0.09), Color(rcol, 0.04))
+			c.draw_circle(Vector2(r.size.x / 2.0, r.size.y * 0.33), r.size.x * (0.6 - k * 0.09), Color(rcol, 0.04 if not hov else 0.07))
 		if tex:
-			var art_h := r.size.y * 0.78
+			# hovering lifts the figure a little towards the viewer
+			var art_h := r.size.y * (0.78 if not hov else 0.82)
 			var aw := tex.get_width() * art_h / float(tex.get_height())
-			c.draw_texture_rect(tex, Rect2(Vector2((r.size.x - aw) / 2.0, 3), Vector2(aw, art_h)), false,
+			c.draw_texture_rect(tex, Rect2(Vector2((r.size.x - aw) / 2.0, 3 if not hov else 1), Vector2(aw, art_h)), false,
 				Color.WHITE if owned or Tavern.level_ok(hid) else Color(0.5, 0.5, 0.55))
+		if rar != "R":
+			# foil: a slanted band of light crossing SR / SSR cards now and then
+			var span := r.size.x + r.size.y
+			var bx := fposmod(_t * 0.35 + seed, 2.4) * span - r.size.y
+			var fc := Color(1.0, 0.92, 0.6, 0.20) if rar == "SSR" else Color(0.75, 0.85, 1.0, 0.14)
+			c.draw_colored_polygon(PackedVector2Array([Vector2(bx, 0), Vector2(bx + 10, 0), Vector2(bx + 10 + r.size.y * 0.6, r.size.y),
+				Vector2(bx + r.size.y * 0.6, r.size.y)]), fc)
+			c.draw_colored_polygon(PackedVector2Array([Vector2(bx + 13, 0), Vector2(bx + 16, 0), Vector2(bx + 16 + r.size.y * 0.6, r.size.y),
+				Vector2(bx + 13 + r.size.y * 0.6, r.size.y)]), Color(fc, fc.a * 0.6))
 		UISkin.fill(ci, Rect2(0, r.size.y * 0.5, r.size.x, r.size.y * 0.5), 0, Color(0, 0, 0, 0.0), Color(0, 0, 0, 0.9))
 		var pulse := 0.65 + 0.35 * sin(_t * 3.0) if rar == "SSR" else 0.85
 		UISkin.stroke(ci, r, 4, Color(0, 0, 0, 0.95), 1.0)
-		UISkin.stroke(ci, r.grow(-1.0), 3, Color(rcol, pulse), 1.3)
+		UISkin.stroke(ci, r.grow(-1.0), 3, Color(rcol, pulse) if not hov else rcol.lightened(0.35), 1.3 if not hov else 1.8)
 		var tag := Rect2(3, 3, 21 if rar == "SSR" else 16, 9)
 		UISkin.fill(ci, tag, 2, rcol.lightened(0.15), rcol.darkened(0.35))
 		UISkin.stroke(ci, tag, 2, Color(0, 0, 0, 0.9), 1.0)
 		c.draw_string(UITheme.font_body, tag.position + Vector2(2.5, 7.5), rar, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#1A1208"))
 		var f := UITheme.font_title
 		var nm := str(d.get("name", hid))
-		var tw := minf(f.get_string_size(nm, HORIZONTAL_ALIGNMENT_LEFT, -1, 9).x, r.size.x - 4)
-		c.draw_string_outline(f, Vector2((r.size.x - tw) / 2.0, r.size.y - 30), nm, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 4, 9, 3, Color(0, 0, 0, 0.95))
-		c.draw_string(f, Vector2((r.size.x - tw) / 2.0, r.size.y - 30), nm, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 4, 9, rcol.lightened(0.3))
+		var fsz := 9
+		while fsz > 6 and f.get_string_size(nm, HORIZONTAL_ALIGNMENT_LEFT, -1, fsz).x > r.size.x - 6:
+			fsz -= 1
+		var tw := minf(f.get_string_size(nm, HORIZONTAL_ALIGNMENT_LEFT, -1, fsz).x, r.size.x - 4)
+		c.draw_string_outline(f, Vector2((r.size.x - tw) / 2.0, r.size.y - 30), nm, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 4, fsz, 3, Color(0, 0, 0, 0.95))
+		c.draw_string(f, Vector2((r.size.x - tw) / 2.0, r.size.y - 30), nm, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 4, fsz, rcol.lightened(0.3))
 		var cl := DataDB.tx(DataDB.class_def(d["class"]).get("name", {}))
 		var fb := UITheme.font_body
 		var cw := minf(fb.get_string_size(cl, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x, r.size.x - 4)
