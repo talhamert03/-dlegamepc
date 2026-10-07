@@ -95,7 +95,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 53. Status icons over units: screenshot flag that applies statuses, check size and spacing at 2x-5x
 - [x] 54. Damage numbers vs. elite name plates and the boss bar: keep numbers from covering plates
 - [x] 55. Item tooltip at 4x: frame, affix rows, compare column, set / legendary text
-- [ ] 56. Shop product art: use the new material icons (seals, shards, essences) where products grant them
+- [x] 56. Shop product art: use the new material icons (seals, shards, essences) where products grant them
 
 ## Questions for the owner
 
@@ -172,3 +172,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift — #53: --statusshot puts 2-4 long statuses on the first enemies; at 2x and 4x the 5 px st_* icons read clearly over the bar, spacing ok, max 4 respected. No change needed.
 - 2026-10-07 shift — #54: damage/skill numbers over plated units start 9 px higher (above the plate); plates of tall elites clamp below strip y 15 so they never hide under the goal ribbon. Boss bar already protected by the y 21 floor from #49. Heavy fights still crowd numbers a little (by design: stacking caps at 3).
 - 2026-10-07 shift — #55: item tooltip at 4x is crisp (fonts at final size). Added a rarity accent (gradient band + top line, none for common/plain text tips); fixed lowercase TR affix name 'can' -> 'Can'. Compare column not shown in this shot (item not wearable by Kael).
+- 2026-10-07 shift — #56: checked all shop tabs: no product grants seals, shards or essences (packs give heroes, chests, gold, supporter bonuses, the hourglass), so no material icon belongs there. No change. Replay backlog 51-56 done; visual + replay work this shift: #37-#56.
