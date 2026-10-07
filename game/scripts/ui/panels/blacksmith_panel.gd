@@ -349,7 +349,7 @@ var _ct := 0.0         # clock for the combine rune circle
 
 func _process(delta: float) -> void:
 	_ct += delta
-	if tab == 0 and is_instance_valid(_stage):
+	if (tab == 0 or tab == 1) and is_instance_valid(_stage):
 		_stage.queue_redraw()
 	if _fx_t < 1.6:
 		_fx_t += delta
@@ -442,7 +442,15 @@ func _anvil_stage(it: Dictionary, w: float) -> Control:
 		UISkin.well(ci, r)
 		# forge glow from below
 		for k in 6:
-			c.draw_circle(Vector2(46, r.size.y + 6), 46.0 - k * 7.0, Color(1.0, 0.45, 0.15, 0.035))
+			c.draw_circle(Vector2(46, r.size.y + 6), 46.0 - k * 7.0, Color(1.0, 0.45, 0.15, 0.035 + 0.008 * sin(_ct * 2.3 + k)))
+		# embers drifting up from the forge, each on its own slow loop
+		for k in 8:
+			var life := fposmod(_ct * 0.35 + k * 0.125, 1.0)
+			var ex := 20.0 + fposmod(k * 37.0, 56.0) + sin(_ct * 1.7 + k * 2.1) * 4.0 * life
+			var ey := r.size.y - 4.0 - life * (r.size.y - 8.0)
+			var ea := (1.0 - life) * minf(1.0, life * 6.0)
+			c.draw_circle(Vector2(ex, ey), 1.6 * (1.0 - life * 0.5), Color(1.0, 0.55, 0.15, 0.35 * ea))
+			c.draw_circle(Vector2(ex, ey), 0.8, Color(1.0, 0.88, 0.55, 0.95 * ea))
 		# anvil
 		var ax := 46.0
 		var ay := r.size.y - 12.0
