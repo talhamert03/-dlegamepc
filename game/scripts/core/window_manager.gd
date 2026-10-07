@@ -166,7 +166,8 @@ func set_screen(idx: int) -> void:
 func compute_scale() -> float:
 	var s := int(Settings.get_v("scale", 0))
 	if s > 0:
-		return float(s)
+		# a forced scale never goes past what fits: 5x on a 1080p screen would push the strip off-screen
+		return minf(float(s), max_fit_scale())
 	var usable := _usable()
 	# half steps: 768p -> 1.5x, 1080p -> 2x, 1440p -> 2.5x, 4K -> 4x
 	var k := clampf(round(usable.size.y / 520.0 * 2.0) / 2.0, 1.5, 6.0)
@@ -177,6 +178,17 @@ func compute_scale() -> float:
 			break
 		k -= 0.5
 	return k
+
+
+## Largest scale (whole or half step) at which the strip and the tallest panel still fit the usable area.
+func max_fit_scale() -> float:
+	var usable := _usable()
+	var k := 6.0
+	while k > 1.0:
+		if STRIP_SIZE.x * k <= usable.size.x and (STRIP_SIZE.y + MAX_PANEL_H + 6) * k <= usable.size.y:
+			return k
+		k -= 0.5
+	return 1.0
 
 
 func area_size() -> Vector2:

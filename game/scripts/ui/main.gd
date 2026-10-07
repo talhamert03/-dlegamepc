@@ -388,6 +388,10 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 	await get_tree().create_timer(0.5).timeout
 	if cmd.has("--town"):
 		BattleSim.enter_town()
+	for a in cmd:
+		if a.begins_with("--scale="):
+			WindowManager.set_scale(int(a.substr(8)))
+			print("SCALE ", WindowManager.ui_scale, " strip ", WindowManager.strip_rect())
 	if cmd.has("--tower"):
 		GameState.progress["tower_best"] = 9
 		BattleSim.enter_tower()
