@@ -104,6 +104,8 @@ func _run_title() -> void:
 		await get_tree().create_timer(0.2).timeout
 		get_viewport().get_texture().get_image().save_png("user://screenshots/title_hover.png")
 		t._start_intro()
+		await get_tree().create_timer(0.45).timeout
+		get_viewport().get_texture().get_image().save_png("user://screenshots/intro_open.png")
 		for i in TitleScreen.BEATS.size():
 			await get_tree().create_timer(3.2).timeout
 			get_viewport().get_texture().get_image().save_png("user://screenshots/intro_%d.png" % i)

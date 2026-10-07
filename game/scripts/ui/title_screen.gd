@@ -23,6 +23,7 @@ var _stage := "title"                      # title | intro | outro | done
 var _beat := -1
 var _bt := 0.0
 var _fade := 1.0                           # black fade overlay
+var _it := 0.0                             # time since the intro started (letterbox slide-in)
 var _shake := 0.0
 var _flash := 0.0
 var _tex: Dictionary = {}
@@ -92,8 +93,8 @@ func _ready() -> void:
 	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_hint.visible = false
 	add_child(_hint)
-	_skip = UITheme.button(DataDB.t("skip") + "  ›", "brown", _finish, Vector2(54, 16))
-	_skip.position = Vector2(_frame.end.x - 62, _frame.position.y + 8)
+	_skip = Fancy.plaque_button(DataDB.t("skip") + "  »", Color("#C9A46A"), _finish, Vector2(70, 18))
+	_skip.position = Vector2(_frame.end.x - 76, _frame.position.y + 6)
 	_skip.visible = false
 	add_child(_skip)
 	for k in ["forest", "temple", "throne", "ruins", "meadow", "snow", "desert", "ash", "town"]:
@@ -131,6 +132,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_t += delta
 	_bt += delta
+	_it += delta
 	_shake = maxf(0.0, _shake - delta)
 	_flash = maxf(0.0, _flash - delta * 2.2)
 	match _stage:
@@ -188,6 +190,7 @@ func _start_intro() -> void:
 		h.visible = false
 	_skip.visible = true
 	_text.visible = true
+	_it = 0.0
 	_beat = -1
 	_next_beat()
 
@@ -206,6 +209,13 @@ func _next_beat() -> void:
 		return
 	_text.text = DataDB.t(BEATS[_beat])
 	_text.visible_ratio = 0.0
+	AudioManager.play("ui_travel", 0.04, 0.45)
+	# the score follows the story: dread when Morvath strikes, the town theme when the guild appears
+	match _beat:
+		1:
+			AudioManager.play_music("boss")
+		3:
+			AudioManager.play_music("town")
 
 
 var _fired: Dictionary = {}
@@ -361,7 +371,7 @@ func _draw_view() -> void:
 				_view.draw_circle(pos, 1.6, Color(p["c"], 1.0 - k))
 	# letterbox + flash + fade
 	if _stage == "intro" or _stage == "outro":
-		var bar := f.y * 0.115
+		var bar := f.y * 0.115 * clampf(_it / 0.7, 0.0, 1.0) if _stage == "intro" else f.y * 0.115
 		_view.draw_rect(Rect2(0, 0, f.x, bar), Color(0, 0, 0, 0.92))
 		_view.draw_rect(Rect2(0, f.y - bar * 1.25, f.x, bar * 1.25), Color(0, 0, 0, 0.92))
 		# subtitle plate: a soft gilded band behind the narration
@@ -376,7 +386,19 @@ func _draw_view() -> void:
 	if _flash > 0.0:
 		_view.draw_rect(Rect2(Vector2.ZERO, f), Color(1, 0.97, 0.9, _flash))
 	if _fade > 0.0:
-		_view.draw_rect(Rect2(Vector2.ZERO, f), Color(0, 0, 0, _fade))
+		if _stage == "intro" and _bt < 2.0:
+			# each beat opens like an eye: two black lids part from a thin gold seam
+			var e := _fade * _fade
+			var lid := f.y * 0.5 * e
+			_view.draw_rect(Rect2(0, 0, f.x, lid), Color(0, 0, 0, 1))
+			_view.draw_rect(Rect2(0, f.y - lid, f.x, lid), Color(0, 0, 0, 1))
+			var ga := sin(clampf(1.0 - _fade, 0.0, 1.0) * PI) * 0.9
+			for y in [lid, f.y - lid]:
+				_view.draw_line(Vector2(0, y), Vector2(f.x, y), Color(1.0, 0.85, 0.5, ga * 0.35), 4.0)
+				_view.draw_line(Vector2(0, y), Vector2(f.x, y), Color(1.0, 0.95, 0.8, ga), 1.0)
+			_view.draw_rect(Rect2(Vector2.ZERO, f), Color(0, 0, 0, _fade * 0.35))
+		else:
+			_view.draw_rect(Rect2(Vector2.ZERO, f), Color(0, 0, 0, _fade))
 
 
 func _draw_camp() -> void:

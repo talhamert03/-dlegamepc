@@ -74,7 +74,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 
 **C. Menus and screens**
 - [x] 40. Title screen: animated key art (light rays, drifting embers), logo shine, menu plaque hover/press animation
-- [ ] 41. Intro cinematic: panel transitions, text reveal, music sync, skip button style
+- [x] 41. Intro cinematic: panel transitions, text reveal, music sync, skip button style
 - [ ] 42. Ending screen, confirm cards, context menu, toasts, recruit reveal: final polish pass
 - [ ] 43. Bottom control panel (taskbar side): medallion icons redrawn, hover glow, notification badges
 
@@ -149,3 +149,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift — #38: audited Growth, Runes, Quests, Codex, Settings, DPS, Away side by side. Settings/Quests/DPS/Away/Codex already share section plaques, Fancy.bar and card wells; the outlier was Growth factions (bare text + hsep), now cards with faction spine, crest and gilded rim when active. Scroll bars left to #39.
 - 2026-10-07 shift — #39: VScrollBar track/grabber and TooltipPanel/TooltipLabel now drawn by GameStyleBox (scroll, grab, tip kinds); root window gets the theme so popup tooltips inherit it. Tabs (W.tabs), toggles and sliders (Fancy) were already themed. --tipshot draws a sample tooltip (real ones are popup windows the capture misses).
 - 2026-10-07 shift — #40: title poster gets 6 breathing god rays and 34 stateless embers drawn over the vignette; Fancy.plaque_button adds a hover light sweep (tween on meta) and a press squash with back-ease spring. Logo shine and lightning already existed. Screenshot mode now also saves title_hover.png.
+- 2026-10-07 shift — #41: intro letterbox slides in over 0.7 s, beat openings are eyelid wipes with a gold seam instead of a flat black fade, ui_travel whoosh per beat, music switches to boss at beat 2 and town at beat 4, Skip is a Fancy plaque. Text reveal + subtitle plate + beat dots already existed. Screenshot mode saves intro_open.png.
