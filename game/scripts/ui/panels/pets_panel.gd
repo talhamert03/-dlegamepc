@@ -182,6 +182,8 @@ func _build_info() -> void:
 	if _sel == "":
 		var none := UITheme.para(DataDB.t("pets_hint"), _host.size.x, UITheme.C_DIM)
 		_info.add_child(none)
+		# where pets come from, so an empty collection is not a dead end
+		_info.add_child(UITheme.para("• " + DataDB.t("pet_src_act", {"n": "1-4"}) + "\n• " + DataDB.t("pet_src_tower"), _host.size.x, Color("#C9B08A")))
 		return
 	var pd := GameState.pet_def(_sel)
 	if pd.is_empty():

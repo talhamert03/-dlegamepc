@@ -47,7 +47,7 @@ const DESC := {
 	"crit_chance": ["Bir vuruşun kritik olma ihtimali (düz yüzde: %20 = her 5 vuruştan 1'i).", "Chance for a hit to crit (flat percent: 20% = 1 hit in 5)."],
 	"crit_dmg": ["Kritik vuruşun normal hasara oranı (%150 = 1,5 kat).", "Critical hit damage relative to a normal hit (150% = 1.5x)."],
 	"spell": ["Büyülerin ve iyileştirmelerin gücü.", "Strength of spells and heals."],
-	"added_dmg": ["Her vuruşa eklenen düz hasar.", "Flat damage added to every hit."],
+	"added_dmg": ["Tüm hasarına yüzde olarak eklenir (eksi değer hasarı düşürür).", "Percent added to all your damage (a negative value lowers it)."],
 	"elem_dmg": ["Tüm elemental (ateş, soğuk, yıldırım, kaos) hasarını artırır.", "Raises all elemental damage (fire, cold, lightning, chaos)."],
 	"penetrate": ["Düşman savunmasının bu yüzdesini yok sayar.", "Ignores this share of enemy defense."],
 	"attack_speed": ["Saldırı hızını yüzde olarak artırır.", "Raises attack speed by this percent."],
