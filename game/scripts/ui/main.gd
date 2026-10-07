@@ -450,6 +450,17 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			pc.add_child(tl)
 			pc.position = Vector2(40, 40)
 			add_child(pc)
+		if a == "--statusshot":
+			# long-lived statuses on the first enemies so the status icons over the bars can be checked
+			get_tree().create_timer(maxf(0.5, secs - 1.0)).timeout.connect(func():
+				var sets := [["burn", "poison", "bleed", "vulnerable"], ["stun", "chill"], ["shock", "weaken"]]
+				var i := 0
+				for e in BattleSim.enemies:
+					if i >= sets.size():
+						break
+					for st in sets[i]:
+						e.statuses[st] = {"t": 30.0, "stacks": 1, "power": 0.0}
+					i += 1)
 		if a == "--elites":
 			# an elite and a mini-boss walk in, for the name plates
 			get_tree().create_timer(maxf(0.5, secs - 2.5)).timeout.connect(func():

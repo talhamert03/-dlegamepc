@@ -92,7 +92,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 ## Replay backlog (added 2026-10-07 after the visual overhaul replay)
 - [x] 51. Pets panel: empty collection says where pets come from; Added Damage tooltip said "flat" but the stat is a percent
 - [x] 52. English pass: every panel and the strip with --lang=en at 1x and 4x, fix overflow / clipped labels
-- [ ] 53. Status icons over units: screenshot flag that applies statuses, check size and spacing at 2x-5x
+- [x] 53. Status icons over units: screenshot flag that applies statuses, check size and spacing at 2x-5x
 - [ ] 54. Damage numbers vs. elite name plates and the boss bar: keep numbers from covering plates
 - [ ] 55. Item tooltip at 4x: frame, affix rows, compare column, set / legendary text
 - [ ] 56. Shop product art: use the new material icons (seals, shards, essences) where products grant them
@@ -169,3 +169,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift — #50: bug found: weather was drawn in StripView._draw, i.e. under the HD background sprite child, so it never showed. Moved to its own Node2D layer between background and units, redrawn as soft shapes (circles/ellipses), sizes tuned at 4x, and mapped the 11 themes that had none (meadow/town pollen, temple motes, camp/throne/temple_dark embers, harbor fog, ruins/library/hall/castle dust). Visual backlog 26-50 complete.
 - 2026-10-07 shift — replay after #50: hero/stats/bag/stash/pets/chests reviewed at Lv55 with gear. Fixed: pets empty state lists sources, Added Damage tooltip (percent, negatives from the Treasure Hunter's Ring are by design). Added replay backlog 51-56.
 - 2026-10-07 shift — #52: all 15 panels + strip shot with --lang=en. Only overflows: quest CLAIM text (now shrinks to fit the seal) and simultaneous skill names overlapping (number stacking now uses label widths and a longer window for wide labels, and stacks downwards when the plaque clamp would merge them).
+- 2026-10-07 shift — #53: --statusshot puts 2-4 long statuses on the first enemies; at 2x and 4x the 5 px st_* icons read clearly over the bar, spacing ok, max 4 respected. No change needed.
