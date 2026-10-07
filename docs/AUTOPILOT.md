@@ -98,13 +98,13 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 56. Shop product art: use the new material icons (seals, shards, essences) where products grant them
 
 ## Replay backlog 2 (shift 2026-10-07 16:21)
+- [x] 61. Settings scale row lists only scales that fit this screen
 - [x] 60. Forced UI scale could exceed the screen (5x on 1080p = 2360 px strip); capped by max_fit_scale()
 - [x] 59. Long-run log audit (80 s at 6x, full party): only benign warnings; removed the one real one (full-rect anchors on Main while WindowManager sets its size)
 - [x] 58. Town showed the last zone's name + stage tag + wave pips on the plaque; now "Stonebridge Town" only
 - [x] 57. Tutorial bubble could slide 35 px into the control block (clamp used 395 instead of the 360 px battle view)
 
 ## Questions for the owner
-- UI scale: when a chosen scale does not fit the screen the game now uses the largest one that fits. Should the Settings row grey out the scales that do not fit, or show a small note? (recommend: grey them out)
 
 - **Difficulty pacing (bot, updated 2026-10-06 night):** with boss fatigue and treasure goblins the baseline bot now
   reaches Hell's final boss at ~47 h (Normal ~9 h, Nightmare ~22 h). A what-if run with Hell resistance -45 instead of
@@ -185,3 +185,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift 16:21 — replay: town, Endless Tower (new --tower flag), World 2-4 maps reviewed, no issues. Perf probe: 1080p 60 fps / 4K ~20 fps under xvfb software rendering; TIME_PROCESS grows with resolution so it is render-bound on llvmpipe, not script-bound; ~600 canvas draw calls. Needs a check on real GPU hardware (owner).
 - 2026-10-07 shift 20:03 — #59: 80 s run at 6x speed: no script errors; warnings are dummy audio / V-Sync (headless) and exit-time leaks. Main.tscn had full-rect anchors while WindowManager assigns desktop.size -> 'non-equal opposite anchors' warning; anchors dropped, layout identical in a screenshot.
 - 2026-10-07 shift 20:03 — #60: compute_scale caps Settings 'scale' at max_fit_scale() (strip width + strip + tallest panel height must fit the usable rect). --scale=N flag: 1080p 5x -> 2.5x, 4K 5x -> 5x, layout checked. The Settings row still highlights the chosen value (5x) while 2.5x is used; owner may want a note there. Taskbar mini mode (--mini) re-checked, fine.
+- 2026-10-07 shift 20:03 — #61: Settings 'Scale' only offers Auto + the 2x..5x steps <= max_fit_scale() (1080p: Auto/2x; 4K: all). Withdrew the owner question about it (UX detail, not a product call). Note: --scale persists in settings; reset with --scale=0.

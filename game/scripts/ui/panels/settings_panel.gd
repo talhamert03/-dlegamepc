@@ -32,7 +32,14 @@ func refresh() -> void:
 		0:
 			_section("set_sec_view")
 			_choice("set_lang", "lang", ["tr", "en"], ["Türkçe", "English"])
-			_choice("set_scale", "scale", [0, 2, 3, 4, 5], [DataDB.t("auto"), "2x", "3x", "4x", "5x"], func(v): WindowManager.set_scale(int(v)))
+			# only offer scales that fit this screen (a 1080p screen tops out at 2x)
+			var sv: Array = [0]
+			var sn: Array = [DataDB.t("auto")]
+			for k in [2, 3, 4, 5]:
+				if float(k) <= WindowManager.max_fit_scale():
+					sv.append(k)
+					sn.append("%dx" % k)
+			_choice("set_scale", "scale", sv, sn, func(v): WindowManager.set_scale(int(v)))
 			_choice("set_strip_pos", "strip_pos", ["taskbar", "top", "free"], [DataDB.t("pos_taskbar"), DataDB.t("pos_top"), DataDB.t("pos_free")],
 				func(_v): WindowManager.place_strip())
 			var nscr := DisplayServer.get_screen_count()
