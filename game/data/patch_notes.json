@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Durum penceresi: özellikler kabartma plakalarda (sınıfın ana özelliği altın çerçeveli), bölüm başlıkları süslü çizgili, istatistikler zebra satırlı.", "en": "Status window: attributes on engraved plates (the class main stat gilded), ornamental section headings, striped stat rows."},
     {"tr": "Pencere çerçeveleri: başlık şeridinin iki yanında pencereye özel arma mühürleri; pencere açılınca ya da öne alınınca altın kenarda bir ışık dolaşıyor.", "en": "Window frames: emblem seals beside each title ribbon; a light runs along the gilded rim when a window opens or comes to the front."},
     {"tr": "Arayüz ikonları 128 pikselde yeniden çizildi: menüler ve düğmeler yüksek ölçekte keskin.", "en": "UI glyph icons redrawn at 128 px: menus and buttons stay sharp at high scales."},
     {"tr": "Kahraman portreleri ana çizimlerin kendi çözünürlüğünde (yaklaşık 1000 piksel): başlık ekranı, işe alma kartı ve Kahraman penceresi 4K'da net.", "en": "Hero portraits at the paintings' native resolution (about 1000 px): title screen, recruit card and Hero window are sharp on 4K."},

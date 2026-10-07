@@ -311,8 +311,14 @@ func _draw_parch() -> void:
 	UISkin.ornate(ci, r)
 
 
+var _zebra := 0
+
+
 func _row(label: String, value: String, vcol: Color = UISkin.INK, plus_cb: Callable = Callable(), key := "") -> void:
 	var r := W.hbox(2)
+	_zebra += 1
+	if _zebra % 2 == 0:
+		r.draw.connect(func(): r.draw_rect(Rect2(Vector2(-2, 0), r.size + Vector2(4, 0)), Color(0.45, 0.28, 0.12, 0.07)))
 	if key != "":
 		r.tooltip_text = label + "\n" + StatNames.describe(key) if StatNames.describe(key) != "" else ""
 		r.mouse_filter = Control.MOUSE_FILTER_PASS
@@ -324,14 +330,27 @@ func _row(label: String, value: String, vcol: Color = UISkin.INK, plus_cb: Calla
 	v.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	r.add_child(v)
 	if plus_cb.is_valid():
-		var b := UITheme.button("+", "green", plus_cb, Vector2(10, 9))
-		r.add_child(b)
+		r.add_child(Fancy.small_button("+", "green", plus_cb, Vector2(10, 9)))
 	_list.add_child(r)
 
 
 func _section(title: String) -> void:
-	var l := UITheme.label(title, Color("#8A3A1A"), 8, UITheme.font_title)
-	_list.add_child(l)
+	_zebra = 0
+	var c := Control.new()
+	c.custom_minimum_size = Vector2(_list.custom_minimum_size.x, 13)
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	c.draw.connect(func():
+		var f := UITheme.font_title
+		var t := title.to_upper()
+		var tw := f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
+		UISkin.diamond(c.get_canvas_item(), Vector2(3, 7.5), 2.2, Color("#C0582A"), Color("#6A2A10"))
+		c.draw_string(f, Vector2(9, 10.5), t, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#8A3A1A"))
+		var x0 := 13.0 + tw
+		if x0 < c.size.x - 6.0:
+			c.draw_line(Vector2(x0, 7.0), Vector2(c.size.x - 4, 7.0), Color(0.54, 0.23, 0.1, 0.45), 0.8, true)
+			c.draw_line(Vector2(x0, 8.6), Vector2(c.size.x - 4, 8.6), Color(0.54, 0.23, 0.1, 0.2), 0.6, true)
+			UISkin.diamond(c.get_canvas_item(), Vector2(c.size.x - 4, 7.8), 1.6, Color("#C0582A"), Color("#6A2A10")))
+	_list.add_child(c)
 
 
 const PRIM_HINT := {"str": "prim_hint_str", "dex": "prim_hint_dex", "int": "prim_hint_int", "vit": "prim_hint_vit", "luk": "prim_hint_luk"}
@@ -377,10 +396,18 @@ func _build_stats(h: HeroState, s: Dictionary) -> void:
 ## Attribute row: glyph, name, what it gives, value and a + while points are left.
 func _prim_row(h: HeroState, s: Dictionary, p: String, main: bool) -> void:
 	var r := W.hbox(2)
-	r.custom_minimum_size = Vector2(_list.custom_minimum_size.x, 12)
+	r.custom_minimum_size = Vector2(_list.custom_minimum_size.x, 13)
 	r.mouse_filter = Control.MOUSE_FILTER_PASS
 	r.tooltip_text = _prim_tip(h, p, main)
 	var col: Color = PRIM_COL[p]
+	# an engraved plate on the parchment; the class's main attribute is lightly gilded
+	r.draw.connect(func():
+		var rr := Rect2(Vector2(-2, 0.5), r.size + Vector2(4, -1))
+		UISkin.fill(r.get_canvas_item(), rr, 2, Color(0.5, 0.33, 0.16, 0.16), Color(0.4, 0.25, 0.1, 0.1))
+		UISkin.stroke(r.get_canvas_item(), rr, 2, Color(0.35, 0.2, 0.08, 0.35), 0.7)
+		r.draw_line(rr.position + Vector2(2, rr.size.y - 0.3), Vector2(rr.end.x - 2, rr.end.y - 0.3), Color(1, 0.95, 0.8, 0.35), 0.6)
+		if main:
+			UISkin.stroke(r.get_canvas_item(), rr.grow(-0.8), 2, Color(0.85, 0.6, 0.2, 0.45), 0.8))
 	var ic := Control.new()
 	ic.custom_minimum_size = Vector2(11, 11)
 	ic.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -406,14 +433,13 @@ func _prim_row(h: HeroState, s: Dictionary, p: String, main: bool) -> void:
 	r.add_child(v)
 	if h.stat_points > 0:
 		var pp: String = p
-		r.add_child(UITheme.button("+", "green", func():
+		r.add_child(Fancy.small_button("+", "green", func():
 			var n := 1
 			if Input.is_key_pressed(KEY_SHIFT):
 				n = min(10, h.stat_points)
 			if h.stat_points >= n:
 				h.alloc[pp] = int(h.alloc[pp]) + n
 				h.stat_points -= n
-				AudioManager.play("ui_click", 0.05, 0.5)
 				_changed(h), Vector2(11, 10)))
 	_list.add_child(r)
 

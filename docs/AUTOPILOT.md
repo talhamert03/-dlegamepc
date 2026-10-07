@@ -65,7 +65,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 **B. Windows (frames and layout)**
 - [x] 32. Window frame v2: richer carved corners, per-window crest in the title ribbon, subtle animated rim light on focus
 - [x] 33. Hero window: equipment slots with slot-shaped silhouettes, portrait frame ornament, party switcher chips
-- [ ] 34. Status window: attribute rows with engraved plates, skill tree tier pillars, detail card art
+- [x] 34. Status window: attribute rows with engraved plates, skill tree tier pillars, detail card art
 - [ ] 35. Blacksmith, Stash, Pets, Chests: second pass to the same finish (materials shelf, anvil scene, stable lights)
 - [ ] 36. World map: hand-painted map look per act, path animation between nodes, cleared-zone laurel
 - [ ] 37. Tavern and Shop: card hover lift, rarity foil on SR/SSR cards, shelf lighting
@@ -142,3 +142,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift — #31: the window uses CONTENT_SCALE_MODE_CANVAS_ITEMS, so fonts are rasterised at the final size (no upscaled text); all 14 fonts use light hinting + subpixel positioning. Smallest text is 6 logical px (12 px at 2x). No change needed.
 - 2026-10-07 shift — #32: PanelWindow draws emblem seals (per-window icon, PANEL_ICON) beside the title ribbon and a light sweep around the inner rule on open / raise (tween, subclasses' _process untouched). --sweepshot flag.
 - 2026-10-07 shift — #33: portrait gets gilded corner brackets with gold studs and a ruby keystone; empty slots already show slot silhouettes, party chips already carry alerts.
+- 2026-10-07 shift — #34: Status attributes on engraved plates (main stat gilded), ornamental section headings with rules, zebra stat rows, drawn + buttons. Skill tab was already rebuilt earlier.
