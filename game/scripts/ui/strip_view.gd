@@ -579,6 +579,8 @@ func _spawn_number(text: String, pos: Vector2, color: Color, big := false) -> vo
 		if float(n["t"]) < 0.22 and absf(float(n["x0"]) - pos.x) < 16.0:
 			stack += 1
 	l.position = (pos - Vector2(sz.x / 2.0, sz.y * 0.6 + 7.0 * mini(stack, 3))).round()
+	# keep the arc clear of the zone plaque / goal ribbon along the top edge
+	l.position.y = maxf(l.position.y, 21.0)
 	_active_nums.append({"l": l, "t": 0.0, "life": 0.95 if big else 0.75, "vx": _rng.randf_range(-10, 10), "y0": l.position.y, "big": big, "x0": pos.x})
 
 

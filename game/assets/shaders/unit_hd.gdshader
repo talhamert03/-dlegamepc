@@ -99,7 +99,8 @@ void fragment() {
 	c.rgb = mix(c.rgb, flash_color.rgb, flash * step(0.01, c.a));
 	c.rgb += glow.rgb * glow.a * step(0.01, c.a);
 	if (dissolve > 0.0) {
-		float n = hash(UV / px);
+		// noise cells about a third of a logical pixel: fine grain at 4-5x instead of square blocks
+		float n = hash(floor(UV / (px * 0.33)));
 		if (n < dissolve) {
 			c.a = 0.0;
 		} else if (n < dissolve + 0.08) {

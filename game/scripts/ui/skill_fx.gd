@@ -36,7 +36,7 @@ func setup(k: String, source: Vector2, targets: Array) -> void:
 	if _add == null:
 		_add = CanvasItemMaterial.new()
 		_add.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-	z_index = 24
+	z_index = 4   # relative to fx_root (20): over the units, under the HUD plaques (40)
 	var per := {"sword_rain": 3, "ice_rain": 4, "arrow_volley": 5, "skull_storm": 2, "blizzard": 8}.get(k, 0)
 	for p in tgts:
 		for i in per:

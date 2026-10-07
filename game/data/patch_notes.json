@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Savaş şeridi: beceri adları artık bölge plakasının arkasında kalmıyor, beceri efektleri üst plakaların altından geçiyor, HD düşmanların ölüm dağılması kare bloklar yerine ince taneli.", "en": "Battle strip: skill names no longer hide behind the zone plaque, skill effects pass under the HUD plaques, HD enemies dissolve in fine grain instead of square blocks."},
     {"tr": "Efektler yüksek ölçekte temiz: kare kıvılcımlar yerini yumuşak parlayan noktalara bıraktı, kutsal ışın ve seviye atlama sütunları kenarları yumuşak ışık huzmeleri oldu, kritik vuruşa parlama halkası, yıldırıma ışıma eklendi, boss saldırı uyarısı artık bir uyarı üçgeni.", "en": "Effects stay clean at high scale: square sparks became soft glowing dots, holy beams and level-up pillars are soft light shafts, crits get a flash ring, lightning a glow, boss attack warnings a warning sign."},
     {"tr": "Savaşta elit ve mini-boss düşmanların üstünde artık element ikonlu isim plakası var.", "en": "Elite and mini-boss enemies now carry a name plate with their element icon."},
     {"tr": "Para ve malzeme ikonları yeniden çizildi: altın para yığını, demir külçe, her öz için kendi renginde şişe, yıldız tozu kesesi, ruh kristali, taverna mührü ve lonca nişanı.", "en": "Currency and material icons redrawn as a set: coin stack, iron ingot, a coloured vial per essence, star dust pouch, soul crystal, tavern seal and guild badge."},
