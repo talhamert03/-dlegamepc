@@ -60,7 +60,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 28. Hero portraits / full art (48, 315x560 and 202x360): upscale for tavern cards, recruit reveal and Hero window at 4K
 - [x] 29. Enemy and boss paintings (112, 322x360) and pets (10): upscale, check the living-illustration rig still lines up
 - [x] 30. UI glyph icons (76, 80 px, ui_hd): redraw or upscale to 160 px, one consistent stroke weight and lighting
-- [ ] 31. Fonts at every scale: hinting / oversampling check, no blurry 7 px text at 2x, pixel-snapped labels
+- [x] 31. Fonts at every scale: hinting / oversampling check, no blurry 7 px text at 2x, pixel-snapped labels
 
 **B. Windows (frames and layout)**
 - [ ] 32. Window frame v2: richer carved corners, per-window crest in the title ribbon, subtle animated rim light on focus
@@ -139,3 +139,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift — #28: portraits rebuilt at native size from art_src/raw/heroes (~640x1017, tools/art/rebuild_portraits.py) and imported as lossy WebP q0.92: 15 MB imported instead of ~67 MB lossless at 560 px. Title poster, recruit card, Hero bust sharp at 4K. Battle sprites (360 px) and head icons (128 px) already fit 5x.
 - 2026-10-07 shift — #29: battle sprites (360 px) and pets (240 px) already reach 1:1 at 5x in their views. The intro cinematic drew 4 act bosses ~3x larger than their sprites at 4K: new hd/boss_art at native size (tools/art/rebuild_boss_art.py, lossy import, 6.4 MB), SpriteLib.boss_art() with sprite fallback.
 - 2026-10-07 shift — #30: the 50 vector UI glyphs (build_ui_hd.py, 0..100 grid) rendered at 128 px instead of 56; same design, logical sizes come from metadata so nothing moved. Checked control panel and Hero bar at 4x.
+- 2026-10-07 shift — #31: the window uses CONTENT_SCALE_MODE_CANVAS_ITEMS, so fonts are rasterised at the final size (no upscaled text); all 14 fonts use light hinting + subpixel positioning. Smallest text is 6 logical px (12 px at 2x). No change needed.
