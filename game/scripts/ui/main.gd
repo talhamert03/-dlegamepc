@@ -15,6 +15,7 @@ var _t := 0.0
 
 func _ready() -> void:
 	theme = UITheme.theme
+	get_window().theme = UITheme.theme   # plain tooltips are popups of the window, not of this control
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	strip_root = Control.new()
 	strip_root.name = "Strip"
@@ -429,6 +430,18 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 					gp.tab = int(a.substr(12))
 					W.set_tab_active(gp._tabs, gp.tab)
 					gp.refresh())
+		if a == "--tipshot":
+			# real tooltips are separate popup windows the capture misses: draw a sample with the same theme items
+			var pc := PanelContainer.new()
+			pc.add_theme_stylebox_override("panel", UITheme.theme.get_stylebox("panel", "TooltipPanel"))
+			var tl := Label.new()
+			tl.text = DataDB.t("seals_tip", {"n": 3})
+			tl.add_theme_font_override("font", UITheme.theme.get_font("font", "TooltipLabel"))
+			tl.add_theme_font_size_override("font_size", 8)
+			tl.add_theme_color_override("font_color", UITheme.theme.get_color("font_color", "TooltipLabel"))
+			pc.add_child(tl)
+			pc.position = Vector2(40, 40)
+			add_child(pc)
 		if a.begins_with("--tavernfilter="):
 			get_tree().create_timer(1.0).timeout.connect(func():
 				if WindowManager.is_open("tavern"):

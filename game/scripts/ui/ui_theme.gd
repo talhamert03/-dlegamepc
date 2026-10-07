@@ -145,13 +145,28 @@ func _make_theme() -> Theme:
 		t.set_font("font", c, font_body)
 		t.set_font_size("font_size", c, 8)
 	t.set_stylebox("panel", "PanelContainer", box("panel", 6, 6))
-	t.set_stylebox("panel", "TooltipPanel", box("tooltip", 3, 3))
-	var sb_scroll := _flat(Color(0, 0, 0, 0.35), Color(0, 0, 0, 0), 2, 0)
-	sb_scroll.content_margin_left = 1
-	sb_scroll.content_margin_right = 1
-	t.set_stylebox("scroll", "VScrollBar", sb_scroll)
-	var grab := _flat(Color("#6B5A3E"), Color(0, 0, 0, 0), 2, 0)
-	var grab_h := _flat(Color("#C9A45C"), Color(0, 0, 0, 0), 2, 0)
+	var tip := GameStyleBox.new("tip")
+	tip.content_margin_left = 6
+	tip.content_margin_right = 6
+	tip.content_margin_top = 4
+	tip.content_margin_bottom = 4
+	t.set_stylebox("panel", "TooltipPanel", tip)
+	t.set_color("font_color", "TooltipLabel", Color("#F0E2C8"))
+	t.set_font("font", "TooltipLabel", font_body)
+	t.set_font_size("font_size", "TooltipLabel", 8)
+	var track := GameStyleBox.new("scroll")
+	track.content_margin_left = 2
+	track.content_margin_right = 2
+	track.content_margin_top = 1
+	track.content_margin_bottom = 1
+	var grab := GameStyleBox.new("grab", "brown", "normal")
+	var grab_h := GameStyleBox.new("grab", "brown", "hover")
+	for g in [grab, grab_h]:
+		g.content_margin_left = 2
+		g.content_margin_right = 2
+		g.content_margin_top = 4
+		g.content_margin_bottom = 4
+	t.set_stylebox("scroll", "VScrollBar", track)
 	t.set_stylebox("grabber", "VScrollBar", grab)
 	t.set_stylebox("grabber_highlight", "VScrollBar", grab_h)
 	t.set_stylebox("grabber_pressed", "VScrollBar", grab_h)
