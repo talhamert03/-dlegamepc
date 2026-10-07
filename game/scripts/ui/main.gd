@@ -450,6 +450,14 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			pc.add_child(tl)
 			pc.position = Vector2(40, 40)
 			add_child(pc)
+		if a == "--elites":
+			# an elite and a mini-boss walk in, for the name plates
+			get_tree().create_timer(maxf(0.5, secs - 2.5)).timeout.connect(func():
+				var z := BattleSim.zone()
+				var ens: Array = z.get("enemies", [])
+				if not ens.is_empty():
+					BattleSim._spawn_enemy(str(ens[0]), 10, "elite", 330.0)
+					BattleSim._spawn_enemy(str(ens[-1]), 10, "miniboss", 370.0))
 		if a.begins_with("--tavernfilter="):
 			get_tree().create_timer(1.0).timeout.connect(func():
 				if WindowManager.is_open("tavern"):

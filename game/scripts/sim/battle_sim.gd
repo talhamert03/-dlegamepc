@@ -470,7 +470,7 @@ func _spawn_enemy(eid: String, lv: int, etype: String, x: float) -> Combatant:
 	u.tags = d.get("tags", [])
 	u.mech = d.get("mech", [])
 	u.visual = {"kind": "enemy", "id": str(d.get("visual", {}).get("sheet", eid)), "def": d.get("visual", {}), "elite": etype == "elite",
-		"boss": etype == "boss" or etype == "actboss", "treasure": u.tags.has("treasure")}
+		"miniboss": etype == "miniboss", "boss": etype == "boss" or etype == "actboss", "treasure": u.tags.has("treasure")}
 	u.atk_cd = rng.randf_range(0.2, 1.0)
 	enemies.append(u)
 	if not quiet:

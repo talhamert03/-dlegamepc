@@ -49,6 +49,8 @@ var _k := 1.0                         # texture px -> logical px
 var _facing := 1.0
 var _h := HERO_H                      # on-screen height
 var _head_y := -42.0
+var _plate := ""                 # name shown over elites / mini-bosses
+var _plate_kind := ""
 var _bar_w := 16
 var _show_bar := true
 var _fly := 0.0
@@ -110,6 +112,9 @@ func setup(u: Combatant) -> void:
 	_bar_w = int(clampf(_h * 0.5, 14.0, 26.0))
 	if kind == "enemy" and vis.get("elite", false):
 		_bar_w = 22
+	if kind == "enemy" and (vis.get("elite", false) or vis.get("miniboss", false)) and not vis.get("boss", false):
+		_plate = str(u.name)
+		_plate_kind = "elite" if vis.get("elite", false) else "miniboss"
 	z_index = 10 if kind != "enemy" else 9
 	if vis.get("treasure", false):
 		# gilded: warm the painting towards gold and let it shimmer
@@ -607,6 +612,21 @@ func _draw() -> void:
 	if unit.is_hero_side() and unit.ult_id != "":
 		var uc := Color("#F7C948") if unit.ult_charge < 100 else Color(1, 1, 1, 0.6 + 0.4 * sin(_clock * 10.0))
 		draw_rect(Rect2(x0, y + 2, round(w * unit.ult_charge / 100.0), 1), uc)
+	# name plate for elites and mini-bosses: element disc + name on a dark plate over the bar
+	if _plate != "":
+		var f := UITheme.font_body
+		var fs := 5
+		var tw := f.get_string_size(_plate, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		var pw := tw + 9.0
+		var pr := Rect2(-pw / 2.0, y - 13.0, pw, 6.5)
+		var pc := Color("#B070FF") if _plate_kind == "elite" else Color("#FF8A4A")
+		UISkin.fill(ci, pr, 2, Color(0.08, 0.05, 0.08, 0.88), Color(0.03, 0.02, 0.03, 0.88))
+		UISkin.stroke(ci, pr, 2, Color(pc, 0.8), 0.5)
+		var et := UITheme.hd("st_" + str(unit.element)) if str(unit.element) != "physical" else UITheme.hd("st_physical")
+		if et:
+			draw_texture_rect(et, Rect2(pr.position.x + 0.8, pr.position.y + 0.6, 5.3, 5.3), false)
+		draw_string_outline(f, Vector2(pr.position.x + 7.0, pr.end.y - 1.6), _plate, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 1, Color(0, 0, 0, 0.9))
+		draw_string(f, Vector2(pr.position.x + 7.0, pr.end.y - 1.6), _plate, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, pc.lightened(0.45))
 	# status icons: the matched st_* family (element / status enamel discs) over the bar
 	var px := x0
 	var shown := 0
