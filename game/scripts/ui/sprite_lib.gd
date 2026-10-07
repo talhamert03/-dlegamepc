@@ -120,6 +120,14 @@ static func hd_meta(kind: String, id: String) -> Dictionary:
 
 
 ## HD battle sprite (kind: "heroes" | "enemies"), or null when only the pixel sheet exists.
+## Native-size boss painting for big views (intro), falling back to the 360 px battle sprite.
+static func boss_art(id: String) -> Texture2D:
+	var p := "res://assets/hd/boss_art/%s.png" % id
+	if ResourceLoader.exists(p):
+		return load(p)
+	return hd_sprite("enemies", id)
+
+
 static func hd_sprite(kind: String, id: String) -> Texture2D:
 	if hd_meta(kind, id).is_empty():
 		return null

@@ -102,7 +102,7 @@ func _ready() -> void:
 	_tex["morvath"] = load("res://assets/hd/scenes/morvath.png") if ResourceLoader.exists("res://assets/hd/scenes/morvath.png") else null
 	# textures must be loaded before the first draw call that uses them (first-use inside _draw renders blank)
 	for b in ["goblin_king", "ice_witch", "pharaoh", "demon_hunter"]:
-		_tex["boss_" + b] = SpriteLib.hd_sprite("enemies", b)
+		_tex["boss_" + b] = SpriteLib.boss_art(b)
 	for h in ["lyra", "kael", "pip", "bjorn"]:
 		_tex["hero_" + h] = SpriteLib.portrait(h)
 	var g := Gradient.new()
