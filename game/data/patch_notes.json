@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Gelişim: her fraksiyon artık kendi kartında, fraksiyon renginde şerit ve arma ile; aktif fraksiyonun kenarı yaldızlı.", "en": "Growth: each faction sits on its own card with a faction-coloured spine and crest; active factions get a gilded rim."},
     {"tr": "Taverna: kartlar üzerine gelince öne çıkıyor, SR/SSR kartlarda parıltı geçiyor, uzun isimler sığıyor. Mağaza raflarına fener ışığı düşüyor.", "en": "Tavern: cards lift on hover, SR/SSR cards carry a foil shine, long names fit. Lantern light falls on the shop shelves."},
     {"tr": "Dünya haritası: açılan yol boyunca altın ışık akıyor, temizlenen bölgeler defne çelengi taşıyor.", "en": "World map: gold light flows along the road you have opened, cleared zones wear a laurel."},
     {"tr": "Durum penceresi: özellikler kabartma plakalarda (sınıfın ana özelliği altın çerçeveli), bölüm başlıkları süslü çizgili, istatistikler zebra satırlı.", "en": "Status window: attributes on engraved plates (the class main stat gilded), ornamental section headings, striped stat rows."},

@@ -53,7 +53,29 @@ func _factions() -> void:
 		var c := int(counts.get(f, 0))
 		var active := c >= 2
 		var fcol := Color(str(fd.get("color", "#FFFFFF")))
+		# each faction sits on its own card: dark well, faction-coloured spine, gilded rim when active
+		var card := MarginContainer.new()
+		for side in ["left", "right", "top", "bottom"]:
+			card.add_theme_constant_override("margin_" + side, 4 if side != "left" else 7)
+		card.draw.connect(func():
+			var ci := card.get_canvas_item()
+			var r := Rect2(Vector2.ZERO, card.size)
+			UISkin.fill(ci, r, 3, Color("#2A1E16"), Color("#140E0A"))
+			UISkin.fill(ci, Rect2(1.5, 2, 2.5, r.size.y - 4), 1, fcol.lightened(0.15), fcol.darkened(0.4))
+			UISkin.stroke(ci, r, 3, UISkin.OUTLINE, 1.0)
+			UISkin.stroke(ci, r.grow(-1.0), 2, Color(UISkin.BRONZE, 0.7) if active else Color(1, 0.85, 0.55, 0.10), 0.8 if active else 0.6))
+		var inner := W.vbox(2)
+		card.add_child(inner)
 		var hdr := W.hbox(3)
+		var crest := Control.new()
+		crest.custom_minimum_size = Vector2(8, 11)
+		crest.draw.connect(func():
+			var cc := Vector2(4, 5.5)
+			var pts := PackedVector2Array([cc + Vector2(0, -4), cc + Vector2(3.4, 0), cc + Vector2(0, 4), cc + Vector2(-3.4, 0)])
+			crest.draw_colored_polygon(pts, fcol)
+			crest.draw_polyline(PackedVector2Array([pts[0], pts[1], pts[2], pts[3], pts[0]]), Color(0, 0, 0, 0.85), 0.8)
+			crest.draw_circle(cc + Vector2(-0.8, -1.2), 0.9, Color(1, 1, 1, 0.55)))
+		hdr.add_child(crest)
 		var nm := UITheme.label(DataDB.tx(fd["name"]), fcol.lightened(0.2), 9, UITheme.font_title)
 		nm.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		hdr.add_child(nm)
@@ -72,15 +94,15 @@ func _factions() -> void:
 		pill.tooltip_text = DataDB.t("faction_count", {"n": c})
 		pill.mouse_filter = Control.MOUSE_FILTER_STOP
 		hdr.add_child(pill)
-		_body.add_child(hdr)
+		inner.add_child(hdr)
 		var stat: String = fd.get("bonus_stat", "")
 		var cur := float(fd.get("bonus_per2", 0)) * float(c / 2)
 		var nxt := float(fd.get("bonus_per2", 0)) * float(c / 2 + 1)
 		var bl := UITheme.label(DataDB.t("collection_bonus", {"stat": StatNames.label(stat), "v": StatNames.fmt(stat, cur), "n": StatNames.fmt(stat, nxt)}),
 			UITheme.C_GREEN if active else UITheme.C_DIM, 7)
-		_body.add_child(bl)
+		inner.add_child(bl)
 		var g := W.grid(10, 1)
-		_body.add_child(g)
+		inner.add_child(g)
 		for hid in members:
 			var holder := Control.new()
 			holder.custom_minimum_size = Vector2(20, 20)
@@ -100,7 +122,7 @@ func _factions() -> void:
 			holder.tooltip_text = "%s (%s)\n%s" % [DataDB.hero_def(hid)["name"], DataDB.hero_def(hid).get("rarity", "R"),
 				DataDB.t("faction_in_party") if in_party else (DataDB.t("owned") if owned else DataDB.t("how_to_get_tavern"))]
 			g.add_child(holder)
-		_body.add_child(UITheme.hsep(int(content.size.x - 8)))
+		_body.add_child(card)
 
 
 const BRANCH_ICON := {"war": "sword", "defense": "shield", "wealth": "gold", "time": "clock", "explore": "map"}

@@ -69,7 +69,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 35. Blacksmith, Stash, Pets, Chests: second pass to the same finish (materials shelf, anvil scene, stable lights)
 - [x] 36. World map: hand-painted map look per act, path animation between nodes, cleared-zone laurel
 - [x] 37. Tavern and Shop: card hover lift, rarity foil on SR/SSR cards, shelf lighting
-- [ ] 38. Growth, Runes, Quests, Codex, Settings, DPS, Away: consistency audit (spacing grid, section plaques, scroll bars)
+- [x] 38. Growth, Runes, Quests, Codex, Settings, DPS, Away: consistency audit (spacing grid, section plaques, scroll bars)
 - [ ] 39. Scroll bars, tabs, sliders, toggles, tooltips: one themed set everywhere (no default Godot widget left)
 
 **C. Menus and screens**
@@ -146,3 +146,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift — #35: forge embers rising over the enhance anvil and a breathing forge glow; the enhance stage was only redrawn on the combine tab (fixed). Stash, Pets, Chests were rebuilt on 2026-10-06 and reviewed again, no change.
 - 2026-10-07 shift — #36: animated gold trail over the opened road (node 1 to the furthest open zone), laurel under cleared medallions. Per-act painted maps already exist (map_act1..4).
 - 2026-10-07 shift — #37: tavern cards lift + brighten on hover, slanted foil band sweeps SR (silver) / SSR (gold) cards, card names shrink to fit (Archmage Thalor). Shop shelves get lantern spill + lit plank edges. --tavernfilter= flag.
+- 2026-10-07 shift — #38: audited Growth, Runes, Quests, Codex, Settings, DPS, Away side by side. Settings/Quests/DPS/Away/Codex already share section plaques, Fancy.bar and card wells; the outlier was Growth factions (bare text + hsep), now cards with faction spine, crest and gilded rim when active. Scroll bars left to #39.
