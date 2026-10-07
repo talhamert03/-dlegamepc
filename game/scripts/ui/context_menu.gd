@@ -24,8 +24,15 @@ func _ready() -> void:
 	var w := 0.0
 	for it in _items:
 		w = maxf(w, UITheme.font_body.get_string_size(str(it[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x)
-	size = Vector2(w + 18.0, _items.size() * ROW_H + PAD * 2.0)
+	size = Vector2(w + 22.0, _items.size() * ROW_H + PAD * 2.0)
 	z_index = 100
+	# drop in from the cursor
+	pivot_offset = Vector2.ZERO
+	scale = Vector2(0.92, 0.85)
+	modulate.a = 0.0
+	var tw := create_tween().set_parallel()
+	tw.tween_property(self, "scale", Vector2.ONE, 0.12).set_ease(Tween.EASE_OUT)
+	tw.tween_property(self, "modulate:a", 1.0, 0.1)
 
 
 func _process(delta: float) -> void:
@@ -75,9 +82,11 @@ func _draw() -> void:
 		var y := PAD + i * ROW_H
 		if i == _hover:
 			UISkin.fill(ci, Rect2(2, y, size.x - 4, ROW_H), 2, Color("#B86A2A"), Color("#7A3E14"))
+			draw_line(Vector2(4, y + 1), Vector2(size.x - 4, y + 1), Color(1, 0.9, 0.6, 0.35), 0.8)
+			UISkin.diamond(ci, Vector2(7, y + ROW_H * 0.5), 2.2)
 		elif i > 0:
 			draw_line(Vector2(6, y), Vector2(size.x - 6, y), Color(1, 1, 1, 0.05), 1.0)
 		var col: Color = _items[i][2] if _items[i].size() > 2 else Color("#E9DEC8")
 		if i == _hover:
 			col = Color.WHITE
-		draw_string(UITheme.font_body, Vector2(9, y + ROW_H * 0.5 + 3.2), str(_items[i][0]), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)
+		draw_string(UITheme.font_body, Vector2(12, y + ROW_H * 0.5 + 3.2), str(_items[i][0]), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)

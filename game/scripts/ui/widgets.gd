@@ -172,27 +172,50 @@ static func confirm(host: Control, text: String, on_yes: Callable, yes_text := "
 	veil.draw.connect(func(): veil.draw_rect(Rect2(Vector2.ZERO, veil.size), Color(0.02, 0.01, 0.03, 0.72)))
 	host.add_child(veil)
 	var w: float = minf(host.size.x - 16.0, 190.0)
+	# size the card to the text so short questions do not float in an empty box
+	var th := UITheme.font_body.get_multiline_string_size(text, HORIZONTAL_ALIGNMENT_CENTER, w - 16.0, 8).y
+	th = clampf(th, 10.0, 70.0)
 	var card := Control.new()
-	card.size = Vector2(w, 66)
+	card.size = Vector2(w, (16.0 + th + 8.0 + 15.0 + 8.0))
 	card.position = ((host.size - card.size) / 2.0).round()
+	var accent := Color("#E0503C") if danger else Color("#E8B84A")
 	card.draw.connect(func():
 		var ci := card.get_canvas_item()
 		var r := Rect2(Vector2.ZERO, card.size)
+		UISkin.fill(ci, Rect2(r.position + Vector2(0, 2), r.size), 4, Color(0, 0, 0, 0.5), Color(0, 0, 0, 0.5))
 		UISkin.fill(ci, r, 4, Color("#2E2630"), Color("#161118"))
-		UISkin.ornate(ci, r.grow(-3.0)))
+		UISkin.ornate(ci, r.grow(-3.0))
+		# medallion sitting on the top edge: ! for destructive actions, ? otherwise
+		var mc := Vector2(r.size.x / 2.0, 1.0)
+		UISkin.circle(ci, mc, 8.5, UISkin.BRONZE_HI, UISkin.BRONZE_LO)
+		UISkin.circle(ci, mc, 6.8, accent.lightened(0.1), accent.darkened(0.45))
+		var g := "!" if danger else "?"
+		var f := UITheme.font_title
+		var gw := f.get_string_size(g, HORIZONTAL_ALIGNMENT_LEFT, -1, 10).x
+		card.draw_string_outline(f, mc + Vector2(-gw / 2.0, 3.6), g, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, 3, Color(0, 0, 0, 0.8))
+		card.draw_string(f, mc + Vector2(-gw / 2.0, 3.6), g, HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color("#FFF4D8")))
 	veil.add_child(card)
 	var l := UITheme.label(text, UITheme.C_TEXT, 8, UITheme.font_body)
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	l.position = Vector2(8, 7)
-	l.size = Vector2(w - 16, 34)
+	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	l.position = Vector2(8, 14)
+	l.size = Vector2(w - 16, th + 4.0)
 	card.add_child(l)
+	var by := card.size.y - 15.0 - 8.0
 	var yes := Fancy.small_button(yes_text if yes_text != "" else DataDB.t("btn_yes"), "red" if danger else "gold", func():
 		veil.queue_free()
 		on_yes.call(), Vector2(64, 15))
 	card.add_child(yes)
-	yes.position = Vector2(w / 2.0 - 68, 46)
+	yes.position = Vector2(w / 2.0 - 68, by)
 	var no := Fancy.small_button(DataDB.t("btn_cancel"), "brown", func(): veil.queue_free(), Vector2(64, 15))
 	card.add_child(no)
-	no.position = Vector2(w / 2.0 + 4, 46)
+	no.position = Vector2(w / 2.0 + 4, by)
+	# veil fades in, the card pops
+	veil.modulate.a = 0.0
+	card.pivot_offset = card.size / 2.0
+	card.scale = Vector2(0.9, 0.9)
+	var tw := veil.create_tween().set_parallel()
+	tw.tween_property(veil, "modulate:a", 1.0, 0.14)
+	tw.tween_property(card, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	return veil

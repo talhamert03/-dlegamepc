@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Final sahnesi yeniden yapıldı: taht salonu, boşluk, tapınak, şafakta kasaba ve çayır HD resimleri; partinin büyük portreleri kutlamada, alt yazı plakası. Onay kartları içeriğe göre boyutlanıyor, madalyonlu ve açılış animasyonlu; sağ tık menüsü kayarak açılıyor.", "en": "Ending rebuilt on painted HD scenes with the party portraits celebrating and a subtitle plate. Confirm cards size to their text with a medallion and pop-in; the context menu drops in."},
     {"tr": "Giriş sineması: sinema bantları kayarak geliyor, her sahne altın bir çizgiden göz kapağı gibi açılıyor, müzik hikâyeyi izliyor (Morvath anında karanlık tema, loncada kasaba teması), Atla butonu plaka stilinde.", "en": "Intro: letterbox slides in, each scene opens like an eye from a gold seam, the score follows the story (dark theme for Morvath, town theme for the guild), plaque-style Skip button."},
     {"tr": "Başlık ekranı: ormana süzülen ışık hüzmeleri ve sahne boyunca yükselen közler; menü plakalarında üzerine gelince ışık geçiyor, basınca esneyerek geri dönüyor.", "en": "Title screen: light shafts through the forest and embers rising across the poster; menu plaques shine on hover and spring back when pressed."},
     {"tr": "Kaydırma çubukları artık bronz tutamaçlı oluklar; basit ipuçları gece mavisi, yaldız çizgili kutularda.", "en": "Scroll bars are bronze-thumbed grooves; plain tooltips sit on a night-blue plate with a gilt rule."},
