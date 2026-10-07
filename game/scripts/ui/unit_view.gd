@@ -618,7 +618,8 @@ func _draw() -> void:
 		var fs := 5
 		var tw := f.get_string_size(_plate, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 		var pw := tw + 9.0
-		var pr := Rect2(-pw / 2.0, y - 13.0, pw, 6.5)
+		# tall units would push the plate under the zone plaque / goal ribbon: keep it below strip y 15
+		var pr := Rect2(-pw / 2.0, maxf(y - 13.0, 15.0 - position.y), pw, 6.5)
 		var pc := Color("#B070FF") if _plate_kind == "elite" else Color("#FF8A4A")
 		UISkin.fill(ci, pr, 2, Color(0.08, 0.05, 0.08, 0.88), Color(0.03, 0.02, 0.03, 0.88))
 		UISkin.stroke(ci, pr, 2, Color(pc, 0.8), 0.5)

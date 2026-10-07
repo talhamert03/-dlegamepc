@@ -579,6 +579,8 @@ func _unit_pos(u: Combatant, head := false) -> Vector2:
 	var y := BattleSim.GROUND_Y - (18.0 if not head else 34.0)
 	if v:
 		y = BattleSim.GROUND_Y + v._head_y * (0.5 if not head else 1.0)
+		if head and v._plate != "":
+			y -= 9.0   # start above the elite / mini-boss name plate, not on it
 	return Vector2(u.x, y)
 
 
