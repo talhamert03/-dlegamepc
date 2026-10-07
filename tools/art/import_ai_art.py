@@ -99,7 +99,7 @@ def head_icon(img, size=128, center=None):
 def main():
     kind = sys.argv[1] if len(sys.argv) > 1 else "heroes"
     if kind == "bg":
-        import_backgrounds()
+        import_backgrounds(offline="--offline" in sys.argv)
         return
     urls = json.load(open(os.path.join(SRC, f"urls_{kind}.json")))
     meta_path = os.path.join(OUT, "meta.json")
@@ -129,22 +129,30 @@ def main():
 
 
 
-def import_backgrounds():
-    """art_src/urls_bg.json {theme: url} -> game/assets/hd/bg/<theme>.jpg, a band 336 px tall (4x strip)
-    cropped from the bottom of the panorama so the painted ground lines up with the battle ground line."""
+BG_H = 420     # 5x the 84 px strip art: crisp up to the 5x UI scale, native pixels from the 1344 px masters
+
+
+def import_backgrounds(offline=False):
+    """art_src/urls_bg.json {theme: url} -> game/assets/hd/bg/<theme>.jpg, a band BG_H px tall (5x strip)
+    cropped from the bottom of the panorama so the painted ground lines up with the battle ground line.
+    offline=True rebuilds from art_src/raw/bg without downloading."""
     urls = json.load(open(os.path.join(SRC, "urls_bg.json")))
     os.makedirs(os.path.join(OUT, "bg"), exist_ok=True)
     for theme, url in urls.items():
         raw = os.path.join(SRC, "raw", "bg", theme + ".png")
-        if not download(url, raw):
+        if not offline and not download(url, raw):
             print("download failed", theme)
+            continue
+        if not os.path.exists(raw):
+            print("missing", raw)
             continue
         img = Image.open(raw).convert("RGB")
         band_h = int(img.width / 3.2)          # keep a wide band: ground + scenery, trim most of the empty sky
         band_h = min(band_h, img.height)
         img = img.crop((0, img.height - band_h, img.width, img.height))
-        img = img.resize((round(img.width * 336 / img.height), 336), Image.LANCZOS)
-        img.save(os.path.join(OUT, "bg", theme + ".jpg"), quality=90, optimize=True)
+        if img.height != BG_H:
+            img = img.resize((round(img.width * BG_H / img.height), BG_H), Image.LANCZOS)
+        img.save(os.path.join(OUT, "bg", theme + ".jpg"), quality=95, optimize=True, subsampling=0)
         print("ok", theme, img.size)
 
 

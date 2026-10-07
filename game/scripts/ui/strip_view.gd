@@ -13,7 +13,7 @@ var bg_root: Node2D
 var bg_layers: Dictionary = {}
 var fore: Sprite2D
 var hd_bg: Sprite2D           # HD illustrated panorama (replaces the pixel layers when present)
-const HD_BG_SCALE := 4.0      # panorama textures are 4x the strip's logical height
+const HD_BG_SCALE := 5.0      # panorama textures are 5x the strip's logical height (crisp at the 5x UI scale)
 var units_root: Node2D
 var fx_root: Node2D
 var num_root: Node2D

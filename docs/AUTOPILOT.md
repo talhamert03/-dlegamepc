@@ -55,7 +55,7 @@ designer and tester. Goal: a polished, premium PC idle RPG that is ready to ship
 Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and EN, before/after kept in the log.
 
 **A. HD quality**
-- [ ] 26. Battle backgrounds: 128 strips are 480x84 and blur at 4K — upscale to >= 1920x336 (AI upscale if credits allow, otherwise a careful Lanczos + detail pass), keep the parallax layers
+- [x] 26. Battle backgrounds: 128 strips are 480x84 and blur at 4K — upscale to >= 1920x336 (AI upscale if credits allow, otherwise a careful Lanczos + detail pass), keep the parallax layers
 - [ ] 27. Item icons (100 painted, 96 px) and skill icons (159, 96 px): 192 px masters where possible, sharper mipmaps, check every icon at 5x
 - [ ] 28. Hero portraits / full art (48, 315x560 and 202x360): upscale for tavern cards, recruit reveal and Hero window at 4K
 - [ ] 29. Enemy and boss paintings (112, 322x360) and pets (10): upscale, check the living-illustration rig still lines up
@@ -134,3 +134,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-06 shift 3 — achievements show rewards, bestiary tips (kills, element, zones), quest refresh countdown + midnight renewal, daily gift countdown, unused PopupMenu helper removed. 24 h regression bot: clean, 36 boss fails (fatigue working).
 - 2026-10-06 shift 3 — 48 h baseline vs Hell res -45 what-if: baseline reaches Hell a4_z10 at 47 h; softer res gave no gain -> recommend no change.
 - 2026-10-07 — owner asked for a full visual overhaul list: items 26-50 added (HD quality, windows, menus, icons, battle strip). Shifts now start at 12:00.
+- 2026-10-07 shift — #26: the game already used HD panoramas (1075x336, 4x); rebuilt all 29 from the 1344 px masters at native 1344x420 (5x, JPEG q95 4:4:4), HD_BG_SCALE 4 -> 5, importer gets --offline. 4K screenshot sharp, ground line unchanged. The 480x84 strips are only a fallback and never used (every zone has HD art). Higgsfield credits still 0.
