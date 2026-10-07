@@ -83,7 +83,18 @@ func build(c: Control) -> void:
 		UISkin.stroke(ci, r, 2, Color(0, 0, 0, 0.9), 1.0)
 		UISkin.stroke(ci, r.grow(-1.0), 2, Color(UISkin.BRONZE, 0.8), 1.0)
 		# soft vignette at the bottom so the level text reads
-		UISkin.fill(ci, Rect2(1, r.size.y - 16, r.size.x - 2, 15), 1, Color(0, 0, 0, 0.0), Color(0, 0, 0, 0.65)))
+		UISkin.fill(ci, Rect2(1, r.size.y - 16, r.size.x - 2, 15), 1, Color(0, 0, 0, 0.0), Color(0, 0, 0, 0.65))
+		# gilded corner brackets and a keystone gem: the portrait reads as a framed painting
+		for i in 4:
+			var cc: Vector2 = [Vector2.ZERO, Vector2(r.size.x, 0), r.size, Vector2(0, r.size.y)][i]
+			var dx := 1.0 if i == 0 or i == 3 else -1.0
+			var dy := 1.0 if i < 2 else -1.0
+			var arm := PackedVector2Array([cc + Vector2(dx * 9.0, dy * 1.0), cc + Vector2(dx * 1.0, dy * 1.0), cc + Vector2(dx * 1.0, dy * 9.0)])
+			rim.draw_polyline(arm, UISkin.OUTLINE, 3.0, true)
+			rim.draw_polyline(arm, UISkin.BRONZE_HI, 1.4, true)
+			UISkin.diamond(ci, cc + Vector2(dx * 3.2, dy * 3.2), 1.6, Color("#FFE08A"), Color("#B07420"))
+		UISkin.diamond(ci, Vector2(r.size.x / 2.0, 0.5), 3.0)
+		UISkin.diamond(ci, Vector2(r.size.x / 2.0, 0.5), 1.7, Color("#FF7A7A"), Color("#7A0C18")))
 	c.add_child(rim)
 	# class ribbon with hero switch arrows
 	var cr := W.hbox(0)
