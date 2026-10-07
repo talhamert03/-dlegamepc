@@ -388,6 +388,9 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 	await get_tree().create_timer(0.5).timeout
 	if cmd.has("--town"):
 		BattleSim.enter_town()
+	if cmd.has("--tower"):
+		GameState.progress["tower_best"] = 9
+		BattleSim.enter_tower()
 	if cmd.has("--gear"):
 		for hid in GameState.party:
 			if hid == "":
