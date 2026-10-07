@@ -307,10 +307,15 @@ func medallion(icon_name: String, cb: Callable, tip := "", rad := 11.0) -> BaseB
 	b.draw.connect(func():
 		var st := "pressed" if b.button_pressed else ("hover" if b.is_hovered() else "normal")
 		var c := Vector2(rad + 1, rad + 1 + (1.0 if st == "pressed" else 0.0))
+		if st == "hover":
+			# warm halo behind the bezel
+			for k in 4:
+				b.draw_circle(c, rad + 3.2 - k * 0.8, Color(1.0, 0.8, 0.4, 0.07))
 		UISkin.medallion(b.get_canvas_item(), c, rad, st, b.has_meta("active") and b.get_meta("active"))
 		if ic:
-			var s2 := rad * (1.45 if colour else 1.05)
-			b.draw_texture_rect(ic, Rect2(c - Vector2(s2, s2) / 2.0, Vector2(s2, s2)), false, Color.WHITE if colour else Color(1.0, 0.94, 0.82)))
+			var s2 := rad * (1.45 if colour else 1.05) * (1.08 if st == "hover" else 1.0)
+			b.draw_texture_rect(ic, Rect2(c - Vector2(s2, s2) / 2.0, Vector2(s2, s2)), false,
+				Color.WHITE if colour or st == "hover" else Color(1.0, 0.94, 0.82)))
 	b.mouse_entered.connect(b.queue_redraw)
 	b.mouse_exited.connect(b.queue_redraw)
 	b.button_down.connect(b.queue_redraw)

@@ -22,7 +22,7 @@ var _sweep := 1.0       # 0..1: light running along the frame after the window o
 
 ## The window's emblem, shown on two small seals flanking the title ribbon.
 const PANEL_ICON := {"hero": "shield", "stats": "cross", "inventory": "bag", "stash": "chest", "blacksmith": "hammer",
-	"world": "map", "growth": "star", "tavern": "town", "settings": "gear", "away": "clock", "dps": "chart",
+	"world": "map", "growth": "star", "tavern": "mug", "settings": "gear", "away": "clock", "dps": "chart",
 	"quests": "quest", "codex": "book", "ending": "crown", "pets": "heart", "runes": "rune", "chests": "chest", "shop": "gem"}
 
 

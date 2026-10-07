@@ -324,6 +324,18 @@ def g_town(c):
     c.rect(42, 62, 58, 92, 0)
 
 
+def g_mug(c):
+    # tavern tankard: body, foam cap, handle, two hoops
+    c.ring(68, 60, 20, 9)
+    c.rect(20, 30, 66, 92, r=6)
+    c.circle(28, 28, 12)
+    c.circle(44, 22, 14)
+    c.circle(60, 28, 11)
+    c.rect(20, 30, 66, 34, 0)
+    c.rect(24, 50, 62, 54, 0)
+    c.rect(24, 74, 62, 78, 0)
+
+
 def g_auto(c):
     c.arc(50, 50, 34, 200, 520, 11)
     c.poly([(70, 6), (92, 30), (62, 34)])

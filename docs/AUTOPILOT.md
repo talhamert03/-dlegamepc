@@ -76,7 +76,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 40. Title screen: animated key art (light rays, drifting embers), logo shine, menu plaque hover/press animation
 - [x] 41. Intro cinematic: panel transitions, text reveal, music sync, skip button style
 - [x] 42. Ending screen, confirm cards, context menu, toasts, recruit reveal: final polish pass
-- [ ] 43. Bottom control panel (taskbar side): medallion icons redrawn, hover glow, notification badges
+- [x] 43. Bottom control panel (taskbar side): medallion icons redrawn, hover glow, notification badges
 
 **D. Icons and identity**
 - [ ] 44. App / taskbar / tray icon at 16-256 px, Steam library capsule set (header, capsule, hero, logo)
@@ -151,3 +151,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift — #40: title poster gets 6 breathing god rays and 34 stateless embers drawn over the vignette; Fancy.plaque_button adds a hover light sweep (tween on meta) and a press squash with back-ease spring. Logo shine and lightning already existed. Screenshot mode now also saves title_hover.png.
 - 2026-10-07 shift — #41: intro letterbox slides in over 0.7 s, beat openings are eyelid wipes with a gold seam instead of a flat black fade, ui_travel whoosh per beat, music switches to boss at beat 2 and town at beat 4, Skip is a Fancy plaque. Text reveal + subtitle plate + beat dots already existed. Screenshot mode saves intro_open.png.
 - 2026-10-07 shift — #42: ending panel (now 340x210) redrawn on HD scenes (throne+Morvath, void, temple, town at dawn with party portraits, meadow + red eyes), faceted crystal, subtitle plate, beat dots. W.confirm sizes to text, top medallion (! danger / ? normal), veil fade + card pop. ContextMenu drop-in + hover diamond. Toasts and recruit reveal reviewed, no change. --polishshot flag.
+- 2026-10-07 shift — #43: new g_mug glyph (build_ui_hd.py) for Tavern medallion + window seal, medallion hover halo + brighter/larger glyph, Tavern badge when any locked hero is affordable (Tavern.can_afford), system icon row and gold/level row inset away from the frame's corner gems (they overlapped power/menu icons and Sv text).

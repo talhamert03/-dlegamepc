@@ -24,11 +24,12 @@ func _ready() -> void:
 		["gear", func(): WindowManager.toggle_panel("settings"), "tip_settings"],
 		["quest", func(): WindowManager.toggle_panel("quests"), "tip_quests"], ["chart", func(): WindowManager.toggle_panel("dps"), "tip_dps"],
 		["note", _on_mute, "tip_mute"], ["menu", func(): WindowManager.toggle_panel("codex"), "tip_codex"]]
-	var step := (W - 16.0) / float(icons.size() - 1)
+	# kept clear of the corner gems of the frame
+	var step := (W - 30.0) / float(icons.size() - 1)
 	for i in icons.size():
 		var ic: Array = icons[i]
 		var b := UITheme.icon_button(ic[0], ic[1], DataDB.t(ic[2]))
-		b.position = Vector2(round(4.0 + i * step), 3)
+		b.position = Vector2(round(11.0 + i * step), 3)
 		add_child(b)
 		_btns[ic[0]] = b
 	# a fine bronze rule under the system row, and a recessed bed for the medallions
@@ -44,7 +45,7 @@ func _ready() -> void:
 	add_child(deco)
 	# main menu: two rows of bronze medallions with room to breathe
 	var defs := [["hero", "shield", "btn_hero"], ["stats", "cross", "panel_stats"], ["runes", "rune", "tip_runes"],
-		["world", "map", "btn_world"], ["growth", "star", "btn_growth"], ["tavern", "town", "btn_tavern"]]
+		["world", "map", "btn_world"], ["growth", "star", "btn_growth"], ["tavern", "mug", "btn_tavern"]]
 	var rad := 9.0
 	var cell := (W - 8.0) / 3.0
 	for i in defs.size():
@@ -78,11 +79,11 @@ func _ready() -> void:
 	_slash = slash
 	# bottom plate: gold | party DPS | level, XP bar under it
 	var coin: TextureRect = preload("res://scripts/ui/widgets.gd").icon_rect(UITheme.icon("gold"))
-	coin.position = Vector2(7, 60)
+	coin.position = Vector2(11, 60)
 	coin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(coin)
 	_gold = UITheme.label("0", UITheme.C_GOLD, 8, UITheme.font_body)
-	_gold.position = Vector2(16, 58)
+	_gold.position = Vector2(20, 58)
 	add_child(_gold)
 	_dps = UITheme.label("", Color("#FF9A6A"), 8, UITheme.font_body)
 	_dps.position = Vector2(40, 58)
@@ -92,7 +93,7 @@ func _ready() -> void:
 	_dps.tooltip_text = DataDB.t("party_dps_tip")
 	add_child(_dps)
 	_lvl = UITheme.label("", UITheme.C_DIM, 8, UITheme.font_body)
-	_lvl.position = Vector2(W - 32, 58)
+	_lvl.position = Vector2(W - 38, 58)
 	_lvl.size = Vector2(26, 10)
 	_lvl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	add_child(_lvl)
@@ -147,6 +148,14 @@ func _refresh() -> void:
 	_dots["runes"].visible = Runes.points_spent() < 3 and Runes.any_affordable() and not WindowManager.is_open("runes")
 	_dots["hero"].visible = GameState.bag.size() >= GameState.bag_slots - 4
 	_dots["quest"].visible = Quests.claimable() > 0
+	# a hero you can afford is waiting at the tavern
+	var hire := false
+	if not WindowManager.is_open("tavern"):
+		for hid in DataDB.hero_order:
+			if not GameState.heroes.has(hid) and Tavern.can_afford(str(hid)):
+				hire = true
+				break
+	_dots["tavern"].visible = hire
 
 
 func _on_power() -> void:
