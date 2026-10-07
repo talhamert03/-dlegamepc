@@ -2,7 +2,7 @@
 """HD UI art: anti-aliased icons, orb buttons and slot frames for the premium (non-pixel) UI.
 
 Everything is drawn on a 0..100 design grid, supersampled 4x and downscaled with Lanczos.
-Output: game/assets/ui_hd/<name>.png  (icons 56px = 7 logical px at 8x; orbs 112px = 14 logical px)
+Output: game/assets/ui_hd/<name>.png  (icons 128 px, crisp up to ~25 logical px at 5x; orbs 112 px)
 """
 import json
 import math
@@ -434,7 +434,7 @@ def write(img, name):
 
 def main():
     for name, fn in ICONS.items():
-        cv = Canvas(56)
+        cv = Canvas(128)
         fn(cv)
         write(finish(cv), name)
     for col in ORB_COLORS:

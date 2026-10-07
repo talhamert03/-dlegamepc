@@ -59,7 +59,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 27. Item icons (100 painted, 96 px) and skill icons (159, 96 px): 192 px masters where possible, sharper mipmaps, check every icon at 5x
 - [x] 28. Hero portraits / full art (48, 315x560 and 202x360): upscale for tavern cards, recruit reveal and Hero window at 4K
 - [x] 29. Enemy and boss paintings (112, 322x360) and pets (10): upscale, check the living-illustration rig still lines up
-- [ ] 30. UI glyph icons (76, 80 px, ui_hd): redraw or upscale to 160 px, one consistent stroke weight and lighting
+- [x] 30. UI glyph icons (76, 80 px, ui_hd): redraw or upscale to 160 px, one consistent stroke weight and lighting
 - [ ] 31. Fonts at every scale: hinting / oversampling check, no blurry 7 px text at 2x, pixel-snapped labels
 
 **B. Windows (frames and layout)**
@@ -138,3 +138,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift — #27: item icons re-cut from the 1024 px sheets at 144 px (native cells ~140 px, were shrunk to 96), family icons regenerated; procedural skill icons rebuilt at 192 px. Checked at 4x.
 - 2026-10-07 shift — #28: portraits rebuilt at native size from art_src/raw/heroes (~640x1017, tools/art/rebuild_portraits.py) and imported as lossy WebP q0.92: 15 MB imported instead of ~67 MB lossless at 560 px. Title poster, recruit card, Hero bust sharp at 4K. Battle sprites (360 px) and head icons (128 px) already fit 5x.
 - 2026-10-07 shift — #29: battle sprites (360 px) and pets (240 px) already reach 1:1 at 5x in their views. The intro cinematic drew 4 act bosses ~3x larger than their sprites at 4K: new hd/boss_art at native size (tools/art/rebuild_boss_art.py, lossy import, 6.4 MB), SpriteLib.boss_art() with sprite fallback.
+- 2026-10-07 shift — #30: the 50 vector UI glyphs (build_ui_hd.py, 0..100 grid) rendered at 128 px instead of 56; same design, logical sizes come from metadata so nothing moved. Checked control panel and Hero bar at 4x.
