@@ -87,7 +87,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 47. Unit readability at 2x-5x: outline, shadow, HP bar style, name plates for elites/bosses
 - [x] 48. Skill VFX second pass per class (impact frames, glow, particles at high scale)
 - [x] 49. HUD plaques (zone, goal ribbon, boss bar) re-rendered crisp at 5x
-- [ ] 50. Weather and zone atmosphere per act, kept subtle
+- [x] 50. Weather and zone atmosphere per act, kept subtle
 
 ## Questions for the owner
 
@@ -158,3 +158,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift — #47: reviewed the strip at 4x: shadows, framed HP bars and shader outlines (elite purple, boss red, treasure gold) were already in. Added name plates (element disc + name) for elites and mini-bosses (visual.miniboss flag from the sim). Found blocky square hit sparks (vfx_node._px) -> #48, and floating skill names tucked behind the zone plaque -> #49. --elites flag.
 - 2026-10-07 shift — #48: VfxNode._px is now a haloed soft dot (fixes every square spark), _shaft gradient for level-up / loot beam / summon, hit gets a core flash + rays, crit a flash + ring, burst an expanding ring, lightning a glow pass, meteor a halo, telegraph a warning triangle. SkillFx columns (holy beam, sun burst) and blizzard haze use edge-fading gradients instead of rects. Checked all 23 SkillFx kinds at 4x via --fxtest=all.
 - 2026-10-07 shift — #49: plaques, goal ribbon and boss bar are vector-drawn and already crisp at 4x (checked 3840x2160). Fixed layering: SkillFx z 24 (relative -> 44, over the HUD at 40) now 4; floating texts start no higher than y 21 so skill names clear the plaque. unit_hd dissolve noise cells shrunk to ~1/3 logical px (death frame not caught in a shot).
+- 2026-10-07 shift — #50: bug found: weather was drawn in StripView._draw, i.e. under the HD background sprite child, so it never showed. Moved to its own Node2D layer between background and units, redrawn as soft shapes (circles/ellipses), sizes tuned at 4x, and mapped the 11 themes that had none (meadow/town pollen, temple motes, camp/throne/temple_dark embers, harbor fog, ruins/library/hall/castle dust). Visual backlog 26-50 complete.

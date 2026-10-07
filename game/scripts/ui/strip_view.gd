@@ -37,6 +37,9 @@ var _weather_kind := ""
 var _rng := RandomNumberGenerator.new()
 
 
+var _weather_node: Node2D
+
+
 func _ready() -> void:
 	size = Vector2(W, H)
 	clip_contents = true
@@ -58,6 +61,9 @@ func _ready() -> void:
 	hd_bg.scale = Vector2.ONE / HD_BG_SCALE
 	hd_bg.visible = false
 	bg_root.add_child(hd_bg)
+	_weather_node = Node2D.new()
+	_weather_node.draw.connect(_draw_weather)
+	add_child(_weather_node)
 	units_root = Node2D.new()
 	units_root.y_sort_enabled = false
 	add_child(units_root)
@@ -369,7 +375,9 @@ func _set_theme(theme_name: String) -> void:
 	fore.visible = not hd_bg.visible
 	_weather_kind = {"snow": "snow", "ice": "snow", "storm": "rain", "forest_fog": "fog", "lava": "ember", "ash": "ember",
 		"graveyard": "fog", "dark_forest": "leaf", "forest": "leaf", "void": "ember", "blood": "ember", "desert": "sand",
-		"oasis": "sand", "cave": "dust", "mine": "dust", "ice_cave": "dust", "tomb": "dust", "bones": "fog"}.get(theme_name, "")
+		"oasis": "sand", "cave": "dust", "mine": "dust", "ice_cave": "dust", "tomb": "dust", "bones": "fog",
+		"meadow": "pollen", "town": "pollen", "camp": "ember", "temple": "motes", "temple_dark": "ember", "throne": "ember",
+		"ruins": "dust", "harbor": "fog", "library": "dust", "hall": "dust", "castle": "dust"}.get(theme_name, "")
 	_weather.clear()
 	queue_redraw()
 
@@ -437,29 +445,55 @@ func _draw() -> void:
 			draw_rect(Rect2(0, i * 7, W, 7), c)
 		draw_rect(Rect2(0, 44, W, 28), Color("#5A8A3A") * tint)
 		draw_rect(Rect2(0, 64, W, 8), Color("#7A5A3A") * tint)
+
+
+## Weather lives on its own layer between the background and the units (drawn in StripView._draw it sat
+## underneath the HD background sprite and never showed).
+func _draw_weather() -> void:
+	var n := _weather_node
+	# weather drawn as soft shapes so it stays clean at 4-5x (was 1 px squares)
+	var tms := Time.get_ticks_msec() / 1000.0
 	for p in _weather:
+		var wp := Vector2(p[0], p[1])
 		match _weather_kind:
 			"snow":
-				draw_rect(Rect2(round(p[0]), round(p[1]), 1, 1), Color(1, 1, 1, 0.55))
+				n.draw_circle(wp, 1.5 * p[2], Color(1, 1, 1, 0.2))
+				n.draw_circle(wp, 0.8 * p[2], Color(1, 1, 1, 0.85))
 			"rain":
-				draw_line(Vector2(p[0], p[1]), Vector2(p[0] - 1, p[1] + 3), Color(0.7, 0.8, 1.0, 0.3))
+				n.draw_line(wp, wp + Vector2(-1.5, 4.5), Color(0.75, 0.85, 1.0, 0.4), 0.7, true)
 			"ember":
-				draw_rect(Rect2(round(p[0]), round(p[1]), 1, 1), Color(1.0, 0.6, 0.2, 0.55))
+				var fl: float = 0.6 + 0.4 * sin(tms * 6.0 + p[2] * 11.0)
+				n.draw_circle(wp, 2.0, Color(1.0, 0.45, 0.1, 0.16 * fl))
+				n.draw_circle(wp, 0.75, Color(1.0, 0.78, 0.4, 0.9 * fl))
 			"leaf":
-				draw_rect(Rect2(round(p[0]), round(p[1]), 2, 1), Color(0.55, 0.75, 0.3, 0.5))
+				n.draw_set_transform(wp, sin(tms * 2.0 + p[2] * 5.0) * 1.2, Vector2(1.0, 0.45))
+				n.draw_circle(Vector2.ZERO, 1.6, Color(0.62, 0.8, 0.32, 0.75))
+				n.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 			"fog":
-				draw_rect(Rect2(round(p[0]), round(p[1]), 24, 3), Color(1, 1, 1, 0.045))
+				n.draw_set_transform(wp + Vector2(12, 1.5), 0.0, Vector2(1.0, 0.16))
+				n.draw_circle(Vector2.ZERO, 22.0, Color(0.85, 0.95, 0.95, 0.045))
+				n.draw_circle(Vector2.ZERO, 12.0, Color(0.85, 0.95, 0.95, 0.05))
+				n.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 			"sand":
-				draw_rect(Rect2(round(p[0]), round(p[1]), 1, 1), Color(0.95, 0.82, 0.55, 0.4))
+				n.draw_circle(wp, 0.7, Color(0.98, 0.86, 0.6, 0.6))
 			"dust":
-				draw_rect(Rect2(round(p[0]), round(p[1]), 1, 1), Color(1.0, 0.95, 0.8, 0.22 + 0.15 * sin(p[2] * 9.0 + Time.get_ticks_msec() / 600.0)))
+				n.draw_circle(wp, 1.3, Color(1.0, 0.95, 0.8, 0.06))
+				n.draw_circle(wp, 0.65, Color(1.0, 0.95, 0.8, 0.35 + 0.2 * sin(p[2] * 9.0 + tms * 1.6)))
+			"pollen":
+				n.draw_circle(wp, 1.5, Color(1.0, 0.98, 0.75, 0.14))
+				n.draw_circle(wp, 0.7, Color(1.0, 0.98, 0.8, 0.65 + 0.25 * sin(p[2] * 7.0 + tms * 2.0)))
+			"motes":
+				var tw: float = 0.5 + 0.5 * sin(tms * 3.0 + p[2] * 13.0)
+				n.draw_circle(wp, 2.2, Color(1.0, 0.85, 0.45, 0.14 * tw))
+				n.draw_circle(wp, 0.8, Color(1.0, 0.95, 0.7, 0.9 * tw))
 
 
 func _update_weather(delta: float) -> void:
+	_weather_node.queue_redraw()
 	if _weather_kind == "":
 		return
 	# kept sparse on purpose: atmosphere only, never in the way of the fight
-	var maxn := int({"fog": 10, "dust": 12, "sand": 16, "rain": 22}.get(_weather_kind, 18) * float(Settings.get_v("particles", 1.0)))
+	var maxn := int({"fog": 10, "dust": 12, "sand": 16, "rain": 22, "pollen": 12, "motes": 14}.get(_weather_kind, 18) * float(Settings.get_v("particles", 1.0)))
 	while _weather.size() < maxn:
 		_weather.append([_rng.randf_range(0, W), _rng.randf_range(-H, H), _rng.randf_range(0.6, 1.4)])
 	var scroll_speed := 40.0 if BattleSim.phase == "travel" else 0.0
@@ -486,9 +520,15 @@ func _update_weather(delta: float) -> void:
 			"dust":
 				p[0] -= (scroll_speed + 1.5) * delta * p[2]
 				p[1] += sin(p[0] * 0.05 + p[2]) * 1.5 * delta
+			"pollen":
+				p[0] -= (scroll_speed + 4.0) * delta * p[2]
+				p[1] += sin(p[0] * 0.07 + p[2] * 3.0) * 2.5 * delta
+			"motes":
+				p[1] -= 3.5 * delta * p[2]
+				p[0] -= (scroll_speed + sin(p[1] * 0.15) * 1.5) * delta
 		if p[1] > H or p[1] < -H or p[0] < -30:
 			p[0] = _rng.randf_range(0, W + 30) if p[0] < -30 else p[0]
-			p[1] = -2.0 if _weather_kind != "ember" else H
+			p[1] = H if _weather_kind in ["ember", "motes"] else -2.0
 			if p[0] < -30:
 				p[0] = W + 10
 
