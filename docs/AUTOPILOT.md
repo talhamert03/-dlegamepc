@@ -81,7 +81,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 **D. Icons and identity**
 - [x] 44. App / taskbar / tray icon at 16-256 px, Steam library capsule set (header, capsule, hero, logo)
 - [x] 45. Status effect, element and stat icons: one family (fire, cold, lightning, chaos, holy, stun, poison...)
-- [ ] 46. Currency and material icons (gold, seals, shards, badges, dusts, essences): redraw as a matched set
+- [x] 46. Currency and material icons (gold, seals, shards, badges, dusts, essences): redraw as a matched set
 
 **E. Battle strip**
 - [ ] 47. Unit readability at 2x-5x: outline, shadow, HP bar style, name plates for elites/bosses
@@ -154,3 +154,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift — #43: new g_mug glyph (build_ui_hd.py) for Tavern medallion + window seal, medallion hover halo + brighter/larger glyph, Tavern badge when any locked hero is affordable (Tavern.can_afford), system icon row and gold/level row inset away from the frame's corner gems (they overlapped power/menu icons and Sv text).
 - 2026-10-07 shift — #44: tools/art/build_store_art.py builds the icon (crystal + sword medallion, simplified < 48 px) as icon.png 256 + icon.ico 16..256 (export_presets application/icon set; Godot only stamps the .exe icon when rcedit is configured, Windows untested) and the Steam set in steam/store_art: header 920x430, small 462x174, main 1232x706, vertical 748x896, library 600x900, library hero 3840x1240 (no text, background upscaled + blurred), library logo 1280. All from the game's own forest scene + portraits + Cinzel fonts.
 - 2026-10-07 shift — #45: tools/art/build_status_icons.py -> 16 st_* enamel-disc icons (6 elements, 9 statuses, buff). Unit status pips (were 2x2 squares) now 5 px icons, max 4; world threat chips use them. Emoji in text (fonts had none, fell back to system glyphs) removed; DejaVuSans-Bold bundled (Bitstream Vera licence in assets/fonts) as fallback for every UI font so ✓ ★ ⚔ ▶ ✖ match on all OSes; ⌛/🔒 (not in DejaVu) replaced. Strip pips not caught in a screenshot yet.
+- 2026-10-07 shift — #46: tools/art/build_material_icons.py paints mat_<id> for gold + 9 materials (shared light, outline, shadow); gold.png now the coin stack (build_ui_hd skips its old ring glyph). Quests, Codex rewards, Blacksmith costs, tavern seal counter and guild purse use them; three essences no longer share the gem glyph.

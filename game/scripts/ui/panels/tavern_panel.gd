@@ -116,7 +116,7 @@ func _build_top() -> void:
 		b.position = Vector2(x, 0)
 		b.size = Vector2(34 if key != "" else 40, 13)
 		x += b.size.x + 2
-	var seal := W.icon_rect(UITheme.icon("crown"), Vector2(9, 9))
+	var seal := W.icon_rect(UITheme.icon("mat_tavern_seal"), Vector2(9, 9))
 	seal.position = Vector2(_top.size.x - 30, 2)
 	_top.add_child(seal)
 	var sl := UITheme.label(str(int(GameState.materials.get("tavern_seal", 0))), UITheme.C_GOLD, 8, UITheme.font_body)

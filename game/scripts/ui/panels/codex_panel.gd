@@ -24,8 +24,7 @@ func build(c: Control) -> void:
 
 
 ## Achievement: a medallion (gold star when earned, dark lock otherwise), the name and its condition.
-const REWARD_ICON := {"gold": "gold", "tavern_seal": "crown", "soul_shard": "gem", "iron_scrap": "hammer",
-	"guild_badge": "flag", "shiny_essence": "sparkle", "star_dust": "star", "mythic_essence": "gem"}
+const REWARD_ICON := {"gold": "gold", "iron_scrap": "mat_iron_scrap", "shiny_essence": "mat_shiny_essence", "epic_essence": "mat_epic_essence", "legendary_essence": "mat_legendary_essence", "star_dust": "mat_star_dust", "mythic_essence": "mat_mythic_essence", "soul_shard": "mat_soul_shard", "tavern_seal": "mat_tavern_seal", "guild_badge": "mat_guild_badge"}
 
 
 ## Bestiary tooltip: name, how many fell, its element and where it lives.

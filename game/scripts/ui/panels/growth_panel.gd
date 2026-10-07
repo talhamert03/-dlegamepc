@@ -144,7 +144,7 @@ func _guild() -> void:
 		var half := r.size.x / 2.0
 		purse.draw_texture_rect(UITheme.icon("gold"), Rect2(6, 2, 12, 12), false)
 		purse.draw_string(f, Vector2(21, 11.5), F.fmt_num(GameState.gold), HORIZONTAL_ALIGNMENT_LEFT, half - 24, 9, Color("#FFD86A"))
-		purse.draw_texture_rect(UITheme.icon("flag"), Rect2(half + 6, 2, 12, 12), false)
+		purse.draw_texture_rect(UITheme.icon("mat_guild_badge"), Rect2(half + 6, 2, 12, 12), false)
 		purse.draw_string(f, Vector2(half + 21, 11.5), "%d  %s" % [int(GameState.materials.get("guild_badge", 0)), ItemUtil.material_name("guild_badge")],
 			HORIZONTAL_ALIGNMENT_LEFT, half - 24, 9, Color("#E8D8B8")))
 	_body.add_child(purse)

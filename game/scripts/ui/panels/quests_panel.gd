@@ -2,8 +2,7 @@ extends PanelWindow
 ## Daily quests as parchment notices pinned to a board: the task, a framed progress bar, the rewards as
 ## icons and a wax-seal claim button (a "claimed" stamp once taken).
 
-const MAT_ICON := {"gold": "gold", "tavern_seal": "crown", "soul_shard": "gem", "iron_scrap": "hammer",
-	"guild_badge": "flag", "shiny_essence": "sparkle"}
+const MAT_ICON := {"gold": "gold", "iron_scrap": "mat_iron_scrap", "shiny_essence": "mat_shiny_essence", "epic_essence": "mat_epic_essence", "legendary_essence": "mat_legendary_essence", "star_dust": "mat_star_dust", "mythic_essence": "mat_mythic_essence", "soul_shard": "mat_soul_shard", "tavern_seal": "mat_tavern_seal", "guild_badge": "mat_guild_badge"}
 
 var _body: VBoxContainer
 

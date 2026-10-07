@@ -339,7 +339,7 @@ func _do_combine() -> void:
 
 
 const EQUIP_ORDER := ["weapon", "offhand", "helm", "chest", "gloves", "boots", "belt", "cape", "amulet", "ring1", "ring2", "charm"]
-const MAT_ICON := {"iron_scrap": "hammer", "soul_shard": "gem", "shiny_essence": "sparkle", "guild_badge": "flag", "tavern_seal": "crown"}
+const MAT_ICON := {"iron_scrap": "mat_iron_scrap", "shiny_essence": "mat_shiny_essence", "epic_essence": "mat_epic_essence", "legendary_essence": "mat_legendary_essence", "star_dust": "mat_star_dust", "mythic_essence": "mat_mythic_essence", "soul_shard": "mat_soul_shard", "tavern_seal": "mat_tavern_seal", "guild_badge": "mat_guild_badge"}
 var _stage: Control
 var _fx := ""          # "ok" | "fail" after a roll, drawn over the anvil
 var _fx_t := 9.0
@@ -658,8 +658,7 @@ func _do_enhance() -> void:
 	refresh()
 
 
-const MAT_ICON2 := {"iron_scrap": "hammer", "shiny_essence": "sparkle", "epic_essence": "gem", "legendary_essence": "flame",
-	"star_dust": "star", "mythic_essence": "gem", "soul_shard": "gem", "tavern_seal": "crown", "guild_badge": "flag"}
+const MAT_ICON2 := {"iron_scrap": "mat_iron_scrap", "shiny_essence": "mat_shiny_essence", "epic_essence": "mat_epic_essence", "legendary_essence": "mat_legendary_essence", "star_dust": "mat_star_dust", "mythic_essence": "mat_mythic_essence", "soul_shard": "mat_soul_shard", "tavern_seal": "mat_tavern_seal", "guild_badge": "mat_guild_badge"}
 
 
 ## Salvage: one row per rarity (what is in the bag and what it melts into), then the material pouch.

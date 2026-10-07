@@ -446,6 +446,8 @@ def write(img, name):
 
 def main():
     for name, fn in ICONS.items():
+        if name == "gold":
+            continue  # the painted coin stack from build_material_icons.py owns gold.png
         cv = Canvas(128)
         fn(cv)
         write(finish(cv), name)
