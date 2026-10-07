@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Kahraman portreleri ana çizimlerin kendi çözünürlüğünde (yaklaşık 1000 piksel): başlık ekranı, işe alma kartı ve Kahraman penceresi 4K'da net.", "en": "Hero portraits at the paintings' native resolution (about 1000 px): title screen, recruit card and Hero window are sharp on 4K."},
     {"tr": "Eşya ikonları 144, yetenek ikonları 192 piksele çıkarıldı: 4K ekranda ve yüksek ölçekte keskin.", "en": "Item icons now 144 px and skill icons 192 px: sharp on 4K and high UI scales."},
     {"tr": "Savaş arka planları ana çizimlerden 5 kat çözünürlükte yeniden üretildi: 4K ve yüksek ölçeklerde artık birebir net.", "en": "Battle backgrounds rebuilt from the master paintings at 5x: pixel-sharp on 4K and high UI scales."},
     {"tr": "Görevler penceresi günlük görevlerin yenilenmesine kalan süreyi gösteriyor; gece yarısı tahta kendiliğinden yenileniyor.", "en": "The Quests window shows time left until the daily refresh and renews itself at midnight."},

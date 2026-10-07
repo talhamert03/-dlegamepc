@@ -57,7 +57,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 **A. HD quality**
 - [x] 26. Battle backgrounds: 128 strips are 480x84 and blur at 4K — upscale to >= 1920x336 (AI upscale if credits allow, otherwise a careful Lanczos + detail pass), keep the parallax layers
 - [x] 27. Item icons (100 painted, 96 px) and skill icons (159, 96 px): 192 px masters where possible, sharper mipmaps, check every icon at 5x
-- [ ] 28. Hero portraits / full art (48, 315x560 and 202x360): upscale for tavern cards, recruit reveal and Hero window at 4K
+- [x] 28. Hero portraits / full art (48, 315x560 and 202x360): upscale for tavern cards, recruit reveal and Hero window at 4K
 - [ ] 29. Enemy and boss paintings (112, 322x360) and pets (10): upscale, check the living-illustration rig still lines up
 - [ ] 30. UI glyph icons (76, 80 px, ui_hd): redraw or upscale to 160 px, one consistent stroke weight and lighting
 - [ ] 31. Fonts at every scale: hinting / oversampling check, no blurry 7 px text at 2x, pixel-snapped labels
@@ -136,3 +136,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 — owner asked for a full visual overhaul list: items 26-50 added (HD quality, windows, menus, icons, battle strip). Shifts now start at 12:00.
 - 2026-10-07 shift — #26: the game already used HD panoramas (1075x336, 4x); rebuilt all 29 from the 1344 px masters at native 1344x420 (5x, JPEG q95 4:4:4), HD_BG_SCALE 4 -> 5, importer gets --offline. 4K screenshot sharp, ground line unchanged. The 480x84 strips are only a fallback and never used (every zone has HD art). Higgsfield credits still 0.
 - 2026-10-07 shift — #27: item icons re-cut from the 1024 px sheets at 144 px (native cells ~140 px, were shrunk to 96), family icons regenerated; procedural skill icons rebuilt at 192 px. Checked at 4x.
+- 2026-10-07 shift — #28: portraits rebuilt at native size from art_src/raw/heroes (~640x1017, tools/art/rebuild_portraits.py) and imported as lossy WebP q0.92: 15 MB imported instead of ~67 MB lossless at 560 px. Title poster, recruit card, Hero bust sharp at 4K. Battle sprites (360 px) and head icons (128 px) already fit 5x.
