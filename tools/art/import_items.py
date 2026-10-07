@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""AI item icon sheets (6x6 on magenta) -> game/assets/hd/items/<type>_<a|b>.png (96 px, centred, transparent).
+"""AI item icon sheets (6x6 on magenta) -> game/assets/hd/items/<type>_<a|b>.png (144 px, centred, transparent).
 
   sheet a = starter/low-tier look (tiers 0-2), sheet b = ornate high-tier look (tiers 3+)
   python3 tools/art/import_items.py
@@ -24,8 +24,8 @@ ORDER = ["sword", "greatsword", "axe", "mace", "dagger", "scythe",
          "helm_medium", "helm_light", "chest_heavy", "chest_medium", "chest_light", "gloves_heavy",
          "gloves_medium", "gloves_light", "boots_heavy", "boots_medium", "boots_light", "belt",
          "cape", "amulet", "ring", "charm", "gold", "gem"]
-SIZE = 96
-PAD = 5
+SIZE = 144
+PAD = 7
 
 
 def main():

@@ -19,7 +19,7 @@ from build_icons import SYMBOL_MAP  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(ROOT, "game", "assets", "hd", "skills")
-SIZE = 96
+SIZE = 192
 SS = 4
 
 CLASS_COL = {"knight": (61, 95, 168), "berserker": (168, 68, 46), "archer": (78, 138, 58), "assassin": (110, 50, 90),

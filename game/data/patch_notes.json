@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Eşya ikonları 144, yetenek ikonları 192 piksele çıkarıldı: 4K ekranda ve yüksek ölçekte keskin.", "en": "Item icons now 144 px and skill icons 192 px: sharp on 4K and high UI scales."},
     {"tr": "Savaş arka planları ana çizimlerden 5 kat çözünürlükte yeniden üretildi: 4K ve yüksek ölçeklerde artık birebir net.", "en": "Battle backgrounds rebuilt from the master paintings at 5x: pixel-sharp on 4K and high UI scales."},
     {"tr": "Görevler penceresi günlük görevlerin yenilenmesine kalan süreyi gösteriyor; gece yarısı tahta kendiliğinden yenileniyor.", "en": "The Quests window shows time left until the daily refresh and renews itself at midnight."},
     {"tr": "Eşya ipuçları ikonlu başlıkla açılıyor; çift yüzde işareti hatası (+%15 % Savunma) düzeltildi. Başarımlar ödüllerini gösteriyor, Bestiyer ipuçları canavarın elementini ve yaşadığı bölgeyi söylüyor. Yenilikler sekmesi kart kart okunuyor.", "en": "Item tooltips open with an icon header; the double percent sign bug is fixed. Achievements show their rewards, bestiary tips name the element and home zone. What's New reads as cards."},
