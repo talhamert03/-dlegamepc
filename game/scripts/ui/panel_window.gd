@@ -17,6 +17,13 @@ var content: Control
 var _dragging := false
 var _drag_offset := Vector2.ZERO
 var _title_label: Label
+var _deco: Control
+var _sweep := 1.0       # 0..1: light running along the frame after the window opens or is raised
+
+## The window's emblem, shown on two small seals flanking the title ribbon.
+const PANEL_ICON := {"hero": "shield", "stats": "cross", "inventory": "bag", "stash": "chest", "blacksmith": "hammer",
+	"world": "map", "growth": "star", "tavern": "town", "settings": "gear", "away": "clock", "dps": "chart",
+	"quests": "quest", "codex": "book", "ending": "crown", "pets": "heart", "runes": "rune", "chests": "chest", "shop": "gem"}
 
 
 func setup(id: String, title: String, size_l: Vector2i) -> void:
@@ -34,6 +41,12 @@ func _ready() -> void:
 	root = self
 	_frame = UITheme.frame(Vector2(logical_size), true)
 	add_child(_frame)
+	_deco = Control.new()
+	_deco.size = size
+	_deco.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_deco.draw.connect(_draw_deco)
+	add_child(_deco)
+	_start_sweep.call_deferred()
 	# title on a red ribbon
 	_title_label = UITheme.title_label(title_text.to_upper(), Color("#FFF0D2"))
 	_title_label.add_theme_font_size_override("font_size", 10)
@@ -109,6 +122,8 @@ func _on_drag_input(ev: InputEvent) -> void:
 		if ev.pressed:
 			_dragging = true
 			_drag_offset = get_parent().get_local_mouse_position() - position
+			if get_index() < get_parent().get_child_count() - 1 and _sweep >= 1.0:
+				_start_sweep()
 			move_to_front()
 		elif _dragging:
 			_dragging = false
@@ -116,3 +131,60 @@ func _on_drag_input(ev: InputEvent) -> void:
 	elif ev is InputEventMouseMotion and _dragging:
 		position = WindowManager.snap_position(self, get_parent().get_local_mouse_position() - _drag_offset)
 		WindowManager.layout_changed()
+
+
+## Light runs once around the frame (a tween, so subclasses' own _process stays untouched).
+func _start_sweep() -> void:
+	if _deco == null:
+		return
+	var tw := create_tween()
+	tw.tween_method(func(v: float):
+		_sweep = v
+		_deco.queue_redraw(), 0.0, 1.0, 0.9)
+
+
+## Seals with the window's emblem beside the title ribbon, and the light sweep along the frame's gilded rule.
+func _draw_deco() -> void:
+	var ci := _deco.get_canvas_item()
+	var w := float(logical_size.x)
+	var ic_name: String = PANEL_ICON.get(panel_id, "")
+	var rw: float = _frame.ribbon_w if _frame else 0.0
+	if ic_name != "" and rw > 0.0 and w > 150.0:
+		var ic := UITheme.icon(ic_name)
+		for sd in [-1.0, 1.0]:
+			var c := Vector2(w / 2.0 + sd * (rw / 2.0 + 24.0), 14.0)
+			UISkin.circle(ci, c + Vector2(0, 0.8), 6.6, Color(0, 0, 0, 0.45), Color(0, 0, 0, 0.45))
+			UISkin.circle(ci, c, 6.2, UISkin.OUTLINE, UISkin.OUTLINE)
+			UISkin.circle(ci, c, 5.6, UISkin.BRONZE_HI, UISkin.BRONZE_LO)
+			UISkin.circle(ci, c, 4.3, Color("#6A3A16"), Color("#2E1608"))
+			UISkin.ring(ci, c, 5.0, Color(1, 0.95, 0.75, 0.3), 0.6)
+			if ic:
+				_deco.draw_texture_rect(ic, Rect2(c - Vector2(3.0, 3.0), Vector2(6.0, 6.0)), false, Color("#FFE7B0"))
+	if _sweep < 1.0:
+		# a short bright stroke running clockwise along the inner gilded rule
+		var r := Rect2(Vector2.ZERO, size).grow(-2.6)
+		var per := 2.0 * (r.size.x + r.size.y)
+		var head := _sweep * per
+		var fade := 1.0 - _sweep
+		for k in 16:
+			var d := head - k * 2.5
+			if d < 0.0:
+				break
+			var p := _perimeter_point(r, d)
+			var a := (1.0 - k / 16.0) * fade
+			_deco.draw_circle(p, 3.6 - k * 0.15, Color(1.0, 0.8, 0.45, 0.16 * a))
+			_deco.draw_circle(p, 1.8 - k * 0.08, Color(1.0, 0.95, 0.75, 0.85 * a))
+
+
+func _perimeter_point(r: Rect2, d: float) -> Vector2:
+	if d <= r.size.x:
+		return r.position + Vector2(d, 0)
+	d -= r.size.x
+	if d <= r.size.y:
+		return Vector2(r.end.x, r.position.y + d)
+	d -= r.size.y
+	if d <= r.size.x:
+		return Vector2(r.end.x - d, r.end.y)
+	d -= r.size.x
+	return Vector2(r.position.x, r.end.y - minf(d, r.size.y))
+

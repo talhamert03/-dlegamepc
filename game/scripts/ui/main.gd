@@ -513,6 +513,10 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 				await get_tree().create_timer(0.18).timeout
 				var im := get_viewport().get_texture().get_image()
 				im.get_region(Rect2i(Vector2i(hp.global_position * sc1), Vector2i(hp.size * sc1))).save_png("user://screenshots/pf_%02d.png" % i)
+		if a == "--sweepshot" and WindowManager.is_open("hero"):
+			var swp: Control = WindowManager.panels["hero"]
+			swp._start_sweep()
+			await _grab_frames(swp, [0.12, 0.35, 0.6], "sw")
 		if a.begins_with("--revealtest=") and WindowManager.is_open("tavern"):
 			var tp: Control = WindowManager.panels["tavern"]
 			RecruitReveal.show_over(tp._host, a.substr(13))
