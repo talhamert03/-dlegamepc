@@ -287,6 +287,16 @@ func _waypoint(at: Vector2, num: int, state: String, current: bool, zi: int, tip
 				bot = Color("#2E2C34")
 		if hov:
 			top = top.lightened(0.2)
+		if state == "cleared":
+			# a small laurel under the medallion
+			for sd in [-1.0, 1.0]:
+				for k in 3:
+					var a: float = PI * 0.5 + sd * (0.45 + k * 0.42)
+					var lp: Vector2 = c + Vector2(cos(a), sin(a)) * 6.4
+					b.draw_set_transform(lp, a + sd * 0.9, Vector2(1.0, 0.45))
+					b.draw_circle(Vector2.ZERO, 1.6, Color("#2E5A22"))
+					b.draw_circle(Vector2(0, -0.2), 1.0, Color("#8CC86A"))
+			b.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		UISkin.circle(ci, c, 5.2, top, bot)
 		UISkin.ring(ci, c, 4.3, Color(1, 1, 1, 0.22), 0.6)
 		if state == "locked":
@@ -302,6 +312,32 @@ func _waypoint(at: Vector2, num: int, state: String, current: bool, zi: int, tip
 		_show_card(zi)
 		refresh_nodes_highlight())
 	return b
+
+
+## Gold light flowing along the road the party has already opened (node 0 up to the furthest open zone).
+func _trail(pts: Array, upto: int) -> Control:
+	var c := Control.new()
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	c.set_meta("pulse", true)
+	var n := mini(upto, pts.size() - 1)
+	c.draw.connect(func():
+		if n < 1:
+			return
+		for i in n:
+			var a := Vector2(float(pts[i][0]), float(pts[i][1]))
+			var b := Vector2(float(pts[i + 1][0]), float(pts[i + 1][1]))
+			var seg := b - a
+			var length := seg.length()
+			if length < 1.0:
+				continue
+			var dir := seg / length
+			var d := fposmod(_t * 14.0, 6.0) + 7.0
+			while d < length - 7.0:
+				var p := a + dir * d
+				c.draw_circle(p, 1.6, Color(1.0, 0.82, 0.35, 0.22))
+				c.draw_circle(p, 0.8, Color(1.0, 0.95, 0.7, 0.85))
+				d += 6.0)
+	return c
 
 
 # ------------------------------------------------------------------ zone card
@@ -575,6 +611,7 @@ func refresh() -> void:
 	var maxz: int = int(GameState.progress["max_zone"][_diff])
 	var cur: int = int(GameState.progress.get("zone", 0))
 	var cur_diff: int = int(GameState.progress.get("difficulty", 0))
+	_nodes_root.add_child(_trail(pts, maxz - (act - 1) * 10))
 	for i in pts.size():
 		var zi := (act - 1) * 10 + i
 		var z := DataDB.zone(zi)
