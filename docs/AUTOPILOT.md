@@ -85,7 +85,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 
 **E. Battle strip**
 - [x] 47. Unit readability at 2x-5x: outline, shadow, HP bar style, name plates for elites/bosses
-- [ ] 48. Skill VFX second pass per class (impact frames, glow, particles at high scale)
+- [x] 48. Skill VFX second pass per class (impact frames, glow, particles at high scale)
 - [ ] 49. HUD plaques (zone, goal ribbon, boss bar) re-rendered crisp at 5x
 - [ ] 50. Weather and zone atmosphere per act, kept subtle
 
@@ -156,3 +156,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift — #45: tools/art/build_status_icons.py -> 16 st_* enamel-disc icons (6 elements, 9 statuses, buff). Unit status pips (were 2x2 squares) now 5 px icons, max 4; world threat chips use them. Emoji in text (fonts had none, fell back to system glyphs) removed; DejaVuSans-Bold bundled (Bitstream Vera licence in assets/fonts) as fallback for every UI font so ✓ ★ ⚔ ▶ ✖ match on all OSes; ⌛/🔒 (not in DejaVu) replaced. Strip pips not caught in a screenshot yet.
 - 2026-10-07 shift — #46: tools/art/build_material_icons.py paints mat_<id> for gold + 9 materials (shared light, outline, shadow); gold.png now the coin stack (build_ui_hd skips its old ring glyph). Quests, Codex rewards, Blacksmith costs, tavern seal counter and guild purse use them; three essences no longer share the gem glyph.
 - 2026-10-07 shift — #47: reviewed the strip at 4x: shadows, framed HP bars and shader outlines (elite purple, boss red, treasure gold) were already in. Added name plates (element disc + name) for elites and mini-bosses (visual.miniboss flag from the sim). Found blocky square hit sparks (vfx_node._px) -> #48, and floating skill names tucked behind the zone plaque -> #49. --elites flag.
+- 2026-10-07 shift — #48: VfxNode._px is now a haloed soft dot (fixes every square spark), _shaft gradient for level-up / loot beam / summon, hit gets a core flash + rays, crit a flash + ring, burst an expanding ring, lightning a glow pass, meteor a halo, telegraph a warning triangle. SkillFx columns (holy beam, sun burst) and blizzard haze use edge-fading gradients instead of rects. Checked all 23 SkillFx kinds at 4x via --fxtest=all.

@@ -1,6 +1,7 @@
 class_name VfxNode
 extends Node2D
-## Lightweight procedural pixel VFX (no textures needed). Each effect lives `life` seconds.
+## Lightweight procedural VFX (no textures needed). Each effect lives `life` seconds.
+## Particles are soft glowing dots so they stay clean at 4-5x UI scale.
 
 var kind := "hit"
 var t := 0.0
@@ -82,7 +83,16 @@ func _process(delta: float) -> void:
 
 
 func _px(p: Vector2, c: Color, s := 1.0) -> void:
-	draw_rect(Rect2(round(p.x), round(p.y), s, s), c)
+	# soft dot: faint halo + bright core (was a hard square)
+	var ctr := p + Vector2(s, s) * 0.5
+	draw_circle(ctr, s * 1.4, Color(c, c.a * 0.22))
+	draw_circle(ctr, s * 0.6, c)
+
+
+## Vertical shaft that fades out towards the top.
+func _shaft(w: float, h: float, c: Color) -> void:
+	var pts := PackedVector2Array([Vector2(-w, 0), Vector2(w, 0), Vector2(w * 0.6, -h), Vector2(-w * 0.6, -h)])
+	draw_polygon(pts, PackedColorArray([c, c, Color(c, 0.0), Color(c, 0.0)]))
 
 
 func _ease_out(x: float) -> float:
@@ -134,17 +144,21 @@ func _draw() -> void:
 				draw_circle(pos, float(p[2]) * (0.4 + k * 0.6) * 0.5, Color(0.75, 0.68, 0.58, 0.35 * a))
 		"hit":
 			var r := 2.0 + k * 6.0
+			draw_circle(Vector2.ZERO, 3.5 * (1.0 - k), Color(1, 1, 1, 0.8 * a))
 			for i in 6:
 				var ang := i * TAU / 6.0 + 0.3
-				_px(Vector2(cos(ang), sin(ang)) * r, Color(color, a), 2 if k < 0.4 else 1)
-			_px(Vector2(-1, -1), Color(1, 1, 1, a), 2)
+				var dv := Vector2(cos(ang), sin(ang))
+				draw_line(dv * r * 0.5, dv * r, Color(color.lightened(0.3), a), 1.0, true)
+				_px(dv * r - Vector2(0.6, 0.6), Color(color, a), 1.2)
 		"crit":
 			var r2 := 3.0 + k * 9.0
 			for i in 8:
 				var ang2 := i * TAU / 8.0
 				var p := Vector2(cos(ang2), sin(ang2)) * r2
-				draw_line(p * 0.4, p, Color(1.0, 0.85, 0.3, a), 1.0)
-			_px(Vector2(-1, -1), Color(1, 1, 1, a), 3)
+				draw_line(p * 0.4, p, Color(1.0, 0.85, 0.3, a), 1.2, true)
+			draw_circle(Vector2.ZERO, 6.0 * (1.0 - k), Color(1, 0.95, 0.7, 0.35 * a))
+			draw_circle(Vector2.ZERO, 3.0 * (1.0 - k * 0.5), Color(1, 1, 1, 0.9 * a))
+			draw_arc(Vector2.ZERO, r2 * 1.1, 0, TAU, 24, Color(1.0, 0.8, 0.3, 0.6 * a), 1.0, true)
 		"slash":
 			var arc := 10.0 + size * 0.5
 			for i in 9:
@@ -165,11 +179,12 @@ func _draw() -> void:
 					_px(pos + Vector2(0, -1), Color(1, 1, 1, a * 0.6), 1)
 			if kind == "levelup":
 				var h: float = 40.0 * min(1.0, k * 3.0)
-				draw_rect(Rect2(-5, -h, 10, h), Color(1.0, 0.85, 0.4, a * 0.35))
-				draw_rect(Rect2(-2, -h, 4, h), Color(1.0, 0.95, 0.7, a * 0.5))
+				_shaft(6.0, h, Color(1.0, 0.85, 0.4, a * 0.4))
+				_shaft(2.0, h, Color(1.0, 0.97, 0.8, a * 0.7))
 		"burst", "explosion", "ice", "poison", "holy", "dark":
 			var rr := size * (0.3 + k)
 			draw_circle(Vector2.ZERO, rr * 0.6, Color(color, a * 0.35))
+			draw_arc(Vector2.ZERO, rr, 0, TAU, 28, Color(color.lightened(0.4), a * 0.7), 1.0, true)
 			for p in _parts:
 				var pos2: Vector2 = (p[1] as Vector2) * k
 				_px(pos2, Color(color.lightened(0.3), a), float(p[2]))
@@ -179,7 +194,8 @@ func _draw() -> void:
 			while y < 0:
 				var nx := x + _rng.randf_range(-4, 4)
 				var ny: float = min(0.0, y + _rng.randf_range(6, 12))
-				draw_line(Vector2(x, y), Vector2(nx, ny), Color(1, 1, 0.6, a), 1.0)
+				draw_line(Vector2(x, y), Vector2(nx, ny), Color(0.7, 0.85, 1.0, a * 0.35), 3.0, true)
+				draw_line(Vector2(x, y), Vector2(nx, ny), Color(1, 1, 0.85, a), 1.0, true)
 				x = nx
 				y = ny
 			draw_circle(Vector2.ZERO, 4 * a, Color(1, 1, 0.8, a * 0.6))
@@ -187,8 +203,9 @@ func _draw() -> void:
 			var h2: float = 70.0
 			var pulse := 0.6 + 0.4 * sin(t * 8.0)
 			var fade: float = min(1.0, (life - t) * 2.0)
-			draw_rect(Rect2(-3, -h2, 6, h2), Color(color, 0.18 * fade * pulse))
-			draw_rect(Rect2(-1, -h2, 2, h2), Color(color.lightened(0.4), 0.55 * fade))
+			_shaft(4.0, h2, Color(color, 0.22 * fade * pulse))
+			_shaft(1.2, h2, Color(color.lightened(0.5), 0.7 * fade))
+			draw_circle(Vector2.ZERO, 5.0, Color(color, 0.2 * fade * pulse))
 			for i in 5:
 				var yy := -fmod(t * 30.0 + i * 14.0, h2)
 				_px(Vector2(_rng.randf_range(-3, 3), yy), Color(color.lightened(0.6), fade))
@@ -197,8 +214,14 @@ func _draw() -> void:
 			var w := size
 			draw_rect(Rect2(-w, -2, w * 2, 3), Color(1.0, 0.2, 0.15, blink))
 			draw_rect(Rect2(-w, -2, w * 2, 1), Color(1.0, 0.6, 0.5, blink))
-			_px(Vector2(-1, -60), Color(1, 0.3, 0.2, 0.5 + blink), 3)
-			_px(Vector2(-1, -55), Color(1, 0.3, 0.2, 0.5 + blink), 3)
+			# warning sign over the danger zone
+			var wy := -60.0
+			var tri := PackedVector2Array([Vector2(0, wy - 6), Vector2(5.5, wy + 3.5), Vector2(-5.5, wy + 3.5)])
+			draw_colored_polygon(tri, Color(0.1, 0.02, 0.02, 0.85))
+			var tri2 := PackedVector2Array([Vector2(0, wy - 4.6), Vector2(4.3, wy + 2.7), Vector2(-4.3, wy + 2.7)])
+			draw_colored_polygon(tri2, Color(1.0, 0.35, 0.2, 0.55 + blink))
+			draw_line(Vector2(0, wy - 2.2), Vector2(0, wy + 0.4), Color(1, 1, 0.9, 0.95), 1.0, true)
+			draw_circle(Vector2(0, wy + 1.7), 0.55, Color(1, 1, 0.9, 0.95))
 		"notes":
 			for p in _parts:
 				var tt2: float = max(0.0, t - float(p[2]))
@@ -215,6 +238,7 @@ func _draw() -> void:
 		"meteor":
 			var start := Vector2(-40, -90)
 			var p5 := start.lerp(Vector2.ZERO, min(1.0, k * 1.8))
+			draw_circle(p5, 9, Color("#FFB347", 0.25 * (1.0 if k < 0.55 else a)))
 			draw_circle(p5, 5, Color("#FF7A33", 1.0 if k < 0.55 else a))
 			draw_line(p5, p5 + Vector2(-10, -14), Color("#FFB347", 0.7), 3.0)
 			if k > 0.55:
@@ -226,7 +250,7 @@ func _draw() -> void:
 				if pos4.y < 0:
 					draw_line(pos4, pos4 + Vector2(2, -5), Color(color, 0.9))
 		"summon":
-			draw_rect(Rect2(-6, -20 * k, 12, 20 * k), Color(color, a * 0.4))
+			_shaft(7.0, 22.0 * k, Color(color, a * 0.45))
 			for i in 6:
 				_px(Vector2(_rng.randf_range(-6, 6), -_rng.randf_range(0, 24)), Color(color.lightened(0.5), a))
 		"smoke":

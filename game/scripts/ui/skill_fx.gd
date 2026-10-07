@@ -178,12 +178,25 @@ func _blizzard() -> void:
 	if tgts.size() > 0:
 		var x0: float = tgts[0].x - 20.0
 		var x1: float = tgts[-1].x + 20.0
-		draw_rect(Rect2(minf(x0, x1), 6, absf(x1 - x0), GROUND - 6), Color(0.75, 0.9, 1.0, 0.12 * a))
+		var hz := Color(0.75, 0.9, 1.0, 0.14 * a)
+		var xl := minf(x0, x1)
+		var xr := maxf(x0, x1)
+		draw_polygon(PackedVector2Array([Vector2(xl, 6), Vector2(xr, 6), Vector2(xr, GROUND), Vector2(xl, GROUND)]),
+			PackedColorArray([Color(hz, 0.0), Color(hz, 0.0), hz, hz]))
 		for i in 14:
 			var px := fposmod(_seed * 7.0 + i * 23.0 - t * 90.0, maxf(30.0, absf(x1 - x0))) + minf(x0, x1)
 			var py := fposmod(i * 17.0 + t * 70.0, GROUND - 8.0) + 6.0
 			draw_line(Vector2(px, py), Vector2(px + 5, py - 2), Color(1, 1, 1, 0.55 * a), 1.0, true)
 	_rain(Color("#CFF4FF"), "ice")
+
+
+## Light shaft from `top` to the ground, brightest in the middle and fading to both edges (no hard rim).
+func _vbar(cx: float, hw: float, top: float, c: Color) -> void:
+	var clear := Color(c, 0.0)
+	draw_polygon(PackedVector2Array([Vector2(cx - hw, top), Vector2(cx, top), Vector2(cx, GROUND), Vector2(cx - hw, GROUND)]),
+		PackedColorArray([clear, c, c, clear]))
+	draw_polygon(PackedVector2Array([Vector2(cx, top), Vector2(cx + hw, top), Vector2(cx + hw, GROUND), Vector2(cx, GROUND)]),
+		PackedColorArray([c, clear, clear, c]))
 
 
 func _column(p: Vector2, col: Color, w: float, delay := 0.0) -> void:
@@ -193,9 +206,9 @@ func _column(p: Vector2, col: Color, w: float, delay := 0.0) -> void:
 	var k := clampf(lt / 0.12, 0.0, 1.0)
 	var f := clampf((life - lt) / 0.4, 0.0, 1.0)
 	var top := lerpf(GROUND, -4.0, k)
-	draw_rect(Rect2(p.x - w * 1.6, top, w * 3.2, GROUND - top), Color(col, 0.12 * f))
-	draw_rect(Rect2(p.x - w / 2.0, top, w, GROUND - top), Color(col, 0.45 * f))
-	draw_rect(Rect2(p.x - w / 6.0, top, w / 3.0, GROUND - top), Color(1, 1, 1, 0.75 * f))
+	_vbar(p.x, w * 1.6, top, Color(col, 0.18 * f))
+	_vbar(p.x, w * 0.6, top, Color(col, 0.55 * f))
+	_vbar(p.x, w * 0.22, top, Color(1, 1, 1, 0.85 * f))
 	draw_circle(Vector2(p.x, GROUND - 2), w * (1.2 + 0.6 * sin(lt * 30.0)), Color(col, 0.35 * f))
 	for i in 4:
 		var yy := fposmod(lt * 80.0 + i * 15.0, GROUND)
