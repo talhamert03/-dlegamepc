@@ -100,7 +100,8 @@ func _show_bubble(text: String, hero_id: String, dur: float) -> void:
 		if u.id == hero_id:
 			x = u.x
 	var w := bubble.size.x
-	bubble.position = Vector2(clamp(x - w / 2.0, 20.0, 395.0 - w), 13)
+	# stay inside the 360 px battle view (the control block starts at x 360)
+	bubble.position = Vector2(clamp(x - w / 2.0, 20.0, 356.0 - w), 13)
 	_tail_x = clampf(x - bubble.position.x, 10.0, w - 10.0)
 	bubble.pivot_offset = Vector2(_tail_x, h)
 	bubble.visible = true

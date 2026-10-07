@@ -97,6 +97,9 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 55. Item tooltip at 4x: frame, affix rows, compare column, set / legendary text
 - [x] 56. Shop product art: use the new material icons (seals, shards, essences) where products grant them
 
+## Replay backlog 2 (shift 2026-10-07 16:21)
+- [x] 57. Tutorial bubble could slide 35 px into the control block (clamp used 395 instead of the 360 px battle view)
+
 ## Questions for the owner
 
 - **Difficulty pacing (bot, updated 2026-10-06 night):** with boss fatigue and treasure goblins the baseline bot now
@@ -173,3 +176,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift — #54: damage/skill numbers over plated units start 9 px higher (above the plate); plates of tall elites clamp below strip y 15 so they never hide under the goal ribbon. Boss bar already protected by the y 21 floor from #49. Heavy fights still crowd numbers a little (by design: stacking caps at 3).
 - 2026-10-07 shift — #55: item tooltip at 4x is crisp (fonts at final size). Added a rarity accent (gradient band + top line, none for common/plain text tips); fixed lowercase TR affix name 'can' -> 'Can'. Compare column not shown in this shot (item not wearable by Kael).
 - 2026-10-07 shift — #56: checked all shop tabs: no product grants seals, shards or essences (packs give heroes, chests, gold, supporter bonuses, the hourglass), so no material icon belongs there. No change. Replay backlog 51-56 done; visual + replay work this shift: #37-#56.
+- 2026-10-07 shift 16:21 — #57: tutorial speech bubble clamped to the battle view (356 - width). Checked with --tutorial at 4 s and 12 s.
