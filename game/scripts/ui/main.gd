@@ -123,6 +123,8 @@ func _run_title() -> void:
 	WindowManager.place_strip()
 	var tw := create_tween()
 	tw.tween_property(strip_root, "modulate:a", 1.0, 0.5)
+	# the intro may have left the boss or town theme playing
+	AudioManager.play_music("town" if BattleSim.phase == "town" else str(BattleSim.zone().get("music", "act1")))
 	WindowManager.layout_changed()
 
 
