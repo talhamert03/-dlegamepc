@@ -616,12 +616,19 @@ func _spawn_number(text: String, pos: Vector2, color: Color, big := false) -> vo
 	# numbers that land on the same spot within a moment stack upwards instead of covering each other
 	var stack := 0
 	for n in _active_nums:
-		if float(n["t"]) < 0.22 and absf(float(n["x0"]) - pos.x) < 16.0:
+		# overlap test uses both label widths, so long skill names stack instead of printing over each other
+		var reach := maxf(16.0, (float(n.get("w", 0.0)) + sz.x) * 0.5 + 2.0)
+		var window := 0.22 if sz.x < 30.0 else 0.6
+		if float(n["t"]) < window and absf(float(n["x0"]) - pos.x) < reach:
 			stack += 1
-	l.position = (pos - Vector2(sz.x / 2.0, sz.y * 0.6 + 7.0 * mini(stack, 3))).round()
-	# keep the arc clear of the zone plaque / goal ribbon along the top edge
-	l.position.y = maxf(l.position.y, 21.0)
-	_active_nums.append({"l": l, "t": 0.0, "life": 0.95 if big else 0.75, "vx": _rng.randf_range(-10, 10), "y0": l.position.y, "big": big, "x0": pos.x})
+	var base := pos - Vector2(sz.x / 2.0, sz.y * 0.6)
+	var dy := 8.0 * mini(stack, 3)
+	# keep the arc clear of the zone plaque / goal ribbon along the top edge; when stacking up would hit it,
+	# stack downwards instead so the labels never collapse onto one line
+	base.y = maxf(base.y, 21.0)
+	base.y = base.y - dy if base.y - dy >= 21.0 else base.y + dy
+	l.position = base.round()
+	_active_nums.append({"l": l, "t": 0.0, "life": 0.95 if big else 0.75, "vx": _rng.randf_range(-10, 10), "y0": l.position.y, "big": big, "x0": pos.x, "w": sz.x})
 
 
 func _update_numbers(delta: float) -> void:

@@ -124,8 +124,12 @@ func _notice(i: int, q: Dictionary, w: float) -> Control:
 		UISkin.poly(ci, pts, wax.lightened(0.2 if hov else 0.05), wax.darkened(0.35))
 		UISkin.ring(ci, ctr, 7.5, Color(0, 0, 0, 0.35), 1.0)
 		var t := DataDB.t("btn_claim")
-		var tw := f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
-		b.draw_string(f, ctr + Vector2(-tw / 2.0, 3.0), t, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#FFE7C8") if done else Color("#C8BEB8")))
+		# fit inside the 15 px seal (CLAIM is wider than AL)
+		var fs := 8
+		while fs > 5 and f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > 15.0:
+			fs -= 1
+		var tw := f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		b.draw_string(f, ctr + Vector2(-tw / 2.0, fs * 0.37), t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("#FFE7C8") if done else Color("#C8BEB8")))
 	if done and not claimed:
 		var tm := Timer.new()
 		tm.wait_time = 0.05

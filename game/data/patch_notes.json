@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "İngilizce kontrolü: CLAIM düğmesi mühre sığıyor; aynı anda çıkan uzun beceri adları artık üst üste binmiyor.", "en": "English pass: CLAIM fits its seal; long skill names cast at the same moment no longer print over each other."},
     {"tr": "Evcil Dostlar: koleksiyon boşken nereden kazanıldıkları yazıyor. Eklenen Hasar açıklaması düzeltildi (yüzdelik bir değer).", "en": "Pets: an empty collection now says where pets come from. Added Damage tooltip corrected (it is a percent)."},
     {"tr": "Bölge havası artık gerçekten görünüyor (önceden arka plan resminin arkasında kalıyordu): kar, yağmur, köz, yaprak, sis, kum ve toz yumuşak şekillerle; çayır ve kasabada polen, tapınakta altın ışık zerreleri, iç mekânlarda toz eklendi.", "en": "Zone weather actually shows now (it sat behind the background art): soft snow, rain, embers, leaves, fog, sand and dust; pollen in meadows and town, golden motes in temples, dust indoors."},
     {"tr": "Savaş şeridi: beceri adları artık bölge plakasının arkasında kalmıyor, beceri efektleri üst plakaların altından geçiyor, HD düşmanların ölüm dağılması kare bloklar yerine ince taneli.", "en": "Battle strip: skill names no longer hide behind the zone plaque, skill effects pass under the HUD plaques, HD enemies dissolve in fine grain instead of square blocks."},
