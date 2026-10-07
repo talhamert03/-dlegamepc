@@ -79,7 +79,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 43. Bottom control panel (taskbar side): medallion icons redrawn, hover glow, notification badges
 
 **D. Icons and identity**
-- [ ] 44. App / taskbar / tray icon at 16-256 px, Steam library capsule set (header, capsule, hero, logo)
+- [x] 44. App / taskbar / tray icon at 16-256 px, Steam library capsule set (header, capsule, hero, logo)
 - [ ] 45. Status effect, element and stat icons: one family (fire, cold, lightning, chaos, holy, stun, poison...)
 - [ ] 46. Currency and material icons (gold, seals, shards, badges, dusts, essences): redraw as a matched set
 
@@ -152,3 +152,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift — #41: intro letterbox slides in over 0.7 s, beat openings are eyelid wipes with a gold seam instead of a flat black fade, ui_travel whoosh per beat, music switches to boss at beat 2 and town at beat 4, Skip is a Fancy plaque. Text reveal + subtitle plate + beat dots already existed. Screenshot mode saves intro_open.png.
 - 2026-10-07 shift — #42: ending panel (now 340x210) redrawn on HD scenes (throne+Morvath, void, temple, town at dawn with party portraits, meadow + red eyes), faceted crystal, subtitle plate, beat dots. W.confirm sizes to text, top medallion (! danger / ? normal), veil fade + card pop. ContextMenu drop-in + hover diamond. Toasts and recruit reveal reviewed, no change. --polishshot flag.
 - 2026-10-07 shift — #43: new g_mug glyph (build_ui_hd.py) for Tavern medallion + window seal, medallion hover halo + brighter/larger glyph, Tavern badge when any locked hero is affordable (Tavern.can_afford), system icon row and gold/level row inset away from the frame's corner gems (they overlapped power/menu icons and Sv text).
+- 2026-10-07 shift — #44: tools/art/build_store_art.py builds the icon (crystal + sword medallion, simplified < 48 px) as icon.png 256 + icon.ico 16..256 (export_presets application/icon set; Godot only stamps the .exe icon when rcedit is configured, Windows untested) and the Steam set in steam/store_art: header 920x430, small 462x174, main 1232x706, vertical 748x896, library 600x900, library hero 3840x1240 (no text, background upscaled + blurred), library logo 1280. All from the game's own forest scene + portraits + Cinzel fonts.
