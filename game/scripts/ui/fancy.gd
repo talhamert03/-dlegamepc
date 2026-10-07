@@ -278,9 +278,21 @@ static func plaque_button(text: String, accent: Color, cb: Callable, sz: Vector2
 	b.pressed.connect(func():
 		AudioManager.play("ui_click", 0.05, 0.6)
 		cb.call())
+	b.set_meta("sh", -1.0)
 	b.mouse_entered.connect(func():
 		AudioManager.play("ui_click", 0.15, 0.15)
-		b.queue_redraw())
+		# one light sweep across the plate per hover
+		var tw := b.create_tween()
+		tw.tween_method(func(v: float):
+			b.set_meta("sh", v)
+			b.queue_redraw(), 0.0, 1.0, 0.45).set_ease(Tween.EASE_OUT)
+		tw.tween_callback(func(): b.set_meta("sh", -1.0)))
+	b.button_down.connect(func():
+		b.pivot_offset = b.size / 2.0
+		b.scale = Vector2(0.96, 0.94))
+	b.button_up.connect(func():
+		var tw := b.create_tween()
+		tw.tween_property(b, "scale", Vector2.ONE, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT))
 	for sig in [b.mouse_exited, b.button_down, b.button_up]:
 		sig.connect(b.queue_redraw)
 	b.draw.connect(func():
@@ -301,6 +313,13 @@ static func plaque_button(text: String, accent: Color, cb: Callable, sz: Vector2
 		for sx in [r.position.x, r.end.x]:
 			UISkin.diamond(ci, Vector2(sx, r.get_center().y), 4.2)
 			UISkin.diamond(ci, Vector2(sx, r.get_center().y), 2.2, accent.lightened(0.3), accent.darkened(0.3))
+		var sh := float(b.get_meta("sh", -1.0))
+		var bx := inner.position.x + 5.0 + (inner.size.x - 17.0) * sh
+		if sh >= 0.0:
+			var sa := 0.32 * sin(sh * PI)
+			var band := PackedVector2Array([Vector2(bx, inner.position.y + 1), Vector2(bx + 7, inner.position.y + 1),
+				Vector2(bx + 3, inner.end.y - 1), Vector2(bx - 4, inner.end.y - 1)])
+			b.draw_colored_polygon(band, Color(1, 0.95, 0.8, sa))
 		var f := UITheme.font_title
 		var fs := int(clampf(b.size.y * 0.46, 9.0, 14.0))
 		var tw := f.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x

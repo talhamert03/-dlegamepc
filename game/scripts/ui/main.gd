@@ -99,6 +99,10 @@ func _run_title() -> void:
 	if OS.get_cmdline_user_args().has("--screenshot"):
 		await get_tree().create_timer(2.5).timeout
 		get_viewport().get_texture().get_image().save_png("user://screenshots/title.png")
+		var b0: Button = t._buttons.get_child(0)
+		b0.mouse_entered.emit()
+		await get_tree().create_timer(0.2).timeout
+		get_viewport().get_texture().get_image().save_png("user://screenshots/title_hover.png")
 		t._start_intro()
 		for i in TitleScreen.BEATS.size():
 			await get_tree().create_timer(3.2).timeout

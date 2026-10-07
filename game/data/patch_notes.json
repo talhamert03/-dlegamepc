@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Başlık ekranı: ormana süzülen ışık hüzmeleri ve sahne boyunca yükselen közler; menü plakalarında üzerine gelince ışık geçiyor, basınca esneyerek geri dönüyor.", "en": "Title screen: light shafts through the forest and embers rising across the poster; menu plaques shine on hover and spring back when pressed."},
     {"tr": "Kaydırma çubukları artık bronz tutamaçlı oluklar; basit ipuçları gece mavisi, yaldız çizgili kutularda.", "en": "Scroll bars are bronze-thumbed grooves; plain tooltips sit on a night-blue plate with a gilt rule."},
     {"tr": "Gelişim: her fraksiyon artık kendi kartında, fraksiyon renginde şerit ve arma ile; aktif fraksiyonun kenarı yaldızlı.", "en": "Growth: each faction sits on its own card with a faction-coloured spine and crest; active factions get a gilded rim."},
     {"tr": "Taverna: kartlar üzerine gelince öne çıkıyor, SR/SSR kartlarda parıltı geçiyor, uzun isimler sığıyor. Mağaza raflarına fener ışığı düşüyor.", "en": "Tavern: cards lift on hover, SR/SSR cards carry a foil shine, long names fit. Lantern light falls on the shop shelves."},

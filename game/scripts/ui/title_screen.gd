@@ -532,6 +532,15 @@ func _draw_poster() -> void:
 		_view.draw_rect(Rect2(Vector2.ZERO, f), Color(0.7, 0.9, 1.0, 0.18 * flash))
 		_view.draw_polyline(_bolt, Color(0.6, 0.85, 1.0, 0.35 * flash), 5.0, true)
 		_view.draw_polyline(_bolt, Color(1, 1, 1, 0.9 * flash), 1.6, true)
+	# god rays slanting in from the upper left, slowly breathing
+	for i in 6:
+		var x0 := f.x * (0.08 + i * 0.13)
+		var wob := 0.5 + 0.5 * sin(_t * (0.35 + i * 0.07) + i * 1.7)
+		var wtop := f.x * (0.018 + 0.01 * (i % 3))
+		var ray := PackedVector2Array([Vector2(x0 - wtop, -4), Vector2(x0 + wtop, -4),
+			Vector2(x0 + f.x * 0.20 + wtop * 3.0, f.y * 0.82), Vector2(x0 + f.x * 0.20 - wtop * 3.0, f.y * 0.82)])
+		var rc := Color(0.85, 1.0, 0.9, 0.06 * wob + 0.03 * flash)
+		_view.draw_polygon(ray, PackedColorArray([rc, rc, Color(rc, 0.0), Color(rc, 0.0)]))
 	# heroes: back row darker, each with a warm / cool rim light; a slow breathing parallax
 	for h in POSTER:
 		var id := str(h[0])
@@ -556,6 +565,15 @@ func _draw_poster() -> void:
 		_view.draw_circle(Vector2.ZERO, 160.0, Color(0.7, 0.85, 0.8, 0.045))
 		_view.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	_vignette(Color(0, 0, 0), 1.0)
+	# embers drifting up through the whole poster (stateless: position is a function of time)
+	for i in 34:
+		var sp := 0.6 + fmod(i * 0.37, 0.9)
+		var ex := fmod(i * 97.3 + _t * 7.0 * sp + sin(_t * 0.8 + i) * 14.0, f.x + 20.0) - 10.0
+		var ey := f.y - fmod(i * 53.1 + _t * 18.0 * sp, f.y * 1.1)
+		var fl := 0.5 + 0.5 * sin(_t * (3.0 + i % 4) + i)
+		var er := maxf(0.8, f.y * 0.0055) * (0.7 + 0.5 * fmod(i * 0.61, 1.0))
+		_view.draw_circle(Vector2(ex, ey), er * 2.6, Color(1.0, 0.55, 0.2, 0.16 * fl))
+		_view.draw_circle(Vector2(ex, ey), er, Color(1.0, 0.82, 0.45, 0.9 * fl))
 
 
 func _draw_beat(b: int) -> void:
