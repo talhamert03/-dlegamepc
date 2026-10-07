@@ -98,6 +98,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 56. Shop product art: use the new material icons (seals, shards, essences) where products grant them
 
 ## Replay backlog 2 (shift 2026-10-07 16:21)
+- [x] 59. Long-run log audit (80 s at 6x, full party): only benign warnings; removed the one real one (full-rect anchors on Main while WindowManager sets its size)
 - [x] 58. Town showed the last zone's name + stage tag + wave pips on the plaque; now "Stonebridge Town" only
 - [x] 57. Tutorial bubble could slide 35 px into the control block (clamp used 395 instead of the 360 px battle view)
 
@@ -180,3 +181,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift 16:21 — #57: tutorial speech bubble clamped to the battle view (356 - width). Checked with --tutorial at 4 s and 12 s.
 - 2026-10-07 shift 16:21 — #58: plaque in town shows town_name, hides the stage tag and wave pips (restored by _on_phase on leaving). Checked with --town at 4x.
 - 2026-10-07 shift 16:21 — replay: town, Endless Tower (new --tower flag), World 2-4 maps reviewed, no issues. Perf probe: 1080p 60 fps / 4K ~20 fps under xvfb software rendering; TIME_PROCESS grows with resolution so it is render-bound on llvmpipe, not script-bound; ~600 canvas draw calls. Needs a check on real GPU hardware (owner).
+- 2026-10-07 shift 20:03 — #59: 80 s run at 6x speed: no script errors; warnings are dummy audio / V-Sync (headless) and exit-time leaks. Main.tscn had full-rect anchors while WindowManager assigns desktop.size -> 'non-equal opposite anchors' warning; anchors dropped, layout identical in a screenshot.
