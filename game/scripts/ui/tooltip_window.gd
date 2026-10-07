@@ -3,6 +3,8 @@ extends Control
 
 var box: VBoxContainer
 var bg: Control
+var _accent: Control           # rarity glow along the top of item tooltips
+var _accent_col := Color(0, 0, 0, 0)
 var _showing := false
 
 
@@ -13,6 +15,18 @@ func _ready() -> void:
 	z_index = 100
 	bg = UITheme.tooltip_bg()
 	add_child(bg)
+	_accent = Control.new()
+	_accent.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_accent.draw.connect(func():
+		if _accent_col.a <= 0.0:
+			return
+		var w := _accent.size.x
+		var h := minf(36.0, _accent.size.y - 4.0)
+		var c := Color(_accent_col, 0.22)
+		_accent.draw_polygon(PackedVector2Array([Vector2(3, 3), Vector2(w - 3, 3), Vector2(w - 3, 3 + h), Vector2(3, 3 + h)]),
+			PackedColorArray([c, c, Color(c, 0.0), Color(c, 0.0)]))
+		_accent.draw_line(Vector2(8, 3.2), Vector2(w - 8, 3.2), Color(_accent_col.lightened(0.25), 0.85), 0.8, true))
+	add_child(_accent)
 	box = VBoxContainer.new()
 	box.position = Vector2(6, 5)
 	box.add_theme_constant_override("separation", 1)
@@ -39,6 +53,7 @@ const WRAP_W := 176.0
 ## stretching the tooltip across the screen.
 func show_text(text: String) -> void:
 	_clear()
+	_accent_col = Color(0, 0, 0, 0)
 	var lines := text.split("\n")
 	for i in lines.size():
 		var ln: String = lines[i]
@@ -59,6 +74,7 @@ func show_item(item: Dictionary, compare_hero := "") -> void:
 		return
 	var r: String = item.get("rarity", "common")
 	var col := ItemUtil.rarity_color(r)
+	_accent_col = col if r != "common" else Color(0, 0, 0, 0)
 	var slot_name: String = DataDB.tx(DataDB.items["slot_names"].get(item.get("slot", "") if item.get("slot", "") != "ring" else "ring1", {}))
 	var sub := "%s %s  ·  %s %d" % [ItemUtil.rarity_name(r), slot_name, DataDB.t("item_level_short"), int(item.get("ilvl", 1))]
 	if item.get("cat", "") == "armor":
@@ -150,6 +166,8 @@ func _present() -> void:
 	await get_tree().process_frame
 	var sz := (box.get_combined_minimum_size() + Vector2(12, 10)).ceil()
 	bg.size = sz
+	_accent.size = sz
+	_accent.queue_redraw()
 	size = sz
 	var area: Vector2 = get_parent().size
 	var m: Vector2 = get_parent().get_local_mouse_position()

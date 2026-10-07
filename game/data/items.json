@@ -140,7 +140,7 @@
     "lightning_dmg": {"kind": "prefix", "slots": ["weapon", "amulet", "offhand"], "range": [40, 65], "name": {"tr": "Yıldırım Hasarı", "en": "Lightning Damage"}},
     "chaos_dmg": {"kind": "prefix", "slots": ["weapon", "amulet", "offhand"], "range": [40, 65], "name": {"tr": "Kaos Hasarı", "en": "Chaos Damage"}},
     "spell_flat": {"kind": "prefix", "slots": ["weapon", "offhand", "amulet"], "flat": [2.0, 3.0], "name": {"tr": "Büyü Gücü", "en": "Spell Power"}},
-    "hp_flat": {"kind": "prefix", "slots": ["chest", "belt", "helm", "boots", "gloves"], "flat": [10, 16], "name": {"tr": "can", "en": "HP"}},
+    "hp_flat": {"kind": "prefix", "slots": ["chest", "belt", "helm", "boots", "gloves"], "flat": [10, 16], "name": {"tr": "Can", "en": "HP"}},
     "hp_pct": {"kind": "prefix", "slots": ["chest", "belt"], "range": [10, 15], "name": {"tr": "Can", "en": "HP"}},
     "def_flat": {"kind": "prefix", "slots": ["helm", "chest", "gloves", "boots", "offhand", "cape"], "flat": [2.5, 4.0], "armor": true, "name": {"tr": "Savunma", "en": "Defense"}},
     "def_pct": {"kind": "prefix", "slots": ["helm", "chest", "gloves", "boots", "offhand"], "range": [30, 50], "name": {"tr": "Savunma", "en": "Defense"}},
