@@ -98,6 +98,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 56. Shop product art: use the new material icons (seals, shards, essences) where products grant them
 
 ## Replay backlog 2 (shift 2026-10-07 16:21)
+- [x] 58. Town showed the last zone's name + stage tag + wave pips on the plaque; now "Stonebridge Town" only
 - [x] 57. Tutorial bubble could slide 35 px into the control block (clamp used 395 instead of the 360 px battle view)
 
 ## Questions for the owner
@@ -177,3 +178,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift — #55: item tooltip at 4x is crisp (fonts at final size). Added a rarity accent (gradient band + top line, none for common/plain text tips); fixed lowercase TR affix name 'can' -> 'Can'. Compare column not shown in this shot (item not wearable by Kael).
 - 2026-10-07 shift — #56: checked all shop tabs: no product grants seals, shards or essences (packs give heroes, chests, gold, supporter bonuses, the hourglass), so no material icon belongs there. No change. Replay backlog 51-56 done; visual + replay work this shift: #37-#56.
 - 2026-10-07 shift 16:21 — #57: tutorial speech bubble clamped to the battle view (356 - width). Checked with --tutorial at 4 s and 12 s.
+- 2026-10-07 shift 16:21 — #58: plaque in town shows town_name, hides the stage tag and wave pips (restored by _on_phase on leaving). Checked with --town at 4x.

@@ -204,7 +204,7 @@ func _draw_plaque() -> void:
 	var stage := _stage_label.text
 	var boss := BattleSim.mode != "tower" and BattleSim.is_boss_stage()
 	var nw := f.get_string_size(name, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
-	var sw := fb.get_string_size(stage, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x + 8.0
+	var sw := (fb.get_string_size(stage, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x + 8.0) if stage != "" else -6.0
 	var x0 := 20.0
 	var r := Rect2(x0, 1, nw + sw + 24.0, 11)
 	UISkin.fill(ci, Rect2(r.position + Vector2(0, 1), r.size), 2, Color(0, 0, 0, 0.35), Color(0, 0, 0, 0.35))
@@ -222,6 +222,8 @@ func _draw_plaque() -> void:
 	var tp := Vector2(x0 + 13, 9.6)
 	_plaque.draw_string_outline(f, tp, name, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, 2, Color(0, 0, 0, 0.8))
 	_plaque.draw_string(f, tp, name, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#FFE7B0"))
+	if stage == "":
+		return
 	# stage tag
 	var tag := Rect2(x0 + 16 + nw + 2, 2.5, sw, 8)
 	var tcol := Color("#C0392B") if boss else Color("#D8A04A")
@@ -310,6 +312,8 @@ func _draw_boss_hud() -> void:
 
 
 func _draw_wave_dots() -> void:
+	if BattleSim.phase == "town":
+		return
 	if BattleSim.phase == "boss" or BattleSim.is_boss_stage():
 		return
 	var n := BattleSim.waves_per_stage()
@@ -323,6 +327,13 @@ func _update_hud_text() -> void:
 		_zone_label.text = DataDB.t("tower_name")
 		_stage_label.text = DataDB.t("floor_n", {"n": BattleSim.tower_floor})
 		_stage_label.position.x = 26 + UITheme.font_small.get_string_size(_zone_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x + 4
+		return
+	if BattleSim.phase == "town":
+		# in town the plaque names the town, no stage tag or wave pips
+		_zone_label.text = DataDB.t("town_name")
+		_stage_label.text = ""
+		_wave_dots.queue_redraw()
+		_plaque.queue_redraw()
 		return
 	var z := BattleSim.zone()
 	_zone_label.text = DataDB.tx(z.get("name", {}))

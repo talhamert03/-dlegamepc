@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Kasabadayken üstteki plaka artık kasabanın adını gösteriyor (önceki bölge ve aşama yazmıyor).", "en": "In town the top plaque now shows the town name instead of the last zone and stage."},
     {"tr": "Eşya ipuçlarının üstünde nadirlik renginde ince bir parıltı; \"+can\" satırı artık \"+Can\".", "en": "Item tooltips carry a thin rarity-coloured glow along the top."},
     {"tr": "İngilizce kontrolü: CLAIM düğmesi mühre sığıyor; aynı anda çıkan uzun beceri adları artık üst üste binmiyor.", "en": "English pass: CLAIM fits its seal; long skill names cast at the same moment no longer print over each other."},
     {"tr": "Evcil Dostlar: koleksiyon boşken nereden kazanıldıkları yazıyor. Eklenen Hasar açıklaması düzeltildi (yüzdelik bir değer).", "en": "Pets: an empty collection now says where pets come from. Added Damage tooltip corrected (it is a percent)."},
