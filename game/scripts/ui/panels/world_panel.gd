@@ -463,13 +463,17 @@ func _show_card(zi: int) -> void:
 		var x := maxf(2.0, (r.size.x - tot + 3.0) / 2.0)
 		for chp in chips:
 			var col: Color = EL_COL.get(chp[0], Color.WHITE)
-			UISkin.diamond(ci, Vector2(x + 3, 20.5), 2.6, col.lightened(0.3), col.darkened(0.35))
+			var etx := UITheme.hd("st_" + str(chp[0]))
+			if etx:
+				rbox.draw_texture_rect(etx, Rect2(x - 0.5, 16.5, 7, 7), false)
+			else:
+				UISkin.diamond(ci, Vector2(x + 3, 20.5), 2.6, col.lightened(0.3), col.darkened(0.35))
 			var low := ZoneInfo.party_res(str(chp[0]), _diff) < ZoneInfo.TARGET_RES
 			rbox.draw_string(f, Vector2(x + 7, 23.5), str(chp[1]), HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#FF9A8A") if low else UITheme.C_TEXT)
 			x += float(chp[2]) + 3.0)
 	_card.add_child(rbox)
 	# boss line
-	var bl := UITheme.label("☠ " + DataDB.t("boss") + ": " + DataDB.tx(DataDB.enemy_def(str(z.get("boss", ""))).get("name", {})), Color("#FF9A8A"), 8)
+	var bl := UITheme.label(DataDB.t("boss") + ": " + DataDB.tx(DataDB.enemy_def(str(z.get("boss", ""))).get("name", {})), Color("#FF9A8A"), 8)
 	bl.position = Vector2(6, 52)
 	bl.size = Vector2(w - 12, 10)
 	bl.clip_text = true
@@ -525,7 +529,7 @@ func _stage_picker(zi: int, w: float, h: float) -> void:
 		b.position = Vector2(6 + i * (pw + 2.0), py)
 		b.size = Vector2(pw, 15)
 		b.disabled = not open
-		b.tooltip_text = (DataDB.t("boss") if boss else DataDB.t("world_stage_n", {"n": st})) + ("" if open else "  🔒") \
+		b.tooltip_text = (DataDB.t("boss") if boss else DataDB.t("world_stage_n", {"n": st})) + ("" if open else "  ✖") \
 			+ "\n" + DataDB.t("dps_need_short", {"n": F.fmt_num(ZoneInfo.dps_needed(z_of(zi), st, _diff))})
 		b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		b.draw.connect(func():

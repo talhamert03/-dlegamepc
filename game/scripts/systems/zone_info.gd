@@ -3,7 +3,9 @@ extends RefCounted
 ## What a zone throws at the party and whether the party is ready: the elements its monsters and boss use,
 ## the resistance worth having there, a readiness verdict and a plain hint for players who are stuck.
 
-const ELEMENT_ICON := {"fire": "🔥", "cold": "❄", "lightning": "⚡", "chaos": "☠", "holy": "✦"}
+## Text prefix for elements. Emoji are not in the game fonts (they fell back to system glyphs), so text stays
+## plain; drawn UI uses the st_<element> icon family instead.
+const ELEMENT_ICON := {"fire": "", "cold": "", "lightning": "", "chaos": "", "holy": ""}
 const TARGET_RES := 25.0   # effective resistance that makes elemental hits comfortable
 
 
@@ -68,7 +70,7 @@ static func hint(z: Dictionary, diff: int) -> String:
 	for el in elements(z):
 		var r := party_res(el, diff)
 		if r < TARGET_RES:
-			return DataDB.t("hint_res", {"el": ELEMENT_ICON.get(el, "") + " " + element_name(el), "now": int(r), "want": int(TARGET_RES)})
+			return DataDB.t("hint_res", {"el": element_name(el), "now": int(r), "want": int(TARGET_RES)})
 	var gap := float(F.monster_level(z, 10, diff)) - party_level()
 	if gap > 1.0:
 		return DataDB.t("hint_level", {"n": int(ceil(gap))})

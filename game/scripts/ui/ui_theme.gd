@@ -50,7 +50,16 @@ func _font(path: String) -> FontFile:
 	f.hinting = TextServer.HINTING_LIGHT
 	f.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_AUTO
 	f.generate_mipmaps = false
+	# symbols (✓ ★ ⚔ ▶ ✖ ...) are not in the text fonts: a bundled fallback keeps them identical on every OS
+	if not path.ends_with("DejaVuSans-Bold.ttf"):
+		if _sym == null:
+			_sym = _font("res://assets/fonts/DejaVuSans-Bold.ttf")
+		if _sym:
+			f.fallbacks = [_sym]
 	return f
+
+
+var _sym: FontFile
 
 
 func tex(name: String) -> Texture2D:

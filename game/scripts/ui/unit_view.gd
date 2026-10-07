@@ -607,20 +607,20 @@ func _draw() -> void:
 	if unit.is_hero_side() and unit.ult_id != "":
 		var uc := Color("#F7C948") if unit.ult_charge < 100 else Color(1, 1, 1, 0.6 + 0.4 * sin(_clock * 10.0))
 		draw_rect(Rect2(x0, y + 2, round(w * unit.ult_charge / 100.0), 1), uc)
-	# status pips
+	# status icons: the matched st_* family (element / status enamel discs) over the bar
 	var px := x0
+	var shown := 0
 	for s in ["stun", "freeze", "burn", "poison", "bleed", "chill", "shock", "vulnerable", "weaken"]:
-		if unit.has_status(s):
-			var c: Color = {"stun": Color("#FFE45C"), "freeze": Color("#BFE8FF"), "burn": Color("#FF7A33"), "poison": Color("#9BE05A"),
-				"bleed": Color("#C9213A"), "chill": Color("#7FD8FF"), "shock": Color("#FFF27A"), "vulnerable": Color("#FF5A9A"),
-				"weaken": Color("#9A8AB8")}[s]
-			draw_rect(Rect2(px, y - 4, 2, 2), c)
-			px += 3
-	for b in unit.buffs:
-		draw_rect(Rect2(px, y - 4, 2, 2), Color("#7FE07A"))
-		px += 3
-		if px > w / 2.0:
-			break
+		if unit.has_status(s) and shown < 4:
+			var tx := UITheme.hd("st_" + s)
+			if tx:
+				draw_texture_rect(tx, Rect2(px, y - 6.5, 5, 5), false)
+			px += 5.5
+			shown += 1
+	if not unit.buffs.is_empty() and shown < 4:
+		var bt := UITheme.hd("st_buff")
+		if bt:
+			draw_texture_rect(bt, Rect2(px, y - 6.5, 5, 5), false)
 
 
 ## Where the blow of this unit's attack lands (logical, strip space): in front of the weapon.

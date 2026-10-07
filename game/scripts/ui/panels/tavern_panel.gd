@@ -214,7 +214,7 @@ func _card(hid: String, pos: Vector2) -> void:
 		c.add_child(badge)
 		return
 	if not Tavern.level_ok(hid):
-		var lk := UITheme.label("🔒 " + DataDB.t("tavern_need_lv", {"lv": Tavern.level_req(hid)}), UITheme.C_RED, 7, UITheme.font_body)
+		var lk := UITheme.label(DataDB.t("tavern_need_lv", {"lv": Tavern.level_req(hid)}), UITheme.C_RED, 7, UITheme.font_body)
 		lk.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		lk.position = Vector2(0, CARD.y - 15)
 		lk.size = Vector2(CARD.x, 12)

@@ -156,5 +156,5 @@ func _tick_clock(l: Label) -> void:
 	var t := Time.get_time_dict_from_system()
 	var left := 86400 - (int(t["hour"]) * 3600 + int(t["minute"]) * 60 + int(t["second"]))
 	var txt := ("%d sa %d dk" % [left / 3600, (left % 3600) / 60]) if DataDB.lang == "tr" else ("%dh %dm" % [left / 3600, (left % 3600) / 60])
-	l.text = "⌛ " + DataDB.t("refresh_in", {"t": txt})
+	l.text = "↺ " + DataDB.t("refresh_in", {"t": txt})
 

@@ -104,12 +104,13 @@ func _draw_stage() -> void:
 	_stage.draw_string(fb, Vector2(pill.position.x + 4, pill.end.y - 2.3), eff, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#9CF0A0"))
 	_stage.draw_string(fs, Vector2(36, 11), DataDB.t("away_head"), HORIZONTAL_ALIGNMENT_LEFT, pill.position.x - 40, 7, Color("#C9B08A"))
 	if x2:
-		var hg := "⌛ x2"
+		var hg := "x2"
 		var hw := fb.get_string_size(hg, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
-		var p2 := Rect2(w - hw - 12, 18, hw + 8, 10)
+		var p2 := Rect2(w - hw - 21, 18, hw + 17, 10)
 		UISkin.fill(ci, p2, 3, Color("#6A4A16"), Color("#3A2408"))
 		UISkin.stroke(ci, p2, 3, UISkin.OUTLINE, 0.8)
-		_stage.draw_string(fb, Vector2(p2.position.x + 4, p2.end.y - 2.3), hg, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#FFD86A"))
+		_stage.draw_texture_rect(UITheme.icon("clock"), Rect2(p2.position + Vector2(2.5, 1.5), Vector2(7, 7)), false)
+		_stage.draw_string(fb, Vector2(p2.position.x + 12, p2.end.y - 2.3), hg, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#FFD86A"))
 	# ---- reward tiles, values count up
 	var k := clampf(_t / COUNT_T, 0.0, 1.0)
 	k = 1.0 - pow(1.0 - k, 3.0)

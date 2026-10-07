@@ -33,7 +33,7 @@ func _beast_tip(eid: String, d: Dictionary, kills: int) -> String:
 	var lines: Array = [DataDB.tx(d.get("name", {})), DataDB.t("beast_kills", {"n": F.fmt_num(kills)})]
 	var el := str(d.get("element", "physical"))
 	if el != "physical" and el != "":
-		lines.append(DataDB.t("beast_element", {"el": ZoneInfo.ELEMENT_ICON.get(el, "") + " " + ZoneInfo.element_name(el)}))
+		lines.append(DataDB.t("beast_element", {"el": ZoneInfo.element_name(el)}))
 	var where: Array = []
 	for z in DataDB.zones:
 		if z.get("boss", "") == eid or z.get("enemies", []).has(eid):
