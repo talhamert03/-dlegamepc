@@ -235,13 +235,11 @@ func _build_tabs() -> void:
 		b.draw.connect(func():
 			var ci := b.get_canvas_item()
 			var hov := b.is_hovered()
-			var r := Rect2(Vector2(1, 0 if on else 1), b.size - Vector2(2, 1))
+			var r := Rect2(Vector2(1, 0), b.size - Vector2(2, 3))
+			# the tab family (#77); the chosen tab keeps a wash of its category's velvet
+			UISkin.tab(ci, r, on, hov)
 			if on:
-				UISkin.stroke(ci, r.grow(1.0), 4, Color(1.0, 0.85, 0.4, 0.5), 2.0)
-			UISkin.fill(ci, r, 3, (vel[0] as Color).lightened(0.15 if on or hov else 0.0) if on else Color("#5A3820").lightened(0.1 if hov else 0.0),
-				(vel[1] as Color) if on else Color("#2A180C"))
-			UISkin.stroke(ci, r, 3, Color("#140A04"), 1.0)
-			UISkin.stroke(ci, r.grow(-1.0), 2, Color("#E8C27A", 0.85) if on else Color("#B08A5A", 0.4), 0.8)
+				UISkin.fill(ci, r.grow(-1.6), 2, Color(vel[0] as Color, 0.35), Color(vel[1] as Color, 0.20))
 			var f := UITheme.font_title
 			var tw := f.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
 			var x0 := (r.size.x - tw - 12.0) / 2.0 + r.position.x
