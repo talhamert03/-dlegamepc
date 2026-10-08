@@ -98,6 +98,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 56. Shop product art: use the new material icons (seals, shards, essences) where products grant them
 
 ## Replay backlog 2 (shift 2026-10-07 16:21)
+- [x] 63. Version stamps aligned to 0.2.7 (project.godot said 0.2.0, the Windows exe file/product version 0.1.0.0); README corrected: the exe embeds the pck, one file
 - [x] 62. README: "download and play" section at the top (owner downloaded the source ZIP and could not find the game)
 - [x] 61. Settings scale row lists only scales that fit this screen
 - [x] 60. Forced UI scale could exceed the screen (5x on 1080p = 2360 px strip); capped by max_fit_scale()
@@ -106,6 +107,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 57. Tutorial bubble could slide 35 px into the control block (clamp used 395 instead of the 360 px battle view)
 
 ## Questions for the owner
+- Version numbers: patch notes, project.godot and the exe properties had drifted apart (0.2.7 / 0.2.0 / 0.1.0). I aligned them to 0.2.7. Should CI stamp the exe version from patch_notes "current" automatically on every build? (recommend: yes)
 
 - **Difficulty pacing (bot, updated 2026-10-06 night):** with boss fatigue and treasure goblins the baseline bot now
   reaches Hell's final boss at ~47 h (Normal ~9 h, Nightmare ~22 h). A what-if run with Hell resistance -45 instead of
@@ -188,3 +190,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift 20:03 — #60: compute_scale caps Settings 'scale' at max_fit_scale() (strip width + strip + tallest panel height must fit the usable rect). --scale=N flag: 1080p 5x -> 2.5x, 4K 5x -> 5x, layout checked. The Settings row still highlights the chosen value (5x) while 2.5x is used; owner may want a note there. Taskbar mini mode (--mini) re-checked, fine.
 - 2026-10-07 shift 20:03 — #61: Settings 'Scale' only offers Auto + the 2x..5x steps <= max_fit_scale() (1080p: Auto/2x; 4K: all). Withdrew the owner question about it (UX detail, not a product call). Note: --scale persists in settings; reset with --scale=0.
 - 2026-10-08 shift 12:03 — #62: README gets a Turkish step-by-step 'Oyunu indir ve oyna' section (Actions -> latest green CI -> IdleParty-windows artifact -> extract -> exe; SmartScreen note; source-ZIP warning).
+- 2026-10-08 shift 12:03 — #63: config/version 0.2.7, Windows file_version/product_version 0.2.7.0 (Explorer > Properties showed 0.1). Nothing reads config/version at runtime. README step 4: single-file exe (embed_pck=true), not exe + pck. Owner question added: keep version stamps in sync per release by hand or bump automatically from patch_notes current?
