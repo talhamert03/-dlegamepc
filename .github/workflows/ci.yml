@@ -31,7 +31,7 @@ jobs:
         run: |
           curl -sSL -o templates.tpz https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
           mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
-          unzip -qj templates.tpz "templates/windows_release_x86_64.exe" "templates/linux_release.x86_64" "templates/version.txt" \
+          unzip -qj templates.tpz "templates/windows_release_x86_64.exe" "templates/version.txt" \
             -d ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
 
       # Godot 4.4 stamps the exe icon + version info through rcedit, which on Linux runs under Wine
@@ -56,12 +56,11 @@ jobs:
           print(s)
           PY
 
-      - name: Export Windows & Linux
+      - name: Export Windows
         working-directory: game
         run: |
-          mkdir -p ../export/windows ../export/linux
+          mkdir -p ../export/windows
           godot --headless --export-release "Windows Desktop" ../export/windows/IdleParty.exe
-          godot --headless --export-release "Linux" ../export/linux/IdleParty.x86_64
 
       - name: Check the Windows exe carries our icon and version
         run: |
@@ -83,7 +82,3 @@ jobs:
         with:
           name: IdleParty-windows
           path: export/windows/
-      - uses: actions/upload-artifact@v4
-        with:
-          name: IdleParty-linux
-          path: export/linux/

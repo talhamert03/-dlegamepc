@@ -32,8 +32,8 @@ godot -- --title             # başlık ekranını zorla
 godot --headless res://tests/BalanceBot.tscn -- --hours=8   # denge botu (simüle oyun süresi)
 ```
 
-**Windows/Linux build:** GitHub Actions (`.github/workflows/ci.yml`) her push'ta testleri ve 2 saatlik
-denge botunu çalıştırır, ardından `IdleParty-windows` ve `IdleParty-linux` artifact'lerini üretir.
+**Windows build:** GitHub Actions (`.github/workflows/ci.yml`) her push'ta testleri ve 2 saatlik
+denge botunu çalıştırır, ardından `IdleParty-windows` artifact'ini üretir. Hedef platform yalnızca Windows.
 Yerelde: export template'lerini kurup `godot --headless --export-release "Windows Desktop" ../export/windows/IdleParty.exe`.
 
 ## Kısayollar
