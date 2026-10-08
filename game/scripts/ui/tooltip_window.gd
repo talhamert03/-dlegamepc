@@ -49,6 +49,28 @@ func _line(text: String, color: Color = UITheme.C_TEXT, font: Font = null, fsize
 const WRAP_W := 176.0
 
 
+## Gilded divider: a rule that fades out at both ends with a small gem (rarity colour) in the middle.
+func _rule(gem: Color = UISkin.BRONZE) -> Control:
+	# never two dividers in a row (an amulet has no base stats between the header and its affixes)
+	if box.get_child_count() > 0 and box.get_child(box.get_child_count() - 1).has_meta("rule"):
+		return null
+	var c := Control.new()
+	c.set_meta("rule", true)
+	c.custom_minimum_size = Vector2(60, 6)
+	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	c.draw.connect(func():
+		var w := c.size.x
+		var y := 3.0
+		var g := Color(UISkin.BRONZE_HI, 0.55)
+		var cl := Color(g, 0.0)
+		c.draw_polygon(PackedVector2Array([Vector2(0, y - 0.35), Vector2(w / 2.0, y - 0.35), Vector2(w / 2.0, y + 0.35), Vector2(0, y + 0.35)]), PackedColorArray([cl, g, g, cl]))
+		c.draw_polygon(PackedVector2Array([Vector2(w / 2.0, y - 0.35), Vector2(w, y - 0.35), Vector2(w, y + 0.35), Vector2(w / 2.0, y + 0.35)]), PackedColorArray([g, cl, cl, g]))
+		UISkin.diamond(c.get_canvas_item(), Vector2(w / 2.0, y), 2.2, gem.lightened(0.3), gem.darkened(0.3)))
+	box.add_child(c)
+	return c
+
+
 ## Plain tooltip: the first line of a multi-line tip reads as its heading, long lines wrap instead of
 ## stretching the tooltip across the screen.
 func show_text(text: String) -> void:
@@ -109,7 +131,7 @@ func show_item(item: Dictionary, compare_hero := "") -> void:
 		var fam_col := {"heavy": Color("#FF9A7A"), "light": Color("#C9A0FF"), "holy": Color("#FFE7A0"), "medium": Color("#9EE08A")}
 		var fc: Color = fam_col.get(str(item.get("weight", "")), Color("#E8C98A"))
 		_line(DataDB.t("item_for", {"list": ", ".join(who)}), fc)
-	box.add_child(UITheme.hsep(100))
+	_rule(col if r != "common" else UISkin.BRONZE)
 	var base: Dictionary = item.get("base", {})
 	var st := ItemUtil.item_stats(item)
 	if base.has("atk"):
@@ -121,19 +143,25 @@ func show_item(item: Dictionary, compare_hero := "") -> void:
 	for k in item.get("implicit", {}):
 		_line(ItemUtil.affix_label(k, float(item["implicit"][k])), Color("#C9B8E8"))
 	if item.get("affixes", []).size() > 0:
-		box.add_child(UITheme.hsep(100))
+		_rule(col if r != "common" else UISkin.BRONZE)
 	for a in item.get("affixes", []):
 		_line(ItemUtil.affix_label(str(a["id"]), float(a["v"])), UITheme.C_BLUE)
 	if item.get("leg", "") != "":
 		for l in DataDB.items.get("legendaries", []):
 			if l["id"] == item["leg"]:
-				box.add_child(UITheme.hsep(100))
+				_rule(UITheme.C_ORANGE)
+				var shown: Array = []
 				for k in l.get("stats", {}):
-					_line(ItemUtil.affix_label(k, float(l["stats"][k])), UITheme.C_ORANGE)
-				_line(DataDB.tx(l.get("desc", {})), Color("#FFC08A"))
+					var al := ItemUtil.affix_label(k, float(l["stats"][k]))
+					shown.append(al.to_lower().replace(" ", ""))
+					_line(al, UITheme.C_ORANGE)
+				# the description often just restates the one stat line; show it only when it adds something
+				var desc := DataDB.tx(l.get("desc", {}))
+				if desc != "" and not shown.has(desc.to_lower().replace(" ", "").trim_suffix(".")):
+					_line(desc, Color("#FFC08A"))
 	if item.get("set", "") != "":
 		var sd: Dictionary = DataDB.items["sets"].get(item["set"], {})
-		box.add_child(UITheme.hsep(100))
+		_rule(Color("#3DDC84"))
 		_line(DataDB.tx(sd.get("name", {})), Color("#3DDC84"))
 		for need in sd.get("bonus", {}):
 			var parts: Array = []
@@ -142,7 +170,7 @@ func show_item(item: Dictionary, compare_hero := "") -> void:
 			_line("(%s) %s" % [need, ", ".join(parts)], Color("#7FD8A0"))
 	if item.get("mythic", false):
 		_line(DataDB.t("mythic_power"), Color("#FF6A8A"))
-	box.add_child(UITheme.hsep(100))
+	_rule()
 	_line(DataDB.t("req_level", {"lv": ItemUtil.req_level(item)}), UITheme.C_DIM)
 	if compare_hero != "" and GameState.heroes.has(compare_hero):
 		var h: HeroState = GameState.heroes[compare_hero]
@@ -154,8 +182,15 @@ func show_item(item: Dictionary, compare_hero := "") -> void:
 			var cur: Dictionary = h.equipment.get(slots[0], {})
 			var diff := ItemUtil.power_score(item, h.cls()) - ItemUtil.power_score(cur, h.cls())
 			var txt := DataDB.t("compare_better") if diff > 0 else DataDB.t("compare_worse")
-			_line("%s %s (%+d)" % [h.display_name(), txt, int(round(diff))], UITheme.C_GREEN if diff > 0 else UITheme.C_RED)
-	_line(DataDB.t("sell_price", {"g": F.fmt_num(ItemUtil.sell_price(item))}), UITheme.C_GOLD)
+			_line("%s %s %s (%+d)" % ["▲" if diff > 0 else "▼", h.display_name(), txt, int(round(diff))], UITheme.C_GREEN if diff > 0 else UITheme.C_RED)
+	var sell := HBoxContainer.new()
+	sell.add_theme_constant_override("separation", 2)
+	sell.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var gi := W.icon_rect(UITheme.icon("gold"), Vector2(8, 8))
+	gi.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	sell.add_child(gi)
+	sell.add_child(UITheme.label(DataDB.t("sell_price", {"g": F.fmt_num(ItemUtil.sell_price(item))}), UITheme.C_GOLD, 8))
+	box.add_child(sell)
 	_line(DataDB.t("item_hint_dbl"), UITheme.C_DIM)
 	if item.get("locked", false):
 		_line(DataDB.t("locked"), UITheme.C_DIM)

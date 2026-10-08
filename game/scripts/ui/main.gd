@@ -471,6 +471,11 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			get_tree().create_timer(maxf(0.5, secs - 0.5)).timeout.connect(func():
 				var gs: float = WindowManager.ui_scale
 				get_viewport().get_texture().get_image().get_region(Rect2i(Vector2i(gal.position * gs), Vector2i(gal.size * gs))).save_png("user://screenshots/gallery.png"))
+		if a == "--itemtip":
+			# an item tooltip (legendary, with compare) parked mid-screen, for the tooltip review
+			get_tree().create_timer(maxf(0.5, secs - 1.0)).timeout.connect(func():
+				var it := LootSystem.generate(GameState.rng, 34, "legendary", "warrior")
+				WindowManager.show_item_tooltip(it, GameState.party[0] if GameState.party.size() > 0 else ""))
 		if a == "--tipshot":
 			# real tooltips are separate popup windows the capture misses: draw a sample with the same theme items
 			var pc := PanelContainer.new()

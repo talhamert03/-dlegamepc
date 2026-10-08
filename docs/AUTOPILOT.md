@@ -70,7 +70,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 
 ## Visual pass 3 (keeps the owner's "clearly visible, premium" direction going)
 
-- [ ] 85. Item tooltip v2: rarity header band, item art in a jewel well, gem dividers, compare arrows aligned in a column
+- [x] 85. Item tooltip v2: rarity header band, item art in a jewel well, gem dividers, compare arrows aligned in a column
 - [ ] 86. Strip HUD plaques (zone, goal, quick buttons) in the popup/medallion family
 - [ ] 87. World panel: stage medallions, path, selected-stage card in the new family
 - [ ] 88. Panel open/close: frame glint + content fade, consistent with popups
@@ -255,3 +255,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-09 — #82: content sweep of all 16 panels in the new family. Tavern rarity filter = Fancy.segmented (was loose gold/brown buttons); faction Active/Inactive pill = green button / empty groove and no longer stretched to the header height; growth intro text padded off the frame; every W.tabs strip reserves 3 px for the active tab's pointer (it touched the next row in blacksmith/codex/settings). Blacksmith, world, shop, quests, codex, settings, pets, stats, chests already pick up frame/buttons/tabs/slots/bars from #75-#81; no other stray styles found.
 - 2026-10-09 — #83: medallion v2 (control panel, hero bottom bar, strip quick buttons): eight rivets on the bronze bezel, a gloss crescent on the disc, inner shadow when pressed, the same two-ring halo as the buttons on hover. Control panel/strip frames come from #75 (UIFrame strip kind = UISkin.panel); zone + goal plaques and fonts already match. Checked strip + hero bar at 4x.
 - 2026-10-09 — #84: audit sweeps: all 16 panels + strip at 2x TR and 4x EN (shoot_panels.sh), gallery at 2x/4x, popups at 2x TR/4x EN. One fix: segmented plaques had 5 px text padding, so the raised gold segment crowded its label (Türkçe, Taskbar, 15, All); now 7 px, settings rows still fit in TR and EN. Leftover: label() still clamps font_title >= 13 to 11 (Cinzel era); only the strip banner uses 13 and the clamp keeps it inside the strip, so it stays. Visual pass 2 (#73-#84) complete.
+- 2026-10-09 — #85: item tooltip dividers are gilded rules fading at both ends with a gem in the rarity colour (legendary orange, set green), never two in a row; compare line leads with ▲/▼; sell price has the gold icon; a legendary's description is hidden when it only restates its stat line. New --itemtip screenshot flag (random legendary + compare). 2x TR/EN, 4x EN.
