@@ -44,8 +44,12 @@ func refresh() -> void:
 func _factions() -> void:
 	var hint := UITheme.label(DataDB.t("faction_party_hint"), UITheme.C_DIM, 7)
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	hint.custom_minimum_size = Vector2(content.size.x - 8, 0)
-	_body.add_child(hint)
+	hint.custom_minimum_size = Vector2(content.size.x - 16, 0)
+	var pad := MarginContainer.new()
+	for side in ["left", "right"]:
+		pad.add_theme_constant_override("margin_" + side, 4)
+	pad.add_child(hint)
+	_body.add_child(pad)
 	var counts := GameState.faction_counts()
 	for f in DataDB.factions:
 		var fd: Dictionary = DataDB.factions[f]
@@ -86,11 +90,20 @@ func _factions() -> void:
 		pill.draw.connect(func():
 			var ci := pill.get_canvas_item()
 			var r := Rect2(Vector2.ZERO, pill.size)
-			UISkin.fill(ci, r, 5, Color("#3FA34D") if active else Color("#3A3640"), Color("#1F5A27") if active else Color("#1E1C22"))
-			UISkin.stroke(ci, r, 5, Color(0, 0, 0, 0.9), 1.0)
+			# active = a lit green plate of the button family, inactive = an empty groove
+			if active:
+				UISkin.button(ci, r, "green", "normal")
+			else:
+				UISkin.groove(ci, r, 4)
+				UISkin.stroke(ci, r, 4, UISkin.OUTLINE, 0.9)
+				UISkin.stroke(ci, r.grow(-0.7), 3.5, Color(UISkin.BRONZE, 0.3), 0.5)
 			var fnt := UITheme.font_body
 			var tw := fnt.get_string_size(ptxt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
-			pill.draw_string(fnt, Vector2((r.size.x - tw) / 2.0, 8.5), ptxt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color.WHITE if active else UITheme.C_DIM))
+			var tp := Vector2((r.size.x - tw) / 2.0, r.size.y / 2.0 + 7 * 0.36)
+			if active:
+				pill.draw_string_outline(fnt, tp, ptxt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, 2, Color(0, 0, 0, 0.5))
+			pill.draw_string(fnt, tp, ptxt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color.WHITE if active else UITheme.C_DIM))
+		pill.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		pill.tooltip_text = DataDB.t("faction_count", {"n": c})
 		pill.mouse_filter = Control.MOUSE_FILTER_STOP
 		hdr.add_child(pill)

@@ -65,8 +65,11 @@ static func stat_row(label: String, value: String, vcol: Color = UITheme.C_TEXT,
 ## Tab strip: returns HBox; calls cb(index) on change.
 static func tabs(names: Array, active: int, cb: Callable, w := 0) -> HBoxContainer:
 	var h := hbox(2)
+	# room under the strip for the active tab's gold pointer, so the next row never touches it
+	h.custom_minimum_size.y = 15
 	for i in names.size():
 		var b := Fancy.tab_button(str(names[i]), i == active, w)
+		b.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 		var idx := i
 		b.pressed.connect(func():
 			AudioManager.play("ui_click", 0.05, 0.5)

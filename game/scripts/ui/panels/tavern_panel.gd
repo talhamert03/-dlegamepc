@@ -105,17 +105,17 @@ func _build_top() -> void:
 	for ch in _top.get_children():
 		ch.queue_free()
 	var tabs := [["", DataDB.t("tavern_all")], ["R", "R"], ["SR", "SR"], ["SSR", "SSR"]]
-	var x := 0.0
-	for tb in tabs:
-		var key: String = tb[0]
-		var b := UITheme.button(str(tb[1]), "gold" if _filter == key else "brown", func():
-			_filter = key
-			AudioManager.play("ui_click", 0.05, 0.5)
-			refresh(), Vector2(34 if key != "" else 40, 13))
-		_top.add_child(b)
-		b.position = Vector2(x, 0)
-		b.size = Vector2(34 if key != "" else 40, 13)
-		x += b.size.x + 2
+	var names: Array = []
+	var cur := 0
+	for i in tabs.size():
+		names.append(str(tabs[i][1]))
+		if str(tabs[i][0]) == _filter:
+			cur = i
+	var seg := Fancy.segmented(names, cur, func(i: int):
+		_filter = str(tabs[i][0])
+		refresh(), 32.0)
+	seg.size = seg.custom_minimum_size + Vector2(0, 1)
+	_top.add_child(seg)
 	var seal := W.icon_rect(UITheme.icon("mat_tavern_seal"), Vector2(9, 9))
 	seal.position = Vector2(_top.size.x - 30, 2)
 	_top.add_child(seal)
