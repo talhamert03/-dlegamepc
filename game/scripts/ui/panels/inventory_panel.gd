@@ -11,7 +11,7 @@ var _equip_slots: Dictionary = {}
 var _bag_grid: GridContainer
 var _bag_slots: Array = []
 var _filters: HBoxContainer
-var _count: Label
+var _count: Control
 var _sel_box: HBoxContainer
 var _ctx_uid := ""
 
@@ -47,7 +47,9 @@ func build(c: Control) -> void:
 	var sell := UITheme.button(DataDB.t("btn_sell_junk"), "red", _sell_junk)
 	sell.tooltip_text = DataDB.t("tip_sell_junk")
 	bottom.add_child(sell)
-	_count = UITheme.label("", UITheme.C_DIM)
+	_count = Fancy.capacity(44, 11)
+	_count.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_count.tooltip_text = DataDB.t("bag_capacity_tip")
 	bottom.add_child(_count)
 	_sel_box = W.hbox(1)
 	v.add_child(_sel_box)
@@ -99,7 +101,7 @@ func refresh() -> void:
 		sl.set_item(items[i] if i < items.size() else {})
 		sl.key = items[i]["uid"] if i < items.size() else null
 		sl.selected = WindowManager.is_open("blacksmith") and WindowManager.panels["blacksmith"].is_selected(sl.key)
-	_count.text = "%d/%d" % [GameState.bag.size(), GameState.bag_slots]
+	Fancy.set_capacity(_count, GameState.bag.size(), GameState.bag_slots)
 	for ch in _sel_box.get_children():
 		ch.queue_free()
 	_sel_box.add_child(W.hero_selector(hid, W.select_hero))

@@ -23,7 +23,7 @@ var _tabs: HBoxContainer
 var _page: Control
 var _bag_grid: GridContainer
 var _bag_slots: Array = []
-var _count: Label
+var _count: Control
 var _ctx_uid := ""
 var _bottom: HBoxContainer
 var _last_uids: Dictionary = {}
@@ -184,29 +184,27 @@ func build(c: Control) -> void:
 	gbox.add_child(W.icon_rect(UITheme.icon("gold"), Vector2(9, 9)))
 	_gold = UITheme.label("", UITheme.C_GOLD, 9, UITheme.font_body)
 	gbox.add_child(_gold)
-	_count = UITheme.label("", UITheme.C_DIM, 7)
-	_count.position = Vector2(w - 70, 290)
-	_count.size = Vector2(68, 9)
-	_count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_count = Fancy.capacity(44, 10)
+	_count.position = Vector2(w - 46, 289)
+	_count.tooltip_text = DataDB.t("bag_capacity_tip")
 	c.add_child(_count)
 	# bag expansion lives right here, next to the slot count: a small "+" plate
 	var ex := Button.new()
 	ex.flat = true
 	ex.focus_mode = Control.FOCUS_NONE
 	ex.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	ex.position = Vector2(w - 84, 290)
-	ex.size = Vector2(16, 9)
+	ex.position = Vector2(w - 68, 289)
+	ex.size = Vector2(20, 10)
 	ex.tooltip_text = DataDB.t("bag_expand_tip", {"price": Shop.price_text(Shop.product("bag_expand"))})
 	ex.pressed.connect(_ask_bag_expand)
 	ex.draw.connect(func():
 		var ci := ex.get_canvas_item()
 		var r := Rect2(Vector2.ZERO, ex.size)
-		var hov := ex.is_hovered()
-		UISkin.fill(ci, r, 2, Color("#F2C55A") if hov else Color("#D9A944"), Color("#8A5A1E"))
-		UISkin.stroke(ci, r, 2, Color("#2A1606"), 1.0)
-		ex.draw_string(UITheme.font_body, Vector2(2.5, 7.5), "+10", HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#2A1606")))
-	ex.mouse_entered.connect(ex.queue_redraw)
-	ex.mouse_exited.connect(ex.queue_redraw)
+		UISkin.button(ci, r, "gold", "pressed" if ex.button_pressed else ("hover" if ex.is_hovered() else "normal"))
+		var tw := UITheme.font_body.get_string_size("+10", HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
+		ex.draw_string(UITheme.font_body, Vector2((r.size.x - tw) / 2.0, 7.4 + (1.0 if ex.button_pressed else 0.0)), "+10", HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#2A1606")))
+	for sig in [ex.mouse_entered, ex.mouse_exited, ex.button_down, ex.button_up]:
+		sig.connect(ex.queue_redraw)
 	c.add_child(ex)
 	EventBus.inventory_changed.connect(refresh)
 	EventBus.equipment_changed.connect(func(_h): refresh())
@@ -386,7 +384,7 @@ func refresh() -> void:
 	var hid := W.current_hero()
 	var h: HeroState = GameState.heroes.get(hid)
 	_gold.text = F.fmt_num(GameState.gold)
-	_count.text = "%d / %d" % [GameState.bag.size(), GameState.bag_slots]
+	Fancy.set_capacity(_count, GameState.bag.size(), GameState.bag_slots)
 	var changed := false
 	for k in _equip:
 		var s: ItemSlot = _equip[k]

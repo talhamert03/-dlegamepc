@@ -124,7 +124,9 @@ func _draw() -> void:
 	var ci := get_canvas_item()
 	var r := Rect2(Vector2.ZERO, size)
 	var rar: String = item.get("rarity", "common")
-	UISkin.slot(ci, r, UISkin.rarity_fill(rar), not item.is_empty(), _hover)
+	if item.get("mythic", false):
+		rar = "mythic"
+	UISkin.slot(ci, r, UISkin.rarity_fill(rar), not item.is_empty(), _hover, rar)
 	var isz := roundf(size.x * 0.8)
 	var o := ((size - Vector2(isz, isz)) / 2.0).round()
 	if item.is_empty():

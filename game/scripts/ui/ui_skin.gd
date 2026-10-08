@@ -472,20 +472,45 @@ static func medallion(ci: RID, c: Vector2, rad: float, state: String, active := 
 
 
 ## Item slot: rarity-filled square (empty slots are dark wells).
-static func slot(ci: RID, r: Rect2, rarity_col: Color, has_item: bool, hover: bool) -> void:
-	if not has_item:
-		fill(ci, r, 2, Color("#4A3826"), Color("#2A1E14"))
-		var inner := r.grow(-1.4)
-		fill(ci, inner, 1.5, Color("#130D09"), Color("#1E1610"))
-		line(ci, inner.position + Vector2(1, 1.0), Vector2(inner.end.x - 1, inner.position.y + 1.0), Color(0, 0, 0, 0.65), 1.2)
-		stroke(ci, r, 2, Color(0, 0, 0, 0.95), 1.0)
-		line(ci, r.position + Vector2(2, 0.8), Vector2(r.end.x - 2, r.position.y + 0.8), Color(BRONZE_HI, 0.18), 0.6)
-	else:
-		fill(ci, r, 2, rarity_col.lightened(0.12), rarity_col.darkened(0.35))
-		stroke(ci, r, 2, Color(0, 0, 0, 0.95), 1.0)
-		stroke(ci, r.grow(-1.0), 1.5, Color(rarity_col.lightened(0.45), 0.55), 1.0)
+## Item slot. Empty: a recessed well. Filled: a jewel tile: rarity-coloured bevelled frame, a deep face
+## lit by a rarity glow from the centre, a glass highlight on top; legendary and mythic get gilded corner
+## brackets. Hover adds a gold ring and a soft outer glow.
+static func slot(ci: RID, r: Rect2, rarity_col: Color, has_item: bool, hover: bool, rarity := "") -> void:
 	if hover:
-		stroke(ci, r.grow(-0.5), 2, Color("#FFE08A"), 1.2)
+		stroke(ci, r.grow(1.3), 3.2, Color(1.0, 0.85, 0.45, 0.22), 1.4)
+	if not has_item:
+		fill(ci, r, 2, Color("#3A2A1C"), Color("#22170F"))
+		var inner := r.grow(-1.3)
+		fill(ci, inner, 1.5, Color("#0F0A07"), Color("#1B140E"))
+		fill(ci, Rect2(inner.position, Vector2(inner.size.x, minf(4.0, inner.size.y * 0.25))), 1.5, Color(0, 0, 0, 0.5), Color(0, 0, 0, 0.0))
+		stroke(ci, r, 2, Color(0, 0, 0, 0.95), 1.0)
+		line(ci, Vector2(r.position.x + 2, r.end.y - 0.7), Vector2(r.end.x - 2, r.end.y - 0.7), Color(BRONZE_HI, 0.16), 0.6)
+	else:
+		var hi := rarity_col.lightened(0.38)
+		fill(ci, r, 2, OUTLINE, OUTLINE)
+		fill(ci, r.grow(-0.6), 1.8, hi, rarity_col.darkened(0.45))
+		var f := r.grow(-1.7)
+		fill(ci, f, 1.2, rarity_col.darkened(0.36), rarity_col.darkened(0.62))
+		var c := f.get_center()
+		var rad := minf(f.size.x, f.size.y) * 0.5
+		for k in 8:
+			RenderingServer.canvas_item_add_circle(ci, c + Vector2(0, rad * 0.08), rad * (1.0 - k * 0.1), Color(rarity_col.lightened(0.2), 0.11))
+		fill(ci, Rect2(f.position + Vector2(0.4, 0.3), Vector2(f.size.x - 0.8, f.size.y * 0.42)), 1.0, Color(1, 1, 1, 0.13), Color(1, 1, 1, 0.0))
+		stroke(ci, f, 1.2, Color(0, 0, 0, 0.55), 0.6)
+		line(ci, r.position + Vector2(2, 0.9), Vector2(r.end.x - 2, r.position.y + 0.9), Color(1, 1, 1, 0.35), 0.5)
+		if rarity == "legendary" or rarity == "mythic":
+			var g := Color("#FFE08A")
+			var a := minf(5.0, r.size.x * 0.24)
+			for i in 4:
+				var p: Vector2 = [r.position, Vector2(r.end.x, r.position.y), r.end, Vector2(r.position.x, r.end.y)][i]
+				var dx := 1.0 if i == 0 or i == 3 else -1.0
+				var dy := 1.0 if i < 2 else -1.0
+				var q := p + Vector2(dx, dy) * 1.0
+				RenderingServer.canvas_item_add_polyline(ci, PackedVector2Array([q + Vector2(dx * a, 0), q, q + Vector2(0, dy * a)]), PackedColorArray([OUTLINE]), 1.8, true)
+				RenderingServer.canvas_item_add_polyline(ci, PackedVector2Array([q + Vector2(dx * a, 0), q, q + Vector2(0, dy * a)]), PackedColorArray([g]), 0.9, true)
+	if hover:
+		stroke(ci, r.grow(-0.4), 2, Color("#FFE08A"), 1.1)
+		fill(ci, r.grow(-1.0), 1.5, Color(1, 1, 1, 0.07), Color(1, 1, 1, 0.02))
 
 
 static func rarity_fill(r: String) -> Color:

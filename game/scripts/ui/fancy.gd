@@ -236,6 +236,46 @@ static func bar(w: float, h: float, frac: float, col: Color, caption := "") -> C
 	return c
 
 
+## Bag capacity pill: a groove that fills green, then amber near full, red when full, with "used / max"
+## on it. Update with set_capacity().
+static func capacity(w: float, h := 10.0) -> Control:
+	var c := Control.new()
+	c.mouse_filter = Control.MOUSE_FILTER_PASS
+	c.custom_minimum_size = Vector2(w, h)
+	c.size = c.custom_minimum_size
+	c.set_meta("used", 0)
+	c.set_meta("max", 1)
+	c.draw.connect(func():
+		var ci := c.get_canvas_item()
+		var r := Rect2(Vector2.ZERO, c.size)
+		var used := int(c.get_meta("used"))
+		var mx := maxi(1, int(c.get_meta("max")))
+		var k := clampf(float(used) / mx, 0.0, 1.0)
+		var col := Color("#4FAF6A") if k < 0.75 else (Color("#E0A63A") if k < 0.95 else Color("#D9483E"))
+		UISkin.groove(ci, r, 3)
+		if k > 0.0:
+			var fr := Rect2(r.position + Vector2(1, 1), Vector2(maxf(3.0, (r.size.x - 2) * k), r.size.y - 2))
+			UISkin.fill(ci, fr, 2, col.lightened(0.15), col.darkened(0.35))
+			UISkin.fill(ci, Rect2(fr.position + Vector2(0.5, 0.3), Vector2(fr.size.x - 1.0, fr.size.y * 0.45)), 1.5, Color(1, 1, 1, 0.28), Color(1, 1, 1, 0.05))
+		UISkin.stroke(ci, r, 3, UISkin.OUTLINE, 0.9)
+		UISkin.stroke(ci, r.grow(-0.6), 2.5, Color(UISkin.BRONZE, 0.45), 0.5)
+		var f := UITheme.font_body
+		var t := "%d / %d" % [used, mx]
+		var fs := 7
+		var tw := f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+		var tp := Vector2((r.size.x - tw) / 2.0, r.size.y / 2.0 + fs * 0.36)
+		c.draw_string_outline(f, tp, t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 2, Color(0, 0, 0, 0.9))
+		c.draw_string(f, tp, t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("#FFF4DA")))
+	return c
+
+
+static func set_capacity(c: Control, used: int, mx: int) -> void:
+	if int(c.get_meta("used")) != used or int(c.get_meta("max")) != mx:
+		c.set_meta("used", used)
+		c.set_meta("max", mx)
+		c.queue_redraw()
+
+
 ## Small hand-drawn wooden button with an exact size (theme buttons have a minimum height).
 ## kind: brown | gold | red | green
 static func small_button(text: String, kind: String, cb: Callable, sz: Vector2) -> Button:

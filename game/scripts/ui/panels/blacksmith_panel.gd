@@ -149,7 +149,7 @@ func _build_combine() -> void:
 		var ncol := ItemUtil.rarity_color(nr) if nr != "" else UITheme.C_DIM
 		for k in 4:
 			UISkin.fill(ci, res.grow(2.0 + k * 2.0), 4, Color(ncol, 0.06 + 0.04 * sin(_ct * 3.0)), Color(ncol, 0.03))
-		UISkin.slot(ci, res, UISkin.rarity_fill(nr if nr != "" else "common"), true, false)
+		UISkin.slot(ci, res, UISkin.rarity_fill(nr if nr != "" else "common"), true, false, nr)
 		var f := UITheme.font_title
 		stage.draw_string(f, res.get_center() + Vector2(-4, 5), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color(1, 1, 1, 0.85))
 		var nm := ItemUtil.rarity_name(nr) if nr != "" else "—"

@@ -2366,5 +2366,9 @@
  "beast_where": {
   "tr": "Görüldüğü yer: {z}",
   "en": "Found in: {z}"
+ },
+ "bag_capacity_tip": {
+  "tr": "Çanta doluluğu. Çanta doluyken yeni ganimet otomatik satılır; efsanevi ve üstü yine de çantaya girer.",
+  "en": "Bag space. While the bag is full, new loot is sold automatically; legendary and better still go in."
  }
 }

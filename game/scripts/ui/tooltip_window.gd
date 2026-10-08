@@ -92,7 +92,7 @@ func show_item(item: Dictionary, compare_hero := "") -> void:
 		var rr := Rect2(Vector2.ZERO, ic.size)
 		for k in 3:
 			UISkin.fill(ic.get_canvas_item(), rr.grow(2.0 - k), 4, Color(col, 0.08), Color(col, 0.08))
-		UISkin.slot(ic.get_canvas_item(), rr, UISkin.rarity_fill(r), true, false)
+		UISkin.slot(ic.get_canvas_item(), rr, UISkin.rarity_fill(r), true, false, r)
 		if tex:
 			ic.draw_texture_rect(tex, rr.grow(-2.5), false))
 	head.add_child(ic)
