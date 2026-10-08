@@ -8,6 +8,7 @@ down for 2x. Light comes from the top left, like the rest of the UI.
 frame_9.png   one 9-slice sheet: CORNER x CORNER corners, edges in between that tile along their length
 leather.png   seamless dark tooled leather for the panel body
 parchment.png seamless aged parchment (fibres, mottling, specks) for light sections
+slate.png     seamless dark arcane slate (veins, grain) for the rune board
 """
 import os
 import numpy as np
@@ -226,11 +227,32 @@ def build_parchment():
     return Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8), "RGB")
 
 
+# --------------------------------------------------------------------------- slate
+def build_slate():
+    T = 96 * S
+    big = periodic_noise(T, T, 26 * S / 6, 41)
+    mid = periodic_noise(T, T, 4 * S / 6, 42)
+    fine = periodic_noise(T, T, 0.9 * S / 6, 43)
+    base = lerp(col("#15161D"), col("#2A2B36"), np.clip(0.6 * big + 0.3 * mid + 0.1 * fine, 0, 1)[..., None])
+    # marble veins: a diagonal sine (whole cycles across the tile, so it stays seamless) bent by turbulence
+    yy, xx = np.mgrid[0:T, 0:T].astype(np.float32)
+    turb = periodic_noise(T, T, 20 * S, 44) * 0.8 + periodic_noise(T, T, 6 * S, 45) * 0.2
+    ph = 2 * np.pi * (2 * xx + yy) / T + 3.0 * turb
+    vein = np.exp(-(np.abs(np.sin(ph)) / 0.035) ** 2)[..., None]
+    ph2 = 2 * np.pi * (xx - 3 * yy) / T + 3.5 * periodic_noise(T, T, 12 * S, 46)
+    vein2 = np.exp(-(np.abs(np.sin(ph2)) / 0.025) ** 2)[..., None]
+    base = base + col("#6A6E8A") * 0.20 * vein + col("#6A6E8A") * 0.08 * vein2
+    pits = (fine > 0.84)[..., None]
+    base = base * np.where(pits, 0.8, 1.0)
+    return Image.fromarray(np.clip(base, 0, 255).astype(np.uint8), "RGB")
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     build_frame().save(os.path.join(OUT, "frame_9.png"))
     build_leather().save(os.path.join(OUT, "leather.png"))
     build_parchment().save(os.path.join(OUT, "parchment.png"))
+    build_slate().save(os.path.join(OUT, "slate.png"))
     print("frame px/logical", S, "corner", CORNER, "border", BORDER, "->", OUT)
 
 
