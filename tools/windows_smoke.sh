@@ -16,12 +16,12 @@ echo "== export"
 
 echo "== headless boot (600 frames + 4000 frames with a full party)"
 cd "$OUT"
-wine IdleParty.exe --headless --quit-after 600 > boot.log 2>&1 || true
-wine IdleParty.exe --headless --quit-after 4000 -- --fresh --level=30 --allheroes > run.log 2>&1 || true
+IDLEPARTY_DEV=1 wine IdleParty.exe --headless --quit-after 600 > boot.log 2>&1 || true
+IDLEPARTY_DEV=1 wine IdleParty.exe --headless --quit-after 4000 -- --fresh --level=30 --allheroes > run.log 2>&1 || true
 
 echo "== rendered screenshot"
 wineserver -k 2>/dev/null || true   # a wineserver started by the headless runs has no display
-xvfb-run -a -s "-screen 0 1920x1080x24" wine IdleParty.exe -- --fresh --screenshot --secs=5 --open=hero --level=20 > shot.log 2>&1 || true
+IDLEPARTY_DEV=1 xvfb-run -a -s "-screen 0 1920x1080x24" wine IdleParty.exe -- --fresh --screenshot --secs=5 --open=hero --level=20 > shot.log 2>&1 || true
 
 # Wine's own chatter is "NNNN:err:/fixme:/warn:"; exit-time leak notices and the missing audio device (WASAPI) are expected
 bad=$(cat boot.log run.log shot.log | grep -vE '^[0-9a-f]{4}:(err|fixme|warn)' \

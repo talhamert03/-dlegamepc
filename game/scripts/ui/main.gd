@@ -48,8 +48,26 @@ func _ready() -> void:
 	call_deferred("_boot")
 
 
+## Command-line flags. Release builds only honour the harmless player ones; the test / screenshot flags
+## (--fresh wipes the save, --allheroes etc. would bypass progression and the leaderboard) need a debug
+## build or IDLEPARTY_DEV=1 (the Wine smoke test sets it).
+const PLAYER_FLAGS := ["--lang=", "--colorblind", "--title"]
+
+
+static func user_args() -> PackedStringArray:
+	var all := OS.get_cmdline_user_args()
+	if OS.is_debug_build() or OS.get_environment("IDLEPARTY_DEV") == "1":
+		return all
+	var out := PackedStringArray()
+	for a in all:
+		for f in PLAYER_FLAGS:
+			if a == f or (f.ends_with("=") and a.begins_with(f)):
+				out.append(a)
+	return out
+
+
 func _boot() -> void:
-	var cmd := OS.get_cmdline_user_args()
+	var cmd := user_args()
 	for a in cmd:
 		if a.begins_with("--lang="):
 			DataDB.set_lang(a.substr(7))
@@ -96,7 +114,7 @@ func _run_title() -> void:
 	move_child(t, strip_root.get_index() + 1)
 	WindowManager.title_control = t
 	WindowManager.layout_changed()
-	if OS.get_cmdline_user_args().has("--screenshot"):
+	if user_args().has("--screenshot"):
 		await get_tree().create_timer(2.5).timeout
 		get_viewport().get_texture().get_image().save_png("user://screenshots/title.png")
 		var b0: Button = t._buttons.get_child(0)
