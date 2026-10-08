@@ -118,7 +118,7 @@ static func segmented(names: Array, cur: int, cb: Callable, seg_w := 0.0) -> Con
 	var widths: Array = []
 	var tot := 0.0
 	for n in names:
-		var w := maxf(seg_w, f.get_string_size(str(n), HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x + 10.0)
+		var w := maxf(seg_w, f.get_string_size(str(n), HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x + 14.0)
 		widths.append(w)
 		tot += w
 	var c := Control.new()
