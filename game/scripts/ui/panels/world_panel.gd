@@ -510,10 +510,12 @@ func _stage_picker(zi: int, w: float, h: float) -> void:
 		var bar := Rect2(lw + 6, 3, gauge.size.x - lw - rw - 12, 5)
 		if bar.size.x > 10:
 			var ci := gauge.get_canvas_item()
-			UISkin.fill(ci, bar, 2, Color("#0C0806"), Color("#1A120C"))
+			UISkin.groove(ci, bar, 2)
 			var k := clampf(have / maxf(1.0, need), 0.0, 1.0)
 			if k > 0.0:
-				UISkin.fill(ci, Rect2(bar.position, Vector2(maxf(3.0, bar.size.x * k), bar.size.y)), 2, col.lightened(0.25), col.darkened(0.3))
+				var fr := Rect2(bar.position, Vector2(maxf(3.0, bar.size.x * k), bar.size.y))
+				UISkin.fill(ci, fr, 2, col.lightened(0.25), col.darkened(0.3))
+				UISkin.line(ci, fr.position + Vector2(1, 0.8), Vector2(fr.end.x - 1, fr.position.y + 0.8), Color(1, 1, 1, 0.4), 0.6)
 			UISkin.stroke(ci, bar, 2, Color(0, 0, 0, 0.9), 0.8))
 	_card.add_child(gauge)
 	var n := BattleSim.stages_per_zone()
@@ -537,15 +539,12 @@ func _stage_picker(zi: int, w: float, h: float) -> void:
 			var r := Rect2(Vector2.ZERO, b.size)
 			var sel := st == _sel_stage
 			var here := playing and st == BattleSim.stage
-			var top := Color("#7A2E22") if boss else Color("#4A3A2C")
-			if sel:
-				top = Color("#D8A04A")
+			# the button family: chosen = gold, open = wood (the boss stage lacquered red), locked = an empty groove
 			if not open:
-				top = Color("#24222A")
-			UISkin.fill(ci, r, 3, top.lightened(0.15 if b.is_hovered() and open else 0.0), top.darkened(0.45))
-			UISkin.stroke(ci, r, 3, Color(0, 0, 0, 0.95), 1.0)
-			if sel:
-				UISkin.stroke(ci, r.grow(-1.0), 2, Color("#FFE7A6", 0.8), 0.8)
+				UISkin.groove(ci, r, 3)
+				UISkin.stroke(ci, r, 3, UISkin.OUTLINE, 0.9)
+			else:
+				UISkin.button(ci, r, "gold" if sel else ("red" if boss else "brown"), "hover" if b.is_hovered() and not sel else "normal")
 			if here:
 				UISkin.stroke(ci, r.grow(0.8), 3, Color("#7CFF9A"), 1.0)
 			var f := UITheme.font_body
