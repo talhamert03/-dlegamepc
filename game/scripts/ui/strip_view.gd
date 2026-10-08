@@ -207,10 +207,7 @@ func _draw_plaque() -> void:
 	var sw := (fb.get_string_size(stage, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x + 8.0) if stage != "" else -6.0
 	var x0 := 20.0
 	var r := Rect2(x0, 1, nw + sw + 24.0, 11)
-	UISkin.fill(ci, Rect2(r.position + Vector2(0, 1), r.size), 2, Color(0, 0, 0, 0.35), Color(0, 0, 0, 0.35))
-	UISkin.fill(ci, r, 2, Color(0.24, 0.15, 0.09, 0.92), Color(0.11, 0.07, 0.04, 0.92))
-	UISkin.stroke(ci, r, 2, UISkin.OUTLINE, 1.0)
-	UISkin.stroke(ci, r.grow(-1.0), 1.5, Color(UISkin.BRONZE, 0.7), 0.7)
+	_plate(ci, r)
 	# difficulty shield
 	var dc: Color = [Color("#E8C27A"), Color("#C98BFF"), Color("#FF6A4A")][clampi(BattleSim.difficulty, 0, 2)]
 	var s := Vector2(x0 + 6.5, 6.5)
@@ -226,8 +223,10 @@ func _draw_plaque() -> void:
 		return
 	# stage tag
 	var tag := Rect2(x0 + 16 + nw + 2, 2.5, sw, 8)
-	var tcol := Color("#C0392B") if boss else Color("#D8A04A")
-	UISkin.fill(ci, tag, 2, tcol.lightened(0.15), tcol.darkened(0.35))
+	# small enamel tag: too short for the button bevel, so a flat gradient with a lit top edge
+	var tcol := Color("#C0392B") if boss else Color("#E0AA4E")
+	UISkin.fill(ci, tag, 2, tcol.lightened(0.25), tcol.darkened(0.3))
+	UISkin.line(ci, tag.position + Vector2(2, 0.8), Vector2(tag.end.x - 2, tag.position.y + 0.8), Color(1, 1, 1, 0.45), 0.6)
 	UISkin.stroke(ci, tag, 2, UISkin.OUTLINE, 0.8)
 	_plaque.draw_string(fb, tag.position + Vector2(4, 6.6), stage, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#FFF4DA") if boss else Color("#2A1606"))
 	# the next goal on the right during the first hours
@@ -239,8 +238,7 @@ func _draw_plaque() -> void:
 			var gfs := 7 if fb.get_string_size(_goal, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x <= 170.0 else 6
 			var gw := minf(fb.get_string_size(_goal, HORIZONTAL_ALIGNMENT_LEFT, -1, gfs).x, 170.0)
 			var gr := Rect2(W - gw - 22, 1.5, gw + 18, 10)
-			UISkin.fill(ci, gr, 2, Color(0.1, 0.06, 0.03, 0.75), Color(0.05, 0.03, 0.02, 0.75))
-			UISkin.stroke(ci, gr, 2, Color(UISkin.BRONZE, 0.6), 0.7)
+			_plate(ci, gr, 0.78)
 			var fl := UITheme.icon("flag")
 			if fl:
 				_plaque.draw_texture_rect(fl, Rect2(gr.position + Vector2(3, 1.5), Vector2(7, 7)), false, Color("#FFD36A"))
@@ -252,6 +250,18 @@ func _draw_plaque() -> void:
 			var c := Vector2(x0 + 8 + i * 6.0, 15.0)
 			var done: bool = i < BattleSim.wave
 			UISkin.diamond(ci, c, 2.2, Color("#FFE08A") if done else Color("#4A3A30"), Color("#B07420") if done else Color("#241A14"))
+
+
+## HUD plate (zone name, goal): smoked glass over the battlefield in a bronze bezel, a lit top lip and a
+## small gilded lozenge at each end.
+func _plate(ci: RID, r: Rect2, alpha := 0.92) -> void:
+	UISkin.fill(ci, Rect2(r.position + Vector2(0, 1), r.size), 2, Color(0, 0, 0, 0.35), Color(0, 0, 0, 0.35))
+	UISkin.fill(ci, r, 2, Color(0.24, 0.15, 0.09, alpha), Color(0.08, 0.05, 0.03, alpha))
+	UISkin.fill(ci, Rect2(r.position + Vector2(1.5, 1.0), Vector2(r.size.x - 3.0, r.size.y * 0.42)), 1.5, Color(1, 0.9, 0.7, 0.10), Color(1, 0.9, 0.7, 0.0))
+	UISkin.stroke(ci, r, 2, UISkin.OUTLINE, 1.0)
+	UISkin.stroke(ci, r.grow(-0.9), 1.5, Color(UISkin.BRONZE_HI, 0.65), 0.6)
+	for x in [r.position.x, r.end.x]:
+		UISkin.diamond(ci, Vector2(x, r.get_center().y), 1.7)
 
 
 ## Boss bar across the top: the boss's name on a ribbon, a framed health bar with a draining trail and a
