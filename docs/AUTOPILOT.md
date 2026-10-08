@@ -124,8 +124,9 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
   seals pace SR/SSR; (c) give seals a second use (e.g. reroll the tavern's featured hero, or buy hero star shards).
   I lean to (b) or (c). Your call.
 
-- **Download size:** the Windows build is 236 MB, almost all of it lossless HD textures (152 MB imported). Switching the
-  HD art to lossy WebP (quality ~0.9) would likely cut the build to ~100 MB with barely visible change. Want it?
+- **Download size (updated 2026-10-08):** the Windows download is now a 196 MB zip / 261 MB exe (CI had been ignoring the
+  per-asset import settings; fixed in #68). Portraits and boss art are already lossy. Switching the remaining HD art
+  (backgrounds, battle sprites, items) to lossy WebP ~0.9 would likely bring it to ~100-120 MB with barely visible change. Want it?
 
 ## Shift log
 
