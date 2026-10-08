@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Parti, direnci olmadığı bir elementle (ör. Kaos) ilk karşılaştığında Kael bir kez uyarıyor ve Dünya panelindeki direnç çiplerine yönlendiriyor.", "en": "The first time the party meets an element it barely resists (e.g. Chaos), Kael warns once and points at the resistance chips in the World panel."},
     {"tr": "İndirilen sürüm artık yerel testlerle birebir aynı doku ayarlarını kullanıyor: büyük resimler küçültülünce daha pürüzsüz, Windows dosyası yaklaşık 48 MB daha küçük.", "en": "Downloaded builds now use the same texture settings as tested builds: large art scales down more smoothly and the Windows file is about 48 MB smaller."},
     {"tr": "Windows: oyun dosyası (.exe) artık oyunun kendi ikonunu ve 0.2.7 sürüm bilgisini taşıyor. Başlık ekranındaki kahramanların kenar ışığı dışa aktarılmış sürümde görünmüyordu, düzeltildi; açılış da biraz hızlandı.", "en": "Windows: the .exe now carries the game icon and 0.2.7 version info. The rim light behind the title heroes was missing in exported builds, fixed; startup is a little faster too."},
     {"tr": "Ölçek ayarı yalnızca ekrana sığan değerleri sunuyor (1080p'de Otomatik ve 2x); eski bir kayıttaki büyük ölçek de sığan en büyük değere indiriliyor.", "en": "The scale setting only offers sizes that fit the screen (Auto and 2x on 1080p); an older saved larger scale is capped to the largest that fits."},

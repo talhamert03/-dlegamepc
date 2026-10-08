@@ -45,6 +45,7 @@ func _ready() -> void:
 	EventBus.unit_died.connect(_on_died)
 	EventBus.bark.connect(_say_bark)
 	EventBus.chest_dropped.connect(func(_k, _p): _tip("chest", "tut_chest"))
+	EventBus.zone_changed.connect(func(_z): _check_elements())
 	EventBus.boss_defeated.connect(func(_z): _party_bark("boss_down", 0.7))
 	var it := Timer.new()
 	it.wait_time = 170.0
@@ -80,12 +81,29 @@ func _hint(key: String, text_key: String, args: Dictionary = {}) -> void:
 
 
 ## Feature tips that outlive the tutorial: each shows once, the first time the feature matters.
-func _tip(key: String, text_key: String) -> void:
+func _tip(key: String, text_key: String, args: Dictionary = {}) -> void:
 	if shown.has(key) or bubble_t > 0.0:
 		return
 	shown[key] = true
 	GameState.flags["tut"] = shown
-	_show_bubble(DataDB.t(text_key), "kael", 7.0)
+	_show_bubble(DataDB.t(text_key, args), "kael", 7.0)
+
+
+## First zone whose monsters hit with an element the party barely resists (e.g. the first chaos zone): one
+## tip per element, so the World panel's resistance chips are not the only warning.
+func _check_elements() -> void:
+	if BattleSim.mode == "tower" or BattleSim.phase == "town":
+		return
+	# the first-wave intro hint would overwrite this bubble: let it go first
+	if not shown.has("intro") and not Settings.get_v("tutorial_done", false):
+		return
+	for el in ZoneInfo.elements(BattleSim.zone()):
+		var key := "elem_" + str(el)
+		if shown.has(key):
+			continue
+		if ZoneInfo.party_res(str(el), BattleSim.difficulty) < ZoneInfo.TARGET_RES:
+			_tip(key, "tut_element", {"el": ZoneInfo.element_name(str(el)), "res": int(ZoneInfo.party_res(str(el), BattleSim.difficulty))})
+			return
 
 
 func _show_bubble(text: String, hero_id: String, dur: float) -> void:
@@ -143,6 +161,7 @@ func _say_bark(hero_id: String, text: String) -> void:
 func _on_wave(w: int) -> void:
 	if w == 1:
 		_hint("intro", "tut_intro")
+	_check_elements()   # retried each wave: a tip is skipped while another bubble is up
 
 
 func _on_item(item: Dictionary, _p: Vector2) -> void:

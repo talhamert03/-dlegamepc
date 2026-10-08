@@ -98,6 +98,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 56. Shop product art: use the new material icons (seals, shards, essences) where products grant them
 
 ## Replay backlog 2 (shift 2026-10-07 16:21)
+- [x] 72. One-time Kael tip per element when the zone hits with an element the party resists below 25% (waits for the intro hint, retried each wave so barks/tips do not swallow it)
 - [x] 71. test_version_stamps_agree: patch notes "current" == project.godot version == Windows exe file_version (fails CI on drift; negative-checked)
 - [x] 70. Unit tests (38/38, incl. save/backup fallback and Steam Cloud ordering) pass on the Windows engine under Wine; optional GODOT_WIN step in windows_smoke.sh
 - [x] 69. Release builds ignore test flags (--fresh wiped the save, --allheroes/--level/--gear via --screenshot bypassed progression + leaderboard); only --lang=, --colorblind, --title remain; debug builds or IDLEPARTY_DEV=1 keep all
@@ -212,4 +213,5 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-08 shift 16:20 — #71: version guard test (39 tests now). Colorblind mode re-checked after the visual overhaul: rarity shapes still drawn on every slot, tooltips name the rarity; no change.
 - 2026-10-08 shift 16:20 — full windows_smoke.sh with GODOT_WIN: export OK, Wine boots clean, Windows-engine unit tests 39/39, screenshot rendered -> OK.
 - 2026-10-08 shift 16:20 — Windows release exe under Wine: title poster (rim light back after #66) and intro beat 3 render correctly. Remaining open items are owner decisions (pacing, seals, download size, auto version stamp) and a real-Windows test by the owner (docs/WINDOWS_TEST.md).
-- 2026-10-08 shift 20:03 — text audit: every data/*.json pair has tr+en, no empty strings, all dynamic keys (chest_/guild_/quest_/ready_/shop_badge_/shop_tab_/skill_/weight_) resolve. a3_z06 death spike explained: first chaos zone (Cursed Book), party has 0% chaos res; world chips + stuck hint already point at it. No change; noted for the pacing question.
+- 2026-10-08 shift 20:03 — text audit: every data/*.json pair has tr+en, no empty strings, all dynamic keys (chest_/guild_/quest_/ready_/shop_badge_/shop_tab_/skill_/weight_) resolve. a3_z06 death spike: double-element zone (chaos + fire); [corrected later: chaos already appears in a3_z02/a3_z04, so not 'first chaos']. Noted for the pacing question.
+- 2026-10-08 shift 20:03 — #72: Tutorial._check_elements on zone change + each wave; key elem_<el>; string tut_element (TR/EN). Verified in a run at a3_z06: the tip fires ~24 s in, after the intro. First version was overwritten by the wave-1 intro hint, fixed by letting the intro go first.
