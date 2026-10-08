@@ -133,11 +133,18 @@ func _on_drag_input(ev: InputEvent) -> void:
 		WindowManager.layout_changed()
 
 
+var _sweep_tw: Tween
+
+
 ## Light runs once around the frame (a tween, so subclasses' own _process stays untouched).
 func _start_sweep() -> void:
 	if _deco == null:
 		return
+	# one sweep at a time: a second start (open, then focus) would fight over _sweep
+	if _sweep_tw and _sweep_tw.is_valid():
+		_sweep_tw.kill()
 	var tw := create_tween()
+	_sweep_tw = tw
 	tw.tween_method(func(v: float):
 		_sweep = v
 		_deco.queue_redraw(), 0.0, 1.0, 0.9)
@@ -162,7 +169,8 @@ func _draw_deco() -> void:
 				_deco.draw_texture_rect(ic, Rect2(c - Vector2(3.0, 3.0), Vector2(6.0, 6.0)), false, Color("#FFE7B0"))
 	if _sweep < 1.0:
 		# a short bright stroke running clockwise along the inner gilded rule
-		var r := Rect2(Vector2.ZERO, size).grow(-2.6)
+		# along the frame's gold rule (wood 5 px + half of the 1.2 px rule)
+		var r := Rect2(Vector2.ZERO, size).grow(-5.6)
 		var per := 2.0 * (r.size.x + r.size.y)
 		var head := _sweep * per
 		var fade := 1.0 - _sweep

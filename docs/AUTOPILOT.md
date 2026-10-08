@@ -73,7 +73,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 85. Item tooltip v2: rarity header band, item art in a jewel well, gem dividers, compare arrows aligned in a column
 - [x] 86. Strip HUD plaques (zone, goal, quick buttons) in the popup/medallion family
 - [x] 87. World panel: stage medallions, path, selected-stage card in the new family
-- [ ] 88. Panel open/close: frame glint + content fade, consistent with popups
+- [x] 88. Panel open/close: frame glint + content fade, consistent with popups
 - [ ] 89. Shop cards and supporter detail: frame + button family pass
 - [ ] 90. Title screen menu plaques and intro window in the new family
 
@@ -259,3 +259,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-09 — Windows smoke (Wine) caught 13824x 'Invalid polygon data, triangulation failed': the #83 medallion gloss crescent crossed itself near its ends (inner arc started above the outer one). Inner arc now shares the end points and skips them; 0 errors. tools/shoot_panels.sh now keeps per-panel logs and prints engine errors (ALSA noise filtered); gallery, runes, popups, itemtip, recruit reveal scanned clean.
 - 2026-10-09 — #86: zone and goal plaques share one _plate(): smoked glass, lit top lip, bronze bezel, a gilded lozenge at each end. Stage tag stays a flat enamel tag with a lit edge (the button bevel at 8 px tall made '1-1' muddy, tried and reverted). Quick buttons are medallions (#83). 4x TR.
 - 2026-10-09 — #87: world stage picker in the button family (chosen = gold, open = wood, boss = red lacquer, locked = groove; green 'you are here' ring kept); DPS-need gauge on a groove with a lit fill edge. Windows smoke re-run after the polygon fix: == OK, exported exe renders the HD frame/leather/parchment under Wine.
+- 2026-10-09 — #88: open/close already had scale+fade (window_manager) and a light sweep on open/focus; the sweep now runs along the new gold rule (5.6 px in, it was still on the old 2.6 px pinstripe, i.e. over the wood) and only one sweep tween lives at a time (open + focus used to fight over _sweep). An extra sweep trigger from window_manager was tried and removed as redundant (panel_window already defers one on open).
