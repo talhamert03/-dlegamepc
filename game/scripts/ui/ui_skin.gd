@@ -491,9 +491,10 @@ static func medallion(ci: RID, c: Vector2, rad: float, state: String, active := 
 		var gl := PackedVector2Array()
 		for k in 13:
 			gl.append(c + Vector2.from_angle(PI + PI * k / 12.0) * ir * 0.9)
-		for k in 13:
+		# inner edge: a flatter arc between the same end points (ends skipped, so no edge crosses or repeats)
+		for k in range(1, 12):
 			var a: float = TAU - PI * k / 12.0
-			gl.append(c + Vector2(cos(a) * ir * 0.9, -ir * 0.12 + sin(a) * ir * 0.35))
+			gl.append(c + Vector2(cos(a) * ir * 0.9, sin(a) * ir * 0.35))
 		RenderingServer.canvas_item_add_polygon(ci, gl, PackedColorArray([Color(1, 0.95, 0.85, 0.10)]))
 	ring(ci, c, ir, Color(0, 0, 0, 0.6), 1.0)
 	ring(ci, c, rad - 0.6, Color(1, 0.92, 0.7, 0.35), 0.8)

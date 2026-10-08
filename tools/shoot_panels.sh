@@ -19,10 +19,14 @@ SETTINGS="${XDG_DATA_HOME:-$HOME/.local/share}/IdleParty/settings.cfg"
 [ -f "$SETTINGS" ] && rm -f "$SETTINGS"
 for p in $PANELS; do
 	timeout 90 xvfb-run -a -s "-screen 0 ${RES}x24" godot --path . -- --fresh --screenshot --secs=3.5 \
-		--open="$p" --level=40 --gear --loot --cleared=15 --scale=0 --lang="$LANG_ARG" > /dev/null 2>&1 || true
+		--open="$p" --level=40 --gear --loot --cleared=15 --scale=0 --lang="$LANG_ARG" > "$OUT/$p.log" 2>&1 || true
 	cp "$SHOTS/panel_$p.png" "$OUT/$p.png" 2>/dev/null || echo "no shot for $p"
 done
 cp "$SHOTS/strip.png" "$OUT/strip.png" 2>/dev/null || true
+# engine errors raised while drawing (bad polygons, missing resources...) fail silently on screen: list them
+# (no sound card in Xvfb: the ALSA open failure is environment noise, recognised by its "at:" line)
+errs=$(cat "$OUT"/*.log | awk '/^(ERROR|SCRIPT ERROR)/ {e=$0; getline at; if (at !~ /audio_driver/ && e !~ /resources still in use at exit/) print e}' | sort | uniq -c || true)
+if [ -n "$errs" ]; then echo "== engine errors:"; echo "$errs"; else echo "== no engine errors"; fi
 # contact sheets: 4 panels per sheet, scaled to the same height
 python3 - "$OUT" $PANELS <<'PY'
 import sys, os
