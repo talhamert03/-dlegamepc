@@ -98,6 +98,8 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 56. Shop product art: use the new material icons (seals, shards, essences) where products grant them
 
 ## Replay backlog 2 (shift 2026-10-07 16:21)
+- [x] 65. Windows exe icon + version info: modify_resources on, CI installs Wine + rcedit and writes the editor setting, then checks the stamp with pefile
+- [x] 66. Exported builds logged 5 "Expected Image data size" errors: title-screen silhouettes built with create_from_data(mipmaps=false) on mipmapped portrait data -> empty rim light. clear_mipmaps + 256 px copy
 - [x] 64. docs/WINDOWS_TEST.md: Turkish first-run checklist for the owner (transparency, click-through, taskbar mode, tray, audio, CPU, save); linked from README
 - [x] 63. Version stamps aligned to 0.2.7 (project.godot said 0.2.0, the Windows exe file/product version 0.1.0.0); README corrected: the exe embeds the pck, one file
 - [x] 62. README: "download and play" section at the top (owner downloaded the source ZIP and could not find the game)
@@ -193,3 +195,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-08 shift 12:03 — #62: README gets a Turkish step-by-step 'Oyunu indir ve oyna' section (Actions -> latest green CI -> IdleParty-windows artifact -> extract -> exe; SmartScreen note; source-ZIP warning).
 - 2026-10-08 shift 12:03 — #63: config/version 0.2.7, Windows file_version/product_version 0.2.7.0 (Explorer > Properties showed 0.1). Nothing reads config/version at runtime. README step 4: single-file exe (embed_pck=true), not exe + pck. Owner question added: keep version stamps in sync per release by hand or bump automatically from patch_notes current?
 - 2026-10-08 shift 12:03 — #64: reviewed Windows paths (gl_compatibility + per-pixel transparency, passthrough polygon, tray via StatusIndicator on Windows, user dir %APPDATA%/IdleParty, Steam off because no GodotSteam addon). Wrote docs/WINDOWS_TEST.md for the owner's first run.
+- 2026-10-08 shift 12:03 — #65/#66: exported the Windows build here, stamped it via Wine + rcedit (icon groups now point at our 6 icons, FileVersion 0.2.7.0, ProductName set), and booted the exe under Wine headless for 600 frames: that surfaced 5 image-size errors (title silhouettes; only in exported builds, not in the editor). Fixed; Wine run is clean apart from exit-time leak notices. CI step mirrors the local setup; the CI result itself is checked next push.

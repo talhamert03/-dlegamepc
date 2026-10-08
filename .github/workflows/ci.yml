@@ -34,12 +34,50 @@ jobs:
           unzip -qj templates.tpz "templates/windows_release_x86_64.exe" "templates/linux_release.x86_64" "templates/version.txt" \
             -d ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
 
+      # Godot 4.4 stamps the exe icon + version info through rcedit, which on Linux runs under Wine
+      - name: Install Wine + rcedit (Windows exe icon and version info)
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends wine64 wine
+          mkdir -p ~/tools
+          curl -sSL -o ~/tools/rcedit-x64.exe https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe
+          python3 - <<'PY'
+          import os, pathlib, re
+          d = pathlib.Path.home() / ".config/godot"
+          d.mkdir(parents=True, exist_ok=True)
+          f = d / "editor_settings-4.4.tres"
+          want = {"export/windows/rcedit": str(pathlib.Path.home() / "tools/rcedit-x64.exe"),
+                  "export/windows/wine": "/usr/bin/wine"}
+          s = f.read_text() if f.exists() else '[gd_resource type="EditorSettings" format=3]\n\n[resource]\n'
+          for k, v in want.items():
+              line = f'{k} = "{v}"'
+              s = re.sub(rf"^{re.escape(k)} = .*$", line, s, flags=re.M) if re.search(rf"^{re.escape(k)} = ", s, re.M) else s.rstrip("\n") + "\n" + line + "\n"
+          f.write_text(s)
+          print(s)
+          PY
+
       - name: Export Windows & Linux
         working-directory: game
         run: |
           mkdir -p ../export/windows ../export/linux
           godot --headless --export-release "Windows Desktop" ../export/windows/IdleParty.exe
           godot --headless --export-release "Linux" ../export/linux/IdleParty.x86_64
+
+      - name: Check the Windows exe carries our icon and version
+        run: |
+          pip install -q pefile
+          python3 - <<'PY'
+          import pefile
+          pe = pefile.PE("export/windows/IdleParty.exe")
+          info = {}
+          for fi in getattr(pe, "FileInfo", []):
+              for f in fi:
+                  for st in getattr(f, "StringTable", []):
+                      info.update({k.decode(): v.decode() for k, v in st.entries.items()})
+          print("ProductName:", info.get("ProductName"), "| FileVersion:", info.get("FileVersion"))
+          if info.get("ProductName") != "Idle Party: Desktop Legends":
+              print("::warning::rcedit did not stamp the exe (icon/version are Godot defaults)")
+          PY
 
       - uses: actions/upload-artifact@v4
         with:

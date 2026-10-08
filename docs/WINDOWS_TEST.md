@@ -27,6 +27,6 @@ kısa bir not yeterli.
 - [ ] Oyunu kapatıp açınca ilerleme duruyor; "Sen yokken" penceresi kazanımları gösteriyor
 
 ## Bilinen eksikler
-- `.exe` dosya ikonu Godot'nun varsayılanı olabilir (derleme sunucusunda rcedit yok); pencere/tepsi ikonu doğru olmalı.
+- `.exe` dosya ikonu artık oyunun ikonu olmalı; Godot logosu görürsen haber ver.
 - Mağaza test modunda: ödeme alınmaz, ürün doğrudan verilir.
 - Steam entegrasyonu bu derlemede kapalı.

@@ -515,7 +515,12 @@ func _silhouette(tex: Texture2D) -> Texture2D:
 	img = img.duplicate()
 	if img.is_compressed():
 		img.decompress()
+	# exported textures carry mipmaps; create_from_data(.., false, ..) below would reject that data size
+	img.clear_mipmaps()
 	img.convert(Image.FORMAT_RGBA8)
+	# the rim is a soft offset glow: a 256 px tall copy is plenty and keeps this loop ~16x cheaper
+	if img.get_height() > 256:
+		img.resize(maxi(1, img.get_width() * 256 / img.get_height()), 256, Image.INTERPOLATE_BILINEAR)
 	var data := img.get_data()
 	for i in range(0, data.size(), 4):
 		data[i] = 255
