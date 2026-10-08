@@ -5,6 +5,20 @@ Partin sen çalışırken kendi kendine savaşır, loot toplar ve seviye atlar; 
 skill, parti ve lonca gelişimini yönetirsin. Godot 4.4 ile yazıldı, tüm sanat ve sesler
 `tools/` altındaki betiklerle prosedürel olarak üretilir.
 
+## Oyunu indir ve oyna (Windows)
+
+> Yeşil **Code → Download ZIP** düğmesi oyunu değil, **kaynak kodu** indirir; içinde `.exe` yoktur.
+
+1. GitHub'a giriş yap ve **Actions** sekmesini aç:
+   https://github.com/talhamert03/-dlegamepc/actions?query=branch%3Aclaude%2Fparty-grinding-game-design-kdffl4
+2. En üstteki yeşil tikli **CI** çalışmasına tıkla.
+3. Sayfanın en altındaki **Artifacts** bölümünden **IdleParty-windows**'u indir (~245 MB).
+4. Zip'e sağ tık → **Tümünü ayıkla**, sonra klasördeki **IdleParty.exe**'yi çalıştır
+   (`IdleParty.pck` aynı klasörde kalmalı).
+5. SmartScreen "Windows bilgisayarınızı korudu" derse: **Ek bilgi → Yine de çalıştır**.
+
+Kaynak koddan çalıştırmak için: Godot **4.4.1**'i indir, **Import** ile `game/project.godot`'u aç, **F5**.
+
 ## Hızlı başlangıç
 
 ```bash
