@@ -68,6 +68,15 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 83. Control panel + strip HUD in the new type and button family
 - [x] 84. Final consistency audit: spacing grid, colours, every panel side by side at 2x / 4x
 
+## Visual pass 3 (keeps the owner's "clearly visible, premium" direction going)
+
+- [ ] 85. Item tooltip v2: rarity header band, item art in a jewel well, gem dividers, compare arrows aligned in a column
+- [ ] 86. Strip HUD plaques (zone, goal, quick buttons) in the popup/medallion family
+- [ ] 87. World panel: stage medallions, path, selected-stage card in the new family
+- [ ] 88. Panel open/close: frame glint + content fade, consistent with popups
+- [ ] 89. Shop cards and supporter detail: frame + button family pass
+- [ ] 90. Title screen menu plaques and intro window in the new family
+
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
 Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and EN, before/after kept in the log.
