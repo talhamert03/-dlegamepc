@@ -286,6 +286,14 @@ func icon_button(icon_name: String, cb: Callable, tip := "") -> TextureButton:
 	b.modulate = Color(0.92, 0.9, 0.86)
 	b.mouse_entered.connect(func(): b.modulate = Color(1.25, 1.2, 1.05))
 	b.mouse_exited.connect(func(): b.modulate = Color(0.92, 0.9, 0.86))
+	# press: dims and sinks a little, springs back on release
+	b.button_down.connect(func():
+		b.pivot_offset = b.size / 2.0
+		b.scale = Vector2(0.88, 0.88)
+		b.modulate = Color(0.75, 0.7, 0.62))
+	b.button_up.connect(func():
+		b.modulate = Color(1.25, 1.2, 1.05) if b.is_hovered() else Color(0.92, 0.9, 0.86)
+		b.create_tween().tween_property(b, "scale", Vector2.ONE, 0.16).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT))
 	b.pressed.connect(cb)
 	b.pressed.connect(func(): AudioManager.play("ui_click", 0.05, 0.6))
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND

@@ -463,6 +463,14 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 					gp.tab = int(a.substr(12))
 					W.set_tab_active(gp._tabs, gp.tab)
 					gp.refresh())
+		if a == "--gallery":
+			# the whole button / control family in every state, for visual review
+			var gal := DebugGallery.new()
+			gal.position = Vector2(20, 20)
+			add_child(gal)
+			get_tree().create_timer(maxf(0.5, secs - 0.5)).timeout.connect(func():
+				var gs: float = WindowManager.ui_scale
+				get_viewport().get_texture().get_image().get_region(Rect2i(Vector2i(gal.position * gs), Vector2i(gal.size * gs))).save_png("user://screenshots/gallery.png"))
 		if a == "--tipshot":
 			# real tooltips are separate popup windows the capture misses: draw a sample with the same theme items
 			var pc := PanelContainer.new()

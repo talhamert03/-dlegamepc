@@ -360,31 +360,76 @@ static func well(ci: RID, r: Rect2) -> void:
 
 
 ## Wooden button. state: normal | hover | pressed | disabled
+## One button family for the whole UI: a dark outline, a gilded bezel (bronze on the wooden kinds), a
+## convex lacquered face with a gloss band, and clear states: hover lifts the colour and lights a halo,
+## pressed sinks the face 1 px under an inner shadow, disabled turns to dull stone with no shine.
 static func button(ci: RID, r: Rect2, color: String, state: String) -> void:
 	var pal: Array = BTN.get(color, BTN["brown"])
 	var top := Color(pal[0])
 	var bot := Color(pal[1])
 	var edge := Color(pal[2])
+	var wooden := color == "brown" or color == "gray"
+	var rim_hi := Color("#C9A16A") if wooden else BRONZE_HI
+	var rim_lo := Color("#4A2E16") if wooden else BRONZE_LO
+	var press := state == "pressed"
+	var off := state == "disabled"
 	match state:
 		"hover":
-			top = top.lightened(0.14)
-			bot = bot.lightened(0.10)
+			# brighter without washing the colour out (lightened() drifts towards white)
+			top = Color.from_hsv(top.h, top.s, minf(1.0, top.v * 1.14))
+			bot = Color.from_hsv(bot.h, bot.s, minf(1.0, bot.v * 1.16))
 		"pressed":
-			var t2 := top
-			top = bot.darkened(0.05)
-			bot = t2.darkened(0.1)
+			top = bot.darkened(0.08)
+			bot = Color(pal[0]).darkened(0.12)
 		"disabled":
-			top = Color("#34363E")
-			bot = Color("#24262C")
-			edge = Color("#4A4D57")
-	var off := 1.0 if state == "pressed" else 0.0
-	fill(ci, Rect2(r.position + Vector2(0, 1), r.size), 3, Color(0, 0, 0, 0.45), Color(0, 0, 0, 0.45))
-	var rr := Rect2(r.position + Vector2(0, off), r.size - Vector2(0, 1))
-	fill(ci, rr, 3, top, bot)
-	stroke(ci, rr, 3, OUTLINE, 1.0)
-	stroke(ci, rr.grow(-1.0), 2, Color(edge, 0.85), 1.0)
-	if state != "pressed" and state != "disabled":
-		line(ci, rr.position + Vector2(3, 2), Vector2(rr.end.x - 3, rr.position.y + 2), Color(1, 1, 1, 0.22), 1.0)
+			top = Color("#3B3833")
+			bot = Color("#27241F")
+			edge = Color("#5A554D")
+			rim_hi = Color("#6E665A")
+			rim_lo = Color("#2E2A24")
+	var rad := clampf(r.size.y * 0.28, 2.5, 4.0)
+	var b := Rect2(r.position + Vector2(0, 1.0 if press else 0.0), r.size - Vector2(0, 1.0))
+	# soft two-step drop shadow (none under a pressed button: it sits on the surface)
+	if not press:
+		fill(ci, Rect2(r.position + Vector2(0, 1.4), r.size - Vector2(0, 0.6)), rad + 0.5, Color(0, 0, 0, 0.18), Color(0, 0, 0, 0.42))
+	fill(ci, Rect2(r.position + Vector2(0, 0.7), r.size - Vector2(0, 0.7)), rad, Color(0, 0, 0, 0.30), Color(0, 0, 0, 0.55))
+	if state == "hover":
+		stroke(ci, b.grow(1.4), rad + 1.4, Color(edge, 0.18), 1.2)
+		stroke(ci, b.grow(0.7), rad + 0.7, Color(edge, 0.55), 0.9)
+	# outline + bezel
+	fill(ci, b, rad, OUTLINE, OUTLINE)
+	fill(ci, b.grow(-0.6), rad - 0.4, rim_hi, rim_lo)
+	# lacquered face
+	var f := b.grow(-1.5)
+	if f.size.x < 2.0 or f.size.y < 2.0:
+		return
+	var fr := maxf(rad - 1.2, 1.0)
+	fill(ci, f, fr, top, bot)
+	if wooden and not off:
+		# a few faint grain streaks along the plank
+		var seed := int(r.size.x * 13.0 + r.size.y * 7.0)
+		for k in int(f.size.y / 2.2):
+			var y := f.position.y + 1.4 + k * 2.2
+			var n := fposmod(sin(float(seed + k * 37)) * 43758.5453, 1.0)
+			var x0 := f.position.x + 2.0 + n * f.size.x * 0.3
+			line(ci, Vector2(x0, y), Vector2(minf(x0 + f.size.x * (0.35 + n * 0.4), f.end.x - 2.0), y), Color(0, 0, 0, 0.10), 0.6)
+	if press:
+		# inner shadow along the top: the face is pushed in
+		fill(ci, Rect2(f.position, Vector2(f.size.x, minf(3.0, f.size.y * 0.4))), fr, Color(0, 0, 0, 0.38), Color(0, 0, 0, 0.0))
+	elif not off:
+		# gloss band over the upper half, a bright top lip and a dark lower lip
+		fill(ci, Rect2(f.position + Vector2(1.0, 0.5), Vector2(f.size.x - 2.0, f.size.y * 0.46)), maxf(fr - 0.5, 1.0), Color(1, 1, 1, 0.20), Color(1, 1, 1, 0.03))
+		line(ci, Vector2(f.position.x + fr, f.position.y + 0.5), Vector2(f.end.x - fr, f.position.y + 0.5), Color(edge, 0.9), 0.7)
+		line(ci, Vector2(f.position.x + fr, f.end.y - 0.4), Vector2(f.end.x - fr, f.end.y - 0.4), Color(0, 0, 0, 0.32), 0.8)
+	# rounded ends: the face falls off into shade at both sides, like a turned plank
+	if not off:
+		var ew := minf(6.0, f.size.x * 0.15)
+		var sh := Color(0, 0, 0, 0.22)
+		var cl := Color(0, 0, 0, 0)
+		RenderingServer.canvas_item_add_polygon(ci, PackedVector2Array([f.position + Vector2(0.4, fr * 0.5), f.position + Vector2(ew, fr * 0.5), Vector2(f.position.x + ew, f.end.y - fr * 0.5), Vector2(f.position.x + 0.4, f.end.y - fr * 0.5)]), PackedColorArray([sh, cl, cl, sh]))
+		RenderingServer.canvas_item_add_polygon(ci, PackedVector2Array([Vector2(f.end.x - ew, f.position.y + fr * 0.5), Vector2(f.end.x - 0.4, f.position.y + fr * 0.5), f.end - Vector2(0.4, fr * 0.5), f.end - Vector2(ew, fr * 0.5)]), PackedColorArray([cl, sh, sh, cl]))
+	# fine inner rule on the bezel edge
+	stroke(ci, f.grow(0.35), fr + 0.3, Color(0, 0, 0, 0.45), 0.5)
 
 
 ## Bronze medallion button (bottom bar of the hero panel, strip quick buttons).

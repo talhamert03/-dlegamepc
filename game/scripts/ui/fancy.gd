@@ -244,25 +244,16 @@ static func small_button(text: String, kind: String, cb: Callable, sz: Vector2) 
 	b.draw.connect(func():
 		var ci := b.get_canvas_item()
 		var r := Rect2(Vector2(0, 1.0 if b.button_pressed else 0.0), b.size)
-		var pal: Dictionary = {"brown": [Color("#6A4A30"), Color("#3A2516"), Color("#F3E6CC")], "gold": [Color("#E5B44E"), Color("#A5751F"), Color("#3A240E")],
-			"red": [Color("#B03A36"), Color("#6A1A1A"), Color("#FFF0EA")], "green": [Color("#46A15B"), Color("#24673B"), Color("#F0FFF2")]}
-		var c: Array = pal.get(kind, pal["brown"])
-		var top: Color = c[0]
-		var bot: Color = c[1]
-		var tc: Color = c[2]
-		if b.disabled:
-			top = Color("#34363E")
-			bot = Color("#24262C")
-			tc = Color("#8A8690")
-		elif b.is_hovered():
-			top = top.lightened(0.14)
-		UISkin.fill(ci, r, 3, top, bot)
-		UISkin.stroke(ci, r, 3, UISkin.OUTLINE, 1.0)
-		UISkin.stroke(ci, r.grow(-1.0), 2, Color(1, 0.9, 0.7, 0.25 if not b.disabled else 0.08), 0.7)
+		var st := "disabled" if b.disabled else ("pressed" if b.button_pressed else ("hover" if b.is_hovered() else "normal"))
+		UISkin.button(ci, Rect2(Vector2.ZERO, b.size), kind, st)
+		var tc := Color("#8A8690") if b.disabled else UITheme.btn_text_color(kind)
 		var f := UITheme.font_body
 		var fs := 8 if r.size.y >= 13 else 7
 		var tw := f.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
-		b.draw_string(f, Vector2((r.size.x - tw) / 2.0, r.position.y + r.size.y / 2.0 + fs * 0.36), text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, tc))
+		var tp := Vector2((r.size.x - tw) / 2.0, r.position.y + r.size.y / 2.0 + fs * 0.36)
+		if tc.v > 0.5 and not b.disabled:
+			b.draw_string_outline(f, tp, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 2, Color(0, 0, 0, 0.5))
+		b.draw_string(f, tp, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, tc))
 	return b
 
 
