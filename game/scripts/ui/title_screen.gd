@@ -294,12 +294,10 @@ func _draw() -> void:
 	# soft drop shadow and an ornate gilded frame around the cinema window
 	for i in 6:
 		UISkin.stroke(ci, _frame.grow(6.0 + i * 3.0), 8, Color(0, 0, 0, 0.12), 3.0)
-	UISkin.fill(ci, _frame.grow(7.0), 6, Color("#3A2614"), Color("#1A0F08"))
-	UISkin.ornate(ci, _frame.grow(6.0))
-	UISkin.stroke(ci, _frame.grow(2.0), 3, Color(0, 0, 0, 1), 2.0)
-	UISkin.stroke(ci, _frame.grow(1.0), 3, Color("#E8C27A", 0.9), 1.0)
-	for c in [_frame.position, Vector2(_frame.end.x, _frame.position.y), Vector2(_frame.position.x, _frame.end.y), _frame.end]:
-		UISkin.diamond(ci, c, 5.0)
+	# the windows' painted walnut frame at 1.4x (its gold rule lands right on the picture's edge)
+	RenderingServer.canvas_item_set_default_texture_filter(ci, RenderingServer.CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS)
+	var k := 1.4
+	UISkin.frame9(ci, _frame.grow(6.2 * k), k)
 
 
 ## Pan / zoom over a scene image so it covers the frame. pan: 0..1 across the spare width.

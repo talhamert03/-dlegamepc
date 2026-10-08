@@ -42,6 +42,9 @@ const BTN := {
 
 static func rrect(r: Rect2, rad: float, seg := 3) -> PackedVector2Array:
 	var p := PackedVector2Array()
+	r = r.abs()
+	if r.size.x < 0.02 or r.size.y < 0.02:
+		return p
 	rad = minf(rad, minf(r.size.x, r.size.y) * 0.5)
 	if rad <= 0.01:
 		return PackedVector2Array([r.position, Vector2(r.end.x, r.position.y), r.end, Vector2(r.position.x, r.end.y)])
@@ -50,7 +53,12 @@ static func rrect(r: Rect2, rad: float, seg := 3) -> PackedVector2Array:
 	for c in cs:
 		for i in seg + 1:
 			var a: float = c[1] + (PI / 2.0) * i / seg
-			p.append(c[0] + Vector2(cos(a), sin(a)) * rad)
+			var q: Vector2 = c[0] + Vector2(cos(a), sin(a)) * rad
+			# at rad == half the side two corners meet: repeated vertices make the triangulator fail
+			if p.is_empty() or p[p.size() - 1].distance_squared_to(q) > 0.0001:
+				p.append(q)
+	if p.size() > 2 and p[0].distance_squared_to(p[p.size() - 1]) <= 0.0001:
+		p.remove_at(p.size() - 1)
 	return p
 
 
@@ -65,11 +73,15 @@ static func _vcols(pts: PackedVector2Array, top: Color, bot: Color, y0: float, y
 ## Vertical-gradient rounded rect.
 static func fill(ci: RID, r: Rect2, rad: float, top: Color, bot: Color) -> void:
 	var pts := rrect(r, rad)
+	if pts.size() < 3:
+		return
 	RenderingServer.canvas_item_add_polygon(ci, pts, _vcols(pts, top, bot, r.position.y, r.end.y))
 
 
 static func stroke(ci: RID, r: Rect2, rad: float, col: Color, w := 1.0) -> void:
 	var pts := rrect(r, rad)
+	if pts.size() < 3:
+		return
 	pts.append(pts[0])
 	RenderingServer.canvas_item_add_polyline(ci, pts, PackedColorArray([col]), w, true)
 
