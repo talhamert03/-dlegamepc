@@ -21,8 +21,9 @@ IDLEPARTY_DEV=1 wine IdleParty.exe --headless --quit-after 600 > boot.log 2>&1 |
 IDLEPARTY_DEV=1 wine IdleParty.exe --headless --quit-after 4000 -- --fresh --level=30 --allheroes > run.log 2>&1 || true
 
 if [ -n "${GODOT_WIN:-}" ]; then
-	echo "== unit tests with the Windows engine (on a copy, so the repo's import cache is untouched)"
-	rm -rf "${OUT:?}/proj" && cp -r "$ROOT/game" "$OUT/proj" && rm -rf "${OUT:?}/proj/.godot"
+	echo "== unit tests with the Windows engine (on a copy, so the repo stays untouched)"
+	# keep .godot: the import cache is cross-platform, re-importing 1600+ assets under Wine takes far too long
+	rm -rf "${OUT:?}/proj" && cp -r "$ROOT/game" "$OUT/proj"
 	(cd "$OUT/proj" && wine "$GODOT_WIN" --headless --path . res://tests/TestRunner.tscn > "$OUT/tests.log" 2>&1) || true
 	grep -E "passed, [0-9]+ failed" "$OUT/tests.log" || echo "tests did not finish"
 	grep -q " 0 failed" "$OUT/tests.log" || { echo "== FAIL (unit tests)"; exit 1; }
