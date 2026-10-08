@@ -307,6 +307,21 @@ func test_data_files_parse() -> void:
 	runner.check(bad.is_empty(), "every data/*.json parses " + str(bad))
 
 
+## The patch notes, project.godot and the Windows exe properties must name the same version (they had drifted to
+## 0.2.7 / 0.2.0 / 0.1.0 once).
+func test_version_stamps_agree() -> void:
+	var notes := str(DataDB.patch_notes.get("current", ""))
+	var proj := str(ProjectSettings.get_setting("application/config/version", ""))
+	var cfg := ConfigFile.new()
+	var exe := ""
+	if cfg.load("res://export_presets.cfg") == OK:
+		for sec in cfg.get_sections():
+			if sec.ends_with(".options") and cfg.has_section_key(sec, "application/file_version"):
+				exe = str(cfg.get_value(sec, "application/file_version"))
+	runner.check(notes != "" and proj == notes, "project.godot version %s == patch notes %s" % [proj, notes])
+	runner.check(exe == notes + ".0", "Windows exe version %s == patch notes %s.0" % [exe, notes])
+
+
 func test_daily_quests_have_text() -> void:
 	var bad: Array = []
 	for q in Quests.DAILY_POOL:
