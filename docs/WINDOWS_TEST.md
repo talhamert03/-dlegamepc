@@ -26,6 +26,10 @@ kısa bir not yeterli.
 ## Kayıt
 - [ ] Oyunu kapatıp açınca ilerleme duruyor; "Sen yokken" penceresi kazanımları gösteriyor
 
+## Bir şey ters giderse
+- Hata kayıtları: `%APPDATA%\IdleParty\logs\godot.log` — bu dosyayı göndermen en hızlı teşhis yolu.
+- Kayıt dosyası ve 2 yedeği: `%APPDATA%\IdleParty\saves\`
+
 ## Bilinen eksikler
 - `.exe` dosya ikonu artık oyunun ikonu olmalı; Godot logosu görürsen haber ver.
 - Mağaza test modunda: ödeme alınmaz, ürün doğrudan verilir.
