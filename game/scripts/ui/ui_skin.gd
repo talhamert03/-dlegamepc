@@ -180,17 +180,28 @@ static func panel(ci: RID, r: Rect2, header_h := 0.0, ribbon_w := 0.0) -> void:
 		_gem_plate(ci, Vector2(r.get_center().x, r.end.y - 2.6), false)
 
 
+## Popup family (tooltips, context menu, toasts, confirm cards): the window materials at a smaller
+## scale: a soft shadow, the HD leather and the walnut frame with its brass corner fittings scaled by `k`
+## (0.5 = 3 px of frame). `tint` darkens the leather a little for text-heavy cards.
+static func popup(ci: RID, r: Rect2, k := 0.5, tint := 0.25) -> void:
+	RenderingServer.canvas_item_set_default_texture_filter(ci, RenderingServer.CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS)
+	fill(ci, Rect2(r.position + Vector2(0.5, 2.0), r.size), 4, Color(0, 0, 0, 0.30), Color(0, 0, 0, 0.55))
+	_tile(ci, LEATHER_TEX, r.grow(-2.0 * k), LEATHER_TILE)
+	fill(ci, r.grow(-2.0 * k), 2, Color(0, 0, 0, tint * 0.6), Color(0, 0, 0, tint))
+	frame9(ci, r, k)
+
+
 ## Painted 9-slice frame: fixed corners, edges repeated a whole number of times (each copy stretched a
 ## little so the wood grain never shows a seam).
-static func frame9(ci: RID, r: Rect2) -> void:
-	var c := minf(FRAME_CORNER, minf(r.size.x, r.size.y) * 0.5)
+static func frame9(ci: RID, r: Rect2, k := 1.0) -> void:
+	var c := minf(FRAME_CORNER * k, minf(r.size.x, r.size.y) * 0.5)
 	var sc := FRAME_CORNER * FRAME_PX            # corner size in texture px
 	var tex := FRAME_TEX.get_rid()
 	var seg := FRAME_EDGE * FRAME_PX
 	# edges
 	var hl := r.size.x - 2.0 * c
 	if hl > 0.5:
-		var n := maxi(1, roundi(hl / FRAME_EDGE))
+		var n := maxi(1, roundi(hl / (FRAME_EDGE * k)))
 		var w := hl / n
 		for i in n:
 			var x := r.position.x + c + w * i
@@ -198,7 +209,7 @@ static func frame9(ci: RID, r: Rect2) -> void:
 			RenderingServer.canvas_item_add_texture_rect_region(ci, Rect2(x, r.end.y - c, w, c), tex, Rect2(sc, sc + seg, seg, sc))
 	var vl := r.size.y - 2.0 * c
 	if vl > 0.5:
-		var n := maxi(1, roundi(vl / FRAME_EDGE))
+		var n := maxi(1, roundi(vl / (FRAME_EDGE * k)))
 		var h := vl / n
 		for i in n:
 			var y := r.position.y + c + h * i

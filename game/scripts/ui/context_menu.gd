@@ -74,15 +74,11 @@ func close() -> void:
 func _draw() -> void:
 	var ci := get_canvas_item()
 	var r := Rect2(Vector2.ZERO, size)
-	UISkin.fill(ci, Rect2(r.position + Vector2(0, 1.5), r.size), 3, Color(0, 0, 0, 0.45), Color(0, 0, 0, 0.45))
-	UISkin.fill(ci, r, 3, Color("#1B1C23"), Color("#111217"))
-	UISkin.stroke(ci, r, 3, Color(0, 0, 0, 1), 1.0)
-	UISkin.stroke(ci, r.grow(-1.0), 2, Color(UISkin.BRONZE, 0.7), 1.0)
+	UISkin.popup(ci, r, 0.45, 0.3)
 	for i in _items.size():
 		var y := PAD + i * ROW_H
 		if i == _hover:
-			UISkin.fill(ci, Rect2(2, y, size.x - 4, ROW_H), 2, Color("#B86A2A"), Color("#7A3E14"))
-			draw_line(Vector2(4, y + 1), Vector2(size.x - 4, y + 1), Color(1, 0.9, 0.6, 0.35), 0.8)
+			UISkin.button(ci, Rect2(3, y, size.x - 6, ROW_H), "orange", "normal")
 			UISkin.diamond(ci, Vector2(7, y + ROW_H * 0.5), 2.2)
 		elif i > 0:
 			draw_line(Vector2(6, y), Vector2(size.x - 6, y), Color(1, 1, 1, 0.05), 1.0)

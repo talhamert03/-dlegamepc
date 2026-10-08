@@ -56,10 +56,6 @@ func _grabber(ci: RID, r: Rect2, hot: bool) -> void:
 			RenderingServer.canvas_item_add_line(ci, Vector2(g.position.x + 1.0, c.y + k + 0.6), Vector2(g.end.x - 1.0, c.y + k + 0.6), Color(1, 0.9, 0.6, 0.35), 0.4, true)
 
 
-## Plain tooltips: night-blue plate, black outline, gilt inner rule, tiny gold studs in the corners.
+## Plain tooltips: the popup family (leather + small walnut frame with brass corners).
 func _tip(ci: RID, r: Rect2) -> void:
-	UISkin.fill(ci, r, 3, Color(0.10, 0.10, 0.15, 0.97), Color(0.04, 0.04, 0.07, 0.97))
-	UISkin.stroke(ci, r, 3, UISkin.OUTLINE, 1.0)
-	UISkin.stroke(ci, r.grow(-1.4), 2, Color("#C9A45C", 0.8), 0.7)
-	for p in [r.position + Vector2(2.6, 2.6), Vector2(r.end.x - 2.6, r.position.y + 2.6), Vector2(r.position.x + 2.6, r.end.y - 2.6), r.end - Vector2(2.6, 2.6)]:
-		RenderingServer.canvas_item_add_circle(ci, p, 0.9, Color("#FFD978"))
+	UISkin.popup(ci, r, 0.45, 0.35)

@@ -176,15 +176,18 @@ static func confirm(host: Control, text: String, on_yes: Callable, yes_text := "
 	var th := UITheme.font_body.get_multiline_string_size(text, HORIZONTAL_ALIGNMENT_CENTER, w - 16.0, 8).y
 	th = clampf(th, 10.0, 70.0)
 	var card := Control.new()
-	card.size = Vector2(w, (16.0 + th + 8.0 + 15.0 + 8.0))
+	card.size = Vector2(w, (16.0 + th + 12.0 + 15.0 + 8.0))
 	card.position = ((host.size - card.size) / 2.0).round()
 	var accent := Color("#E0503C") if danger else Color("#E8B84A")
 	card.draw.connect(func():
 		var ci := card.get_canvas_item()
 		var r := Rect2(Vector2.ZERO, card.size)
-		UISkin.fill(ci, Rect2(r.position + Vector2(0, 2), r.size), 4, Color(0, 0, 0, 0.5), Color(0, 0, 0, 0.5))
-		UISkin.fill(ci, r, 4, Color("#2E2630"), Color("#161118"))
-		UISkin.ornate(ci, r.grow(-3.0))
+		UISkin.popup(ci, r, 0.6, 0.15)
+		# a gilded rule above the buttons, ending in lozenges
+		var ry := r.size.y - 27.0
+		UISkin.line(ci, Vector2(18, ry), Vector2(r.size.x - 18, ry), Color(UISkin.BRONZE, 0.5), 0.7)
+		UISkin.diamond(ci, Vector2(16, ry), 1.6)
+		UISkin.diamond(ci, Vector2(r.size.x - 16, ry), 1.6)
 		# medallion sitting on the top edge: ! for destructive actions, ? otherwise
 		var mc := Vector2(r.size.x / 2.0, 1.0)
 		UISkin.circle(ci, mc, 8.5, UISkin.BRONZE_HI, UISkin.BRONZE_LO)

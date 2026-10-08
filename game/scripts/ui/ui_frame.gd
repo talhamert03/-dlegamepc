@@ -34,13 +34,7 @@ func _draw() -> void:
 	var ci := get_canvas_item()
 	match kind:
 		"tooltip":
-			# dark vellum with a gold rule and small corner lozenges
-			UISkin.fill(ci, r, 3, Color(0.11, 0.08, 0.06, 0.97), Color(0.05, 0.035, 0.025, 0.97))
-			UISkin.stroke(ci, r, 3, Color(0, 0, 0, 1), 1.0)
-			UISkin.stroke(ci, r.grow(-1.2), 2, Color("#B08A4E"), 1.0)
-			UISkin.stroke(ci, r.grow(-2.6), 2, Color(0.69, 0.54, 0.31, 0.25), 0.7)
-			for c in [r.position + Vector2(2.5, 2.5), Vector2(r.end.x - 2.5, r.position.y + 2.5), r.end - Vector2(2.5, 2.5), Vector2(r.position.x + 2.5, r.end.y - 2.5)]:
-				UISkin.diamond(ci, c, 2.0)
+			UISkin.popup(ci, r, 0.45, 0.35)
 		"plaque":
 			UISkin.well(ci, r)
 		"inset":

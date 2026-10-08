@@ -66,9 +66,7 @@ func _process(delta: float) -> void:
 func _draw() -> void:
 	var ci := get_canvas_item()
 	var r := Rect2(Vector2.ZERO, size)
-	UISkin.fill(ci, r.grow(1.0), 4, Color(0, 0, 0, 0.6), Color(0, 0, 0, 0.6))
-	UISkin.fill(ci, r, 4, Color("#2E2230"), Color("#140E16"))
-	UISkin.stroke(ci, r.grow(-1.0), 3, Color("#C9A46A", 0.85), 1.0)
+	UISkin.popup(ci, r, 0.5, 0.2)
 	# a thin light sweep across the plate when it arrives
 	var sw := clampf((_t - 0.2) / 0.7, 0.0, 1.0)
 	if sw > 0.0 and sw < 1.0:
@@ -77,8 +75,7 @@ func _draw() -> void:
 			Color(1, 0.95, 0.8, 0.12))
 	# icon well
 	var well := Rect2(4, 4, 24, 24)
-	UISkin.fill(ci, well, 3, Color("#1A1218"), Color("#0A070C"))
-	UISkin.stroke(ci, well, 3, Color("#8A6A3A"), 1.0)
+	UISkin.well(ci, well)
 	if _chest != "":
 		ChestArt.draw(self, well.position + Vector2(12, 20), 18.0, _chest, 0.0, _t, false)
 	elif _icon:
