@@ -98,6 +98,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 56. Shop product art: use the new material icons (seals, shards, essences) where products grant them
 
 ## Replay backlog 2 (shift 2026-10-07 16:21)
+- [x] 70. Unit tests (38/38, incl. save/backup fallback and Steam Cloud ordering) pass on the Windows engine under Wine; optional GODOT_WIN step in windows_smoke.sh
 - [x] 69. Release builds ignore test flags (--fresh wiped the save, --allheroes/--level/--gear via --screenshot bypassed progression + leaderboard); only --lang=, --colorblind, --title remain; debug builds or IDLEPARTY_DEV=1 keep all
 - [x] 68. *.import files were git-ignored, so CI re-imported all 1648 assets with defaults: no mipmaps on 676 textures, no lossy on 52 -> CI build blurrier when scaled and 48 MB bigger than what was tested. Now committed; fresh-clone export == local export
 - [x] 67. tools/windows_smoke.sh: export + Wine headless boot (600 / 4000 frames) + Xvfb screenshot, fails on Godot errors; run before handing a build to the owner
@@ -205,3 +206,5 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-08 shift 12:03 — #68: removed *.import from game/.gitignore and committed 1648 .import files. Verified with a fresh clone (no .godot cache): import + Windows export gives the same pack as local (162.7 MB data, exe 261 MB vs CI's 309 MB before). Owners' earlier downloads were built without mipmaps on HD art.
 - 2026-10-08 shift 12:03 — #69: Main.user_args() filters flags in release builds; windows_smoke.sh sets IDLEPARTY_DEV=1. CI run 160 (with .import files): Windows zip 244 -> 196 MB, Linux 236 -> 188 MB.
 - 2026-10-08 shift 12:03 — #69 verified on the Windows release exe under Wine: '--fresh --screenshot' without IDLEPARTY_DEV is ignored (game keeps running, no screenshots, save untouched); with IDLEPARTY_DEV=1 screenshot mode runs.
+- 2026-10-08 shift 16:20 — 8 h balance bot: act 4 zone 6 at 8 h, lv 37, 143 deaths; boss fails a2_z10 / a3_z05 at 3% hp (fine). a3_z06 is the softest wall (5.5-6.25 h, deaths 81->136). Seals 50 at 8 h. Both fall under the open owner questions (pacing, seals); no change.
+- 2026-10-08 shift 16:20 — #70: save path reviewed (tmp + rename, sha256 checksum, 3 backups, fallback chain, cloud newer-wins). Ran the test suite with Godot_v4.4.1 win64 console under Wine: 38 passed, 0 failed. Offline sim reviewed: capped at 12 h (+bonuses), clock rollback ignored, item count capped.
