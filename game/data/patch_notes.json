@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Sekmeler, seçiciler, açma/kapama anahtarları, kaydırıcılar ve dolum çubukları butonlarla aynı tasarıma geçti: seçili sekme kabarık ve altın işaretli, diğerleri oyuk.", "en": "Tabs, selectors, switches, sliders and progress bars now share the button design: the selected tab is raised with a gold marker, the others are recessed."},
     {"tr": "Butonlar yenilendi: yaldızlı çerçeve, cilalı yüzey; üzerine gelince parlıyor, basınca içeri gömülüyor, kullanılamazken taş griye dönüyor. Küçük ikon düğmeleri de basınca tepki veriyor.", "en": "Buttons redesigned: gilded bezel and lacquered face; they glow on hover, sink when pressed and turn stone grey when unavailable. Small icon buttons react to presses too."},
     {"tr": "Pencereler yenilendi: ceviz oyma çerçeve, altın şerit ve yakutlu pirinç köşelik artık yüksek çözünürlüklü boyanmış doku; pencere içi gerçek deri dokusu. 4K ekranda da keskin.", "en": "Windows redesigned: the carved walnut frame, gold rule and brass corner fittings with rubies are now painted high-resolution textures, with real leather inside. Sharp on 4K screens too."},
     {"tr": "Tüm yazı tipleri değişti: arayüz yazıları Rubik (küçük boyda bile net okunur), başlıklar Eczar, hikâye metinleri Lora. Türkçe büyük harflerde İ artık doğru (EVCİL, DİZİLİŞ).", "en": "All fonts replaced: UI text in Rubik (clear even at small sizes), titles in Eczar, story text in Lora. Turkish capitals now use the correct dotted İ."},

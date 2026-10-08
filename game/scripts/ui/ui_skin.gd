@@ -432,6 +432,30 @@ static func button(ci: RID, r: Rect2, color: String, state: String) -> void:
 	stroke(ci, f.grow(0.35), fr + 0.3, Color(0, 0, 0, 0.45), 0.5)
 
 
+## Recessed channel cut into the surface: dark floor, inner shadow under the top lip, lit bottom lip.
+static func groove(ci: RID, r: Rect2, rad: float) -> void:
+	fill(ci, r, rad, Color("#090605"), Color("#1A120C"))
+	fill(ci, Rect2(r.position, Vector2(r.size.x, minf(3.0, r.size.y * 0.45))), rad, Color(0, 0, 0, 0.55), Color(0, 0, 0, 0.0))
+	line(ci, Vector2(r.position.x + rad, r.end.y + 0.4), Vector2(r.end.x - rad, r.end.y + 0.4), Color(BRONZE_HI, 0.22), 0.6)
+
+
+## Tab: the active one is a raised crimson button with a gilded bezel and a gold pointer under it; the
+## others are recessed grooves whose rim lights on hover.
+static func tab(ci: RID, r: Rect2, active: bool, hover: bool) -> void:
+	if active:
+		button(ci, r, "red", "normal")
+		var c := Vector2(r.get_center().x, r.end.y + 0.2)
+		poly(ci, PackedVector2Array([c + Vector2(-3.2, -0.6), c + Vector2(3.2, -0.6), c + Vector2(0, 2.6)]), BRONZE_HI, BRONZE_LO)
+		RenderingServer.canvas_item_add_polyline(ci, PackedVector2Array([c + Vector2(-3.2, -0.6), c + Vector2(0, 2.6), c + Vector2(3.2, -0.6)]), PackedColorArray([OUTLINE]), 0.7, true)
+	else:
+		var g := r.grow_individual(0, -0.5, 0, -0.5)
+		groove(ci, g, 3)
+		if hover:
+			fill(ci, g.grow(-1.0), 2, Color(1, 0.85, 0.6, 0.10), Color(1, 0.85, 0.6, 0.03))
+		stroke(ci, g, 3, OUTLINE, 0.9)
+		stroke(ci, g.grow(-0.8), 2.5, Color(BRONZE_HI if hover else BRONZE, 0.7 if hover else 0.30), 0.6)
+
+
 ## Bronze medallion button (bottom bar of the hero panel, strip quick buttons).
 static func medallion(ci: RID, c: Vector2, rad: float, state: String, active := false) -> void:
 	circle(ci, c + Vector2(0, 1.2), rad + 1.0, Color(0, 0, 0, 0.5), Color(0, 0, 0, 0.5))

@@ -5,7 +5,8 @@ extends RefCounted
 ## drawn with UISkin so it matches the window chrome at any UI scale.
 
 
-## Banner tab (used by W.tabs): crimson when active, dark wood otherwise.
+## Banner tab (used by W.tabs): raised crimson lacquer with a gilded bezel when active, a recessed dark
+## groove otherwise (hover lights its rim).
 static func tab_button(text: String, on: bool, w := 0.0) -> Button:
 	var b := Button.new()
 	b.flat = true
@@ -23,13 +24,7 @@ static func tab_button(text: String, on: bool, w := 0.0) -> Button:
 		var act: bool = b.get_meta("on", false)
 		var hov := b.is_hovered()
 		var r := Rect2(Vector2.ZERO, b.size)
-		if act:
-			UISkin.stroke(ci, r.grow(0.8), 4, Color(1.0, 0.85, 0.4, 0.4), 1.6)
-			UISkin.fill(ci, r, 3, UISkin.RIBBON_TOP.lightened(0.05), UISkin.RIBBON_BOT.darkened(0.2))
-		else:
-			UISkin.fill(ci, r, 3, Color("#4A3020").lightened(0.1 if hov else 0.0), Color("#24160C"))
-		UISkin.stroke(ci, r, 3, UISkin.OUTLINE, 1.0)
-		UISkin.stroke(ci, r.grow(-1.0), 2, Color("#F2CB7A", 0.85) if act else Color("#B08A5A", 0.35), 0.8)
+		UISkin.tab(ci, r, act, hov)
 		var t: String = b.get_meta("text", "")
 		var fs := 8
 		while fs > 6 and f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > r.size.x - 6.0:
@@ -37,7 +32,7 @@ static func tab_button(text: String, on: bool, w := 0.0) -> Button:
 		var tw2 := minf(f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x, r.size.x - 4.0)
 		var tp := Vector2((r.size.x - tw2) / 2.0, r.size.y / 2.0 + fs * 0.36)
 		b.draw_string_outline(f, tp, t, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 4.0, fs, 3, Color(0, 0, 0, 0.85))
-		b.draw_string(f, tp, t, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 4.0, fs, Color("#FFE7B0") if act else Color("#D8C4A0")))
+		b.draw_string(f, tp, t, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 4.0, fs, Color("#FFF0C8") if act else (Color("#E8D6B0") if hov else Color("#BFA987"))))
 	return b
 
 
@@ -100,11 +95,14 @@ static func toggle(on: bool, cb: Callable) -> Button:
 		var ci := b.get_canvas_item()
 		var r := Rect2(Vector2(0, 1), b.size - Vector2(0, 2))
 		var hov := b.is_hovered()
-		UISkin.fill(ci, r, 4.5, Color("#1E5A2C") if on else Color("#1A1410"), Color("#0E3018") if on else Color("#0C0806"))
+		UISkin.groove(ci, r, 4.5)
 		if on:
-			UISkin.stroke(ci, r.grow(0.6), 5, Color(0.5, 1.0, 0.55, 0.35), 1.2)
+			# lit emerald channel with a soft glow and a sheen on top
+			UISkin.fill(ci, r.grow(-1.2), 3.5, Color("#3FB060"), Color("#14552A"))
+			UISkin.fill(ci, Rect2(r.position + Vector2(2, 1.4), Vector2(r.size.x - 4, r.size.y * 0.35)), 2, Color(1, 1, 1, 0.28), Color(1, 1, 1, 0.0))
+			UISkin.stroke(ci, r.grow(0.7), 5.2, Color(0.5, 1.0, 0.55, 0.30), 1.2)
 		UISkin.stroke(ci, r, 4.5, UISkin.OUTLINE, 1.0)
-		UISkin.stroke(ci, r.grow(-0.8), 4, Color(UISkin.BRONZE, 0.55 if not hov else 0.9), 0.7)
+		UISkin.stroke(ci, r.grow(-0.7), 4, Color(UISkin.BRONZE_HI if hov else UISkin.BRONZE, 0.75 if hov else 0.45), 0.6)
 		var k := Vector2(r.end.x - 5.0, r.get_center().y) if on else Vector2(r.position.x + 5.0, r.get_center().y)
 		UISkin.circle(ci, k + Vector2(0, 0.6), 4.6, Color(0, 0, 0, 0.5), Color(0, 0, 0, 0.5))
 		UISkin.circle(ci, k, 4.4, UISkin.OUTLINE, UISkin.OUTLINE)
@@ -114,7 +112,7 @@ static func toggle(on: bool, cb: Callable) -> Button:
 	return b
 
 
-## One plaque split into segments; the chosen one is gilded. cb(index).
+## A recessed groove split into segments; the chosen one is a raised gold button. cb(index).
 static func segmented(names: Array, cur: int, cb: Callable, seg_w := 0.0) -> Control:
 	var f := UITheme.font_body
 	var widths: Array = []
@@ -147,23 +145,24 @@ static func segmented(names: Array, cur: int, cb: Callable, seg_w := 0.0) -> Con
 	c.draw.connect(func():
 		var ci := c.get_canvas_item()
 		var r := Rect2(Vector2.ZERO, c.size)
-		UISkin.fill(ci, r, 3, Color("#3A2616"), Color("#1A0F08"))
+		UISkin.groove(ci, r, 3)
 		var x := 0.0
 		for i in widths.size():
 			var sr := Rect2(x, 0, float(widths[i]), r.size.y)
+			if i > 0 and i != cur and i - 1 != cur:
+				# engraved divider: a dark cut with a lit lower lip
+				UISkin.line(ci, Vector2(x - 0.3, 2.5), Vector2(x - 0.3, r.size.y - 2.5), Color(0, 0, 0, 0.75), 0.7)
+				UISkin.line(ci, Vector2(x + 0.4, 2.5), Vector2(x + 0.4, r.size.y - 2.5), Color(UISkin.BRONZE, 0.22), 0.5)
 			if i == cur:
-				UISkin.fill(ci, sr.grow(-1.0), 2, Color("#F2C55A"), Color("#A8661E"))
+				UISkin.button(ci, sr.grow_individual(-0.6, -0.6, -0.6, -0.4), "gold", "normal")
 			elif i == int(c.get_meta("hover")):
-				UISkin.fill(ci, sr.grow(-1.0), 2, Color(1, 0.9, 0.6, 0.12), Color(1, 0.9, 0.6, 0.05))
-			if i > 0:
-				UISkin.line(ci, Vector2(x, 2), Vector2(x, r.size.y - 2), Color(0, 0, 0, 0.7), 0.8)
+				UISkin.fill(ci, sr.grow(-1.2), 2, Color(1, 0.88, 0.6, 0.16), Color(1, 0.88, 0.6, 0.05))
 			var t := str(names[i])
 			var tw := f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
 			c.draw_string(f, Vector2(x + (sr.size.x - tw) / 2.0, 8.6), t, HORIZONTAL_ALIGNMENT_LEFT, -1, 7,
-				Color("#2A1606") if i == cur else Color("#E8DCC4"))
+				Color("#2A1606") if i == cur else (Color("#FFF0D0") if i == int(c.get_meta("hover")) else Color("#D8CAB0")))
 			x += float(widths[i])
-		UISkin.stroke(ci, r, 3, UISkin.OUTLINE, 1.0)
-		UISkin.stroke(ci, r.grow(-0.6), 2.5, Color(UISkin.BRONZE, 0.45), 0.6))
+		UISkin.stroke(ci, r, 3, UISkin.OUTLINE, 1.0))
 	return c
 
 
@@ -188,9 +187,16 @@ static func slider(value: float, cb: Callable, w := 90.0) -> Control:
 		var ci := c.get_canvas_item()
 		var v := float(c.get_meta("v"))
 		var g := Rect2(5, 3.5, c.size.x - 10, 4)
-		UISkin.fill(ci, g.grow(1.0), 2, Color("#0C0806"), Color("#1A120C"))
-		UISkin.fill(ci, Rect2(g.position, Vector2(g.size.x * v, g.size.y)), 1.5, Color("#F2C55A"), Color("#A8661E"))
+		UISkin.groove(ci, g.grow(1.0), 2)
+		if v > 0.0:
+			var fg := Rect2(g.position, Vector2(maxf(2.0, g.size.x * v), g.size.y))
+			UISkin.fill(ci, fg, 1.5, Color("#FFD872"), Color("#A8661E"))
+			UISkin.line(ci, fg.position + Vector2(1, 0.7), Vector2(fg.end.x - 1, fg.position.y + 0.7), Color(1, 1, 1, 0.45), 0.6)
 		UISkin.stroke(ci, g.grow(1.0), 2, UISkin.OUTLINE, 0.8)
+		# tick marks every quarter, engraved under the groove
+		for q in 5:
+			var tx := g.position.x + g.size.x * q / 4.0
+			UISkin.line(ci, Vector2(tx, g.end.y + 1.6), Vector2(tx, g.end.y + 2.8), Color(UISkin.BRONZE, 0.45), 0.6)
 		var k := Vector2(g.position.x + g.size.x * v, g.get_center().y)
 		UISkin.circle(ci, k + Vector2(0, 0.6), 4.4, Color(0, 0, 0, 0.5), Color(0, 0, 0, 0.5))
 		UISkin.circle(ci, k, 4.2, UISkin.OUTLINE, UISkin.OUTLINE)
@@ -209,12 +215,15 @@ static func bar(w: float, h: float, frac: float, col: Color, caption := "") -> C
 	c.draw.connect(func():
 		var ci := c.get_canvas_item()
 		var r := Rect2(Vector2.ZERO, c.size)
-		UISkin.fill(ci, r, 2, Color("#0C0806"), Color("#1A120C"))
+		UISkin.groove(ci, r, 2)
 		var k := clampf(frac, 0.0, 1.0)
 		if k > 0.0:
 			var fr := Rect2(r.position + Vector2(1, 1), Vector2(maxf(2.0, (r.size.x - 2) * k), r.size.y - 2))
 			UISkin.fill(ci, fr, 1.5, col.lightened(0.25), col.darkened(0.3))
-			c.draw_rect(Rect2(fr.position, Vector2(fr.size.x, 1)), Color(1, 1, 1, 0.25))
+			# glass sheen over the top half and a bright leading edge
+			UISkin.fill(ci, Rect2(fr.position + Vector2(0.5, 0.3), Vector2(fr.size.x - 1.0, fr.size.y * 0.45)), 1.2, Color(1, 1, 1, 0.30), Color(1, 1, 1, 0.06))
+			if k < 1.0 and fr.size.x > 3.0:
+				UISkin.line(ci, Vector2(fr.end.x - 0.5, fr.position.y + 0.5), Vector2(fr.end.x - 0.5, fr.end.y - 0.5), Color(1, 1, 0.9, 0.55), 0.8)
 		UISkin.stroke(ci, r, 2, UISkin.OUTLINE, 1.0)
 		UISkin.stroke(ci, r.grow(-0.6), 1.5, Color(UISkin.BRONZE, 0.5), 0.6)
 		if caption != "":
