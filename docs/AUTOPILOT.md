@@ -98,6 +98,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 56. Shop product art: use the new material icons (seals, shards, essences) where products grant them
 
 ## Replay backlog 2 (shift 2026-10-07 16:21)
+- [x] 68. *.import files were git-ignored, so CI re-imported all 1648 assets with defaults: no mipmaps on 676 textures, no lossy on 52 -> CI build blurrier when scaled and 48 MB bigger than what was tested. Now committed; fresh-clone export == local export
 - [x] 67. tools/windows_smoke.sh: export + Wine headless boot (600 / 4000 frames) + Xvfb screenshot, fails on Godot errors; run before handing a build to the owner
 - [x] 65. Windows exe icon + version info: modify_resources on, CI installs Wine + rcedit and writes the editor setting, then checks the stamp with pefile
 - [x] 66. Exported builds logged 5 "Expected Image data size" errors: title-screen silhouettes built with create_from_data(mipmaps=false) on mipmapped portrait data -> empty rim light. clear_mipmaps + 256 px copy
@@ -199,3 +200,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-08 shift 12:03 — #65/#66: exported the Windows build here, stamped it via Wine + rcedit (icon groups now point at our 6 icons, FileVersion 0.2.7.0, ProductName set), and booted the exe under Wine headless for 600 frames: that surfaced 5 image-size errors (title silhouettes; only in exported builds, not in the editor). Fixed; Wine run is clean apart from exit-time leak notices. CI step mirrors the local setup; the CI result itself is checked next push.
 - 2026-10-08 shift 12:03 — #67: Windows smoke script added and passing (saves go to %APPDATA%/IdleParty/saves with 2 backups; the exe under Wine renders the same layout as Linux). Notes: wineserver must be restarted between headless and Xvfb runs; WASAPI/no-audio errors are Wine environment noise.
 - 2026-10-08 shift 12:03 — CI run 157 verified by downloading IdleParty-windows: ProductName/FileVersion stamped, all 6 RT_ICON entries are our PNGs. Note: CI exe is 309 MB vs 261 MB in a local export of the same commit (both embed the pck) — worth a look under the download-size question.
+- 2026-10-08 shift 12:03 — #68: removed *.import from game/.gitignore and committed 1648 .import files. Verified with a fresh clone (no .godot cache): import + Windows export gives the same pack as local (162.7 MB data, exe 261 MB vs CI's 309 MB before). Owners' earlier downloads were built without mipmaps on HD art.
