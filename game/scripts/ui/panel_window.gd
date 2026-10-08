@@ -48,7 +48,7 @@ func _ready() -> void:
 	add_child(_deco)
 	_start_sweep.call_deferred()
 	# title on a red ribbon
-	_title_label = UITheme.title_label(title_text.to_upper(), Color("#FFF0D2"))
+	_title_label = UITheme.title_label(UITheme.upper(title_text), Color("#FFF0D2"))
 	_title_label.add_theme_font_size_override("font_size", 10)
 	_title_label.add_theme_color_override("font_outline_color", Color("#3A0A0C"))
 	_title_label.add_theme_constant_override("outline_size", 3)
@@ -79,7 +79,7 @@ func _ready() -> void:
 func set_panel_title(t: String) -> void:
 	title_text = t
 	if _title_label:
-		_title_label.text = t.to_upper()
+		_title_label.text = UITheme.upper(t)
 		_fit_ribbon()
 
 

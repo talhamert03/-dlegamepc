@@ -341,7 +341,7 @@ func _section(title: String) -> void:
 	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	c.draw.connect(func():
 		var f := UITheme.font_title
-		var t := title.to_upper()
+		var t := UITheme.upper(title)
 		var tw := f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
 		UISkin.diamond(c.get_canvas_item(), Vector2(3, 7.5), 2.2, Color("#C0582A"), Color("#6A2A10"))
 		c.draw_string(f, Vector2(9, 10.5), t, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#8A3A1A"))

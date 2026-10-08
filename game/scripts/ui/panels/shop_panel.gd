@@ -722,7 +722,7 @@ func _details(p: Dictionary, hid: String) -> void:
 		card.draw_polyline(_close(pin), Color("#FFE3A0", 0.5), 0.8, true)
 		_ribbon(card, Rect2(niche.end.x + 8, 9, card.size.x - niche.end.x - 18, 15), title, glow)
 		var lx := niche.end.x + 10
-		card.draw_string(UITheme.font_title, Vector2(lx, 38), DataDB.t("shop_contents").to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#C9A46A"))
+		card.draw_string(UITheme.font_title, Vector2(lx, 38), UITheme.upper(DataDB.t("shop_contents")), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#C9A46A"))
 		card.draw_line(Vector2(lx, 41), Vector2(card.size.x - 12, 41), Color("#C9A46A", 0.45), 1.0))
 	veil.set_meta("card", card)
 	_cards.append(card)

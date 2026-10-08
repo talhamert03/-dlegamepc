@@ -55,7 +55,7 @@ Owner: "Windows only, stop spending time on Linux. Much more visible visual chan
 buttons, menus, popups must feel premium. Change ALL fonts, the current ones are hard to read. Senior-level, every detail."
 Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing clipped; commit per item.
 - [x] 73. Windows only: Linux export + artifact removed from CI, README updated
-- [ ] 74. New type system: Rubik (UI 500/600), Eczar (titles 700/800), Lora (prose 500); retune every size, kill the Cinzel-era
+- [x] 74. New type system: Rubik (UI 500/600), Eczar (titles 700/800), Lora (prose 500); retune every size, kill the Cinzel-era
       uppercase-and-shrink hacks, check all 18 panels + strip + tooltip + title/intro
 - [ ] 75. Window frame v2: richer carved frame, title ribbon, inner bevel, ambient light; one shared component, all panels
 - [ ] 76. Buttons v2: primary / secondary / danger / icon buttons with clear hover, press, disabled states; one family everywhere
@@ -234,3 +234,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-08 shift 20:03 — text audit: every data/*.json pair has tr+en, no empty strings, all dynamic keys (chest_/guild_/quest_/ready_/shop_badge_/shop_tab_/skill_/weight_) resolve. a3_z06 death spike: double-element zone (chaos + fire); [corrected later: chaos already appears in a3_z02/a3_z04, so not 'first chaos']. Noted for the pacing question.
 - 2026-10-08 shift 20:03 — #72: Tutorial._check_elements on zone change + each wave; key elem_<el>; string tut_element (TR/EN). Verified in a run at a3_z06: the tip fires ~24 s in, after the intro. First version was overwritten by the wave-1 intro hint, fixed by letting the intro go first.
 - 2026-10-09 — owner: Windows only; visual quality pass 2 is top priority (#73-84). #73 done.
+- 2026-10-09 — #74: fonts compared in-context (10 body, 12 title, 5 prose candidates; Almendra/Amaranth lack ş). Chosen Rubik 500/600 (+1 px word spacing via FontVariation: words ran together at 7-8 px), Eczar 700/800, Lora 500, static instances cut from the variable fonts with fontTools, OFL files added. UITheme.upper() fixes Turkish caps (to_upper gave EVCIL, DIZILIS). Checked all 14 panels + tooltip + strip + title/intro at 2x TR; 4K EN sweep via new tools/shoot_panels.sh pending review.

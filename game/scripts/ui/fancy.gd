@@ -49,7 +49,7 @@ static func section(text: String, w: float) -> Control:
 	c.draw.connect(func():
 		var ci := c.get_canvas_item()
 		var f := UITheme.font_title
-		var t := text.to_upper()
+		var t := UITheme.upper(text)
 		var tw := f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
 		var cy := 8.0
 		var x0 := (c.size.x - tw) / 2.0

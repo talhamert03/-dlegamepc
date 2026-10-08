@@ -102,7 +102,7 @@ func _notice(i: int, q: Dictionary, w: float) -> Control:
 		var ctr := b.size / 2.0
 		var f := UITheme.font_title
 		if claimed:
-			var t := DataDB.t("claimed").to_upper()
+			var t := UITheme.upper(DataDB.t("claimed"))
 			var tw := f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
 			b.draw_set_transform(ctr, -0.2, Vector2.ONE)
 			var sr := Rect2(-tw / 2.0 - 4, -6, tw + 8, 12)

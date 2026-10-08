@@ -23,22 +23,24 @@ const BTN := {
 	"gray": ["#353A48", "#565D70", "#3E4454", "#2B2F3B"],
 }
 
-var font_small: FontFile
-var font_body: FontFile
-var font_title: FontFile
-var font_big: FontFile
+var font_small: Font
+var font_body: Font
+var font_title: Font
+var font_big: Font
 ## book serif for anything read as prose: story, epilogue, lore and long descriptions
-var font_read: FontFile
+var font_read: Font
 var theme: Theme
 var _tex: Dictionary = {}
 
 
 func _ready() -> void:
-	font_small = _font("res://assets/fonts/FiraSans-Medium.ttf")
-	font_body = _font("res://assets/fonts/FiraSans-SemiBold.ttf")
-	font_title = _font("res://assets/fonts/Cinzel-Bold.ttf")
-	font_big = _font("res://assets/fonts/CinzelDecorative-Bold.ttf")
-	font_read = _font("res://assets/fonts/Alegreya-SemiBold.ttf")
+	# type system (2026-10): Rubik for UI text (large x-height, open shapes, reads at 14 px), Eczar for titles
+	# (fantasy serif that stays readable in mixed case), Lora for prose. All carry the full Turkish set.
+	font_small = _spaced(_font("res://assets/fonts/Rubik-Medium.ttf"))
+	font_body = _spaced(_font("res://assets/fonts/Rubik-SemiBold.ttf"))
+	font_title = _font("res://assets/fonts/Eczar-Bold.ttf")
+	font_big = _font("res://assets/fonts/Eczar-ExtraBold.ttf")
+	font_read = _font("res://assets/fonts/Lora-Medium.ttf")
 	theme = _make_theme()
 
 
@@ -60,6 +62,17 @@ func _font(path: String) -> FontFile:
 
 
 var _sym: FontFile
+
+
+## Rubik's word space is narrow at UI sizes (7-8 px logical): words ran together ("Görevçubuğu").
+## One extra logical pixel per space restores clear word breaks without loosening the letters.
+func _spaced(f: FontFile) -> Font:
+	if f == null:
+		return null
+	var v := FontVariation.new()
+	v.base_font = f
+	v.spacing_space = 1
+	return v
 
 
 func tex(name: String) -> Texture2D:
@@ -182,6 +195,13 @@ func _make_theme() -> Theme:
 	t.set_constant("separation", "VBoxContainer", 1)
 	t.set_constant("separation", "HBoxContainer", 2)
 	return t
+
+
+## Uppercase that respects Turkish: i -> İ and ı -> I (String.to_upper() turns "Evcil" into "EVCIL").
+func upper(text: String) -> String:
+	if DataDB.lang == "tr":
+		text = text.replace("i", "İ").replace("ı", "I")
+	return text.to_upper()
 
 
 # ------------------------------------------------------------------ factories
