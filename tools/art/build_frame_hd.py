@@ -7,6 +7,7 @@ down for 2x. Light comes from the top left, like the rest of the UI.
 
 frame_9.png   one 9-slice sheet: CORNER x CORNER corners, edges in between that tile along their length
 leather.png   seamless dark tooled leather for the panel body
+parchment.png seamless aged parchment (fibres, mottling, specks) for light sections
 """
 import os
 import numpy as np
@@ -201,10 +202,35 @@ def build_leather():
     return Image.fromarray(np.clip(base, 0, 255).astype(np.uint8), "RGB")
 
 
+# --------------------------------------------------------------------------- parchment
+def build_parchment():
+    T = 96 * S
+    mott = periodic_noise(T, T, 30 * S / 6, 31)
+    mid = periodic_noise(T, T, 5 * S / 6, 32)
+    # fibres: noise stretched along x (filter anisotropically in frequency space)
+    r = np.random.default_rng(33)
+    f = np.fft.fft2(r.standard_normal((T, T)))
+    ky = np.fft.fftfreq(T)[:, None]
+    kx = np.fft.fftfreq(T)[None, :]
+    f *= np.exp(-((kx * 9 * S / 6) ** 2 + (ky * 0.9 * S / 6) ** 2))
+    fib = np.real(np.fft.ifft2(f))
+    fib = (fib - fib.min()) / (fib.max() - fib.min())
+    light, dark = col("#E2CA9C"), col("#B8945E")
+    t = np.clip(0.55 * mott + 0.25 * mid + 0.2 * fib, 0, 1)
+    rgb = lerp(dark, light, t[..., None] ** 0.9)
+    # a few darker age blotches and fine specks
+    blot = np.clip((mott - 0.72) * 4.0, 0, 1)[..., None]
+    rgb = rgb * (1.0 - 0.12 * blot)
+    speck = (periodic_noise(T, T, 0.7, 34) > 0.86)[..., None]
+    rgb = rgb * np.where(speck, 0.9, 1.0)
+    return Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8), "RGB")
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     build_frame().save(os.path.join(OUT, "frame_9.png"))
     build_leather().save(os.path.join(OUT, "leather.png"))
+    build_parchment().save(os.path.join(OUT, "parchment.png"))
     print("frame px/logical", S, "corner", CORNER, "border", BORDER, "->", OUT)
 
 

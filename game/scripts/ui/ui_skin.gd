@@ -23,6 +23,7 @@ const INK := Color("#3A2412")
 ## painted HD materials (tools/art/build_frame_hd.py): 6 texture px per logical px
 const FRAME_TEX := preload("res://assets/ui_hd/frame/frame_9.png")
 const LEATHER_TEX := preload("res://assets/ui_hd/frame/leather.png")
+const PARCH_TEX := preload("res://assets/ui_hd/frame/parchment.png")
 const FRAME_PX := 6.0
 const FRAME_CORNER := 18.0
 const FRAME_EDGE := 64.0
@@ -309,18 +310,13 @@ static func ribbon(ci: RID, r: Rect2) -> void:
 
 
 static func parchment(ci: RID, r: Rect2) -> void:
-	fill(ci, r, 2, PARCH_TOP, PARCH_BOT)
-	# age stains and a darker, burnt rim
-	var seed := int(r.size.x * 7.0 + r.size.y * 13.0)
-	for k in 7:
-		var u := fposmod(sin(float(seed + k * 37)) * 43758.55, 1.0)
-		var v := fposmod(sin(float(seed + k * 91)) * 24634.63, 1.0)
-		var rad := minf(r.size.x, r.size.y) * (0.12 + 0.18 * fposmod(u * 7.3, 1.0))
-		var c := r.position + Vector2(r.size.x * (0.1 + 0.8 * u), r.size.y * (0.1 + 0.8 * v))
-		RenderingServer.canvas_item_add_circle(ci, c, rad, Color(0.45, 0.3, 0.12, 0.025))
-		RenderingServer.canvas_item_add_circle(ci, c, rad * 0.6, Color(0.45, 0.3, 0.12, 0.02))
-	for k in 3:
-		stroke(ci, r.grow(-1.0 - k * 1.5), 2, Color(0.42, 0.26, 0.1, 0.22 - k * 0.06), 1.6)
+	RenderingServer.canvas_item_set_default_texture_filter(ci, RenderingServer.CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS)
+	# painted HD parchment (fibres, mottling, specks), lighter towards the top
+	_tile(ci, PARCH_TEX, r.grow(-0.5), LEATHER_TILE)
+	fill(ci, r, 2, Color(1, 0.97, 0.88, 0.10), Color(0.35, 0.2, 0.05, 0.12))
+	# a burnt, darker rim fading inwards
+	for k in 5:
+		stroke(ci, r.grow(-0.8 - k * 1.2), 2, Color(0.40, 0.24, 0.08, 0.26 - k * 0.05), 1.4)
 	stroke(ci, r, 2, PARCH_EDGE, 1.0)
 	stroke(ci, r.grow(1.0), 3, Color(0, 0, 0, 0.7), 1.0)
 

@@ -64,7 +64,17 @@ func build(c: Control) -> void:
 		var hid := W.current_hero()
 		var fac: String = DataDB.hero_def(hid).get("faction", "empire") if hid != "" else "empire"
 		var fc := Color(str(DataDB.factions.get(fac, {}).get("color", "#7A5A44")))
-		UISkin.fill(ci, Rect2(Vector2.ZERO, frame.size), 2, fc.darkened(0.25), fc.darkened(0.75)))
+		var fr := Rect2(Vector2.ZERO, frame.size)
+		UISkin.fill(ci, fr, 2, fc.darkened(0.35), fc.darkened(0.8))
+		# a spotlight behind the hero, faint rays from the top and a floor shadow: a lit stage
+		var sc := Vector2(fr.size.x * 0.5, fr.size.y * 0.42)
+		for k in 9:
+			RenderingServer.canvas_item_add_circle(ci, sc, fr.size.x * 0.48 * (1.0 - k * 0.1), Color(fc.lightened(0.45), 0.055))
+		for k in 5:
+			var x0 := fr.size.x * (0.18 + k * 0.16)
+			var ray := PackedVector2Array([Vector2(x0 - 3.0, 0), Vector2(x0 + 3.0, 0), Vector2(sc.x + (x0 - sc.x) * 0.25 + 9.0, fr.size.y), Vector2(sc.x + (x0 - sc.x) * 0.25 - 9.0, fr.size.y)])
+			RenderingServer.canvas_item_add_polygon(ci, ray, PackedColorArray([Color(1, 0.95, 0.8, 0.07), Color(1, 0.95, 0.8, 0.07), Color(1, 0.95, 0.8, 0.0), Color(1, 0.95, 0.8, 0.0)]))
+		UISkin.fill(ci, Rect2(0, fr.size.y * 0.78, fr.size.x, fr.size.y * 0.22), 0, Color(0, 0, 0, 0.0), Color(0, 0, 0, 0.35)))
 	c.add_child(frame)
 	_portrait = TextureRect.new()
 	_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -82,8 +92,21 @@ func build(c: Control) -> void:
 		var r := Rect2(Vector2.ZERO, rim.size)
 		UISkin.stroke(ci, r, 2, Color(0, 0, 0, 0.9), 1.0)
 		UISkin.stroke(ci, r.grow(-1.0), 2, Color(UISkin.BRONZE, 0.8), 1.0)
-		# soft vignette at the bottom so the level text reads
+		# soft vignette at the bottom so the level text reads, and side vignettes framing the hero
 		UISkin.fill(ci, Rect2(1, r.size.y - 16, r.size.x - 2, 15), 1, Color(0, 0, 0, 0.0), Color(0, 0, 0, 0.65))
+		var cl := Color(0, 0, 0, 0)
+		var sh := Color(0, 0, 0, 0.45)
+		RenderingServer.canvas_item_add_polygon(ci, PackedVector2Array([Vector2(1, 1), Vector2(14, 1), Vector2(14, r.size.y - 1), Vector2(1, r.size.y - 1)]), PackedColorArray([sh, cl, cl, sh]))
+		RenderingServer.canvas_item_add_polygon(ci, PackedVector2Array([Vector2(r.size.x - 14, 1), Vector2(r.size.x - 1, 1), Vector2(r.size.x - 1, r.size.y - 1), Vector2(r.size.x - 14, r.size.y - 1)]), PackedColorArray([cl, sh, sh, cl]))
+		# name plate: a dark glass band with gilded rules under the arrows
+		var np := Rect2(12, 2.0, r.size.x - 24, 11.5)
+		UISkin.fill(ci, np, 2, Color(0.04, 0.03, 0.02, 0.62), Color(0.04, 0.03, 0.02, 0.48))
+		UISkin.line(ci, Vector2(np.position.x + 3, np.end.y + 0.3), Vector2(np.end.x - 3, np.end.y + 0.3), Color(UISkin.BRONZE_HI, 0.7), 0.7)
+		UISkin.diamond(ci, Vector2(r.size.x / 2.0, np.end.y + 0.3), 1.6)
+		# level plaque bottom left
+		var lp := Rect2(2.5, r.size.y - 17.0, _lvl.size.x + 6.0 if _lvl else 34.0, 14.5)
+		UISkin.fill(ci, lp, 2.5, Color(0.08, 0.05, 0.03, 0.85), Color(0.03, 0.02, 0.01, 0.85))
+		UISkin.stroke(ci, lp, 2.5, Color(UISkin.BRONZE, 0.85), 0.7)
 		# gilded corner brackets and a keystone gem: the portrait reads as a framed painting
 		for i in 4:
 			var cc: Vector2 = [Vector2.ZERO, Vector2(r.size.x, 0), r.size, Vector2(0, r.size.y)][i]
@@ -114,7 +137,8 @@ func build(c: Control) -> void:
 	_lvl = UITheme.label("", Color("#FFE7A6"), 10, UITheme.font_title)
 	_lvl.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
 	_lvl.add_theme_constant_override("outline_size", 3)
-	_lvl.position = Vector2(px + 4, 56)
+	_lvl.position = Vector2(px + 5.5, 57)
+	_lvl.resized.connect(rim.queue_redraw)
 	c.add_child(_lvl)
 	_hdps = UITheme.label("", Color("#FF9A6A"), 8, UITheme.font_body)
 	_hdps.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
