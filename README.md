@@ -17,6 +17,8 @@ skill, parti ve lonca gelişimini yönetirsin. Godot 4.4 ile yazıldı, tüm san
    (tek dosya; oyunun tüm verisi exe'nin içinde).
 5. SmartScreen "Windows bilgisayarınızı korudu" derse: **Ek bilgi → Yine de çalıştır**.
 
+İlk denemede neye bakılacağı: [docs/WINDOWS_TEST.md](docs/WINDOWS_TEST.md).
+
 Kaynak koddan çalıştırmak için: Godot **4.4.1**'i indir, **Import** ile `game/project.godot`'u aç, **F5**.
 
 ## Hızlı başlangıç

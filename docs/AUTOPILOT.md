@@ -98,6 +98,7 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - [x] 56. Shop product art: use the new material icons (seals, shards, essences) where products grant them
 
 ## Replay backlog 2 (shift 2026-10-07 16:21)
+- [x] 64. docs/WINDOWS_TEST.md: Turkish first-run checklist for the owner (transparency, click-through, taskbar mode, tray, audio, CPU, save); linked from README
 - [x] 63. Version stamps aligned to 0.2.7 (project.godot said 0.2.0, the Windows exe file/product version 0.1.0.0); README corrected: the exe embeds the pck, one file
 - [x] 62. README: "download and play" section at the top (owner downloaded the source ZIP and could not find the game)
 - [x] 61. Settings scale row lists only scales that fit this screen
@@ -191,3 +192,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-07 shift 20:03 — #61: Settings 'Scale' only offers Auto + the 2x..5x steps <= max_fit_scale() (1080p: Auto/2x; 4K: all). Withdrew the owner question about it (UX detail, not a product call). Note: --scale persists in settings; reset with --scale=0.
 - 2026-10-08 shift 12:03 — #62: README gets a Turkish step-by-step 'Oyunu indir ve oyna' section (Actions -> latest green CI -> IdleParty-windows artifact -> extract -> exe; SmartScreen note; source-ZIP warning).
 - 2026-10-08 shift 12:03 — #63: config/version 0.2.7, Windows file_version/product_version 0.2.7.0 (Explorer > Properties showed 0.1). Nothing reads config/version at runtime. README step 4: single-file exe (embed_pck=true), not exe + pck. Owner question added: keep version stamps in sync per release by hand or bump automatically from patch_notes current?
+- 2026-10-08 shift 12:03 — #64: reviewed Windows paths (gl_compatibility + per-pixel transparency, passthrough polygon, tray via StatusIndicator on Windows, user dir %APPDATA%/IdleParty, Steam off because no GodotSteam addon). Wrote docs/WINDOWS_TEST.md for the owner's first run.
