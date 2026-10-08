@@ -465,20 +465,40 @@ static func tab(ci: RID, r: Rect2, active: bool, hover: bool) -> void:
 
 ## Bronze medallion button (bottom bar of the hero panel, strip quick buttons).
 static func medallion(ci: RID, c: Vector2, rad: float, state: String, active := false) -> void:
+	if state == "hover":
+		ring(ci, c, rad + 2.2, Color(1.0, 0.85, 0.45, 0.22), 1.4)
+		ring(ci, c, rad + 1.4, Color(1.0, 0.88, 0.55, 0.55), 0.8)
 	circle(ci, c + Vector2(0, 1.2), rad + 1.0, Color(0, 0, 0, 0.5), Color(0, 0, 0, 0.5))
 	circle(ci, c, rad + 0.8, OUTLINE, OUTLINE)
 	var top := BRONZE_HI if state == "hover" else BRONZE
 	circle(ci, c, rad, top, BRONZE_LO)
+	# eight rivets round the bronze bezel
+	if rad >= 7.0:
+		for k in 8:
+			var p := c + Vector2.from_angle(TAU * k / 8.0 + PI / 8.0) * (rad * 0.87)
+			RenderingServer.canvas_item_add_circle(ci, p + Vector2(0, 0.3), 0.55, Color(0, 0, 0, 0.5))
+			RenderingServer.canvas_item_add_circle(ci, p, 0.45, Color(1, 0.93, 0.72, 0.85))
 	var inner_top := Color("#7E4A1D") if not active else Color("#B5652A")
 	var inner_bot := Color("#4A2810") if not active else Color("#7A3A14")
 	if state == "pressed":
 		inner_top = inner_top.darkened(0.2)
-	circle(ci, c, rad * 0.74, inner_bot, inner_top)
-	ring(ci, c, rad * 0.74, Color(0, 0, 0, 0.6), 1.0)
+	var ir := rad * 0.74
+	circle(ci, c, ir, inner_bot, inner_top)
+	if state == "pressed":
+		circle(ci, c + Vector2(0, -ir * 0.25), ir * 0.8, Color(0, 0, 0, 0.25), Color(0, 0, 0, 0.0))
+	else:
+		# a soft gloss crescent over the upper half of the disc
+		var gl := PackedVector2Array()
+		for k in 13:
+			gl.append(c + Vector2.from_angle(PI + PI * k / 12.0) * ir * 0.9)
+		for k in 13:
+			var a: float = TAU - PI * k / 12.0
+			gl.append(c + Vector2(cos(a) * ir * 0.9, -ir * 0.12 + sin(a) * ir * 0.35))
+		RenderingServer.canvas_item_add_polygon(ci, gl, PackedColorArray([Color(1, 0.95, 0.85, 0.10)]))
+	ring(ci, c, ir, Color(0, 0, 0, 0.6), 1.0)
 	ring(ci, c, rad - 0.6, Color(1, 0.92, 0.7, 0.35), 0.8)
 
 
-## Item slot: rarity-filled square (empty slots are dark wells).
 ## Item slot. Empty: a recessed well. Filled: a jewel tile: rarity-coloured bevelled frame, a deep face
 ## lit by a rarity glow from the centre, a glass highlight on top; legendary and mythic get gilded corner
 ## brackets. Hover adds a gold ring and a soft outer glow.
