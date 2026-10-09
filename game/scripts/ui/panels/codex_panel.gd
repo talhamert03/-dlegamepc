@@ -1,6 +1,9 @@
 extends PanelWindow
 ## Achievements and bestiary.
 
+const SILHOUETTE_SHADER := preload("res://assets/shaders/silhouette.gdshader")
+var _silhouette: ShaderMaterial
+
 var tab := 0
 var _tabs: HBoxContainer
 var _body: VBoxContainer
@@ -149,21 +152,59 @@ func refresh() -> void:
 			card.custom_minimum_size = Vector2(cell, cell + 2)
 			card.mouse_filter = Control.MOUSE_FILTER_STOP
 			card.tooltip_text = _beast_tip(str(eid), d2, int(seen[eid])) if known else "???"
-			card.draw.connect(func():
-				var ci := card.get_canvas_item()
-				var r := Rect2(Vector2.ZERO, card.size)
-				UISkin.slot(ci, r, Color.WHITE, false, false)
-				if tex:
-					var tr := r.grow(-2.5)
+			# the creature on its own layer: known = full colour, unknown = a flat cold silhouette (shader keeps
+			# only the shape, so nothing about it is given away but its outline)
+			if tex:
+				var art := Control.new()
+				art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+				art.set_anchors_preset(Control.PRESET_FULL_RECT)
+				art.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+				if not known:
+					if _silhouette == null:
+						_silhouette = ShaderMaterial.new()
+						_silhouette.shader = SILHOUETTE_SHADER
+					art.material = _silhouette
+				art.draw.connect(func():
+					var tr := Rect2(Vector2.ZERO, art.size).grow(-2.5)
 					var asp := float(tex.get_width()) / float(tex.get_height())
 					var dw := minf(tr.size.x, tr.size.y * asp)
 					var dh := dw / asp
 					var dr := Rect2(tr.position + Vector2((tr.size.x - dw) / 2.0, tr.size.y - dh), Vector2(dw, dh))
-					card.draw_texture_rect(tex, Rect2(dr.position + Vector2(dw, 0), Vector2(-dw, dh)), false,
-						Color.WHITE if known else Color(0.05, 0.04, 0.06, 0.85))
+					# mirror with a transform (a negative-width rect misplaces atlas frames)
+					art.draw_set_transform(Vector2(dr.position.x + dw, 0), 0.0, Vector2(-1, 1))
+					art.draw_texture_rect(tex, Rect2(0, dr.position.y, dw, dh), false)
+					art.draw_set_transform(Vector2.ZERO))
+				card.add_child(art)
+			card.mouse_entered.connect(card.queue_redraw)
+			card.mouse_exited.connect(card.queue_redraw)
+			card.draw.connect(func():
+				var ci := card.get_canvas_item()
+				var r := Rect2(Vector2.ZERO, card.size)
+				var hov := card.get_global_rect().has_point(card.get_global_mouse_position())
+				UISkin.slot(ci, r, Color.WHITE, false, hov)
+				if known:
+					# a warm lamp behind discovered creatures (red behind bosses)
+					var gc := Color(0.95, 0.35, 0.25) if boss else Color(1.0, 0.8, 0.5)
+					for k in 5:
+						RenderingServer.canvas_item_add_circle(ci, r.get_center() + Vector2(0, r.size.y * 0.1), r.size.x * (0.48 - k * 0.08), Color(gc, 0.06)))
+			var over := Control.new()
+			over.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			over.set_anchors_preset(Control.PRESET_FULL_RECT)
+			over.draw.connect(func():
+				var ci := over.get_canvas_item()
+				var r := Rect2(Vector2.ZERO, over.size)
 				if boss:
-					UISkin.stroke(ci, r.grow(-0.5), 2, Color("#E0574A", 0.9), 1.0)
+					# a small red skull seal in the corner instead of a red outline
+					var sc := Vector2(r.end.x - 4.5, r.position.y + 4.5)
+					UISkin.circle(ci, sc, 3.6, UISkin.OUTLINE, UISkin.OUTLINE)
+					UISkin.circle(ci, sc, 3.0, Color("#E0574A"), Color("#7A1A16"))
+					var sk := UITheme.icon("skull")
+					if sk:
+						over.draw_texture_rect(sk, Rect2(sc - Vector2(2.2, 2.2), Vector2(4.4, 4.4)), false, Color(1, 0.92, 0.85))
 				if not known:
 					var f := UITheme.font_title
-					card.draw_string(f, Vector2(r.size.x / 2.0 - 3, r.size.y / 2.0 + 4), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, Color(0.8, 0.7, 0.55, 0.6)))
+					var q := Vector2(r.position.x + 3.0, r.end.y - 3.0)
+					over.draw_string_outline(f, q, "?", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, 2, Color(0, 0, 0, 0.8))
+					over.draw_string(f, q, "?", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0.85, 0.75, 0.55, 0.85)))
+			card.add_child(over)
 			g.add_child(card)
