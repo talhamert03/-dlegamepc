@@ -404,6 +404,7 @@ func _set_theme(theme_name: String) -> void:
 
 
 func _process(delta: float) -> void:
+	_spread_plates()
 	var sc := BattleSim.scroll
 	var tint := TimeService.world_tint()
 	for l in LAYERS:
@@ -1004,3 +1005,36 @@ func _show_banner(text: String, color: Color) -> void:
 	_banner.visible = true
 	_banner.modulate.a = 1.0
 	_banner_t = 2.2
+
+
+## Elite / mini-boss name plates of units standing close together would overlap: lay them out left to
+## right with a 2 px gap, keep the group centred on its units, and stay inside the strip.
+func _spread_plates() -> void:
+	var items: Array = []
+	for uid in views:
+		var v = views[uid]
+		if is_instance_valid(v) and v.visible and v.plate_width() > 0.0:
+			items.append([v.position.x, v.plate_width(), v])
+	if items.size() < 2:
+		for it in items:
+			it[2].plate_dx = 0.0
+		return
+	items.sort_custom(func(a, b): return a[0] < b[0])
+	# left edges after pushing each plate right of the previous one
+	var lefts: Array = []
+	var cur := -INF
+	for it in items:
+		var l: float = maxf(float(it[0]) - float(it[1]) / 2.0, cur)
+		lefts.append(l)
+		cur = l + float(it[1]) + 2.0
+	# shift the whole row back so it is centred on the units, then clamp to the strip
+	var want := 0.0
+	var got := 0.0
+	for i in items.size():
+		want += float(items[i][0])
+		got += float(lefts[i]) + float(items[i][1]) / 2.0
+	var shift := (want - got) / items.size()
+	shift = clampf(shift, 2.0 - float(lefts[0]), W - 2.0 - (float(lefts[-1]) + float(items[-1][1])))
+	for i in items.size():
+		var cx: float = float(lefts[i]) + shift + float(items[i][1]) / 2.0
+		items[i][2].plate_dx = cx - float(items[i][0])

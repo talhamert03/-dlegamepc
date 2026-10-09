@@ -85,6 +85,11 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 94. Codex > Bestiary: unknown entries are bare "?" boxes; recessed wells with a faint silhouette / crest and a hover state
 - [x] 95. Town signposts (Tavern / Shop) and tower floor plaque in the HUD plate family
 
+## Replay backlog 4 (shift 2026-10-09, battle strip replay: tutorial, boss, elites, statuses, toasts)
+
+- [x] 96. Elite / mini-boss name plates overlapped when the units stood together (Kızgın Tavşan over Yeşil Slime): strip lays them out side by side, leader line when nudged
+- [x] 97. Tutorial / bark speech bubble in the popup family (leather + slim walnut frame, brass tail, speaker in a jewel tile)
+
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
 Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and EN, before/after kept in the log.
@@ -274,3 +279,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-09 — #93: away report: levelled-up heroes are green jewel tiles with a soft glow and a '+n' enamel pill (was a flat box + floating text); 'Best loot' caption gets a bronze rule and end lozenges. Loot slots were already ItemSlots (jewel family). 4x TR.
 - 2026-10-09 — #94: bestiary bug + redesign. The creature art was mirrored with a negative-width rect, which misplaces AtlasTexture frames: unknown entries showed empty cells while sprite fragments leaked past the grid's right edge. Now mirrored with draw_set_transform on its own layer; unknown entries use a new silhouette.gdshader (flat cool colour, sprite alpha kept) so only the outline shows; known entries get a warm lamp (red for bosses); bosses wear a small red skull seal instead of a red outline; '?' moved to the corner; cells react to hover. 4x TR.
 - 2026-10-09 — #95: town signs keep their chains/sway/rivets but the plank is now the painted walnut from frame_9.png (same grain as every window, brightened on hover); the tower floor plaque already uses the #86 plate. 4x TR.
+- 2026-10-09 — battle strip replay (tutorial, boss, elites, --statusshot, toast; no engine errors) -> #96 #97, both done: StripView._spread_plates() lays elite/mini-boss plates left to right with a 2 px gap, centred on their units and clamped to the strip, UnitView draws a leader line when a plate is nudged > 3 px; the speech bubble uses UISkin.popup with a brass tail and the speaker in a jewel tile. 4x TR.

@@ -50,6 +50,7 @@ var _facing := 1.0
 var _h := HERO_H                      # on-screen height
 var _head_y := -42.0
 var _plate := ""                 # name shown over elites / mini-bosses
+var plate_dx := 0.0              # sideways nudge set by the strip so neighbouring plates never overlap
 var _plate_kind := ""
 var _bar_w := 16
 var _show_bar := true
@@ -619,7 +620,10 @@ func _draw() -> void:
 		var tw := f.get_string_size(_plate, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 		var pw := tw + 9.0
 		# tall units would push the plate under the zone plaque / goal ribbon: keep it below strip y 15
-		var pr := Rect2(-pw / 2.0, maxf(y - 13.0, 15.0 - position.y), pw, 6.5)
+		var pr := Rect2(-pw / 2.0 + plate_dx, maxf(y - 13.0, 15.0 - position.y), pw, 6.5)
+		if absf(plate_dx) > 3.0:
+			# nudged aside: a thin leader line back to the unit's bar
+			draw_line(Vector2(clampf(0.0, pr.position.x + 2.0, pr.end.x - 2.0), pr.end.y), Vector2(0, y - 2.0), Color(0, 0, 0, 0.55), 1.0, true)
 		var pc := Color("#B070FF") if _plate_kind == "elite" else Color("#FF8A4A")
 		UISkin.fill(ci, pr, 2, Color(0.08, 0.05, 0.08, 0.88), Color(0.03, 0.02, 0.03, 0.88))
 		UISkin.stroke(ci, pr, 2, Color(pc, 0.8), 0.5)
@@ -651,3 +655,10 @@ func strike_point() -> Vector2:
 
 func center() -> Vector2:
 	return position + Vector2(0, -_h * 0.5 - _fly)
+
+
+## Width of the name plate (0 when this unit has none), for the strip's overlap pass.
+func plate_width() -> float:
+	if _plate == "":
+		return 0.0
+	return UITheme.font_body.get_string_size(_plate, HORIZONTAL_ALIGNMENT_LEFT, -1, 5).x + 9.0

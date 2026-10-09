@@ -135,20 +135,17 @@ func _show_bubble(text: String, hero_id: String, dur: float) -> void:
 func _draw_bubble() -> void:
 	var ci := bubble.get_canvas_item()
 	var r := Rect2(Vector2.ZERO, bubble.size)
-	UISkin.fill(ci, Rect2(r.position + Vector2(0, 2), r.size), 4, Color(0, 0, 0, 0.35), Color(0, 0, 0, 0.35))
-	var tail := PackedVector2Array([Vector2(_tail_x - 5, r.end.y - 1), Vector2(_tail_x + 5, r.end.y - 1), Vector2(_tail_x, r.end.y + 6)])
-	bubble.draw_colored_polygon(PackedVector2Array([tail[0] + Vector2(-1.2, 0), tail[1] + Vector2(1.2, 0), tail[2] + Vector2(0, 1.6)]), UISkin.OUTLINE)
-	UISkin.fill(ci, r, 4, Color("#3A2C22"), Color("#1E1610"))
-	bubble.draw_colored_polygon(tail, Color("#1E1610"))
-	UISkin.stroke(ci, r, 4, UISkin.OUTLINE, 1.0)
-	UISkin.stroke(ci, r.grow(-1.2), 3, Color(UISkin.BRONZE, 0.7), 0.8)
+	# the popup family (leather + slim walnut frame) with a brass speech tail
+	var tail := PackedVector2Array([Vector2(_tail_x - 5, r.end.y - 1.5), Vector2(_tail_x + 5, r.end.y - 1.5), Vector2(_tail_x, r.end.y + 6)])
+	bubble.draw_colored_polygon(PackedVector2Array([tail[0] + Vector2(-1.4, 0), tail[1] + Vector2(1.4, 0), tail[2] + Vector2(0, 1.8)]), UISkin.OUTLINE)
+	UISkin.poly(ci, tail, UISkin.BRONZE_HI, UISkin.BRONZE_LO)
+	UISkin.popup(ci, r, 0.45, 0.2)
+	# the speaker in a jewel tile
 	var pr := Rect2(PAD, PAD, PORTRAIT, PORTRAIT)
-	UISkin.fill(ci, pr, 3, Color("#4A3826"), Color("#22180F"))
+	UISkin.slot(ci, pr, Color("#8C6A3A"), true, false)
 	var ic := SpriteLib.hero_icon(_speaker)
 	if ic:
-		bubble.draw_texture_rect(ic, pr.grow(-1.0), false)
-	UISkin.stroke(ci, pr, 3, UISkin.OUTLINE, 1.0)
-	UISkin.stroke(ci, pr.grow(-0.8), 2, Color(UISkin.BRONZE_HI, 0.6), 0.6)
+		bubble.draw_texture_rect(ic, pr.grow(-1.6), false)
 
 
 func _say_bark(hero_id: String, text: String) -> void:
