@@ -94,6 +94,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 100. Status panel cards (hero header, summary stat chips, skill detail) still used a cold purple-grey fill: new UISkin.card (raised warm lacquer, lit top lip, bronze/accent bezel)
 - [x] 101. Formation stage: flat purple 'dusk' fill -> a slice of the current zone's HD panorama (tower = void), ground line on the slots, slow drift, dimmed for readability
 - [x] 102. Chest showcase as a treasure vault: slate wall, velvet drape with folds and shaded edges, a light shaft in the chest's colour, stone plinth with a gilded edge; shelf chests sit in wells, chosen/hovered lit in the chest colour
+- [x] 103. Blacksmith enhance stage as a smithy: slate wall, warm forge light from the left, brick hearth with an arched mouth and flickering flame tongues (the anvil, embers and glow stay)
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -290,3 +291,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-09 — #100: code sweep for leftover old-palette fills (#2E2630, #2C2430, #1B1C23, #2A2228...): only the Status panel's three cards were left; they use the new UISkin.card. Default PanelContainer navy stylebox is unused (only the --tipshot sample builds one with the tooltip box). 2x TR, both Status tabs.
 - 2026-10-09 — #101: formation stage draws the current zone's HD panorama (assets/hd/bg/<theme>.jpg, cached per theme) cropped to the bottom so the path meets the slot line, drifting slowly, tinted 0.78 + a top shade; old flat fill kept as fallback. 4x TR with 5 heroes.
 - 2026-10-09 — #102: chest showcase redrawn as a vault (slate via UISkin._tile; the first try sampled a region past the 576 px texture and came out flat grey). Opening sequence checked frame by frame (--chestopen 0.35/1.15/2.6 s). 4x TR.
+- 2026-10-09 — #103: enhance stage backdrop (first hearth try was a rounded orange pill that read as a button; redrawn as an arch with animated flames). 4x TR.

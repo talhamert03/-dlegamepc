@@ -1,4 +1,6 @@
 extends PanelWindow
+
+const SLATE := preload("res://assets/ui_hd/frame/slate.png")
 ## Blacksmith: Combine (3x3 + pity) / Enhance / Salvage / Craft.
 
 var tab := 0
@@ -440,6 +442,39 @@ func _anvil_stage(it: Dictionary, w: float) -> Control:
 		var ci := c.get_canvas_item()
 		var r := Rect2(Vector2.ZERO, c.size)
 		UISkin.well(ci, r)
+		# the smithy: a stone wall behind (slate tile), warm light from the forge on the left, and a brick
+		# hearth mouth glowing in the corner
+		UISkin._tile(ci, SLATE, r.grow(-1.0), 96.0)
+		UISkin.fill(ci, r.grow(-1.0), 2, Color(0.12, 0.06, 0.03, 0.35), Color(0.02, 0.01, 0.0, 0.55))
+		var lc := Color(1.0, 0.5, 0.18)
+		RenderingServer.canvas_item_add_polygon(ci, PackedVector2Array([Vector2(1, 1), Vector2(r.size.x * 0.55, 1), Vector2(r.size.x * 0.55, r.size.y - 1), Vector2(1, r.size.y - 1)]),
+			PackedColorArray([Color(lc, 0.16), Color(lc, 0.0), Color(lc, 0.0), Color(lc, 0.22)]))
+		var hm := Rect2(r.size.x - 40, r.size.y - 22, 34, 21)
+		UISkin.fill(ci, hm, 6, Color("#3A2418"), Color("#1A0E08"))
+		for row in 3:
+			for col in 4:
+				var bx := hm.position.x + 1 + col * 8.5 + (4.0 if row % 2 == 1 else 0.0)
+				var by := hm.position.y + 1 + row * 4.0
+				if bx + 7.5 < hm.end.x:
+					UISkin.fill(ci, Rect2(bx, by, 7.5, 3.2), 0.6, Color("#6A3A24"), Color("#3A1C10"))
+		# arched hearth mouth: dark inside, embers glowing at the bottom, flame tongues flickering up
+		var mx := hm.position.x + 17.0
+		var mb := hm.end.y - 1.0
+		var arch := PackedVector2Array([Vector2(mx - 10, mb)])
+		for k in 9:
+			var a := PI + PI * k / 8.0
+			arch.append(Vector2(mx + cos(a) * 10.0, mb - 6.0 + sin(a) * 7.0))
+		arch.append(Vector2(mx + 10, mb))
+		UISkin.poly(ci, arch, Color("#140804"), Color("#3A1406"))
+		for k in 5:
+			var fx := mx - 7.0 + k * 3.5
+			var fh := 5.0 + 3.0 * (0.5 + 0.5 * sin(_ct * (5.0 + k * 1.3) + k * 1.7))
+			var flame := PackedVector2Array([Vector2(fx - 2.2, mb), Vector2(fx + 2.2, mb), Vector2(fx + sin(_ct * 4.0 + k) * 0.8, mb - fh)])
+			c.draw_colored_polygon(flame, Color(1.0, 0.55 + 0.08 * k, 0.15, 0.9))
+			c.draw_colored_polygon(PackedVector2Array([Vector2(fx - 1.0, mb), Vector2(fx + 1.0, mb), Vector2(fx, mb - fh * 0.55)]), Color(1, 0.92, 0.6, 0.95))
+		UISkin.fill(ci, Rect2(mx - 9.5, mb - 2.0, 19, 2.0), 0, Color(1, 0.7, 0.3, 0.9), Color(1, 0.4, 0.1, 0.9))
+		var al := arch.duplicate()
+		c.draw_polyline(al, UISkin.OUTLINE, 1.0, true)
 		# forge glow from below
 		for k in 6:
 			c.draw_circle(Vector2(46, r.size.y + 6), 46.0 - k * 7.0, Color(1.0, 0.45, 0.15, 0.035 + 0.008 * sin(_ct * 2.3 + k)))
