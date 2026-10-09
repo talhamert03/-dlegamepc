@@ -1,5 +1,7 @@
 class_name ChestsView
 extends Control
+
+const SLATE := preload("res://assets/ui_hd/frame/slate.png")
 ## Treasure chests: a showcase of the best held chest on a lit pedestal, the shelf of the others, and an
 ## opening sequence (shake, lid thrown back, light, rewards dealt out as cards).
 
@@ -124,9 +126,10 @@ func _build_shelf() -> void:
 		b.draw.connect(func():
 			var ci := b.get_canvas_item()
 			var r := Rect2(Vector2.ZERO, b.size)
-			UISkin.fill(ci, r, 3, Color("#2A2230"), Color("#141117"))
-			UISkin.stroke(ci, r, 3, Color(0, 0, 0, 0.9), 1.0)
-			UISkin.stroke(ci, r.grow(-1.0), 2, Color(Chests.color(k), 0.95 if sel_kind else (0.55 if b.is_hovered() else 0.25)), 1.0)
+			UISkin.well(ci, r)
+			if sel_kind or b.is_hovered():
+				UISkin.stroke(ci, r.grow(0.6), 3, Color(Chests.color(k), 0.95 if sel_kind else 0.5), 1.2)
+				UISkin.fill(ci, r.grow(-1.0), 2, Color(Chests.color(k), 0.14 if sel_kind else 0.07), Color(Chests.color(k), 0.0))
 			ChestArt.draw(b, Vector2(r.size.x / 2.0, r.size.y - 6), 24.0, k, 0.0, _t, false)
 			if cnt > 1:
 				var f := UITheme.font_body
@@ -178,19 +181,43 @@ func _draw_stage() -> void:
 	var ci := _stage.get_canvas_item()
 	var w := _stage.size.x
 	var r := Rect2(0, 0, w, SHOW_H - 2)
-	UISkin.fill(ci, r, 4, Color("#231C26"), Color("#0E0B10"))
 	var kind := _open_kind if _open_kind != "" else (str(GameState.chests[_sel]["k"]) if _sel >= 0 and _sel < GameState.chests.size() else "")
 	var col: Color = Chests.color(kind) if kind != "" else Color("#6A5A70")
-	# back light and pedestal
+	# a treasure vault: slate wall, a velvet drape behind the pedestal, a shaft of light from above in the
+	# chest's colour and a stone plinth with a gilded edge
+	RenderingServer.canvas_item_set_default_texture_filter(ci, RenderingServer.CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS)
+	UISkin.fill(ci, r, 4, Color("#16141A"), Color("#0B0A0D"))
+	UISkin._tile(ci, SLATE, r.grow(-1.0), 96.0)
+	UISkin.fill(ci, r.grow(-1.0), 3, Color(0, 0, 0, 0.15), Color(0, 0, 0, 0.45))
+	var cx := w / 2.0
+	var drape := Rect2(cx - SHOW_H * 0.62, 0, SHOW_H * 1.24, SHOW_H * 0.74)
+	UISkin.fill(ci, drape, 0, Color("#5A1420"), Color("#2A0810"))
+	for k in 7:
+		var fx := drape.position.x + drape.size.x * (k + 0.5) / 7.0
+		UISkin.line(ci, Vector2(fx, 0), Vector2(fx, drape.end.y), Color(0, 0, 0, 0.28), 2.4)
+		UISkin.line(ci, Vector2(fx + 3.0, 0), Vector2(fx + 3.0, drape.end.y), Color(1, 0.6, 0.6, 0.06), 1.4)
+	# the drape's edges and hem fall into shadow so it does not read as a flat rectangle
+	var cl := Color(0.04, 0.03, 0.05, 0.0)
+	var dk := Color(0.04, 0.03, 0.05, 0.85)
+	var ew := drape.size.x * 0.16
+	RenderingServer.canvas_item_add_polygon(ci, PackedVector2Array([drape.position, drape.position + Vector2(ew, 0), Vector2(drape.position.x + ew, drape.end.y), Vector2(drape.position.x, drape.end.y)]), PackedColorArray([dk, cl, cl, dk]))
+	RenderingServer.canvas_item_add_polygon(ci, PackedVector2Array([Vector2(drape.end.x - ew, 0), Vector2(drape.end.x, 0), drape.end, Vector2(drape.end.x - ew, drape.end.y)]), PackedColorArray([cl, dk, dk, cl]))
+	RenderingServer.canvas_item_add_polygon(ci, PackedVector2Array([Vector2(drape.position.x, drape.end.y - 10), Vector2(drape.end.x, drape.end.y - 10), drape.end, Vector2(drape.position.x, drape.end.y)]), PackedColorArray([cl, cl, dk, dk]))
+	UISkin.line(ci, Vector2(drape.position.x, 1.5), Vector2(drape.end.x, 1.5), Color(UISkin.BRONZE_HI, 0.7), 1.4)
+	var shaft := PackedVector2Array([Vector2(cx - 8, 0), Vector2(cx + 8, 0), Vector2(cx + SHOW_H * 0.4, SHOW_H * 0.74), Vector2(cx - SHOW_H * 0.4, SHOW_H * 0.74)])
+	var sc := Color(col.lightened(0.4), 0.16)
+	RenderingServer.canvas_item_add_polygon(ci, shaft, PackedColorArray([sc, sc, Color(sc, 0.0), Color(sc, 0.0)]))
 	for k in 8:
-		_stage.draw_circle(Vector2(w / 2.0, SHOW_H * 0.49), SHOW_H * 0.55 - k * SHOW_H * 0.06, Color(col, 0.028))
+		_stage.draw_circle(Vector2(cx, SHOW_H * 0.49), SHOW_H * 0.55 - k * SHOW_H * 0.06, Color(col, 0.03))
 	var cw := clampf(SHOW_H * 0.52, 40.0, 66.0)
-	var ped := Rect2(w / 2.0 - cw * 0.7, SHOW_H * 0.7, cw * 1.4, 8)
-	UISkin.fill(ci, ped, 3, Color("#4A3E50"), Color("#1E1822"))
+	var ped := Rect2(cx - cw * 0.75, SHOW_H * 0.7, cw * 1.5, 9)
+	UISkin.fill(ci, Rect2(ped.position + Vector2(0, 2), ped.size), 3, Color(0, 0, 0, 0.5), Color(0, 0, 0, 0.5))
+	UISkin.fill(ci, ped, 3, Color("#5A5462"), Color("#25222A"))
 	UISkin.stroke(ci, ped, 3, Color(0, 0, 0, 0.9), 1.0)
-	UISkin.line(ci, Vector2(ped.position.x + 4, ped.position.y + 1), Vector2(ped.end.x - 4, ped.position.y + 1), Color(col, 0.35), 1.0)
+	UISkin.line(ci, Vector2(ped.position.x + 3, ped.position.y + 1), Vector2(ped.end.x - 3, ped.position.y + 1), Color(UISkin.BRONZE_HI, 0.65), 0.9)
+	UISkin.line(ci, Vector2(ped.position.x + 6, ped.position.y + 2.6), Vector2(ped.end.x - 6, ped.position.y + 2.6), Color(col, 0.4), 0.8)
 	UISkin.stroke(ci, r, 4, Color(0, 0, 0, 0.9), 1.0)
-	UISkin.stroke(ci, r.grow(-1.5), 3, Color(UISkin.BRONZE, 0.4), 1.0)
+	UISkin.stroke(ci, r.grow(-1.0), 3, Color(UISkin.BRONZE, 0.55), 0.8)
 	if kind == "":
 		# empty pedestal: a faint dashed chest outline waiting for loot
 		var bw := cw * 0.9
