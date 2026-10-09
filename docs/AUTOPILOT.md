@@ -91,6 +91,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 97. Tutorial / bark speech bubble in the popup family (leather + slim walnut frame, brass tail, speaker in a jewel tile)
 - [x] 98. Dialog replay (sell-all, loot filter, shop detail, chest open, ending, quest done): modal cards still used the old iron 'ornate' frame -> popup family; UISkin.ornate itself redrawn as a slim gilded section frame with brass corner fittings (hero sheet, Status parchment, shop sign, loot well)
 - [x] 99. Taskbar (mini) mode: bar frame = slim walnut 9-slice (0.4x), zone plate in the HUD plate style, chest bubble in the popup family with a brass tail and a wash of the chest colour
+- [x] 100. Status panel cards (hero header, summary stat chips, skill detail) still used a cold purple-grey fill: new UISkin.card (raised warm lacquer, lit top lip, bronze/accent bezel)
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -284,3 +285,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-09 — battle strip replay (tutorial, boss, elites, --statusshot, toast; no engine errors) -> #96 #97, both done: StripView._spread_plates() lays elite/mini-boss plates left to right with a 2 px gap, centred on their units and clamped to the strip, UnitView draws a leader line when a plate is nudged > 3 px; the speech bubble uses UISkin.popup with a brass tail and the speaker in a jewel tile. 4x TR.
 - 2026-10-09 — #98: dialog replay. Sell-all and loot-filter cards (hero panel) and the shop detail card were fill + iron 'ornate' (grey-green iron corner squares): now UISkin.popup(0.6). UISkin.ornate (still used for sections inside windows) redrawn: dark cut, bronze rule with lit inner edge, small brass L-fittings with a rivet, lozenges mid-edge; the iron palette is gone from it. Ending, chest opening, quest claim checked: already fine. 4x TR + 16-panel sweep, no engine errors.
 - 2026-10-09 — #99: taskbar mini mode joined the family (it still had the thin vector border, a flat label and a purple-stroked bubble). Checked with --mini.
+- 2026-10-09 — #100: code sweep for leftover old-palette fills (#2E2630, #2C2430, #1B1C23, #2A2228...): only the Status panel's three cards were left; they use the new UISkin.card. Default PanelContainer navy stylebox is unused (only the --tipshot sample builds one with the tooltip box). 2x TR, both Status tabs.

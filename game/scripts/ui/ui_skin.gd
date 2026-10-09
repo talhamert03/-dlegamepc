@@ -373,6 +373,16 @@ static func ornate(ci: RID, r: Rect2) -> void:
 			diamond(ci, Vector2(r.get_center().x, y), 2.2)
 
 
+## Raised card on the leather (headers, info cards, stat chips): warm dark lacquer, a lit top lip, a bronze
+## bezel (or the given accent) and a dark outline: the opposite of well(), which is cut into the surface.
+static func card(ci: RID, r: Rect2, accent: Color = BRONZE, rad := 3.0) -> void:
+	fill(ci, Rect2(r.position + Vector2(0, 1.2), r.size), rad, Color(0, 0, 0, 0.35), Color(0, 0, 0, 0.45))
+	fill(ci, r, rad, Color("#33261C"), Color("#1A120C"))
+	fill(ci, Rect2(r.position + Vector2(1.5, 1.0), Vector2(r.size.x - 3.0, minf(8.0, r.size.y * 0.35))), rad - 1.0, Color(1, 0.9, 0.7, 0.07), Color(1, 0.9, 0.7, 0.0))
+	stroke(ci, r, rad, OUTLINE, 1.0)
+	stroke(ci, r.grow(-0.9), rad - 0.5, Color(accent, 0.6), 0.7)
+
+
 ## Sunken section: a dark inset with an inner shadow on top, a gilded hairline around it and a light
 ## lower lip, like a panel carved into the leather.
 static func well(ci: RID, r: Rect2) -> void:

@@ -194,9 +194,7 @@ func _draw_head() -> void:
 	var h := _hero()
 	var ci := _head.get_canvas_item()
 	var r := Rect2(Vector2.ZERO, _head.size)
-	UISkin.fill(ci, r, 4, Color("#2A2228"), Color("#151116"))
-	UISkin.stroke(ci, r, 4, Color(0, 0, 0, 0.95), 1.0)
-	UISkin.stroke(ci, r.grow(-1.0), 3, Color(UISkin.BRONZE, 0.45), 1.0)
+	UISkin.card(ci, r, UISkin.BRONZE, 4.0)
 	if h == null:
 		return
 	# the open hero's portrait in a gold frame
@@ -475,9 +473,7 @@ func _draw_chips() -> void:
 	for i in items.size():
 		var it: Array = items[i]
 		var r := Rect2(i * (cw + 2.0), 0, cw, _chips.size.y)
-		UISkin.fill(ci, r, 3, Color("#2A2228"), Color("#151116"))
-		UISkin.stroke(ci, r, 3, Color(0, 0, 0, 0.95), 1.0)
-		UISkin.stroke(ci, r.grow(-1.0), 2, Color(it[3], 0.35), 1.0)
+		UISkin.card(ci, r, it[3])
 		var tex := UITheme.icon(str(it[0]))
 		if tex:
 			_chips.draw_texture_rect(tex, Rect2(r.position + Vector2(3, 4.5), Vector2(8, 8)), false, it[3])
@@ -805,9 +801,7 @@ func _draw_detail() -> void:
 		return
 	var ci := _detail.get_canvas_item()
 	var r := Rect2(Vector2.ZERO, _detail.size)
-	UISkin.fill(ci, r, 3, Color("#2A2228"), Color("#141016"))
-	UISkin.stroke(ci, r, 3, Color(0, 0, 0, 0.95), 1.0)
-	UISkin.stroke(ci, r.grow(-1.0), 2, Color(UISkin.BRONZE, 0.5), 1.0)
+	UISkin.card(ci, r)
 	var sd := DataDB.skill_def(_sel)
 	if sd.is_empty():
 		return
