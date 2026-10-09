@@ -926,10 +926,12 @@ func _town_sign(panel_id: String, text: String, icon_name: String) -> Button:
 			UISkin.stroke(ci, r.grow(1.5), 4, Color(1.0, 0.85, 0.4, 0.55), 2.0)
 		elif gift:
 			UISkin.stroke(ci, r.grow(1.5), 4, Color(0.5, 1.0, 0.55, 0.35 + 0.3 * sin(t * 4.0)), 2.0)
-		UISkin.fill(ci, r, 3, Color("#7A4E2E") if not hov else Color("#93613A"), Color("#3C2414"))
-		for k in 3:
-			var gy := r.position.y + 4.0 + k * 4.0
-			b.draw_line(Vector2(r.position.x + 2, gy), Vector2(r.end.x - 2, gy), Color(0, 0, 0, 0.18), 0.6)
+		# a walnut plank cut from the window frame's painted wood (same grain as every window)
+		UISkin.fill(ci, r, 3, Color("#5A3720"), Color("#2A170C"))
+		var wood := Rect2(UISkin.FRAME_CORNER * UISkin.FRAME_PX, 4.0, UISkin.FRAME_EDGE * UISkin.FRAME_PX, 22.0)
+		RenderingServer.canvas_item_add_texture_rect_region(ci, r.grow(-1.0), UISkin.FRAME_TEX.get_rid(), wood,
+			Color(1.25, 1.2, 1.15) if hov else Color.WHITE)
+		UISkin.fill(ci, r.grow(-1.0), 2, Color(1, 0.9, 0.7, 0.10), Color(0, 0, 0, 0.30))
 		UISkin.stroke(ci, r, 3, Color("#1A0E08"), 1.0)
 		UISkin.stroke(ci, r.grow(-1.0), 2, Color("#D8A85A", 0.7), 0.8)
 		UISkin.rivet(ci, r.position + Vector2(3, 3), 1.1)

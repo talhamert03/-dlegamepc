@@ -83,7 +83,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 92. Status > Skills: tier rows are flat dark boxes; recessed wells with a gilded rule, unlocked rows lit, locked rows dimmed with the lock
 - [x] 93. Away report: best-loot slots and level-up portraits in the jewel-slot / button family
 - [x] 94. Codex > Bestiary: unknown entries are bare "?" boxes; recessed wells with a faint silhouette / crest and a hover state
-- [ ] 95. Town signposts (Tavern / Shop) and tower floor plaque in the HUD plate family
+- [x] 95. Town signposts (Tavern / Shop) and tower floor plaque in the HUD plate family
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -273,3 +273,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-09 09:03 shift — replay of sub-tabs/special screens (hero formation/chests, status skills, smith enhance/salvage/craft, growth guild/account, codex bestiary/news, away, tower, town; no engine errors) -> backlog #91-#95. #91: the class-advance call-out now seals its row (smoked pane over the skills, gold seal-plate with gilded rules and lozenges across the row) instead of a small button pasted over the icons. #92: tier rows are recessed wells; reached tiers glow warm with a bronze rim, tiers ahead stay cold and dim. 4x TR.
 - 2026-10-09 — #93: away report: levelled-up heroes are green jewel tiles with a soft glow and a '+n' enamel pill (was a flat box + floating text); 'Best loot' caption gets a bronze rule and end lozenges. Loot slots were already ItemSlots (jewel family). 4x TR.
 - 2026-10-09 — #94: bestiary bug + redesign. The creature art was mirrored with a negative-width rect, which misplaces AtlasTexture frames: unknown entries showed empty cells while sprite fragments leaked past the grid's right edge. Now mirrored with draw_set_transform on its own layer; unknown entries use a new silhouette.gdshader (flat cool colour, sprite alpha kept) so only the outline shows; known entries get a warm lamp (red for bosses); bosses wear a small red skull seal instead of a red outline; '?' moved to the corner; cells react to hover. 4x TR.
+- 2026-10-09 — #95: town signs keep their chains/sway/rivets but the plank is now the painted walnut from frame_9.png (same grain as every window, brightened on hover); the tower floor plaque already uses the #86 plate. 4x TR.
