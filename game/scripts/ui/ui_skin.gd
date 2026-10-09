@@ -344,27 +344,33 @@ static func parchment(ci: RID, r: Rect2) -> void:
 	stroke(ci, r.grow(1.0), 3, Color(0, 0, 0, 0.7), 1.0)
 
 
-## TBH-style carved frame around a section: iron band, bronze inlay, knot ornaments in the corners and
-## small diamonds at the middle of the long edges.
+## Section frame inside a window (hero sheet, Status parchment, shop sign, loot well): a dark cut, a slim
+## gilded rule with a lit inner edge, small brass corner fittings and a lozenge at the middle of the
+## long edges: the window frame's language at a quarter of its weight.
 static func ornate(ci: RID, r: Rect2) -> void:
-	var o := r.grow(3.0)
-	stroke(ci, o.grow(0.5), 3, OUTLINE, 1.0)
-	stroke(ci, o.grow(-1.0), 3, Color("#4A4652"), 2.0)
-	stroke(ci, o.grow(-2.2), 2, Color(1, 1, 1, 0.08), 0.8)
-	stroke(ci, r.grow(0.5), 2, Color(BRONZE, 0.55), 0.8)
+	stroke(ci, r.grow(1.6), 3, OUTLINE, 1.2)
+	stroke(ci, r.grow(0.6), 2.5, BRONZE, 1.0)
+	stroke(ci, r.grow(0.1), 2, Color(BRONZE_HI, 0.55), 0.5)
+	stroke(ci, r.grow(-0.7), 2, Color(0, 0, 0, 0.35), 0.8)
+	var a := minf(7.0, minf(r.size.x, r.size.y) * 0.2)
 	for i in 4:
-		var c: Vector2 = [o.position, Vector2(o.end.x, o.position.y), o.end, Vector2(o.position.x, o.end.y)][i]
+		var c: Vector2 = [r.position, Vector2(r.end.x, r.position.y), r.end, Vector2(r.position.x, r.end.y)][i]
 		var dx := 1.0 if i == 0 or i == 3 else -1.0
 		var dy := 1.0 if i < 2 else -1.0
-		var k := c + Vector2(dx * 2.0, dy * 2.0)
-		var sq := Rect2(k - Vector2(3.5, 3.5), Vector2(7, 7))
-		fill(ci, sq, 1, IRON_TOP.lightened(0.15), IRON_BOT)
-		stroke(ci, sq, 1, OUTLINE, 1.0)
-		stroke(ci, sq.grow(-2.0), 0, Color(BRONZE, 0.85), 0.8)
-		line(ci, k + Vector2(dx * 4.0, 0), k + Vector2(dx * 9.0, 0), Color(BRONZE, 0.7), 1.0)
-		line(ci, k + Vector2(0, dy * 4.0), k + Vector2(0, dy * 9.0), Color(BRONZE, 0.7), 1.0)
-	for y in [o.position.y, o.end.y]:
-		diamond(ci, Vector2(o.get_center().x, y), 2.6)
+		var o := c + Vector2(-dx, -dy) * 1.2
+		var plate := PackedVector2Array([o, o + Vector2(dx * a, 0), o + Vector2(dx * a, dy * 2.2), o + Vector2(dx * 2.2, dy * 2.2), o + Vector2(dx * 2.2, dy * a), o + Vector2(0, dy * a)])
+		var sh := PackedVector2Array()
+		for q in plate:
+			sh.append(q + Vector2(0.3, 0.7))
+		RenderingServer.canvas_item_add_polygon(ci, sh, PackedColorArray([Color(0, 0, 0, 0.45)]))
+		poly(ci, plate, BRONZE_HI, BRONZE_LO)
+		var lp := plate.duplicate()
+		lp.append(plate[0])
+		RenderingServer.canvas_item_add_polyline(ci, lp, PackedColorArray([OUTLINE]), 0.6, true)
+		RenderingServer.canvas_item_add_circle(ci, o + Vector2(dx, dy) * 1.1, 0.55, Color(1, 0.95, 0.8, 0.9))
+	if r.size.x > 60.0:
+		for y in [r.position.y - 0.4, r.end.y + 0.4]:
+			diamond(ci, Vector2(r.get_center().x, y), 2.2)
 
 
 ## Sunken section: a dark inset with an inner shadow on top, a gilded hairline around it and a light

@@ -606,8 +606,7 @@ func _sell_dialog() -> void:
 	card.position = ((veil.size - card.size) / 2.0).round()
 	card.draw.connect(func():
 		var ci := card.get_canvas_item()
-		UISkin.fill(ci, Rect2(Vector2.ZERO, card.size), 4, Color("#2E2630"), Color("#161118"))
-		UISkin.ornate(ci, Rect2(Vector2(3, 3), card.size - Vector2(6, 6))))
+		UISkin.popup(ci, Rect2(Vector2.ZERO, card.size), 0.6, 0.15))
 	veil.add_child(card)
 	var title := UITheme.label(DataDB.t("sell_title"), UITheme.C_TITLE, 10, UITheme.font_title)
 	title.position = Vector2(10, 6)
@@ -703,8 +702,7 @@ func _loot_filter_dialog() -> void:
 	card.position = ((veil.size - card.size) / 2.0).round()
 	card.draw.connect(func():
 		var ci := card.get_canvas_item()
-		UISkin.fill(ci, Rect2(Vector2.ZERO, card.size), 4, Color("#2E2630"), Color("#161118"))
-		UISkin.ornate(ci, Rect2(Vector2(3, 3), card.size - Vector2(6, 6))))
+		UISkin.popup(ci, Rect2(Vector2.ZERO, card.size), 0.6, 0.15))
 	veil.add_child(card)
 	var title := UITheme.label(DataDB.t("loot_filter_title"), UITheme.C_TITLE, 10, UITheme.font_title)
 	title.position = Vector2(10, 6)

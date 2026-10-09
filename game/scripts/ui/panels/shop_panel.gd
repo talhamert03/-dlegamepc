@@ -707,9 +707,7 @@ func _details(p: Dictionary, hid: String) -> void:
 	card.draw.connect(func():
 		var ci := card.get_canvas_item()
 		var r := Rect2(Vector2.ZERO, card.size)
-		UISkin.fill(ci, r.grow(1.0), 5, Color(0, 0, 0, 0.7), Color(0, 0, 0, 0.7))
-		UISkin.fill(ci, r, 5, Color("#3A2A22"), Color("#17100D"))
-		UISkin.ornate(ci, r.grow(-3.0))
+		UISkin.popup(ci, r, 0.6, 0.15)
 		var po := _arch(niche, 22.0)
 		UISkin.poly(ci, po, Color("#E2B866"), Color("#6A4320"))
 		var pin := _arch(niche.grow(-4.0), 19.0)
