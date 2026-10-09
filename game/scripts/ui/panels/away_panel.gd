@@ -148,14 +148,20 @@ func _draw_stage() -> void:
 				break
 			var pop := clampf((_t - 0.35 - 0.08 * j) / 0.2, 0.0, 1.0)
 			var r2 := Rect2(x, y, 20, 20)
-			UISkin.fill(ci, r2, 3, Color("#3A2A1E"), Color("#1E140E"))
+			# portrait in a jewel tile (green = levelled up) with a soft glow and a "+n" enamel lvpill
+			if pop > 0.0:
+				UISkin.stroke(ci, r2.grow(1.2), 4, Color(0.5, 1.0, 0.6, 0.25 * pop), 1.4)
+			UISkin.slot(ci, r2, Color("#2F9A4A"), true, false)
 			var ic := SpriteLib.hero_icon(str(hid))
 			if ic:
-				_stage.draw_texture_rect(ic, r2.grow(-1.5), false, Color(1, 1, 1, pop))
-			UISkin.stroke(ci, r2, 3, Color("#7CFF9A", 0.8 * pop), 1.0)
+				_stage.draw_texture_rect(ic, r2.grow(-2.0), false, Color(1, 1, 1, pop))
 			var tag := "+%d" % int(lv[hid])
-			_stage.draw_string_outline(fb, r2.position + Vector2(10, 21), tag, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, 3, Color(0, 0, 0, pop))
-			_stage.draw_string(fb, r2.position + Vector2(10, 21), tag, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0.55, 1, 0.6, pop))
+			var tw2 := fb.get_string_size(tag, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
+			var lvpill := Rect2(r2.end.x - tw2 - 5.0, r2.end.y - 6.0, tw2 + 6.0, 9.0)
+			UISkin.fill(ci, lvpill, 3, Color(0.35, 0.85, 0.45, pop), Color(0.12, 0.45, 0.2, pop))
+			UISkin.stroke(ci, lvpill, 3, Color(UISkin.OUTLINE, pop), 0.8)
+			_stage.draw_string_outline(fb, Vector2(lvpill.position.x + 3, lvpill.end.y - 2.2), tag, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, 2, Color(0, 0, 0, 0.6 * pop))
+			_stage.draw_string(fb, Vector2(lvpill.position.x + 3, lvpill.end.y - 2.2), tag, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color(1, 1, 1, pop))
 			x += 24.0
 			j += 1
 	# ---- best loot well (the slots are real ItemSlots laid over it)
@@ -169,6 +175,9 @@ func _draw_stage() -> void:
 		var cr := Rect2((w - cw) / 2.0 - 6, ly - 4, cw + 12, 9)
 		UISkin.fill(ci, cr, 3, Color("#4A3420"), Color("#2A1C10"))
 		UISkin.stroke(ci, cr, 3, UISkin.OUTLINE, 0.8)
+		UISkin.stroke(ci, cr.grow(-0.7), 2.5, Color(UISkin.BRONZE_HI, 0.6), 0.6)
+		UISkin.diamond(ci, Vector2(cr.position.x, cr.get_center().y), 1.6)
+		UISkin.diamond(ci, Vector2(cr.end.x, cr.get_center().y), 1.6)
 		_stage.draw_string(fs, Vector2(cr.position.x + 6, cr.end.y - 2), cap, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#E8C98A"))
 	var sold := int(report.get("sold", 0))
 	if sold > 0:
