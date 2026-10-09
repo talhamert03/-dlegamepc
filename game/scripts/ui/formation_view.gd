@@ -243,16 +243,37 @@ func _bench(d: Dictionary) -> void:
 	AudioManager.play("unequip", 0.05, 0.5)
 
 
+var _bg_theme := ""
+var _bg_tex: Texture2D
+
+
+func _zone_bg() -> Texture2D:
+	var theme_name := "void" if BattleSim.mode == "tower" else str(BattleSim.zone().get("background", "meadow"))
+	if theme_name != _bg_theme:
+		_bg_theme = theme_name
+		var path := "res://assets/hd/bg/%s.jpg" % theme_name
+		_bg_tex = load(path) if ResourceLoader.exists(path) else null
+	return _bg_tex
+
+
 func _draw_stage() -> void:
 	var ci := _stage.get_canvas_item()
 	var r := Rect2(Vector2.ZERO, _stage.size)
-	# dusk sky and a ground band
-	UISkin.fill(ci, r, 4, Color("#3A2E4A"), Color("#1A1420"))
-	UISkin.fill(ci, Rect2(0, r.size.y * 0.66, r.size.x, r.size.y * 0.34), 0, Color("#3A2A22"), Color("#1E1410"))
-	_stage.draw_line(Vector2(2, r.size.y * 0.66), Vector2(r.size.x - 2, r.size.y * 0.66), Color(1, 0.85, 0.6, 0.15), 1.0)
-	for k in 6:
-		var x := fposmod(k * 61.0 + _t * 3.0, r.size.x)
-		_stage.draw_circle(Vector2(x, 10 + (k % 3) * 6), 0.8, Color(1, 1, 1, 0.35))
+	# the party stands in the zone it is fighting in: a slice of that zone's HD panorama, cropped so the
+	# ground line meets the slots, slowly drifting, dimmed so the heroes and slot discs stay readable
+	var bg := _zone_bg()
+	if bg:
+		RenderingServer.canvas_item_set_default_texture_filter(ci, RenderingServer.CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS)
+		var th := float(bg.get_height())
+		var k := th / (r.size.y * 1.18)                      # texture px per logical px
+		var sw := r.size.x * k
+		var x0 := fposmod(_t * 4.0 * k, maxf(1.0, bg.get_width() - sw))
+		var src := Rect2(x0, th - r.size.y * k, sw, r.size.y * k)
+		RenderingServer.canvas_item_add_texture_rect_region(ci, r.grow(-1.0), bg.get_rid(), src, Color(0.78, 0.76, 0.74))
+		UISkin.fill(ci, r.grow(-1.0), 3, Color(0, 0, 0, 0.25), Color(0, 0, 0, 0.05))
+	else:
+		UISkin.fill(ci, r, 4, Color("#3A2E4A"), Color("#1A1420"))
+		UISkin.fill(ci, Rect2(0, r.size.y * 0.66, r.size.x, r.size.y * 0.34), 0, Color("#3A2A22"), Color("#1E1410"))
 	UISkin.stroke(ci, r, 4, Color(0, 0, 0, 0.95), 1.0)
 	UISkin.stroke(ci, r.grow(-1.0), 3, Color(UISkin.BRONZE, 0.5), 1.0)
 	var unlocked := GameState.unlocked_party_slots()

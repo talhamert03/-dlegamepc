@@ -92,6 +92,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 98. Dialog replay (sell-all, loot filter, shop detail, chest open, ending, quest done): modal cards still used the old iron 'ornate' frame -> popup family; UISkin.ornate itself redrawn as a slim gilded section frame with brass corner fittings (hero sheet, Status parchment, shop sign, loot well)
 - [x] 99. Taskbar (mini) mode: bar frame = slim walnut 9-slice (0.4x), zone plate in the HUD plate style, chest bubble in the popup family with a brass tail and a wash of the chest colour
 - [x] 100. Status panel cards (hero header, summary stat chips, skill detail) still used a cold purple-grey fill: new UISkin.card (raised warm lacquer, lit top lip, bronze/accent bezel)
+- [x] 101. Formation stage: flat purple 'dusk' fill -> a slice of the current zone's HD panorama (tower = void), ground line on the slots, slow drift, dimmed for readability
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -286,3 +287,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-09 — #98: dialog replay. Sell-all and loot-filter cards (hero panel) and the shop detail card were fill + iron 'ornate' (grey-green iron corner squares): now UISkin.popup(0.6). UISkin.ornate (still used for sections inside windows) redrawn: dark cut, bronze rule with lit inner edge, small brass L-fittings with a rivet, lozenges mid-edge; the iron palette is gone from it. Ending, chest opening, quest claim checked: already fine. 4x TR + 16-panel sweep, no engine errors.
 - 2026-10-09 — #99: taskbar mini mode joined the family (it still had the thin vector border, a flat label and a purple-stroked bubble). Checked with --mini.
 - 2026-10-09 — #100: code sweep for leftover old-palette fills (#2E2630, #2C2430, #1B1C23, #2A2228...): only the Status panel's three cards were left; they use the new UISkin.card. Default PanelContainer navy stylebox is unused (only the --tipshot sample builds one with the tooltip box). 2x TR, both Status tabs.
+- 2026-10-09 — #101: formation stage draws the current zone's HD panorama (assets/hd/bg/<theme>.jpg, cached per theme) cropped to the bottom so the path meets the slot line, drifting slowly, tinted 0.78 + a top shade; old flat fill kept as fallback. 4x TR with 5 heroes.

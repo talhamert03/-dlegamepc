@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Diziliş sekmesi kahramanları, savaştıkları bölgenin manzarası önünde gösteriyor. Durum panelindeki kartlar da sıcak deri tonuna geçti.", "en": "The Formation tab shows your heroes in front of the zone they are fighting in. Status panel cards use the warm leather tone too."},
     {"tr": "Görev çubuğu modu da ceviz çerçeve, bronz bölge levhası ve yeni sandık bildirimiyle diğer pencerelerle aynı görünüyor.", "en": "Taskbar mode now matches the windows too: walnut frame, bronze zone plate and the new chest notice."},
     {"tr": "Toplu satış, ganimet filtresi ve mağaza ürün detayı kartları da pencere çerçevesine geçti; panel içi bölüm çerçevelerinde demir köşeler yerine pirinç köşelikler var.", "en": "The sell-all, loot filter and store detail cards now use the window frame too, and section frames inside windows have brass corner fittings instead of iron ones."},
     {"tr": "Yan yana duran elit canavarların isim levhaları artık üst üste binmiyor. Kahraman konuşma balonları pencerelerle aynı tasarımda.", "en": "Name plates of elite monsters standing together no longer overlap. Hero speech bubbles match the windows."},
