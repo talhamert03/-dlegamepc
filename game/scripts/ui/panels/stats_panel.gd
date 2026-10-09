@@ -626,9 +626,16 @@ func _draw_tiers() -> void:
 			var ax := RAIL_X + 12 + k * 6
 			_tiers.draw_polyline(PackedVector2Array([Vector2(ax + 3.5, cy - 3.5), Vector2(ax, cy), Vector2(ax + 3.5, cy + 3.5)]), ac, 1.4, true)
 		_tiers.draw_line(Vector2(RAIL_X + 13, cy), Vector2(BOX_X - 1, cy), ac, 1.4)
-		UISkin.fill(ci, rr, 3, Color("#3A363E") if open else Color("#26232A"), Color("#24212A") if open else Color("#17151B"))
-		UISkin.stroke(ci, rr, 3, Color(0, 0, 0, 0.95), 1.2)
-		UISkin.stroke(ci, rr.grow(-1.5), 2, Color(1, 1, 1, 0.07), 1.0)
+		# each tier is a recessed well in the leather; reached tiers glow warm from the centre, the ones
+		# still ahead stay cold and dim
+		UISkin.well(ci, rr)
+		if open:
+			var gc := rr.get_center()
+			for k in 6:
+				RenderingServer.canvas_item_add_circle(ci, gc, rr.size.y * (1.6 - k * 0.22), Color(1.0, 0.78, 0.45, 0.018))
+			UISkin.stroke(ci, rr.grow(1.2), 3, Color(UISkin.BRONZE_HI, 0.45), 0.8)
+		else:
+			UISkin.fill(ci, rr.grow(-1.0), 2, Color(0.05, 0.06, 0.09, 0.35), Color(0.02, 0.02, 0.04, 0.45))
 		if str(ROWS[i][1]) == "spec":
 			var mx := rr.position.x + rr.size.x / 2.0
 			_tiers.draw_line(Vector2(mx, rr.position.y + 4), Vector2(mx, rr.end.y - 4), Color(0, 0, 0, 0.6), 1.0)
@@ -642,12 +649,21 @@ func _draw_tiers() -> void:
 	if co >= 0:
 		var rr2 := _row_rect(co)
 		var p := 0.5 + 0.5 * sin(_t * 4.0)
+		# the row is sealed until the hero advances: its skills fade behind a smoked pane and a gold
+		# seal-plate sits across it, so the button reads as a lock on the row, not a sticker on the icons
+		UISkin.fill(ci, rr2.grow(-1.0), 2.5, Color(0.04, 0.03, 0.02, 0.72), Color(0.04, 0.03, 0.02, 0.82))
 		UISkin.stroke(ci, rr2.grow(1.0), 3, Color(UITheme.C_GOLD, 0.4 + 0.5 * p), 1.4)
 		var s := DataDB.t("status_advance") if str(ROWS[co][1]) == "adv" else DataDB.t("status_pick_spec")
 		var tw := fb.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
-		var br := Rect2(rr2.get_center().x - tw / 2.0 - 6, rr2.get_center().y - 5.5, tw + 12, 11)
+		var br := Rect2(rr2.get_center().x - tw / 2.0 - 10, rr2.get_center().y - 7.0, tw + 20, 14)
+		for sd in [-1.0, 1.0]:
+			var x0: float = rr2.position.x + 8.0 if sd < 0 else br.end.x + 4.0
+			var x1: float = br.position.x - 4.0 if sd < 0 else rr2.end.x - 8.0
+			if x1 - x0 > 6.0:
+				UISkin.line(ci, Vector2(x0, rr2.get_center().y), Vector2(x1, rr2.get_center().y), Color(UITheme.C_GOLD, 0.45), 0.8)
+				UISkin.diamond(ci, Vector2(x0 if sd < 0 else x1, rr2.get_center().y), 1.8)
 		UISkin.button(ci, br, "gold", "hover" if p > 0.5 else "normal")
-		_tiers.draw_string(fb, Vector2(br.position.x + 6, br.position.y + 8.5), s, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#2A1A08"))
+		_tiers.draw_string(fb, Vector2(br.position.x + 10, br.get_center().y + 8 * 0.36), s, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#2A1A08"))
 
 
 ## Rail fill: piecewise linear between the row centres by hero level.

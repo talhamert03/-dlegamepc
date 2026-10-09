@@ -77,6 +77,14 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 89. Shop cards and supporter detail: frame + button family pass
 - [x] 90. Title screen menu plaques and intro window in the new family
 
+## Replay backlog 3 (shift 2026-10-09 09:03, sub-tabs and special screens replayed)
+
+- [x] 91. Status > Skills: the "Class advance" button sits on top of the level-30 row's four skill icons (hides them); move it beside the row label / into the row header
+- [x] 92. Status > Skills: tier rows are flat dark boxes; recessed wells with a gilded rule, unlocked rows lit, locked rows dimmed with the lock
+- [ ] 93. Away report: best-loot slots and level-up portraits in the jewel-slot / button family
+- [ ] 94. Codex > Bestiary: unknown entries are bare "?" boxes; recessed wells with a faint silhouette / crest and a hover state
+- [ ] 95. Town signposts (Tavern / Shop) and tower floor plaque in the HUD plate family
+
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
 Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and EN, before/after kept in the log.
@@ -262,3 +270,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-09 — #88: open/close already had scale+fade (window_manager) and a light sweep on open/focus; the sweep now runs along the new gold rule (5.6 px in, it was still on the old 2.6 px pinstripe, i.e. over the wood) and only one sweep tween lives at a time (open + focus used to fight over _sweep). An extra sweep trigger from window_manager was tried and removed as redundant (panel_window already defers one on open).
 - 2026-10-09 — #89: shop category tabs moved onto UISkin.tab (raised crimson + gold pointer / recessed groove), the chosen one keeps a wash of its category velvet; cards, ribbons and price plates already matched. 4x TR.
 - 2026-10-09 — #90: title/intro cinema window framed by the windows' painted walnut 9-slice at 1.4x (gold rule on the picture edge, brass/ruby corners) instead of the thin vector ornate border; menu plaques kept. One title run logged an intermittent 'triangulation failed': UISkin.rrect now drops repeated vertices (rad == half side made two corners meet) and returns nothing for zero-size rects, fill/stroke skip empty shapes; 4 title runs + full 16-panel sweep clean.
+- 2026-10-09 09:03 shift — replay of sub-tabs/special screens (hero formation/chests, status skills, smith enhance/salvage/craft, growth guild/account, codex bestiary/news, away, tower, town; no engine errors) -> backlog #91-#95. #91: the class-advance call-out now seals its row (smoked pane over the skills, gold seal-plate with gilded rules and lozenges across the row) instead of a small button pasted over the icons. #92: tier rows are recessed wells; reached tiers glow warm with a bronze rim, tiers ahead stay cold and dim. 4x TR.
