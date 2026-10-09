@@ -85,18 +85,19 @@ func _draw_frame(hit: Control) -> void:
 		var a := 0.12 * (1.0 - k / 6.0)
 		hit.draw_rect(Rect2(k, 0, 1, r.size.y), Color(0, 0, 0, a))
 		hit.draw_rect(Rect2(r.size.x - 1 - k, 0, 1, r.size.y), Color(0, 0, 0, a))
-	UISkin.stroke(ci, r, 3, Color(0, 0, 0, 0.95), 1.4)
-	UISkin.stroke(ci, r.grow(-1.0), 2, Color(UISkin.BRONZE, 0.85), 1.0)
-	UISkin.stroke(ci, r.grow(-2.0), 2, Color(UISkin.BRONZE_HI, 0.18), 1.0)
-	for c in [Vector2(3, 3), Vector2(r.size.x - 3, 3), Vector2(3, r.size.y - 3), Vector2(r.size.x - 3, r.size.y - 3)]:
-		UISkin.diamond(ci, c, 2.2)
+	# the windows' walnut frame, slim (the bar is only ~30 px tall)
+	RenderingServer.canvas_item_set_default_texture_filter(ci, RenderingServer.CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS)
+	UISkin.frame9(ci, r, 0.4)
 	# stage plate
 	var f := UITheme.font_body
 	var txt := "%s  ·  %d" % [DataDB.tx(BattleSim.zone().get("name", {})), int(BattleSim.stage)]
 	var tw := f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
-	var plate := Rect2(5, 3, tw + 8, 9)
-	UISkin.fill(ci, plate, 2, Color(0.06, 0.04, 0.05, 0.75), Color(0.06, 0.04, 0.05, 0.6))
-	hit.draw_string(f, Vector2(9, 10), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, UITheme.C_TITLE)
+	var plate := Rect2(6, 4, tw + 8, 9)
+	UISkin.fill(ci, plate, 2, Color(0.24, 0.15, 0.09, 0.9), Color(0.08, 0.05, 0.03, 0.9))
+	UISkin.stroke(ci, plate, 2, UISkin.OUTLINE, 0.8)
+	UISkin.stroke(ci, plate.grow(-0.7), 1.5, Color(UISkin.BRONZE_HI, 0.6), 0.5)
+	hit.draw_string_outline(f, Vector2(10, 11), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, 2, Color(0, 0, 0, 0.6))
+	hit.draw_string(f, Vector2(10, 11), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#FFE7B0"))
 	# chests waiting
 	var n := Chests.count()
 	if n > 0:
@@ -112,13 +113,13 @@ func _draw_bubble() -> void:
 	var ci := bubble.get_canvas_item()
 	var r := Rect2(Vector2.ZERO, bubble.size - Vector2(0, 4))
 	var col := Chests.color(_bubble_kind) if _bubble_kind != "" else UITheme.C_GOLD
-	UISkin.fill(ci, r, 4, Color("#2C2430"), Color("#141016"))
-	UISkin.stroke(ci, r, 4, Color(0, 0, 0, 0.95), 1.2)
-	UISkin.stroke(ci, r.grow(-1.0), 3, Color(col, 0.85), 1.0)
-	# little tail pointing at the bar
+	# popup family with a brass tail pointing at the bar, a wash of the chest's colour on the leather
 	var tx := r.size.x - 22.0
-	bubble.draw_colored_polygon(PackedVector2Array([Vector2(tx - 4, r.end.y - 1), Vector2(tx + 4, r.end.y - 1), Vector2(tx, r.end.y + 4)]), Color("#141016"))
-	bubble.draw_polyline(PackedVector2Array([Vector2(tx - 4, r.end.y), Vector2(tx, r.end.y + 4), Vector2(tx + 4, r.end.y)]), Color(col, 0.85), 1.0, true)
+	var tail := PackedVector2Array([Vector2(tx - 4, r.end.y - 1.5), Vector2(tx + 4, r.end.y - 1.5), Vector2(tx, r.end.y + 4)])
+	bubble.draw_colored_polygon(PackedVector2Array([tail[0] + Vector2(-1.2, 0), tail[1] + Vector2(1.2, 0), tail[2] + Vector2(0, 1.5)]), UISkin.OUTLINE)
+	UISkin.poly(ci, tail, UISkin.BRONZE_HI, UISkin.BRONZE_LO)
+	UISkin.popup(ci, r, 0.4, 0.2)
+	UISkin.fill(ci, r.grow(-2.0), 2, Color(col, 0.16), Color(col, 0.04))
 	if _bubble_kind != "":
 		ChestArt.draw(bubble, Vector2(16, r.size.y - 5), 20.0, _bubble_kind, 0.0, _t, true)
 	var f := UITheme.font_title

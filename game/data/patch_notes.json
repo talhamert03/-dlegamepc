@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Görev çubuğu modu da ceviz çerçeve, bronz bölge levhası ve yeni sandık bildirimiyle diğer pencerelerle aynı görünüyor.", "en": "Taskbar mode now matches the windows too: walnut frame, bronze zone plate and the new chest notice."},
     {"tr": "Toplu satış, ganimet filtresi ve mağaza ürün detayı kartları da pencere çerçevesine geçti; panel içi bölüm çerçevelerinde demir köşeler yerine pirinç köşelikler var.", "en": "The sell-all, loot filter and store detail cards now use the window frame too, and section frames inside windows have brass corner fittings instead of iron ones."},
     {"tr": "Yan yana duran elit canavarların isim levhaları artık üst üste binmiyor. Kahraman konuşma balonları pencerelerle aynı tasarımda.", "en": "Name plates of elite monsters standing together no longer overlap. Hero speech bubbles match the windows."},
     {"tr": "Bestiyer: keşfedilmemiş canavarlar artık gerçek silüet olarak görünüyor (önceden boş kutulardı, bazı resimler ızgaranın dışına taşıyordu). Bosslar köşede kırmızı kafatası mühürü taşıyor.", "en": "Bestiary: undiscovered monsters now show as real silhouettes (they were empty boxes and some art leaked outside the grid). Bosses carry a red skull seal in the corner."},
