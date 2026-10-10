@@ -456,6 +456,13 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 					cp.tab = int(a.substr(11))
 					W.set_tab_active(cp._tabs, cp.tab)
 					cp.refresh())
+		if a.begins_with("--settingstab="):
+			get_tree().create_timer(1.0).timeout.connect(func():
+				if WindowManager.is_open("settings"):
+					var sp = WindowManager.panels["settings"]
+					sp.tab = int(a.substr(14))
+					W.set_tab_active(sp._tabs, sp.tab)
+					sp.refresh())
 		if a.begins_with("--growthtab="):
 			get_tree().create_timer(1.0).timeout.connect(func():
 				if WindowManager.is_open("growth"):

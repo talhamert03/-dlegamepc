@@ -109,6 +109,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 112. Guild upgrade buttons showed a bare '500': Fancy.small_button takes an optional currency icon (greyed with the button), guild prices show the gold coin
 - [x] 113. Rune detail: gold coin drawn right in front of the 'Buy 150' price (Button.icon sat at the far-left edge); single-rank runes no longer show one empty rank box under the name
 - [x] 114. Pets: undiscovered companions were black on black; now the bestiary's flat cool silhouette (shader on a child layer) with a small bronze '?' seal, detail card shows a dim silhouette tint
+- [x] 115. Settings > Game: the hotkey help was one run-on line; now a two-column list of key caps (bronze-edged) + capitalised labels, parsed from the same localised string (font steps down to 7 when a label is long). New --settingstab= screenshot flag
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 

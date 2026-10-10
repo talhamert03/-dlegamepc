@@ -81,11 +81,7 @@ func refresh() -> void:
 				if m and m.has_method("replay_intro"):
 					m.replay_intro())
 			_section("set_sec_keys")
-			var hk := UITheme.para(DataDB.t("hotkeys_help"), _w() - 8, UITheme.C_DIM)
-			var hb := MarginContainer.new()
-			hb.add_theme_constant_override("margin_left", 4)
-			hb.add_child(hk)
-			_body.add_child(hb)
+			_body.add_child(_hotkey_grid(DataDB.t("hotkeys_help"), _w() - 4))
 			_section("set_sec_system")
 			_toggle("set_steam_cloud", "steam_cloud")
 			var cs := UITheme.para(DataDB.t("cloud_on") if SteamService.cloud_enabled() else DataDB.t("cloud_off"), _w() - 8,
@@ -156,3 +152,49 @@ func _slider(key_label: String, key: String) -> void:
 	s.position = Vector2.ZERO
 	s.size = s.custom_minimum_size
 	_body.add_child(Fancy.row(DataDB.t(key_label), _w(), holder))
+
+
+## Shortcuts as a two-column list of key caps + what they open (the help string is "keys label · keys label").
+func _hotkey_grid(help: String, w: float) -> Control:
+	var g := GridContainer.new()
+	g.columns = 2
+	g.add_theme_constant_override("h_separation", 6)
+	g.add_theme_constant_override("v_separation", 2)
+	var colw := (w - 6.0) / 2.0
+	for part in help.split(" · "):
+		var toks := part.split(" ")
+		var keys: Array = []
+		var i := 0
+		while i < toks.size() and (toks[i].length() <= 3 or "+" in toks[i] or toks[i] == "/"):
+			if toks[i] != "/":
+				keys.append(toks[i])
+			i += 1
+		var label := " ".join(toks.slice(i))
+		if label != "":
+			label = UITheme.upper(label.left(1)) + label.substr(1)
+		g.add_child(_hotkey_row(keys, label, colw))
+	return g
+
+
+func _hotkey_row(keys: Array, label: String, w: float) -> Control:
+	var c := Control.new()
+	c.custom_minimum_size = Vector2(w, 12)
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	c.draw.connect(func():
+		var ci := c.get_canvas_item()
+		var fb := UITheme.font_body
+		var x := 0.0
+		for k in keys:
+			var kt := str(k)
+			var kw := maxf(10.0, fb.get_string_size(kt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x + 6.0)
+			var kr := Rect2(x, 1, kw, 10)
+			# a key cap: dark base, lighter top face, bronze edge
+			UISkin.fill(ci, kr, 2, Color("#1A120C"), Color("#0A0604"))
+			UISkin.fill(ci, Rect2(kr.position + Vector2(1, 0.6), kr.size - Vector2(2, 2.6)), 1.5, Color("#5A4632"), Color("#3A2A1C"))
+			UISkin.stroke(ci, kr, 2, Color(UISkin.BRONZE, 0.7), 0.6)
+			var tw := fb.get_string_size(kt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
+			c.draw_string(fb, Vector2(kr.position.x + (kw - tw) / 2.0, 8.0), kt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#FFE7B0"))
+			x += kw + 2.0
+		var fs := 8 if fb.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x <= w - x - 4.0 else 7
+		c.draw_string(fb, Vector2(x + 3.0, 9.0), label, HORIZONTAL_ALIGNMENT_LEFT, w - x - 4.0, fs, UITheme.C_TEXT))
+	return c
