@@ -309,3 +309,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — #107: --fxtest=all (23 effects) scanned, no engine errors; before/after checked at 4x for the four weakest.
 - 2026-10-10 — #108: banners checked at 4x TR (boss approach, boss arrived) and EN (zone name).
 - 2026-10-10 — #109: first pass drew the name ribbon on top and its folded tails covered the bar; now drawn before the gauge (text after). 4x TR.
+- 2026-10-10 — #108 follow-up: the crimson ribbon was chosen by guessing from the text colour, so a legendary drop (orange) got the boss ribbon; _show_banner now takes an explicit danger flag (boss incoming / arrived, party wiped).

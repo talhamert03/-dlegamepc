@@ -104,7 +104,7 @@ func _ready() -> void:
 		AudioManager.play("loot_legendary", 0.0, 0.6)
 		AudioManager.play_music(str(BattleSim.zone().get("music", "act1"))))
 	EventBus.boss_failed.connect(func(_z): AudioManager.play_music(str(BattleSim.zone().get("music", "act1"))))
-	EventBus.party_wiped.connect(func(): _show_banner(DataDB.t("party_wiped"), Color("#FF6A5A")))
+	EventBus.party_wiped.connect(func(): _show_banner(DataDB.t("party_wiped"), Color("#FF6A5A"), true))
 	EventBus.phase_changed.connect(_on_phase)
 	EventBus.party_changed.connect(_rebuild_units)
 	EventBus.language_changed.connect(_update_hud_text)
@@ -892,7 +892,7 @@ func _on_level(hid: String, lv: int) -> void:
 func _on_boss_spawned(u) -> void:
 	_boss_name.text = u.name
 	_dim(0.45, 1.4)
-	_show_banner(DataDB.t("boss_appears", {"name": u.name}), Color("#FF6A5A"))
+	_show_banner(DataDB.t("boss_appears", {"name": u.name}), Color("#FF6A5A"), true)
 	AudioManager.play("boss_warning", 0.0, 1.0)
 	AudioManager.play_music("boss")
 
@@ -908,7 +908,7 @@ func _on_phase(p: String) -> void:
 		_set_theme(str(BattleSim.zone().get("background", "meadow")))
 		AudioManager.play_music(str(BattleSim.zone().get("music", "act1")))
 	if p == "travel" and BattleSim.is_boss_stage():
-		_show_banner(DataDB.t("boss_incoming"), Color("#FF9A6A"))
+		_show_banner(DataDB.t("boss_incoming"), Color("#FF9A6A"), true)
 
 
 ## Hanging wooden signboard in town (tavern, store): swings a little, glows on hover.
@@ -996,7 +996,8 @@ var _banner_bg: Control
 var _banner_red := false
 
 
-func _show_banner(text: String, color: Color) -> void:
+## danger: the crimson ribbon (boss coming / arrived, party wiped); otherwise walnut with the text in `color`.
+func _show_banner(text: String, color: Color, danger := false) -> void:
 	if _banner_bg == null:
 		# ribbon behind the banner text
 		_banner_bg = Control.new()
@@ -1019,7 +1020,7 @@ func _show_banner(text: String, color: Color) -> void:
 	_banner_bg.visible = true
 	_banner_bg.queue_redraw()
 	_banner.text = text
-	_banner_red = color.r > color.g * 1.4 and color.r > 0.6
+	_banner_red = danger
 	# on the crimson ribbon the text is cream (the red text colour would vanish into it)
 	_banner.add_theme_color_override("font_color", Color("#FFF0D2") if _banner_red else (Color("#FFE7B0") if color == UITheme.C_TEXT else color))
 	_banner.add_theme_color_override("font_outline_color", Color("#3A0A0C") if _banner_red else Color(0, 0, 0, 0.85))
