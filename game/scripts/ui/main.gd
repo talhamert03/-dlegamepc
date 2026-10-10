@@ -711,6 +711,9 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 		if a == "--selldlg" and WindowManager.is_open("hero"):
 			WindowManager.panels["hero"]._sell_dialog()
 			await get_tree().create_timer(0.3).timeout
+		if a == "--lootfilterdlg" and WindowManager.is_open("hero"):
+			WindowManager.panels["hero"]._loot_filter_dialog()
+			await get_tree().create_timer(0.3).timeout
 		if a == "--chestopen" and WindowManager.is_open("chests"):
 			var cp: Control = WindowManager.panels["chests"]
 			var cv: ChestsView = cp.find_children("*", "ChestsView", true, false)[0]

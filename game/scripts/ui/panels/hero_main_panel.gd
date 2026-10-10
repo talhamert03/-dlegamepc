@@ -719,12 +719,17 @@ func _loot_filter_dialog() -> void:
 	var title := UITheme.label(DataDB.t("loot_filter_title"), UITheme.C_TITLE, 10, UITheme.font_title)
 	title.position = Vector2(10, 6)
 	card.add_child(title)
-	var hint := UITheme.label(DataDB.t("loot_filter_hint"), UITheme.C_DIM, 7, UITheme.font_body)
+	# the hint wraps instead of being cut ("Legendary+ is always kept" is the part that matters)
+	var htxt := DataDB.t("loot_filter_hint")
+	var fb0 := UITheme.font_body
+	var hint_h := fb0.get_multiline_string_size(htxt, HORIZONTAL_ALIGNMENT_LEFT, 192, 7).y
+	var hint := Control.new()
+	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hint.position = Vector2(10, 18)
-	hint.size = Vector2(192, 10)
-	hint.clip_text = true
+	hint.size = Vector2(192, hint_h)
+	hint.draw.connect(func(): hint.draw_multiline_string(fb0, Vector2(0, fb0.get_ascent(7)), htxt, HORIZONTAL_ALIGNMENT_LEFT, 192, 7, -1, UITheme.C_DIM))
 	card.add_child(hint)
-	var y := 32.0
+	var y := 20.0 + hint_h + 3.0
 	var acts := ["keep", "sell", "salvage"]
 	for r in ["common", "magic", "rare", "epic"]:
 		var rr: String = r
@@ -747,22 +752,43 @@ func _loot_filter_dialog() -> void:
 				for j in btns.size():
 					UITheme.set_button_color(btns[j], "gold" if j == i else "brown"))
 		y += 17.0
-	var oc := UITheme.button("", "brown", Callable(), Vector2(192, 13))
+	# off-class rule: a drawn checkbox row, same family as the Bulk Sale rows
+	var oc := Button.new()
+	oc.flat = true
 	oc.toggle_mode = true
+	oc.focus_mode = Control.FOCUS_NONE
+	oc.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	oc.button_pressed = bool(Settings.get_v("loot_offclass_sell", true))
-	var oc_txt := func(on: bool) -> String:
-		return ("☑  " if on else "☐  ") + DataDB.t("loot_offclass")
-	oc.text = oc_txt.call(oc.button_pressed)
+	for sig in [oc.mouse_entered, oc.mouse_exited]:
+		sig.connect(oc.queue_redraw)
+	oc.draw.connect(func():
+		var ci := oc.get_canvas_item()
+		var rect := Rect2(Vector2.ZERO, oc.size)
+		var on := oc.button_pressed
+		UISkin.fill(ci, rect, 3, Color("#3A2A20") if on else Color("#241A14"), Color("#1A120C"))
+		UISkin.stroke(ci, rect, 3, UISkin.OUTLINE, 1.0)
+		if oc.is_hovered():
+			UISkin.stroke(ci, rect.grow(-1.0), 2, Color(UISkin.BRONZE_HI, 0.4), 0.8)
+		var box := Rect2(5, 3, 8, 8)
+		UISkin.fill(ci, box, 1.5, Color("#120C08"), Color("#2A1E14"))
+		UISkin.stroke(ci, box, 1.5, Color(UISkin.BRONZE, 0.9), 0.8)
+		if on:
+			oc.draw_polyline(PackedVector2Array([Vector2(6.6, 7.2), Vector2(8.6, 9.2), Vector2(12, 4.6)]), Color("#8CFF7A"), 1.4, true)
+		oc.draw_string(UITheme.font_body, Vector2(18, 10), DataDB.t("loot_offclass"), HORIZONTAL_ALIGNMENT_LEFT, rect.size.x - 22, 8,
+			Color("#E8D8B8") if on else UITheme.C_DIM))
 	oc.toggled.connect(func(on: bool):
 		Settings.set_v("loot_offclass_sell", on)
-		oc.text = oc_txt.call(on))
+		AudioManager.play("ui_click", 0.05, 0.4)
+		oc.queue_redraw())
 	card.add_child(oc)
-	oc.size = Vector2(192, 13)
+	oc.size = Vector2(192, 14)
 	oc.position = Vector2(10, y + 1)
 	var ok := UITheme.button(DataDB.t("btn_close"), "brown", func(): veil.queue_free(), Vector2(80, 14))
 	card.add_child(ok)
 	ok.size = Vector2(80, 14)
 	ok.position = Vector2(66, y + 19)
+	card.size.y = y + 39.0
+	card.position = ((veil.size - card.size) / 2.0).round()
 
 
 func _build_formation() -> void:
