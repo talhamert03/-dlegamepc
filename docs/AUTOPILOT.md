@@ -154,6 +154,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 151. Bulk sale dialog: rarity rows with nothing in the bag (e.g. Common 0) looked as live as the rest; they now fade back, and a gilded rule separates the choices from the total
 - [x] 152. Loot filter dialog: the hint was clipped mid-word in both languages ("Legendary+ is always k", the key part) and the off-class rule was a plain button with a ☑ glyph; the hint now wraps (card height follows it) and the rule is a drawn checkbox row matching Bulk Sale. New --lootfilterdlg screenshot flag
 - [x] 153. Right-click item menu was a plain text list; each action now carries its icon in a small dark well (equip shield, stash chest, sell gold, salvage hammer, lock padlock) in a shared column, the text aligned after it (ContextMenu takes an optional icon per row; bag and inventory menus use it)
+- [x] 154. World maps were 240x150 flat pixel blobs (the cheapest-looking art left in the game). New tools/art/build_maps_hd.py paints 1440x900 atlases from the same height field and seeds (zone nodes unchanged): depth-graded water with foam and wave strokes, organic land tint and soft relief (no diagonal banding from the sine field), inked coastline, tapered river, shaded trees / snow peaks / dunes / obsidian spires kept off the route, the whole route as a dashed ink line, compass rose in the emptiest corner, aged paper rim. Stored as JPEG q90 (~290 KB each, 4 maps 1.2 MB vs 7 MB PNG), mipmapped, drawn with a linear filter. The party marker steps beside a waypoint that sits under the act ribbon
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -395,3 +396,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — ending slides 1-5 TR/EN fine; bulk sale polish (#151).
 - 2026-10-10 — loot filter dialog TR/EN 4x (#152).
 - 2026-10-10 — 16-panel sweep 4K TR clean; tooltips TR/EN fine; context menu icons (#153).
+- 2026-10-10 — HD world maps (#154) checked all 4 acts at 2x/4x; tests 39/39, Windows smoke OK with the JPEG maps.

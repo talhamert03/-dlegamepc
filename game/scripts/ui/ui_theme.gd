@@ -84,7 +84,7 @@ func tex(name: String) -> Texture2D:
 			_tex[name] = h
 			return h
 	var path := UI + name
-	if not path.ends_with(".png"):
+	if not path.ends_with(".png") and not path.ends_with(".jpg"):
 		path += ".png"
 	var t: Texture2D = load(path) if ResourceLoader.exists(path) else null
 	_tex[name] = t

@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Dünya haritaları baştan çizildi: yüksek çözünürlüklü, el çizimi atlas görünümü; derinliği değişen sular, kıyı köpüğü, gölgeli araziler, ağaçlar, karlı zirveler, kum tepeleri, pusula gülü ve eskimiş kâğıt kenarları.", "en": "World maps redrawn: high-resolution hand-drawn atlas look with depth-shaded water, shore foam, relief, trees, snowy peaks, dunes, a compass rose and aged paper edges."},
     {"tr": "Eşyaya sağ tıklayınca açılan menüde her eylemin artık kendi simgesi var (kuşan, depo, sat, parçala, kilitle).", "en": "The item right-click menu now shows an icon for each action (equip, stash, sell, salvage, lock)."},
     {"tr": "Ganimet Filtresi: açıklama artık kesilmiyor (\"Efsanevi ve üstü her zaman tutulur\"); sınıf dışı eşya seçeneği gerçek bir onay kutusu.", "en": "Loot Filter: the explanation is no longer cut off (\"Legendary+ is always kept\"), and the off-class option is a proper checkbox."},
     {"tr": "Toplu Satış: çantada hiç olmayan nadirlik satırları soluk görünüyor; toplam satırı yaldızlı bir çizgiyle ayrıldı.", "en": "Bulk Sale: rarity rows with nothing in the bag are faded, and the total is set off by a gilded rule."},

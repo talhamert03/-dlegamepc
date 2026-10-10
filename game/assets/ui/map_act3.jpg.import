@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c0nd8diw0g3j7"
-path="res://.godot/imported/map_act3.png-607685703a323c0306c7efbbd1bd3fff.ctex"
+uid="uid://b48a47b1emfo4"
+path="res://.godot/imported/map_act3.jpg-a77695c4179e2c2d7e595f2755f40642.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/ui/map_act3.png"
-dest_files=["res://.godot/imported/map_act3.png-607685703a323c0306c7efbbd1bd3fff.ctex"]
+source_file="res://assets/ui/map_act3.jpg"
+dest_files=["res://.godot/imported/map_act3.jpg-a77695c4179e2c2d7e595f2755f40642.ctex"]
 
 [params]
 
@@ -21,7 +21,7 @@ compress/lossy_quality=0.7
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=false
+mipmaps/generate=true
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""

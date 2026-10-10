@@ -52,6 +52,7 @@ func build(c: Control) -> void:
 	_map.size = Vector2(mw, mh)
 	_map.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_map.stretch_mode = TextureRect.STRETCH_SCALE
+	_map.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS   # painted 1440x900 atlas, shown at 240x150 x scale
 	c.add_child(_map)
 	_nodes_root = Control.new()
 	_nodes_root.size = Vector2(240, 150)
@@ -601,7 +602,7 @@ func refresh() -> void:
 		return
 	_diff_btn.queue_redraw()
 	_build_tabs()
-	_map.texture = UITheme.tex("map_act%d" % act)
+	_map.texture = UITheme.tex("map_act%d.jpg" % act)
 	_overlay.queue_redraw()
 	for ch in _nodes_root.get_children():
 		ch.queue_free()
@@ -633,6 +634,9 @@ func refresh() -> void:
 			m.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			m.size = Vector2(20, 18)
 			m.position = Vector2(float(p[0]), float(p[1])) + Vector2(-11, -24)
+			if m.position.y < 18.0:
+				# under the act ribbon: stand beside the waypoint instead of above it
+				m.position = Vector2(float(p[0]), float(p[1])) + Vector2(8, -12)
 			_nodes_root.add_child(m)
 	_show_card(_sel_zone if _sel_zone >= 0 and int(DataDB.zone(_sel_zone).get("act", 0)) == act else cur)
 	refresh_nodes_highlight()
