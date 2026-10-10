@@ -153,6 +153,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 150. Stash: an empty unlocked tab was 36 blank wells with no clue; a quiet smoked note now sits over the grid (chest icon, "This tab is empty", how to fill it), click-through so drops still land, hidden as soon as the tab holds anything
 - [x] 151. Bulk sale dialog: rarity rows with nothing in the bag (e.g. Common 0) looked as live as the rest; they now fade back, and a gilded rule separates the choices from the total
 - [x] 152. Loot filter dialog: the hint was clipped mid-word in both languages ("Legendary+ is always k", the key part) and the off-class rule was a plain button with a ☑ glyph; the hint now wraps (card height follows it) and the rule is a drawn checkbox row matching Bulk Sale. New --lootfilterdlg screenshot flag
+- [x] 153. Right-click item menu was a plain text list; each action now carries its icon in a small dark well (equip shield, stash chest, sell gold, salvage hammer, lock padlock) in a shared column, the text aligned after it (ContextMenu takes an optional icon per row; bag and inventory menus use it)
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -393,3 +394,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — Windows smoke OK after the mini region change; stash empty note (#150) TR/EN at 2x/4x.
 - 2026-10-10 — ending slides 1-5 TR/EN fine; bulk sale polish (#151).
 - 2026-10-10 — loot filter dialog TR/EN 4x (#152).
+- 2026-10-10 — 16-panel sweep 4K TR clean; tooltips TR/EN fine; context menu icons (#153).

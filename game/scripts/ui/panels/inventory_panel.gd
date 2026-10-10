@@ -148,11 +148,11 @@ func _on_bag_right(slot: ItemSlot) -> void:
 	_ctx_uid = slot.item["uid"]
 	var locked: bool = slot.item.get("locked", false)
 	ContextMenu.open([
-		[DataDB.t("ctx_equip"), func(): _on_ctx(0)],
-		[DataDB.t("ctx_stash"), func(): _on_ctx(1)],
-		[DataDB.t("ctx_sell") + "  (%s)" % F.fmt_num(ItemUtil.sell_price(slot.item)), func(): _on_ctx(2), Color("#F2C45A")],
-		[DataDB.t("ctx_salvage"), func(): _on_ctx(3)],
-		[DataDB.t("ctx_unlock") if locked else DataDB.t("ctx_lock"), func(): _on_ctx(4)],
+		[DataDB.t("ctx_equip"), func(): _on_ctx(0), null, "shield"],
+		[DataDB.t("ctx_stash"), func(): _on_ctx(1), null, "chest"],
+		[DataDB.t("ctx_sell") + "  (%s)" % F.fmt_num(ItemUtil.sell_price(slot.item)), func(): _on_ctx(2), Color("#F2C45A"), "gold"],
+		[DataDB.t("ctx_salvage"), func(): _on_ctx(3), null, "hammer"],
+		[DataDB.t("ctx_unlock") if locked else DataDB.t("ctx_lock"), func(): _on_ctx(4), null, "lock"],
 	], WindowManager.desktop.get_local_mouse_position())
 
 

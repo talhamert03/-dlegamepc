@@ -653,8 +653,8 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			# confirm card, context menu and a toast in one frame for the polish pass
 			var hp2: Control = WindowManager.panels["hero"]
 			W.confirm(hp2._host, DataDB.t("bag_expand_confirm", {"n": 10, "price": "1,2K"}), func(): pass, "", true)
-			ContextMenu.open([[DataDB.t("ctx_equip"), func(): pass], [DataDB.t("ctx_stash"), func(): pass],
-				[DataDB.t("ctx_sell") + "  (120)", func(): pass, Color("#F2C45A")], [DataDB.t("ctx_salvage"), func(): pass], [DataDB.t("ctx_lock"), func(): pass]],
+			ContextMenu.open([[DataDB.t("ctx_equip"), func(): pass, null, "shield"], [DataDB.t("ctx_stash"), func(): pass, null, "chest"],
+				[DataDB.t("ctx_sell") + "  (120)", func(): pass, Color("#F2C45A"), "gold"], [DataDB.t("ctx_salvage"), func(): pass, null, "hammer"], [DataDB.t("ctx_lock"), func(): pass, null, "lock"]],
 				hp2.position + Vector2(-70, 40))
 			Toast.show_reward(null, DataDB.t("toast_daily"), "1× " + Chests.display_name("iron"), "iron")
 			await get_tree().create_timer(0.4).timeout

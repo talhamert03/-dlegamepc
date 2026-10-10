@@ -1,7 +1,7 @@
 class_name ContextMenu
 extends Control
 ## Slim right-click menu drawn inside the overlay (a native popup window would not share the UI scale/style).
-## items: [[text, callable, colour(optional)], ...]; closes on pick, on a click elsewhere or when the mouse leaves.
+## items: [[text, callable, colour (optional, may be null), icon name (optional)], ...]; closes on pick, on a click elsewhere or when the mouse leaves.
 
 const ROW_H := 13.0
 const PAD := 3.0
@@ -9,6 +9,7 @@ const PAD := 3.0
 var _items: Array = []
 var _hover := -1
 var _away := 0.0
+var _icons := false   # any row carries an action icon: text shifts right to a shared column
 
 
 static func open(items: Array, at: Vector2) -> ContextMenu:
@@ -24,7 +25,9 @@ func _ready() -> void:
 	var w := 0.0
 	for it in _items:
 		w = maxf(w, UITheme.font_body.get_string_size(str(it[0]), HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x)
-	size = Vector2(w + 22.0, _items.size() * ROW_H + PAD * 2.0)
+		if it.size() > 3 and it[3] != null:
+			_icons = true
+	size = Vector2(w + (34.0 if _icons else 22.0), _items.size() * ROW_H + PAD * 2.0)
 	z_index = 100
 	# drop in from the cursor
 	pivot_offset = Vector2.ZERO
@@ -79,10 +82,20 @@ func _draw() -> void:
 		var y := PAD + i * ROW_H
 		if i == _hover:
 			UISkin.button(ci, Rect2(3, y, size.x - 6, ROW_H), "orange", "normal")
-			UISkin.diamond(ci, Vector2(7, y + ROW_H * 0.5), 2.2)
+			if not _icons:
+				UISkin.diamond(ci, Vector2(7, y + ROW_H * 0.5), 2.2)
 		elif i > 0:
 			draw_line(Vector2(6, y), Vector2(size.x - 6, y), Color(1, 1, 1, 0.05), 1.0)
-		var col: Color = _items[i][2] if _items[i].size() > 2 else Color("#E9DEC8")
+		var col: Color = _items[i][2] if _items[i].size() > 2 and _items[i][2] != null else Color("#E9DEC8")
 		if i == _hover:
 			col = Color.WHITE
-		draw_string(UITheme.font_body, Vector2(12, y + ROW_H * 0.5 + 3.2), str(_items[i][0]), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)
+		var tx := 12.0
+		if _icons:
+			tx = 22.0
+			if _items[i].size() > 3 and _items[i][3] != null:
+				var ic := UITheme.icon(str(_items[i][3]))
+				if ic:
+					# a small dark well behind the icon so it reads on the hover plate too
+					draw_circle(Vector2(12.5, y + ROW_H * 0.5), 5.2, Color(0, 0, 0, 0.35))
+					draw_texture_rect(ic, Rect2(8, y + ROW_H * 0.5 - 4.5, 9, 9), false, Color(1, 1, 1, 1.0 if i == _hover else 0.85))
+		draw_string(UITheme.font_body, Vector2(tx, y + ROW_H * 0.5 + 3.2), str(_items[i][0]), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)
