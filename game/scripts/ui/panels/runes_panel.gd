@@ -155,6 +155,17 @@ func _refresh_list() -> void:
 		l2.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		l2.custom_minimum_size = Vector2(SIDE_W - 20, 0)
 		_list.add_child(l2)
+		# legend for the four coloured arms of the tree
+		_list.add_child(W.spacer(0, 6))
+		for br in Runes.branches():
+			var row := Control.new()
+			row.custom_minimum_size = Vector2(SIDE_W - 20, 11)
+			var bc := Color(str(br["color"]))
+			var nm := DataDB.tx(br["name"])
+			row.draw.connect(func():
+				UISkin.diamond(row.get_canvas_item(), Vector2(5, 5.5), 3.2, bc, bc.darkened(0.5))
+				row.draw_string(UITheme.font_body, Vector2(13, 8.5), nm, HORIZONTAL_ALIGNMENT_LEFT, row.size.x - 13, 7, bc.darkened(0.55)))
+			_list.add_child(row)
 
 
 func _bonus_text(st: String, v: float) -> String:
