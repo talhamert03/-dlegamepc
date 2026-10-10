@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Hata düzeltmesi: parti düştükten sonra kahramanlar canları dolu olduğu hâlde bir süre yerde yatıyordu; artık hemen ayağa kalkıyorlar.", "en": "Bug fix: after a party wipe, heroes lay on the ground for a moment with full health; they now get up right away."},
     {"tr": "Boss öfkelendiğinde (%50 can) artık kırmızı bir uyarı afişi, patlama ve sarsıntı var; boss savaşın geri kalanında kırmızı bir nabızla parlıyor. Boss'lar vuruş aldıkça bembeyaz kesilmiyor.", "en": "When a boss enrages (50% HP) there is now a red warning banner, a burst and a jolt, and the boss pulses red for the rest of the fight. Bosses no longer turn white from constant hits."},
     {"tr": "Gelişim: Lonca listesi savaş sırasında sürekli yeniden çizilip titremiyor; Hesap sekmesindeki toplamlar pencere açıkken güncelleniyor.", "en": "Growth: the Guild list no longer flickers while gold comes in during a fight, and the Account totals keep updating while the window is open."},
     {"tr": "Hata düzeltmesi: Kodeks ve Görevler pencereleri açıkken güncellenmiyordu (başarım açılsa da 0/44, görev ilerlese de 0/20 görünüyordu). Artık anında yenileniyorlar.", "en": "Bug fix: the Codex and Quests windows did not update while open (0/44 after achievements unlocked, 0/20 while a quest progressed). They now refresh right away."},

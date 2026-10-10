@@ -306,6 +306,8 @@ func _revive_all() -> void:
 			u.statuses.clear()
 			u.buffs.clear()
 			u.revive_t = 0
+			if u.anim == "death":
+				u.set_anim("idle")   # otherwise the view keeps the corpse pose (with a full HP bar) until the next swing
 	if not quiet:
 		for u in heroes:
 			if u.etype != "hero":
