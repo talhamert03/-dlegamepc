@@ -147,6 +147,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 144. Boss enrage (Goblin King, Bjorn duel, Dark Commander, Abyss Twins, Morvath at 50% HP: +50% attack speed) was only a line in the notice feed. Now a crimson danger banner ("X öfkelendi!"), a red burst on the boss and a jolt, then a red heat pulsing through the body and a fast red backlight for the rest of the fight
 - [x] 145. A boss is hit by the whole party many times a second and the full white hit flash kept it washed out most of the time: bosses now take a lighter flash (0.3 vs 0.7)
 - [x] 146. Bug: after a party wipe (and on zone change / town) _revive_all brought heroes back to full HP but left their sim anim on "death", so they lay in the corpse pose with full green HP bars until each one's next swing (Kael and Bjorn ~1 s after the others). Revive now resets the anim to idle; verified with --boss --bossfails on Morvath; balance bot 1 h unchanged
+- [x] 147. Town: the party strolled through the market with five green HP bars over their heads; health bars are hidden while in town (no fight there), so the town scene reads as a calm stop
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -382,3 +383,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — open-panel audit: growth guild/account live without churn (#143); chests, stash, pets, runes, world, shop already hooked.
 - 2026-10-10 — Goblin King replay via --burst=150: enrage moment (#144), boss flash (#145).
 - 2026-10-10 — wipe replay (Morvath, --bossfails): corpse-pose-after-revive bug (#146). Tests 39/39, balance bot 1 h same curve, Windows smoke OK.
+- 2026-10-10 — town at 4x: no HP bars in town (#147).

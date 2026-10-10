@@ -600,7 +600,7 @@ func _draw() -> void:
 	if mode == "":
 		draw_circle(Vector2(0, -7), 7.0, _fallback_color.darkened(0.5))
 		draw_circle(Vector2(0, -7), 6.0, _fallback_color)
-	if not unit.alive or not _show_bar:
+	if not unit.alive or not _show_bar or BattleSim.phase == "town":   # no fight in town: no health bars
 		return
 	var w := float(_bar_w)
 	var y := _head_y
