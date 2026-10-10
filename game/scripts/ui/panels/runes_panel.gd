@@ -376,6 +376,8 @@ func _stone(ci: RID, rr: Rect2, id: String, rk: int, open: bool, afford: bool, c
 	if lit:
 		for k in 5:
 			cv.draw_circle(rr.get_center(), rr.size.x * (0.46 - k * 0.07), Color(bc, 0.10))
+	else:
+		cv.draw_circle(rr.get_center(), rr.size.x * 0.38, Color(bc, 0.10 if open else 0.06))
 	var tex: Texture2D = _icon(id)
 	if tex:
 		var ir := rr.grow(-4.0)
@@ -383,9 +385,11 @@ func _stone(ci: RID, rr: Rect2, id: String, rk: int, open: bool, afford: bool, c
 			cv.draw_texture_rect(tex, ir.grow(1.0), false, Color(bc, 0.45))
 			cv.draw_texture_rect(tex, ir, false, bc.lightened(0.45))
 		else:
-			# carved: a light lower edge under a dark cut
-			cv.draw_texture_rect(tex, Rect2(ir.position + Vector2(0, 0.7), ir.size), false, Color(1, 1, 1, 0.14 if open else 0.05))
-			cv.draw_texture_rect(tex, ir, false, Color(0.10, 0.09, 0.12, 0.92) if open else Color(0.09, 0.09, 0.11, 0.7))
+			# carved: a lower edge catching the branch's colour under a dark cut, so the unbought tree still
+			# reads in its branches (offence / defence / support) instead of one flat grey
+			var edge := Color(bc.lightened(0.2), 0.6) if open else Color(bc, 0.38)
+			cv.draw_texture_rect(tex, Rect2(ir.position + Vector2(0, 0.7), ir.size), false, edge)
+			cv.draw_texture_rect(tex, ir, false, Color(0.10, 0.09, 0.12, 0.92).lerp(Color(bc.darkened(0.7), 0.92), 0.35) if open else Color(0.09, 0.09, 0.11, 0.7).lerp(Color(bc.darkened(0.75), 0.75), 0.3))
 	var border := Color("#2A2830")
 	var bw := 1.0
 	if rk >= mx:

@@ -121,6 +121,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 121. Statistics: gold / silver / bronze rank seals on the top three damage dealers, gold bar for the leader, new "This Session" row of three cards (kills, gold, XP earned, hover explains), Reset pinned to the bottom edge instead of floating mid-panel; panel 214 → 236 tall so a full party fits. TR "Tecrübe / saat" spacing matched to "Altın/saat"
 - [x] 122. Pets with nothing selected: the hint and sources were two loose paragraphs under the stalls; now the same well card as the pet detail (claw seal on an empty pedestal, hint, boss / tower source rows with their icons). Long source lines step down a font size instead of being cut (EN tower line)
 - [x] 123. Quests claim seal: the 14-point "wax" read as a grey gear with unreadable grey text when not ready. Not ready is now a bronze-bezelled progress ring with the percentage; ready is a red wax stamp with an uneven organic rim, drop shadow, pressed inner ring, ribbon tails and cream outlined text (pulse kept)
+- [x] 124. Rune tree before any purchase was one flat grey cross: unbought stones now carry their branch colour in the carved glyph (tinted cut + coloured lower edge) and a faint inner glow, so offence / defence / support / economy arms read at a glance; bought stones stay far brighter
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -338,3 +339,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — statistics panel v2 (#121), TR/EN at 2x and 4x, empty and full party.
 - 2026-10-10 — pets empty-state card (#122), TR/EN at 2x and 4x.
 - 2026-10-10 — quests seal/progress ring (#123), TR/EN at 4x with --questdone.
+- 2026-10-10 — runes: branch-tinted carved stones (#124), before/after at 4x, lit tree at 2x.
