@@ -43,11 +43,8 @@ func build(c: Control) -> void:
 	frame.draw.connect(func():
 		var ci := frame.get_canvas_item()
 		var r := Rect2(Vector2.ZERO, frame.size)
-		UISkin.fill(ci, r, 3, UISkin.IRON_TOP, UISkin.IRON_BOT)
-		UISkin.stroke(ci, r, 3, UISkin.OUTLINE, 1.0)
-		UISkin.stroke(ci, r.grow(-1.5), 2, Color(UISkin.BRONZE, 0.6), 0.8)
-		for p in [Vector2(2.5, 2.5), Vector2(r.size.x - 2.5, 2.5), Vector2(2.5, r.size.y - 2.5), r.size - Vector2(2.5, 2.5)]:
-			UISkin.rivet(ci, p, 1.4))
+		UISkin.well(ci, r.grow(-1.0))
+		UISkin.ornate(ci, r.grow(-1.5)))
 	c.add_child(frame)
 	_map = TextureRect.new()
 	_map.position = Vector2(4, MAP_Y + 4)
@@ -100,9 +97,8 @@ func _build_top(c: Control, w: float) -> void:
 		var r := Rect2(Vector2.ZERO, _diff_btn.size)
 		var col: Color = DIFF_COL[_diff]
 		var hov := _diff_btn.is_hovered()
-		UISkin.fill(ci, r, 3, Color("#3A2616").lightened(0.08 if hov else 0.0), Color("#1A0F08"))
-		UISkin.stroke(ci, r, 3, UISkin.OUTLINE, 1.0)
-		UISkin.stroke(ci, r.grow(-1.0), 2, Color(col, 0.75 if hov else 0.5), 1.0)
+		UISkin.button(ci, r, "brown", "hover" if hov else "normal")
+		UISkin.stroke(ci, r.grow(-1.6), 2, Color(col, 0.75 if hov else 0.45), 0.8)
 		# small heraldic shield in the difficulty colour
 		var s := Vector2(9, r.size.y / 2.0)
 		var sh := PackedVector2Array([s + Vector2(-5, -6), s + Vector2(5, -6), s + Vector2(5, 0), s + Vector2(0, 6.5), s + Vector2(-5, 0)])
@@ -149,10 +145,7 @@ func _build_top(c: Control, w: float) -> void:
 		var ci := tb.get_canvas_item()
 		var r := Rect2(Vector2.ZERO, tb.size)
 		var hov := tb.is_hovered() and not locked
-		var top := Color("#30406A") if not locked else Color("#2C2A30")
-		UISkin.fill(ci, r, 3, top.lightened(0.1 if hov else 0.0), top.darkened(0.55))
-		UISkin.stroke(ci, r, 3, UISkin.OUTLINE, 1.0)
-		UISkin.stroke(ci, r.grow(-1.0), 2, Color("#9FB8F0", 0.55) if not locked else Color("#6A6470", 0.5), 1.0)
+		UISkin.button(ci, r, "blue", "disabled" if locked else ("hover" if hov else "normal"))
 		# a little stone tower
 		var b := Vector2(9, r.size.y - 3)
 		var tc := Color("#AEB6CC") if not locked else Color("#77737C")
@@ -201,14 +194,8 @@ func _build_tabs() -> void:
 		b.draw.connect(func():
 			var ci := b.get_canvas_item()
 			var hov := b.is_hovered()
-			var r := Rect2(Vector2(0, 0), b.size)
-			if on:
-				UISkin.stroke(ci, r.grow(1.0), 4, Color(1.0, 0.85, 0.4, 0.45), 2.0)
-				UISkin.fill(ci, r, 3, UISkin.RIBBON_TOP.lightened(0.05), UISkin.RIBBON_BOT.darkened(0.2))
-			else:
-				UISkin.fill(ci, r, 3, Color("#4A3020").lightened(0.1 if hov else 0.0), Color("#24160C"))
-			UISkin.stroke(ci, r, 3, UISkin.OUTLINE, 1.0)
-			UISkin.stroke(ci, r.grow(-1.0), 2, Color("#F2CB7A", 0.85) if on else Color("#B08A5A", 0.35), 0.8)
+			var r := Rect2(Vector2(0, 0), b.size - Vector2(0, 2))
+			UISkin.tab(ci, r, on, hov)
 			var f := UITheme.font_title
 			var label := DataDB.t("act_n", {"n": a})
 			var tw := f.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
@@ -356,9 +343,7 @@ func _show_card(zi: int) -> void:
 	bg.draw.connect(func():
 		var ci := bg.get_canvas_item()
 		var r := Rect2(Vector2.ZERO, bg.size)
-		UISkin.fill(ci, r, 3, UISkin.BODY_TOP.lightened(0.04), UISkin.BODY_BOT)
-		UISkin.stroke(ci, r, 3, UISkin.OUTLINE, 1.0)
-		UISkin.stroke(ci, r.grow(-1.5), 2, Color(UISkin.BRONZE, 0.45), 0.8)
+		UISkin.card(ci, r)
 		UISkin.line(ci, Vector2(6, 16.5), Vector2(r.size.x - 6, 16.5), Color(UISkin.BRONZE, 0.4), 0.8)
 		UISkin.diamond(ci, Vector2(r.size.x / 2.0, 16.5), 2.0))
 	_card.add_child(bg)
@@ -443,6 +428,9 @@ func _show_card(zi: int) -> void:
 		var ci := rbox.get_canvas_item()
 		var r := Rect2(Vector2.ZERO, rbox.size)
 		UISkin.well(ci, r)
+		# the verdict colours the well: a soft wash from the top and a coloured rule under the verdict
+		UISkin.fill(ci, Rect2(1, 1, r.size.x - 2, 16), 2, Color(rcol, 0.16), Color(rcol, 0.0))
+		UISkin.line(ci, Vector2(10, 15.5), Vector2(r.size.x - 10, 15.5), Color(rcol, 0.35), 0.7)
 		var f := UITheme.font_body
 		var verdict := DataDB.t("ready_" + ready)
 		var vw := f.get_string_size(verdict, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x

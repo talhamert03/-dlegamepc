@@ -100,6 +100,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 
 - [x] 104. Intro: flying crystal shards wore hard-edged translucent discs (read as bubbles) -> 4-step soft glow + a bright facet edge; letterbox bars feathered into the picture instead of a hard black cut
 - [x] 105. Notification bursts (several achievements at once) stacked a tower of plates over the windows: same-title toasts within their life fold into one plate ('×3', newest detail), at most 3 plates (oldest hurries out), the rest settle down smoothly when one leaves
+- [x] 106. World panel leftovers: act selectors on UISkin.tab, difficulty plate = brown button with a difficulty-coloured inner rule, tower plate = blue button (disabled while locked), map in a well with the section frame, zone card = UISkin.card, enemy previews (UITheme.slot_button, shared) = jewel-slot wells, readiness well washed in the verdict colour
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -301,3 +302,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 09:03 shift — backlog empty, replayed the intro (6 beats). #104 done (shard glow, feathered letterbox). 2x TR.
 - 2026-10-10 — #105: Toast merges same-title notices (count in the title, life restarted, quieter sound), MAX_STACK 3, slot index recomputed from _live each frame with a lerp. Checked with the lv40 burst (3 achievements -> one '×3' plate).
 - 2026-10-10 — first-minute check: stills showed Kael pale/translucent at 8-10 s and looked like early deaths. Probed: quiet sim of the first 60 s (min HP 268/342, 0 deaths), 1 h balance bot (0 deaths in the first 15 min), and two real-time runs with a temporary death print: no deaths. The pale look is the white hit-flash shader caught mid-frame. No change.
+- 2026-10-10 — #106: world panel top half had kept the pre-v2 look (iron map frame with rivets, flat crimson act tabs, flat plates). Done; slot_button change also reaches the other 2 callers. 2x + 4x TR.

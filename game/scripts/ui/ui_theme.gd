@@ -442,9 +442,8 @@ func slot_button(sz := Vector2(20, 20)) -> TextureButton:
 	b.focus_mode = Control.FOCUS_NONE
 	b.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	b.draw.connect(func():
-		var hov := b.is_hovered()
-		var sb := _flat(Color("#16100C"), Color("#C9A45C") if hov else Color("#4A3826"), 3)
-		b.draw_style_box(sb, Rect2(Vector2.ZERO, b.size)))
+		# an empty jewel-slot well, lit gold on hover (same as the item slots)
+		UISkin.slot(b.get_canvas_item(), Rect2(Vector2.ZERO, b.size), Color.WHITE, false, b.is_hovered()))
 	b.mouse_entered.connect(b.queue_redraw)
 	b.mouse_exited.connect(b.queue_redraw)
 	return b
