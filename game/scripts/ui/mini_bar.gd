@@ -8,6 +8,7 @@ signal restore_requested
 signal bubble_clicked
 
 var bar_rect := Rect2()
+var tab_rect := Rect2()   # the stage tab above the bar (part of the click / draw region)
 var bubble: Control
 var _bubble_kind := ""
 var _bubble_title := ""
@@ -88,16 +89,24 @@ func _draw_frame(hit: Control) -> void:
 	# the windows' walnut frame, slim (the bar is only ~30 px tall)
 	RenderingServer.canvas_item_set_default_texture_filter(ci, RenderingServer.CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS)
 	UISkin.frame9(ci, r, 0.4)
-	# stage plate
+	# stage tab: sits on top of the frame like a folder tab, in the free corner above the bar, so it no
+	# longer covers the heroes' health bars inside the little battlefield
 	var f := UITheme.font_body
 	var txt := "%s  ·  %d" % [DataDB.tx(BattleSim.zone().get("name", {})), int(BattleSim.stage)]
-	var tw := f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
-	var plate := Rect2(6, 4, tw + 8, 9)
-	UISkin.fill(ci, plate, 2, Color(0.24, 0.15, 0.09, 0.9), Color(0.08, 0.05, 0.03, 0.9))
-	UISkin.stroke(ci, plate, 2, UISkin.OUTLINE, 0.8)
-	UISkin.stroke(ci, plate.grow(-0.7), 1.5, Color(UISkin.BRONZE_HI, 0.6), 0.5)
-	hit.draw_string_outline(f, Vector2(10, 11), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, 2, Color(0, 0, 0, 0.6))
-	hit.draw_string(f, Vector2(10, 11), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#FFE7B0"))
+	var maxw := r.size.x - bubble.size.x - 20.0
+	var tw := minf(f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x, maxw - 12.0)
+	var tab := Rect2(6, -10, tw + 12, 11.5)
+	var want := Rect2(bar_rect.position + tab.position, tab.size)
+	if want != tab_rect:
+		tab_rect = want
+		WindowManager.layout_changed()
+	UISkin.fill(ci, tab, 3, Color(0.30, 0.19, 0.11), Color(0.12, 0.07, 0.04))
+	UISkin.stroke(ci, tab, 3, UISkin.OUTLINE, 0.9)
+	UISkin.stroke(ci, tab.grow(-0.8), 2.2, Color(UISkin.BRONZE_HI, 0.55), 0.5)
+	hit.draw_string_outline(f, Vector2(12, -2.2), txt, HORIZONTAL_ALIGNMENT_LEFT, tw, 7, 2, Color(0, 0, 0, 0.6))
+	hit.draw_string(f, Vector2(12, -2.2), txt, HORIZONTAL_ALIGNMENT_LEFT, tw, 7, Color("#FFE7B0"))
+	# re-seat the frame's top rail over the tab's foot so the tab reads as attached
+	UISkin.line(ci, Vector2(tab.position.x + 1, 0.5), Vector2(tab.end.x - 1, 0.5), Color(UISkin.BRONZE_LO, 0.9), 1.0)
 	# chests waiting
 	var n := Chests.count()
 	if n > 0:

@@ -148,6 +148,8 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 145. A boss is hit by the whole party many times a second and the full white hit flash kept it washed out most of the time: bosses now take a lighter flash (0.3 vs 0.7)
 - [x] 146. Bug: after a party wipe (and on zone change / town) _revive_all brought heroes back to full HP but left their sim anim on "death", so they lay in the corpse pose with full green HP bars until each one's next swing (Kael and Bjorn ~1 s after the others). Revive now resets the anim to idle; verified with --boss --bossfails on Morvath; balance bot 1 h unchanged
 - [x] 147. Town: the party strolled through the market with five green HP bars over their heads; health bars are hidden while in town (no fight there), so the town scene reads as a calm stop
+- [x] 148. Taskbar (mini) mode: the strip above the crop was drawn into the bubble row, a stray band of sky over the taskbar wherever the region covered it; the strip now sits in a clip the size of the bar while in mini mode (reparented back on exit, checked with the new --miniround flag)
+- [x] 149. Mini mode: the stage plate sat inside the tiny battlefield over the first two heroes' health bars; it is now a folder tab on top of the frame in the free corner left of the chest bubble (added to the window region), so all five bars show
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -384,3 +386,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — Goblin King replay via --burst=150: enrage moment (#144), boss flash (#145).
 - 2026-10-10 — wipe replay (Morvath, --bossfails): corpse-pose-after-revive bug (#146). Tests 39/39, balance bot 1 h same curve, Windows smoke OK.
 - 2026-10-10 — town at 4x: no HP bars in town (#147).
+- 2026-10-10 — taskbar mode at 4x: clip (#148), stage tab (#149), --miniround round-trip OK.

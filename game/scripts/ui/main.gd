@@ -579,6 +579,17 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 				var im := get_viewport().get_texture().get_image()
 				im.get_region(Rect2i(Vector2i(sr0.position * sc0), Vector2i(sr0.size * sc0))).save_png(out + "burst_%03d.png" % i)
 	for a in cmd:
+		if a == "--miniround":
+			# taskbar mode and back: the strip must come home whole (reparented out of the mini clip)
+			WindowManager.enter_mini()
+			await get_tree().create_timer(0.6).timeout
+			WindowManager.exit_mini()
+			await get_tree().create_timer(0.8).timeout
+			get_viewport().get_texture().get_image().save_png(out + "miniround.png")
+			print("MINIROUND strip parent=", WindowManager.strip.get_parent().name, " pos=", WindowManager.strip.position)
+			print("SCREENSHOTS_DONE ", ProjectSettings.globalize_path(out))
+			get_tree().quit()
+			return
 		if a == "--mini":
 			WindowManager.enter_mini()
 			await get_tree().create_timer(0.6).timeout

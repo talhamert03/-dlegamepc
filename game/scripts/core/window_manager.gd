@@ -452,6 +452,8 @@ func _update_region() -> void:
 	var rects: Array = []
 	if mini_mode and mini_bar:
 		rects.append(mini_bar.bar_rect)
+		if mini_bar.tab_rect.size.x > 0.0:
+			rects.append(mini_bar.tab_rect)
 		if mini_bar.bubble.visible:
 			rects.append(Rect2(mini_bar.bubble.position.x, 0, mini_bar.bubble.size.x, mini_bar.bubble.size.y + 6))
 	elif title_mode and title_control and is_instance_valid(title_control):
@@ -764,7 +766,20 @@ func enter_mini() -> void:
 	w.position = Vector2i(x, tb.end.y - phys.y - int(2 * dpi))
 	w.always_on_top = true
 	desktop.size = Vector2(logical)
-	strip.position = Vector2(-MINI_CROP.position.x, MINI_BUBBLE_H - MINI_CROP.position.y)
+	# the strip goes into a clip the size of the bar: otherwise the sky above the crop showed through in the
+	# bubble row as a stray band of landscape over the taskbar
+	if _mini_clip == null or not is_instance_valid(_mini_clip):
+		_mini_clip = Control.new()
+		_mini_clip.name = "MiniClip"
+		_mini_clip.clip_contents = true
+		_mini_clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		desktop.add_child(_mini_clip)
+	_mini_clip.position = Vector2(0, MINI_BUBBLE_H)
+	_mini_clip.size = MINI_CROP.size
+	_mini_clip.visible = true
+	desktop.move_child(_mini_clip, strip.get_index())
+	strip.reparent(_mini_clip, false)
+	strip.position = -MINI_CROP.position
 	mini_bar.visible = true
 	mini_bar.size = Vector2(logical)
 	mini_bar.layout(Rect2(0, MINI_BUBBLE_H, MINI_CROP.size.x, MINI_CROP.size.y), MINI_BUBBLE_H)
@@ -784,10 +799,18 @@ func minimize() -> void:
 		get_window().mode = Window.MODE_MINIMIZED
 
 
+var _mini_clip: Control = null
+
+
 func exit_mini(open_id := "") -> void:
 	if not mini_mode:
 		return
 	mini_mode = false
+	if _mini_clip and is_instance_valid(_mini_clip) and strip.get_parent() == _mini_clip:
+		var at := _mini_clip.get_index()
+		strip.reparent(desktop, false)
+		desktop.move_child(strip, at)
+		_mini_clip.visible = false
 	var w := get_window()
 	w.mode = Window.MODE_WINDOWED
 	if mini_bar:
