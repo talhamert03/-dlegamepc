@@ -305,7 +305,7 @@ static func _crest_plate(ci: RID, rr: Rect2) -> void:
 
 
 ## Notched red ribbon used for panel titles.
-static func ribbon(ci: RID, r: Rect2) -> void:
+static func ribbon(ci: RID, r: Rect2, top: Color = RIBBON_TOP, bot: Color = RIBBON_BOT) -> void:
 	var n := minf(5.0, r.size.y * 0.35)
 	var pts := PackedVector2Array([r.position + Vector2(n, 0), Vector2(r.end.x - n, r.position.y), Vector2(r.end.x, r.position.y + r.size.y * 0.5),
 		Vector2(r.end.x - n, r.end.y), Vector2(r.position.x + n, r.end.y), Vector2(r.position.x, r.position.y + r.size.y * 0.5)])
@@ -314,7 +314,7 @@ static func ribbon(ci: RID, r: Rect2) -> void:
 		var ex: float = r.position.x if sd < 0 else r.end.x
 		var tail := PackedVector2Array([Vector2(ex - sd * 2.0, r.position.y + 3.0), Vector2(ex + sd * 9.0, r.position.y + 3.0),
 			Vector2(ex + sd * 5.5, r.get_center().y + 2.5), Vector2(ex + sd * 9.0, r.end.y + 2.5), Vector2(ex - sd * 2.0, r.end.y + 2.5)])
-		poly(ci, tail, Color("#6E1418"), Color("#3A080B"))
+		poly(ci, tail, bot.darkened(0.1), bot.darkened(0.5))
 		var tc := tail.duplicate()
 		tc.append(tail[0])
 		RenderingServer.canvas_item_add_polyline(ci, tc, PackedColorArray([OUTLINE]), 1.0, true)
@@ -323,7 +323,7 @@ static func ribbon(ci: RID, r: Rect2) -> void:
 	for q in pts:
 		outer.append(q + (q - cx).normalized() * 1.2)
 	poly(ci, outer, OUTLINE, OUTLINE)
-	poly(ci, pts, RIBBON_TOP, RIBBON_BOT)
+	poly(ci, pts, top, bot)
 	var closed := pts.duplicate()
 	closed.append(pts[0])
 	RenderingServer.canvas_item_add_polyline(ci, closed, PackedColorArray([BRONZE_HI]), 1.0, true)

@@ -977,6 +977,7 @@ func _dim(amount: float, dur: float) -> void:
 
 var _dimmer: ColorRect
 var _banner_bg: Control
+var _banner_red := false
 
 
 func _show_banner(text: String, color: Color) -> void:
@@ -988,20 +989,25 @@ func _show_banner(text: String, color: Color) -> void:
 		_banner_bg.position = Vector2(0, 20)
 		_banner_bg.draw.connect(func():
 			var tw := UITheme.font_title.get_string_size(_banner.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 13).x
-			var rr := Rect2((W - tw) / 2.0 - 14.0, 2, tw + 28.0, 16)
+			var rr := Rect2((W - tw) / 2.0 - 16.0, 2, tw + 32.0, 16)
 			var ci := _banner_bg.get_canvas_item()
-			UISkin.fill(ci, rr.grow(1.0), 3, Color(0, 0, 0, 0.35), Color(0, 0, 0, 0.35))
-			UISkin.fill(ci, rr, 3, Color(0.16, 0.08, 0.06, 0.82), Color(0.06, 0.03, 0.02, 0.82))
-			UISkin.stroke(ci, rr, 3, UISkin.OUTLINE, 1.0)
-			UISkin.stroke(ci, rr.grow(-1.0), 2, Color(UISkin.BRONZE, 0.7), 0.7)
-			UISkin.diamond(ci, Vector2(rr.position.x - 3, rr.get_center().y), 2.4)
-			UISkin.diamond(ci, Vector2(rr.end.x + 3, rr.get_center().y), 2.4))
+			# a banner of the window-title family: crimson for danger (bosses), deep walnut otherwise,
+			# with a soft shadow on the battlefield below it
+			UISkin.fill(ci, Rect2(rr.position + Vector2(2, 3), rr.size), 4, Color(0, 0, 0, 0.30), Color(0, 0, 0, 0.30))
+			if _banner_red:
+				UISkin.ribbon(ci, rr)
+			else:
+				UISkin.ribbon(ci, rr, Color("#5A3A22"), Color("#2A170C")))
 		hud.add_child(_banner_bg)
 		hud.move_child(_banner_bg, _banner.get_index())
 	_banner_bg.visible = true
 	_banner_bg.queue_redraw()
 	_banner.text = text
-	_banner.add_theme_color_override("font_color", color)
+	_banner_red = color.r > color.g * 1.4 and color.r > 0.6
+	# on the crimson ribbon the text is cream (the red text colour would vanish into it)
+	_banner.add_theme_color_override("font_color", Color("#FFF0D2") if _banner_red else (Color("#FFE7B0") if color == UITheme.C_TEXT else color))
+	_banner.add_theme_color_override("font_outline_color", Color("#3A0A0C") if _banner_red else Color(0, 0, 0, 0.85))
+	_banner.add_theme_constant_override("outline_size", 3)
 	_banner.visible = true
 	_banner.modulate.a = 1.0
 	_banner_t = 2.2

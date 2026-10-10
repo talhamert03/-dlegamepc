@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Savaş duyuruları (\"Boss yaklaşıyor…\", bölge adı) artık pencere başlıkları gibi kurdele: bosslar için kızıl, diğerleri için ceviz.", "en": "Battle announcements (\"Boss approaching…\", zone names) are now ribbons like the window titles: crimson for bosses, walnut otherwise."},
     {"tr": "Yetenek efektleri artık parlıyor: Zafer Marşı altın bir hale ve yükselen notalarla, Arkana Küresi dönen rün halkasıyla, Kılıç Fırtınası dönen çelik hilallerle, Kuyrukluyıldız Oku alevli kuyruğu ve yer sarsıntısıyla çok daha görünür.", "en": "Skill effects now glow: Anthem with a gold halo and rising notes, Arcane Orb with a turning rune ring, Blade Storm with whirling steel crescents, Comet Arrow with a flaming tail and ground shock."},
     {"tr": "Dünya paneli: bölüm seçiciler, zorluk ve kule düğmeleri, harita çerçevesi ve hazırlık kutusu yeni tasarıma geçti.", "en": "World panel: act selectors, difficulty and tower buttons, the map frame and the readiness box use the new design."},
     {"tr": "Aynı anda birden çok başarım açılınca bildirimler üst üste yığılmıyor: tek plakada \"×3\" olarak toplanıyor; ekranda en fazla 3 bildirim kalıyor.", "en": "When several achievements unlock at once the notices no longer pile up: they fold into one plate (\"×3\"), and at most three notices stay on screen."},
