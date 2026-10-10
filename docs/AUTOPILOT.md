@@ -117,6 +117,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 117. "Not usable by this hero" mark on item slots was a tiny black square with a red pixel X (read as noise across a whole bag): now a small no-entry seal (dark rim, red disc, white bar) in the corner
 - [x] 118. Damage numbers on enemies just entering from the right edge were cut in half by the strip edge at 4x; spawn x is now clamped so the whole number (and its drift) stays on the strip
 - [x] 119. Inventory (EN): "Stash · Blacksmith · sort · Sell · 49/60" ran past the right frame; the capacity pill now sits right-aligned on the hero-picker row, and the 6-wide equipment grid is centred over the 7-wide bag
+- [x] 120. World zone card DPS gauge: unmeasured party DPS showed a red "—" (read as "too weak") and never updated while the panel stayed open; now a neutral dash that turns into the live value (gauge redraws twice a second). "~18.4" read as "-18.4" at 2x: approx sign is now ≈
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -330,3 +331,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 13:03 shift — replay: title menu plaques and bag drag (ghost, dimmed source, gold target) fine at 4x; #117 done.
 - 2026-10-10 — replay: damage numbers at 4x via --burst=40 (legible, orange with dark outline); right-edge clipping fixed (#118).
 - 2026-10-10 — 16-panel sweep at 4K EN (no engine errors): inventory bottom row overflow fixed (#119).
+- 2026-10-10 — world panel EN/TR: DPS gauge live + neutral when unmeasured, ≈ instead of ~ (#120).

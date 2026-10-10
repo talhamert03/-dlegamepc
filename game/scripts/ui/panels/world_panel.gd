@@ -13,6 +13,7 @@ const EL_COL := {"fire": Color("#FF7A3A"), "cold": Color("#7FD0FF"), "lightning"
 
 var act := 1
 var _tabs: Control
+var _dps_gauge: Control
 var _diff_btn: Button
 var _map: TextureRect
 var _nodes_root: Control
@@ -72,7 +73,11 @@ func build(c: Control) -> void:
 
 
 func _process(delta: float) -> void:
+	var tick := int(_t * 2.0) != int((_t + delta) * 2.0)
 	_t += delta
+	# the party DPS is measured live: keep the gauge current while the panel stays open
+	if tick and is_instance_valid(_dps_gauge):
+		_dps_gauge.queue_redraw()
 	if _nodes_root:
 		for ch in _nodes_root.get_children():
 			if ch.has_meta("pulse"):
@@ -480,6 +485,7 @@ func _stage_picker(zi: int, w: float, h: float) -> void:
 		_sel_stage = BattleSim.stage if playing else int(rec["last"])
 	var gauge := Control.new()
 	gauge.name = "DpsNeed"
+	_dps_gauge = gauge
 	gauge.mouse_filter = Control.MOUSE_FILTER_STOP
 	gauge.tooltip_text = DataDB.t("dps_gauge_tip")
 	gauge.position = Vector2(6, 64)
@@ -488,6 +494,8 @@ func _stage_picker(zi: int, w: float, h: float) -> void:
 		var need := ZoneInfo.dps_needed(z_of(zi), _sel_stage, _diff)
 		var have := BattleSim.party_dps()
 		var col := UITheme.C_GREEN if have >= need else (Color("#FFC94A") if have >= need * 0.6 else Color("#FF7A6A"))
+		if have <= 0.0:
+			col = UITheme.C_DIM   # not measured yet (fresh fight): a neutral dash, not a red "too weak"
 		var f := UITheme.font_body
 		var lt := DataDB.t("dps_need_l", {"n": F.fmt_num(need)})
 		var rt := DataDB.t("dps_have_r", {"n": F.fmt_num(have) if have > 0.0 else "—"})

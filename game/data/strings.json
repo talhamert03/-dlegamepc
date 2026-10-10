@@ -1868,8 +1868,8 @@
   "en": "Estimated DPS needed: {need}   ·   Your party: {have}"
  },
  "dps_need_short": {
-  "tr": "Gereken DPS: ~{n}",
-  "en": "DPS needed ~{n}"
+  "tr": "Gereken DPS: ≈{n}",
+  "en": "DPS needed ≈{n}"
  },
  "bag_expand_tip": {
   "tr": "Çantaya +10 yer ({price})",
@@ -2028,8 +2028,8 @@
   "en": "Estimated DPS to clear the selected stage comfortably, and your party's current DPS."
  },
  "dps_need_l": {
-  "tr": "Gereken DPS ~{n}",
-  "en": "DPS needed ~{n}"
+  "tr": "Gereken DPS ≈{n}",
+  "en": "DPS needed ≈{n}"
  },
  "dps_have_r": {
   "tr": "Partin {n}",
