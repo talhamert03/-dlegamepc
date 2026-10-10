@@ -5,6 +5,8 @@ extends PanelWindow
 const RARITY_COL := {"R": Color("#A9B1C2"), "SR": Color("#5E9BFF"), "SSR": Color("#FFC24A")}
 const COLS := 4
 const CARD := Vector2(74, 108)
+const MINI_COLS := 5
+const MINI := Vector2(43, 52)
 
 var _filter := ""
 var _top: Control
@@ -80,6 +82,14 @@ func refresh() -> void:
 		hdr.position = Vector2(0, y)
 		_grid.add_child(hdr)
 		y += 16.0
+		if ids == owned:
+			# recruited heroes as compact portrait tiles: the roster stays visible without pushing the heroes
+			# you can still buy (and their prices) below the fold
+			var mg := (_grid.get_parent_control().size.x - 6.0 - MINI_COLS * MINI.x) / (MINI_COLS - 1)
+			for i in ids.size():
+				_mini(str(ids[i]), Vector2((i % MINI_COLS) * (MINI.x + mg), y + (i / MINI_COLS) * (MINI.y + 3.0)))
+			y += ceil(ids.size() / float(MINI_COLS)) * (MINI.y + 3.0) + 4.0
+			continue
 		for i in ids.size():
 			_card(str(ids[i]), Vector2((i % COLS) * (CARD.x + gap), y + (i / COLS) * (CARD.y + 4.0)))
 		y += ceil(ids.size() / float(COLS)) * (CARD.y + 4.0) + 4.0
@@ -238,6 +248,67 @@ func _card(hid: String, pos: Vector2) -> void:
 	b.position = Vector2(4, CARD.y - 16)
 	b.disabled = not Tavern.can_afford(hid)
 	b.set_meta("hid", hid)
+
+
+## A recruited hero: head-and-shoulders crop of the portrait on its faction colour, rarity rim, level in gold,
+## a green seal when in the party (benched heroes are dimmed). Clicking opens the hero in the Hero panel.
+func _mini(hid: String, pos: Vector2) -> void:
+	var d := DataDB.hero_def(hid)
+	var rar: String = d.get("rarity", "R")
+	var rcol: Color = RARITY_COL.get(rar, Color.WHITE)
+	var fac := Color(str(DataDB.factions.get(d.get("faction", ""), {}).get("color", "#7A5A44")))
+	var tex := SpriteLib.portrait(hid)
+	var in_party := GameState.party.has(hid)
+	var lvt := F.lv(GameState.heroes[hid].level)
+	var nm := str(d.get("name", hid))
+	var c := Control.new()
+	c.position = pos
+	c.size = MINI
+	c.clip_contents = true
+	c.mouse_filter = Control.MOUSE_FILTER_STOP
+	c.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	c.tooltip_text = "%s · %s\n%s" % [nm, DataDB.tx(DataDB.class_def(d["class"]).get("name", {})),
+		("✓ " + DataDB.t("tavern_owned")) if in_party else DataDB.t("tavern_bench")]
+	c.mouse_entered.connect(func(): c.set_meta("hov", true))
+	c.mouse_exited.connect(func(): c.set_meta("hov", false))
+	c.gui_input.connect(func(e: InputEvent):
+		if e is InputEventMouseButton and e.pressed and e.button_index == MOUSE_BUTTON_LEFT:
+			AudioManager.play("ui_click", 0.05, 0.5)
+			W.select_hero(hid)
+			WindowManager.open_panel("hero"))
+	c.draw.connect(func():
+		var ci := c.get_canvas_item()
+		var r := Rect2(Vector2.ZERO, c.size)
+		var hov: bool = c.get_meta("hov", false)
+		UISkin.fill(ci, r, 3, fac.darkened(0.3 if not hov else 0.12), Color("#100E14"))
+		if tex:
+			var tw := float(tex.get_width())
+			var sw := tw * 0.6
+			var sh := sw * (r.size.y - 10.0) / r.size.x
+			var src := Rect2((tw - sw) / 2.0, tex.get_height() * 0.03, sw, sh)
+			c.draw_texture_rect_region(tex, Rect2(0, 0, r.size.x, r.size.y - 10.0), src, Color.WHITE if in_party else Color(0.62, 0.62, 0.68))
+		UISkin.fill(ci, Rect2(0, r.size.y * 0.45, r.size.x, r.size.y * 0.55), 0, Color(0, 0, 0, 0.0), Color(0, 0, 0, 0.92))
+		UISkin.stroke(ci, r, 3, Color(0, 0, 0, 0.95), 1.0)
+		UISkin.stroke(ci, r.grow(-1.0), 2.5, rcol.lightened(0.35) if hov else Color(rcol, 0.85), 1.6 if hov else 1.1)
+		var fb := UITheme.font_body
+		var lw := fb.get_string_size(lvt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
+		c.draw_string_outline(fb, Vector2(r.size.x - lw - 3, 9), lvt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, 3, Color(0, 0, 0, 0.9))
+		c.draw_string(fb, Vector2(r.size.x - lw - 3, 9), lvt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, UITheme.C_GOLD)
+		if in_party:
+			var sc := Vector2(6.5, 6.5)
+			c.draw_circle(sc, 4.4, UISkin.OUTLINE)
+			c.draw_circle(sc, 3.7, Color("#2E8A3E"))
+			c.draw_polyline(PackedVector2Array([sc + Vector2(-1.8, 0.1), sc + Vector2(-0.4, 1.5), sc + Vector2(2.0, -1.5)]), Color("#EFFFE8"), 1.0, true)
+		var f := UITheme.font_title
+		var fs := 8
+		while fs > 6 and f.get_string_size(nm, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > r.size.x - 4:
+			fs -= 1
+		var nw := minf(f.get_string_size(nm, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x, r.size.x - 4)
+		c.draw_string_outline(f, Vector2((r.size.x - nw) / 2.0, r.size.y - 3), nm, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 4, fs, 3, Color(0, 0, 0, 0.95))
+		c.draw_string(f, Vector2((r.size.x - nw) / 2.0, r.size.y - 3), nm, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 4, fs,
+			rcol.lightened(0.3) if in_party else Color("#B8B0A4")))
+	_grid.add_child(c)
+	_cards.append(c)
 
 
 func _refresh_buttons() -> void:

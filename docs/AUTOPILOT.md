@@ -127,6 +127,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 127. EN text cut-offs: formation hint ended in "...below the stage t" (shorter EN wording + size step-down/wrap fallback); skill detail card lost the second description line under the panel edge (description now steps down a size to fit, meta line moved clear of the Level up / Equip buttons)
 - [x] 128. Blacksmith > Craft odds were hard-coded Turkish style ("Rare %85") in English too; now locale-aware via F.pct ("Rare 85%"). Scanned strings.json for other wrong-locale percent signs: none
 - [x] 129. Settings: hotkey key caps right-aligned in a key column per grid column so the labels line up (M / Esc no longer push their label out of line; very wide Ctrl+Shift+H just flows); "Unfocused duck" / "Odak dışı kısma" jargon renamed "Volume in background" / "Arka plandayken ses"
+- [x] 130. Tavern: recruited heroes were full 74x108 cards, so one owned hero took a whole row and the buyable cards (with prices) sat below the fold. Owned heroes are now compact portrait tiles (5 a row: head-and-shoulders crop on the faction colour, rarity rim, gold level, green party seal, benched dimmed); clicking one opens it in the Hero panel
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -350,3 +351,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — EN 4x: formation hint and skill detail no longer cut (#127).
 - 2026-10-10 — EN sub-tab sweep (smith 1-3, codex 1-2, growth 1-2, supporter detail): craft odds locale fixed (#128), rest clean.
 - 2026-10-10 — Windows smoke == OK; settings EN/TR: hotkey label column, background-volume wording (#129).
+- 2026-10-10 — tavern owned-hero tiles (#130), 1 and 15 owned at 4x.

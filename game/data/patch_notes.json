@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Taverna: sahip olduğun kahramanlar artık küçük portre karoları (seviye ve parti mührüyle); işe alabileceğin kahramanlar ve fiyatları ilk bakışta görünüyor. Karoya tıklamak kahramanı Kahraman penceresinde açar.", "en": "Tavern: heroes you own are now compact portrait tiles (with level and party seal), so the heroes you can recruit and their prices show at first glance. Clicking a tile opens that hero in the Hero window."},
     {"tr": "Ayarlar: kısayol listesindeki yazılar artık tek hizada; \"Odak dışı kısma\" ayarının adı \"Arka plandayken ses\" oldu.", "en": "Settings: hotkey labels now line up; \"Unfocused duck\" is now called \"Volume in background\"."},
     {"tr": "Demirci > Üretim: İngilizcede olasılıklar artık doğru biçimde (85%) yazılıyor.", "en": "Blacksmith > Craft: odds are now written the English way (85%)."},
     {"tr": "İngilizcede kesilen metinler düzeltildi: diziliş ipucu ve yetenek açıklamasının son satırı.", "en": "Fixed English text being cut off: the formation hint and the last line of skill descriptions."},
