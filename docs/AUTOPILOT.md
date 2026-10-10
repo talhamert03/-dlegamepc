@@ -123,6 +123,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 123. Quests claim seal: the 14-point "wax" read as a grey gear with unreadable grey text when not ready. Not ready is now a bronze-bezelled progress ring with the percentage; ready is a red wax stamp with an uneven organic rim, drop shadow, pressed inner ring, ribbon tails and cream outlined text (pulse kept)
 - [x] 124. Rune tree before any purchase was one flat grey cross: unbought stones now carry their branch colour in the carved glyph (tinted cut + coloured lower edge) and a faint inner glow, so offence / defence / support / economy arms read at a glance; bought stones stay far brighter
 - [x] 125. Rune stat list with no runes: under the intro, a colour legend of the four arms (diamond + branch name in its colour), tying the parchment to the tinted tree
+- [x] 126. Status ledger (combat / defence / other, ~30 rows): penalties (Treasure Hunter's Ring -10% damage) now in red, unused 0% stats faded, so the stats a hero actually has stand out
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -342,3 +343,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — quests seal/progress ring (#123), TR/EN at 4x with --questdone.
 - 2026-10-10 — runes: branch-tinted carved stones (#124), before/after at 4x, lit tree at 2x.
 - 2026-10-10 — runes: branch legend on the empty stat list (#125).
+- 2026-10-10 — status ledger value colours (#126), EN 4x.

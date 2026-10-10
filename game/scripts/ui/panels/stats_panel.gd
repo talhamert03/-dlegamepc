@@ -375,20 +375,31 @@ func _build_stats(h: HeroState, s: Dictionary) -> void:
 	_section(DataDB.t("tab_combat"))
 	for k in ["spell", "added_dmg", "elem_dmg", "penetrate", "attack_speed", "cast_speed", "skill_dmg", "phys_dmg", "fire_dmg",
 			"cold_dmg", "lightning_dmg", "chaos_dmg", "holy_dmg", "elite_dmg", "boss_dmg"]:
-		_row(StatNames.label(k), F.fmt_num(s[k]) if StatNames.is_flat(k) else _p(s, k), UISkin.INK, Callable(), k)
+		_row(StatNames.label(k), F.fmt_num(s[k]) if StatNames.is_flat(k) else _p(s, k), _vcol(s, k), Callable(), k)
 	_section(DataDB.t("tab_defense"))
 	for k in ["dr", "crit_res", "evasion", "block", "fire_res", "cold_res", "lightning_res", "chaos_res", "lifesteal", "thorns"]:
-		_row(StatNames.label(k), _p(s, k), UISkin.INK, Callable(), k)
+		_row(StatNames.label(k), _p(s, k), _vcol(s, k), Callable(), k)
 	_row(StatNames.label("hp_regen"), F.fmt_num(s["hp_regen"]) + "/s", UISkin.INK, Callable(), "hp_regen")
 	_section(DataDB.t("tab_other"))
 	for k in ["item_find", "gold_find", "xp_bonus", "cdr", "heal_bonus", "buff_duration", "ult_charge", "summon_dmg"]:
-		_row(StatNames.label(k), _p(s, k), UISkin.INK, Callable(), k)
+		_row(StatNames.label(k), _p(s, k), _vcol(s, k), Callable(), k)
 	_row(DataDB.t("stat_ehp"), F.fmt_num(StatCalc.ehp_estimate(s, h.level)))
 	var rb := UITheme.button(DataDB.t("btn_reset") + "  " + F.fmt_num(F.stat_reset_cost(h.level, h.resets)), "red", func():
 		if GameState.spend_gold(F.stat_reset_cost(h.level, h.resets)):
 			h.reset_stats()
 			_changed(h), Vector2(0, 11))
 	_list.add_child(rb)
+
+
+## Ledger value colour: a penalty (e.g. the Treasure Hunter's Ring) in red, an unused stat faded, so the
+## few stats a hero actually has stand out in the long list.
+func _vcol(s: Dictionary, k: String) -> Color:
+	var v := float(s.get(k, 0.0))
+	if v < -0.001:
+		return Color("#A8261C")
+	if absf(v) < 0.001:
+		return Color(UISkin.INK, 0.4)
+	return UISkin.INK
 
 
 ## Attribute row: glyph, name, what it gives, value and a + while points are left.
