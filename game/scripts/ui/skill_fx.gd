@@ -25,6 +25,8 @@ var t := 0.0
 var life := 1.0
 var _seed := 0.0
 var _drops: Array = []        # [x, delay, size] per falling object
+var _glows: Array = []        # [pos, radius, colour, strength] collected while drawing, bloomed by _glow_layer
+var _glow_layer: Node2D
 
 
 func setup(k: String, source: Vector2, targets: Array) -> void:
@@ -37,6 +39,12 @@ func setup(k: String, source: Vector2, targets: Array) -> void:
 		_add = CanvasItemMaterial.new()
 		_add.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
 	z_index = 4   # relative to fx_root (20): over the units, under the HUD plaques (40)
+	# bloom: soft additive halos behind the shapes, so the effects glow instead of looking like flat stickers
+	_glow_layer = Node2D.new()
+	_glow_layer.material = _add
+	_glow_layer.show_behind_parent = true
+	_glow_layer.draw.connect(_draw_glow)
+	add_child(_glow_layer)
 	var per := {"sword_rain": 3, "ice_rain": 4, "arrow_volley": 5, "skull_storm": 2, "blizzard": 8}.get(k, 0)
 	for p in tgts:
 		for i in per:
@@ -52,13 +60,30 @@ func _process(delta: float) -> void:
 	if t >= life:
 		queue_free()
 	queue_redraw()
+	if _glow_layer:
+		_glow_layer.queue_redraw()
 
 
 func _fade() -> float:
 	return clampf((life - t) / 0.25, 0.0, 1.0)
 
 
+func _g(p: Vector2, r: float, col: Color, a := 1.0) -> void:
+	_glows.append([p, r, col, a])
+
+
+func _draw_glow() -> void:
+	for gl in _glows:
+		var p: Vector2 = gl[0]
+		var r: float = gl[1]
+		var col: Color = gl[2]
+		var a: float = gl[3]
+		for k in 6:
+			_glow_layer.draw_circle(p, r * (1.0 - k * 0.15), Color(col, 0.07 * a))
+
+
 func _draw() -> void:
+	_glows.clear()
 	match kind:
 		"sword_rain":
 			_rain(Color("#E8EEF8"), "sword")
@@ -210,6 +235,8 @@ func _column(p: Vector2, col: Color, w: float, delay := 0.0) -> void:
 	_vbar(p.x, w * 0.6, top, Color(col, 0.55 * f))
 	_vbar(p.x, w * 0.22, top, Color(1, 1, 1, 0.85 * f))
 	draw_circle(Vector2(p.x, GROUND - 2), w * (1.2 + 0.6 * sin(lt * 30.0)), Color(col, 0.35 * f))
+	_g(Vector2(p.x, GROUND - 4), w * 3.2, col, f)
+	_g(Vector2(p.x, (top + GROUND) / 2.0), w * 2.4, col, 0.6 * f)
 	for i in 4:
 		var yy := fposmod(lt * 80.0 + i * 15.0, GROUND)
 		draw_circle(Vector2(p.x + sin(i * 2.1 + lt * 9.0) * w, GROUND - yy), 0.9, Color(1, 1, 0.9, 0.8 * f))
@@ -221,6 +248,7 @@ func _sun_burst() -> void:
 		c = Vector2((tgts[0].x + tgts[-1].x) / 2.0, 16.0)
 	var k := clampf(t / 0.3, 0.0, 1.0)
 	var f := _fade()
+	_g(c, 34.0, Color("#FFD35A"), f)
 	draw_circle(c, 6.0 + 4.0 * k, Color("#FFE38A", 0.5 * f))
 	draw_circle(c, 3.5 + 2.0 * k, Color(1, 1, 0.9, 0.9 * f))
 	for i in 12:
@@ -238,13 +266,24 @@ func _comet() -> void:
 		var a := Vector2(p.x - 70.0, -20.0)
 		var b := Vector2(p.x, GROUND - 6.0)
 		var h := a.lerp(b, k * k)
+		# a tapered flame tail, then the burning head
+		var tail := a.lerp(b, maxf(0.0, k * k - 0.35))
+		var dir := (h - tail).normalized()
+		var nrm := Vector2(-dir.y, dir.x)
+		draw_colored_polygon(PackedVector2Array([tail, h + nrm * 6.0, h - nrm * 6.0]), Color("#FF9A3A", 0.45))
+		draw_colored_polygon(PackedVector2Array([tail.lerp(h, 0.35), h + nrm * 3.5, h - nrm * 3.5]), Color("#FFF27A", 0.7))
 		for i in 8:
 			var q := a.lerp(b, maxf(0.0, k * k - i * 0.035))
-			draw_circle(q, 4.0 - i * 0.4, Color("#FFF27A", 0.35 - i * 0.04))
-		draw_circle(h, 3.5, Color(1, 1, 0.85))
-		draw_circle(h, 6.0, Color("#FFF27A", 0.35))
+			draw_circle(q, 5.0 - i * 0.5, Color("#FFF27A", 0.35 - i * 0.04))
+		draw_circle(h, 8.0, Color("#FFF27A", 0.4))
+		draw_circle(h, 5.0, Color(1, 1, 0.85))
+		_g(h, 26.0, Color("#FFB04A"), 1.0)
 	else:
-		_impact_star(Vector2(p.x, GROUND - 6.0), Color("#FFF27A"), 2.0, fall)
+		_impact_star(Vector2(p.x, GROUND - 6.0), Color("#FFF27A"), 2.8, fall)
+		var k2 := clampf((t - fall) / 0.4, 0.0, 1.0)
+		draw_set_transform(Vector2(p.x, GROUND - 1.0), 0.0, Vector2(1.0, 0.28))
+		draw_arc(Vector2.ZERO, 10.0 + 50.0 * k2, 0, TAU, 40, Color("#FFB04A", 0.7 * (1.0 - k2)), 2.5, true)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
 
 func _bolt(p: Vector2, col: Color, delay: float) -> void:
@@ -265,6 +304,8 @@ func _bolt(p: Vector2, col: Color, delay: float) -> void:
 	draw_polyline(pts, Color(col, 0.35 * f), 3.5, true)
 	draw_polyline(pts, Color(1, 1, 1, 0.9 * f), 1.0, true)
 	draw_circle(Vector2(p.x, GROUND - 4.0), 5.0 * f + 2.0, Color(col, 0.4 * f))
+	_g(Vector2(p.x, GROUND - 6.0), 16.0, col, f)
+	_g(Vector2(p.x, GROUND * 0.45), 12.0, col, 0.6 * f)
 
 
 func _ground_ring(col: Color, power: float) -> void:
@@ -322,6 +363,7 @@ func _dome(p: Vector2, col: Color, hexes: bool) -> void:
 	var f := _fade()
 	var c := p + Vector2(0, -2)
 	var r := 15.0 * k
+	_g(c + Vector2(0, -8), 24.0 * k, col, 0.8 * f)
 	draw_set_transform(c, 0.0, Vector2(1.0, 1.15))
 	draw_circle(Vector2.ZERO, r, Color(col, 0.10 * f))
 	draw_arc(Vector2.ZERO, r, PI, TAU, 24, Color(col, 0.75 * f), 1.4, true)
@@ -343,24 +385,45 @@ func _anthem() -> void:
 	var f := _fade()
 	for i in tgts.size():
 		var p: Vector2 = tgts[i]
+		var pulse := 0.5 + 0.5 * sin(t * 8.0 + i)
+		_g(p + Vector2(0, -12), 20.0, Color("#FFD35A"), (0.6 + 0.4 * pulse) * f)
 		draw_set_transform(p + Vector2(0, -1), 0.0, Vector2(1.0, 0.3))
-		draw_arc(Vector2.ZERO, 10.0, 0, TAU, 20, Color("#FFD35A", 0.55 * f), 1.2, true)
+		draw_arc(Vector2.ZERO, 11.0 + 2.0 * pulse, 0, TAU, 24, Color("#FFD35A", 0.8 * f), 1.6, true)
+		draw_arc(Vector2.ZERO, 15.0 + 3.0 * pulse, 0, TAU, 24, Color("#FFD35A", 0.35 * f), 1.0, true)
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
-		for j in 2:
-			var lt := fposmod(t + j * 0.5 + i * 0.13, 1.0)
-			var q := p + Vector2(sin(lt * 6.0 + i) * 5.0, -8.0 - lt * 26.0)
-			var a := (1.0 - lt) * f
-			draw_circle(q, 1.4, Color("#FFD35A", a))
-			draw_line(q + Vector2(1.3, 0), q + Vector2(1.3, -4.5), Color("#FFD35A", a), 0.8, true)
+		# golden notes rising and swaying: head, stem and flag, with a dark edge so they read on grass
+		for j in 3:
+			var lt := fposmod(t * 0.9 + j * 0.33 + i * 0.13, 1.0)
+			var q := p + Vector2(sin(lt * 6.0 + i + j) * 6.0, -8.0 - lt * 30.0)
+			var a := minf(1.0, lt * 5.0) * (1.0 - lt) * f
+			var head := q + Vector2(-1.2, 0.6)
+			draw_set_transform(head, -0.4, Vector2(1.3, 1.0))
+			draw_circle(Vector2.ZERO, 2.3, Color(0.25, 0.15, 0.0, 0.8 * a))
+			draw_circle(Vector2.ZERO, 1.8, Color("#FFD35A", a))
+			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+			draw_line(q + Vector2(1.0, 0), q + Vector2(1.0, -6.0), Color("#FFD35A", a), 1.0, true)
+			draw_line(q + Vector2(1.0, -6.0), q + Vector2(3.6, -4.0), Color("#FFD35A", a), 1.0, true)
 
 
 func _blade_storm() -> void:
 	var c: Vector2 = (tgts[0] if tgts.size() > 0 else src + Vector2(30, 0)) + Vector2(-6, -12)
 	var f := _fade()
+	_g(c, 26.0, Color("#BFD8FF"), f)
+	# wind rings
 	for i in 3:
 		var a := t * 22.0 + i * TAU / 3.0
-		draw_arc(c, 13.0 + i * 2.0, a, a + 2.0, 12, Color("#E8EEF8", 0.75 * f), 1.6 - i * 0.3, true)
-		draw_arc(c, 13.0 + i * 2.0, a + 2.0, a + 2.6, 6, Color("#FF8A4A", 0.4 * f), 1.0, true)
+		draw_arc(c, 15.0 + i * 2.5, a, a + 2.0, 14, Color("#E8EEF8", 0.55 * f), 1.4 - i * 0.3, true)
+		draw_arc(c, 15.0 + i * 2.5, a + 2.0, a + 2.6, 6, Color("#FF8A4A", 0.4 * f), 1.0, true)
+	# four steel crescents whirling round the target
+	for i in 4:
+		var a := t * 16.0 + i * TAU / 4.0
+		var d := Vector2(cos(a), sin(a))
+		var n := Vector2(-d.y, d.x)
+		var tip := c + d * 17.0 + n * 6.0
+		var base := c + d * 12.0 - n * 4.0
+		var blade := PackedVector2Array([base, c + d * 18.5 - n * 1.0, tip, c + d * 14.0 + n * 1.5])
+		draw_colored_polygon(blade, Color("#DDE6F2", 0.9 * f))
+		draw_polyline(PackedVector2Array([base, c + d * 18.5 - n * 1.0, tip]), Color(1, 1, 1, f), 0.7, true)
 
 
 func _blade_fan() -> void:
@@ -395,6 +458,7 @@ func _death_mark() -> void:
 	var p: Vector2 = (tgts[0] if tgts.size() > 0 else src) + Vector2(0, -36)
 	var f := _fade()
 	var k := clampf(t / 0.3, 0.0, 1.0)
+	_g(p, 14.0, Color("#FF3B4E"), f)
 	draw_arc(p, 6.0 * k, 0, TAU, 20, Color("#FF3B4E", 0.8 * f), 1.2, true)
 	for i in 3:
 		var a := t * 3.0 + i * TAU / 3.0
@@ -411,12 +475,23 @@ func _orb_burst(col: Color) -> void:
 	var travel := 0.35
 	if t < travel:
 		var k := t / travel
-		var q := (src + Vector2(8, -14)).lerp(p, k)
-		draw_circle(q, 6.0, Color(col, 0.25))
-		draw_circle(q, 3.5, col)
-		draw_circle(q, 1.8, Color(1, 1, 1, 0.9))
+		var a0 := src + Vector2(8, -14)
+		var q := a0.lerp(p, k) + Vector2(0, -sin(k * PI) * 8.0)
+		# sparkling trail
+		for i in 7:
+			var kk := maxf(0.0, k - i * 0.04)
+			var tq := a0.lerp(p, kk) + Vector2(0, -sin(kk * PI) * 8.0)
+			draw_circle(tq, 4.5 - i * 0.55, Color(col, 0.30 - i * 0.04))
+		# a turning rune ring around the orb
+		for i in 3:
+			var ra := t * 9.0 + i * TAU / 3.0
+			draw_arc(q, 8.5, ra, ra + 1.2, 8, Color(col.lightened(0.3), 0.8), 1.0, true)
+		draw_circle(q, 7.0, Color(col, 0.3))
+		draw_circle(q, 4.6, col)
+		draw_circle(q, 2.4, Color(1, 1, 1, 0.95))
+		_g(q, 18.0, col, 1.0)
 	else:
-		_impact_star(p, col, 1.6, travel)
+		_impact_star(p, col, 2.2, travel)
 
 
 func _siphon() -> void:
@@ -449,6 +524,7 @@ func _impact_star(p: Vector2, col: Color, size: float, start := 0.0) -> void:
 	var lt := t - start
 	var k := clampf(lt / 0.35, 0.0, 1.0)
 	var f := 1.0 - k
+	_g(p, (10.0 + 14.0 * k) * size, col, f)
 	draw_circle(p, (4.0 + 10.0 * k) * size, Color(col, 0.25 * f))
 	draw_circle(p, (2.0 + 3.0 * (1.0 - k)) * size, Color(1, 1, 1, 0.8 * f))
 	for i in 8:
