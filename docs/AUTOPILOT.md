@@ -103,6 +103,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 106. World panel leftovers: act selectors on UISkin.tab, difficulty plate = brown button with a difficulty-coloured inner rule, tower plate = blue button (disabled while locked), map in a well with the section frame, zone card = UISkin.card, enemy previews (UITheme.slot_button, shared) = jewel-slot wells, readiness well washed in the verdict colour
 - [x] 107. Skill effects were faint on the bright strip (anthem a few tiny notes, arcane orb a dot, blade storm a pale ring, comet barely visible): SkillFx gets an additive bloom layer (the _add material existed but was never assigned) fed by halos at columns, impacts, orbs, domes, bolts and marks; anthem = pulsing gold ring + edged notes, arcane orb = bigger orb with sparkling arc trail and turning rune ring, blade storm = four whirling steel crescents, comet = tapered flame tail, burning head and a ground shock ring
 - [x] 108. Battle banners ('Boss approaching...', 'X arrived!', zone name) were a flat dark box: now a ribbon of the window-title family (crimson with cream text for bosses, walnut with gold text otherwise) with folded tails and a soft shadow; UISkin.ribbon takes optional colours
+- [x] 109. Boss HP gauge: recessed channel, glossy blood fill with a pale damage trail and a bright leading edge, gilded bezel with spiked brass end caps, name on a small title ribbon tucked behind the gauge, skull in a red seal
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -307,3 +308,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — #106: world panel top half had kept the pre-v2 look (iron map frame with rivets, flat crimson act tabs, flat plates). Done; slot_button change also reaches the other 2 callers. 2x + 4x TR.
 - 2026-10-10 — #107: --fxtest=all (23 effects) scanned, no engine errors; before/after checked at 4x for the four weakest.
 - 2026-10-10 — #108: banners checked at 4x TR (boss approach, boss arrived) and EN (zone name).
+- 2026-10-10 — #109: first pass drew the name ribbon on top and its folded tails covered the bar; now drawn before the gauge (text after). 4x TR.

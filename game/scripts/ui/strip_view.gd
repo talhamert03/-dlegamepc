@@ -278,29 +278,45 @@ func _draw_boss_hud() -> void:
 		_boss_trail = move_toward(_boss_trail, frac, get_process_delta_time() * 0.35)
 	var bar := Rect2(196, 9, 118, 5)
 	var case := bar.grow(1.5)
-	UISkin.fill(ci, Rect2(case.position + Vector2(0, 1), case.size), 2, Color(0, 0, 0, 0.4), Color(0, 0, 0, 0.4))
-	UISkin.fill(ci, case, 2, Color(0.08, 0.04, 0.03, 0.95), Color(0.02, 0.01, 0.01, 0.95))
-	_boss_hud.draw_rect(bar, Color(0.22, 0.06, 0.06))
-	if _boss_trail > frac:
-		_boss_hud.draw_rect(Rect2(bar.position.x + bar.size.x * frac, bar.position.y, bar.size.x * (_boss_trail - frac), bar.size.y), Color("#FFD9A0"))
-	UISkin.fill(ci, Rect2(bar.position, Vector2(bar.size.x * frac, bar.size.y)), 0, Color("#FF5A4A"), Color("#8A1414"))
-	_boss_hud.draw_rect(Rect2(bar.position, Vector2(bar.size.x * frac, 1)), Color(1, 0.8, 0.7, 0.45))
-	for k in range(1, 4):
-		var x := bar.position.x + bar.size.x * k / 4.0
-		_boss_hud.draw_line(Vector2(x, bar.position.y), Vector2(x, bar.end.y), Color(0, 0, 0, 0.45), 0.6)
-	UISkin.stroke(ci, case, 2, UISkin.OUTLINE, 1.0)
-	UISkin.stroke(ci, case.grow(-0.8), 1.5, Color(UISkin.BRONZE, 0.85), 0.7)
-	# name ribbon
+	# name ribbon (the title ribbon, small), drawn first so its folded tails tuck in behind the gauge
 	var f := UITheme.font_title
 	var nm := str(b.name)
 	var nw := minf(f.get_string_size(nm, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x, 100.0)
-	var rr := Rect2(bar.get_center().x - nw / 2.0 - 7.0, 0.5, nw + 14.0, 8)
-	UISkin.fill(ci, rr, 1.5, UISkin.RIBBON_TOP, UISkin.RIBBON_BOT)
-	UISkin.stroke(ci, rr, 1.5, UISkin.OUTLINE, 0.8)
-	_boss_hud.draw_string(f, Vector2(rr.position.x + 7.0, 6.9), nm, HORIZONTAL_ALIGNMENT_LEFT, 100.0, 7, Color("#FFE7B0"))
+	var rr := Rect2(bar.get_center().x - nw / 2.0 - 7.0, 0.0, nw + 14.0, 8.5)
+	UISkin.ribbon(ci, rr)
+	# an iron-and-gold gauge: drop shadow, recessed channel, glossy blood fill with a pale "damage just
+	# taken" trail, quarter notches, gilded bezel with spiked end caps
+	UISkin.fill(ci, Rect2(case.position + Vector2(0, 1.2), case.size), 2, Color(0, 0, 0, 0.45), Color(0, 0, 0, 0.45))
+	UISkin.fill(ci, case, 2, Color(0.10, 0.05, 0.04, 0.96), Color(0.03, 0.01, 0.01, 0.96))
+	UISkin.groove(ci, bar, 1.5)
+	if _boss_trail > frac:
+		UISkin.fill(ci, Rect2(bar.position.x + bar.size.x * frac, bar.position.y, bar.size.x * (_boss_trail - frac), bar.size.y), 1, Color("#FFE7C0"), Color("#E0A070"))
+	if frac > 0.0:
+		var fr := Rect2(bar.position, Vector2(maxf(1.5, bar.size.x * frac), bar.size.y))
+		UISkin.fill(ci, fr, 1.5, Color("#FF6A52"), Color("#7A0E12"))
+		UISkin.fill(ci, Rect2(fr.position + Vector2(0.3, 0.2), Vector2(fr.size.x - 0.6, fr.size.y * 0.42)), 1, Color(1, 0.85, 0.8, 0.5), Color(1, 0.85, 0.8, 0.08))
+		UISkin.line(ci, Vector2(fr.end.x - 0.3, fr.position.y + 0.4), Vector2(fr.end.x - 0.3, fr.end.y - 0.4), Color(1, 0.95, 0.85, 0.75), 0.6)
+	for k in range(1, 4):
+		var x := bar.position.x + bar.size.x * k / 4.0
+		_boss_hud.draw_line(Vector2(x, bar.position.y), Vector2(x, bar.end.y), Color(0, 0, 0, 0.5), 0.6)
+	UISkin.stroke(ci, case, 2, UISkin.OUTLINE, 1.0)
+	UISkin.stroke(ci, case.grow(-0.7), 1.5, Color(UISkin.BRONZE_HI, 0.8), 0.6)
+	for sd in [-1.0, 1.0]:
+		var ex: float = case.position.x if sd < 0 else case.end.x
+		var cy := case.get_center().y
+		var cap := PackedVector2Array([Vector2(ex, cy - 4.0), Vector2(ex + sd * 4.5, cy), Vector2(ex, cy + 4.0), Vector2(ex - sd * 1.2, cy)])
+		var capc := cap.duplicate()
+		capc.append(cap[0])
+		UISkin.poly(ci, cap, UISkin.BRONZE_HI, UISkin.BRONZE_LO)
+		_boss_hud.draw_polyline(capc, UISkin.OUTLINE, 0.7, true)
+	_boss_hud.draw_string_outline(f, Vector2(rr.position.x + 7.0, 6.9), nm, HORIZONTAL_ALIGNMENT_LEFT, 100.0, 7, 2, Color("#3A0A0C"))
+	_boss_hud.draw_string(f, Vector2(rr.position.x + 7.0, 6.9), nm, HORIZONTAL_ALIGNMENT_LEFT, 100.0, 7, Color("#FFF0D2"))
 	var sk := UITheme.icon("skull")
 	if sk:
-		_boss_hud.draw_texture_rect(sk, Rect2(case.position.x - 9, case.position.y - 1, 7, 7), false, Color("#FFB0A0"))
+		var sc := Vector2(case.position.x - 9.5, case.get_center().y)
+		UISkin.circle(ci, sc, 4.6, UISkin.OUTLINE, UISkin.OUTLINE)
+		UISkin.circle(ci, sc, 4.0, Color("#C8382E"), Color("#5A0A0A"))
+		_boss_hud.draw_texture_rect(sk, Rect2(sc - Vector2(2.8, 2.8), Vector2(5.6, 5.6)), false, Color(1, 0.95, 0.9))
 	# timer medallion
 	var tc := Vector2(case.end.x + 9, case.get_center().y)
 	var low := BattleSim.boss_t < 10.0
