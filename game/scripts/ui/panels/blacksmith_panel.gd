@@ -844,9 +844,9 @@ func _build_craft() -> void:
 		var x := 6.0
 		info.draw_string(fb, Vector2(x, 12), DataDB.t("smith_craft_odds"), HORIZONTAL_ALIGNMENT_LEFT, -1, 7, UITheme.C_DIM)
 		UISkin.diamond(ci, Vector2(x + 4, 22), 3.2, ItemUtil.rarity_color("rare").lightened(0.2), ItemUtil.rarity_color("rare").darkened(0.4))
-		info.draw_string(fb, Vector2(x + 10, 25), ItemUtil.rarity_name("rare") + " %85", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, ItemUtil.rarity_color("rare"))
+		info.draw_string(fb, Vector2(x + 10, 25), ItemUtil.rarity_name("rare") + " " + F.pct(85), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, ItemUtil.rarity_color("rare"))
 		UISkin.diamond(ci, Vector2(x + 4, 34), 3.2, ItemUtil.rarity_color("epic").lightened(0.2), ItemUtil.rarity_color("epic").darkened(0.4))
-		info.draw_string(fb, Vector2(x + 10, 37), ItemUtil.rarity_name("epic") + " %15", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, ItemUtil.rarity_color("epic"))
+		info.draw_string(fb, Vector2(x + 10, 37), ItemUtil.rarity_name("epic") + " " + F.pct(15), HORIZONTAL_ALIGNMENT_LEFT, -1, 8, ItemUtil.rarity_color("epic"))
 		# price
 		x = w * 0.5
 		var lines := [["gold", F.fmt_num(int(c["gold"])), GameState.gold >= int(c["gold"]), UITheme.C_GOLD]]

@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Demirci > Üretim: İngilizcede olasılıklar artık doğru biçimde (85%) yazılıyor.", "en": "Blacksmith > Craft: odds are now written the English way (85%)."},
     {"tr": "İngilizcede kesilen metinler düzeltildi: diziliş ipucu ve yetenek açıklamasının son satırı.", "en": "Fixed English text being cut off: the formation hint and the last line of skill descriptions."},
     {"tr": "Durum sayfası: eksi değerler (ör. Hazine Avcısının Yüzüğü'nün hasar cezası) kırmızı, hiç olmayan %0 istatistikler soluk; kahramanın gerçekten sahip olduğu değerler öne çıkıyor.", "en": "Status page: penalties (such as the Treasure Hunter's Ring damage malus) are shown in red and unused 0% stats are faded, so the stats your hero really has stand out."},
     {"tr": "Rün ağacı: henüz alınmamış rünler artık dallarının rengini taşıyor (oyma simge renkli), böylece ağacın kolları ilk bakışta ayırt ediliyor; istatistik listesi hangi rengin hangi dal olduğunu gösteriyor.", "en": "Rune tree: runes you have not bought yet now carry their branch colour in the carved glyph, so the arms of the tree read at a glance; the stat list shows which colour is which branch."},
