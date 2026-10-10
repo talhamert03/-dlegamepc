@@ -203,11 +203,11 @@ func _draw_over() -> void:
 			if ItemUtil.power_score(item, h.cls()) > ItemUtil.power_score(cur, h.cls()) * 1.02:
 				_up_arrow(Vector2(size.x - 4.5, 4.0))
 		else:
-			# not usable by this hero: red corner mark
-			var p := Vector2(size.x - 5, size.y - 5)
-			_over.draw_rect(Rect2(p - Vector2(1, 1), Vector2(5, 5)), Color(0, 0, 0, 0.7))
-			_over.draw_line(p, p + Vector2(3, 3), Color("#FF5A4A"), 1.2, true)
-			_over.draw_line(p + Vector2(3, 0), p + Vector2(0, 3), Color("#FF5A4A"), 1.2, true)
+			# not usable by this hero: a small "forbidden" seal in the corner (red disc, dark rim, white bar)
+			var cc := Vector2(size.x - 3.6, size.y - 3.6)
+			_over.draw_circle(cc, 2.9, Color(0.08, 0.02, 0.02, 0.9))
+			_over.draw_circle(cc, 2.3, Color("#D8402F"))
+			_over.draw_line(cc + Vector2(-1.3, 0), cc + Vector2(1.3, 0), Color(1, 0.95, 0.9), 0.9, true)
 
 
 func _up_arrow(c: Vector2) -> void:
