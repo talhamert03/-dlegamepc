@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Seviye atlama ve değerli ganimet ışınları çok daha görkemli: yerde genişleyen altın halka, yükselen yıldızlar ve nadirlik renginde parlayan ışık sütunu.", "en": "Level-ups and valuable loot beams are much grander: a golden ring sweeping across the ground, rising stars and a glowing pillar in the rarity colour."},
     {"tr": "Boss can çubuğu yenilendi: parlak kan rengi dolgu, son alınan hasarı gösteren açık iz, pirinç uç başlıklar ve kurdele üzerinde boss adı.", "en": "Boss health bar redesigned: glossy blood-red fill, a pale trail for damage just dealt, brass end caps and the boss name on a ribbon."},
     {"tr": "Savaş duyuruları (\"Boss yaklaşıyor…\", bölge adı) artık pencere başlıkları gibi kurdele: bosslar için kızıl, diğerleri için ceviz.", "en": "Battle announcements (\"Boss approaching…\", zone names) are now ribbons like the window titles: crimson for bosses, walnut otherwise."},
     {"tr": "Yetenek efektleri artık parlıyor: Zafer Marşı altın bir hale ve yükselen notalarla, Arkana Küresi dönen rün halkasıyla, Kılıç Fırtınası dönen çelik hilallerle, Kuyrukluyıldız Oku alevli kuyruğu ve yer sarsıntısıyla çok daha görünür.", "en": "Skill effects now glow: Anthem with a gold halo and rising notes, Arcane Orb with a turning rune ring, Blade Storm with whirling steel crescents, Comet Arrow with a flaming tail and ground shock."},

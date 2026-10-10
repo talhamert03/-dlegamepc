@@ -476,6 +476,12 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			get_tree().create_timer(maxf(0.5, secs - 1.0)).timeout.connect(func():
 				var it := LootSystem.generate(GameState.rng, 34, "legendary", "warrior")
 				WindowManager.show_item_tooltip(it, GameState.party[0] if GameState.party.size() > 0 else ""))
+		if a == "--vfxshot":
+			# level-up and a legendary loot beam side by side, for the effect review
+			get_tree().create_timer(maxf(0.5, secs - 0.45)).timeout.connect(func():
+				strip._spawn_vfx("levelup", Vector2(140, BattleSim.GROUND_Y), Color("#FFE08A"), 8)
+				strip._spawn_vfx("loot_beam", Vector2(230, BattleSim.GROUND_Y), ItemUtil.rarity_color("legendary"), 4)
+				strip._spawn_vfx("loot_beam", Vector2(270, BattleSim.GROUND_Y), ItemUtil.rarity_color("epic"), 4))
 		if a == "--tipshot":
 			# real tooltips are separate popup windows the capture misses: draw a sample with the same theme items
 			var pc := PanelContainer.new()

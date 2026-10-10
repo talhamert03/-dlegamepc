@@ -13,8 +13,17 @@ var _rng := RandomNumberGenerator.new()
 var _parts: Array = []
 
 
+static var _add: CanvasItemMaterial
+
+
 func setup(k: String, c: Color, s: float, d: Dictionary = {}) -> void:
 	kind = k
+	if k == "levelup" or k == "loot_beam":
+		# light, not paint: added onto the scene so the pillars glow on bright and dark zones alike
+		if _add == null:
+			_add = CanvasItemMaterial.new()
+			_add.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+		material = _add
 	color = c
 	size = s
 	data = d
@@ -87,6 +96,13 @@ func _px(p: Vector2, c: Color, s := 1.0) -> void:
 	var ctr := p + Vector2(s, s) * 0.5
 	draw_circle(ctr, s * 1.4, Color(c, c.a * 0.22))
 	draw_circle(ctr, s * 0.6, c)
+
+
+## Four-point sparkle.
+func _star(p: Vector2, r: float, c: Color) -> void:
+	draw_colored_polygon(PackedVector2Array([p + Vector2(0, -r * 2.0), p + Vector2(r * 0.45, 0), p + Vector2(0, r * 2.0), p + Vector2(-r * 0.45, 0)]), c)
+	draw_colored_polygon(PackedVector2Array([p + Vector2(-r * 1.6, 0), p + Vector2(0, r * 0.4), p + Vector2(r * 1.6, 0), p + Vector2(0, -r * 0.4)]), c)
+	draw_circle(p, r * 0.9, Color(c, c.a * 0.3))
 
 
 ## Vertical shaft that fades out towards the top.
@@ -178,9 +194,21 @@ func _draw() -> void:
 				if int(tt * 20) % 2 == 0:
 					_px(pos + Vector2(0, -1), Color(1, 1, 1, a * 0.6), 1)
 			if kind == "levelup":
-				var h: float = 40.0 * min(1.0, k * 3.0)
-				_shaft(6.0, h, Color(1.0, 0.85, 0.4, a * 0.4))
-				_shaft(2.0, h, Color(1.0, 0.97, 0.8, a * 0.7))
+				# a pillar of light, a golden ring racing out across the ground and stars climbing it
+				var h: float = 52.0 * min(1.0, k * 3.0)
+				_shaft(11.0, h, Color(1.0, 0.8, 0.35, a * 0.22))
+				_shaft(6.0, h, Color(1.0, 0.85, 0.4, a * 0.45))
+				_shaft(2.0, h, Color(1.0, 0.97, 0.8, a * 0.85))
+				var rk := _ease_out(min(1.0, k * 1.6))
+				draw_set_transform(Vector2(0, -1), 0.0, Vector2(1.0, 0.3))
+				draw_arc(Vector2.ZERO, 6.0 + 26.0 * rk, 0, TAU, 40, Color(1.0, 0.85, 0.4, a * (1.0 - rk)), 2.4, true)
+				draw_arc(Vector2.ZERO, 4.0 + 16.0 * rk, 0, TAU, 32, Color(1.0, 0.97, 0.8, a * 0.6 * (1.0 - rk)), 1.2, true)
+				draw_circle(Vector2.ZERO, 9.0 * (1.0 - rk * 0.5), Color(1.0, 0.85, 0.4, a * 0.25))
+				draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+				for i in 4:
+					var sy := -8.0 - fmod(t * 40.0 + i * 12.0, 46.0)
+					var sx := sin(t * 5.0 + i * 1.7) * 5.0
+					_star(Vector2(sx, sy), 2.2 - i * 0.25, Color(1.0, 0.95, 0.7, a))
 		"burst", "explosion", "ice", "poison", "holy", "dark":
 			var rr := size * (0.3 + k)
 			draw_circle(Vector2.ZERO, rr * 0.6, Color(color, a * 0.35))
@@ -200,12 +228,18 @@ func _draw() -> void:
 				y = ny
 			draw_circle(Vector2.ZERO, 4 * a, Color(1, 1, 0.8, a * 0.6))
 		"loot_beam":
-			var h2: float = 70.0
+			var h2: float = 90.0 * min(1.0, t * 5.0)
 			var pulse := 0.6 + 0.4 * sin(t * 8.0)
 			var fade: float = min(1.0, (life - t) * 2.0)
-			_shaft(4.0, h2, Color(color, 0.22 * fade * pulse))
-			_shaft(1.2, h2, Color(color.lightened(0.5), 0.7 * fade))
-			draw_circle(Vector2.ZERO, 5.0, Color(color, 0.2 * fade * pulse))
+			_shaft(8.0, h2, Color(color, 0.12 * fade * pulse))
+			_shaft(4.0, h2, Color(color, 0.40 * fade * pulse))
+			_shaft(1.4, h2, Color(color.lightened(0.2), 0.75 * fade))
+			# a glowing pool on the ground with a slow ripple
+			draw_set_transform(Vector2(0, -0.5), 0.0, Vector2(1.0, 0.32))
+			draw_circle(Vector2.ZERO, 9.0, Color(color, 0.25 * fade * pulse))
+			var rp := fmod(t * 1.4, 1.0)
+			draw_arc(Vector2.ZERO, 5.0 + 12.0 * rp, 0, TAU, 28, Color(color.lightened(0.3), 0.7 * fade * (1.0 - rp)), 1.2, true)
+			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 			for i in 5:
 				var yy := -fmod(t * 30.0 + i * 14.0, h2)
 				_px(Vector2(_rng.randf_range(-3, 3), yy), Color(color.lightened(0.6), fade))

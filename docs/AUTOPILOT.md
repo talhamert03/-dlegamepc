@@ -104,6 +104,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 107. Skill effects were faint on the bright strip (anthem a few tiny notes, arcane orb a dot, blade storm a pale ring, comet barely visible): SkillFx gets an additive bloom layer (the _add material existed but was never assigned) fed by halos at columns, impacts, orbs, domes, bolts and marks; anthem = pulsing gold ring + edged notes, arcane orb = bigger orb with sparkling arc trail and turning rune ring, blade storm = four whirling steel crescents, comet = tapered flame tail, burning head and a ground shock ring
 - [x] 108. Battle banners ('Boss approaching...', 'X arrived!', zone name) were a flat dark box: now a ribbon of the window-title family (crimson with cream text for bosses, walnut with gold text otherwise) with folded tails and a soft shadow; UISkin.ribbon takes optional colours
 - [x] 109. Boss HP gauge: recessed channel, glossy blood fill with a pale damage trail and a bright leading edge, gilded bezel with spiked brass end caps, name on a small title ribbon tucked behind the gauge, skull in a red seal
+- [x] 110. Level-up and loot beam effects were thin pale strokes: additive blend for both; level-up = 3-layer pillar, golden ground ring racing out, climbing four-point stars; loot beam = taller 3-layer column in the rarity colour that rises in, glowing ground pool with a slow ripple. New --vfxshot screenshot flag
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -310,3 +311,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — #108: banners checked at 4x TR (boss approach, boss arrived) and EN (zone name).
 - 2026-10-10 — #109: first pass drew the name ribbon on top and its folded tails covered the bar; now drawn before the gauge (text after). 4x TR.
 - 2026-10-10 — #108 follow-up: the crimson ribbon was chosen by guessing from the text colour, so a legendary drop (orange) got the boss ribbon; _show_banner now takes an explicit danger flag (boss incoming / arrived, party wiped).
+- 2026-10-10 — #110: checked at 4x on the meadow; additive orange reads yellow on green grass (expected for light), the epic beam keeps its violet.
