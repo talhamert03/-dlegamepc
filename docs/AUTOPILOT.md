@@ -108,6 +108,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 111. Tavern rarity tags (flat grey/blue/gold pills with dark text) -> enamel badges in a gilded bezel with a gloss line and cream title-font text, SSR with a gold jewel
 - [x] 112. Guild upgrade buttons showed a bare '500': Fancy.small_button takes an optional currency icon (greyed with the button), guild prices show the gold coin
 - [x] 113. Rune detail: gold coin drawn right in front of the 'Buy 150' price (Button.icon sat at the far-left edge); single-rank runes no longer show one empty rank box under the name
+- [x] 114. Pets: undiscovered companions were black on black; now the bestiary's flat cool silhouette (shader on a child layer) with a small bronze '?' seal, detail card shows a dim silhouette tint
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 

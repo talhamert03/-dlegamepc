@@ -1,9 +1,9 @@
 class_name ChestsView
 extends Control
-
-const SLATE := preload("res://assets/ui_hd/frame/slate.png")
 ## Treasure chests: a showcase of the best held chest on a lit pedestal, the shelf of the others, and an
 ## opening sequence (shake, lid thrown back, light, rewards dealt out as cards).
+
+const SLATE := preload("res://assets/ui_hd/frame/slate.png")
 
 var SHOW_H := 126.0
 

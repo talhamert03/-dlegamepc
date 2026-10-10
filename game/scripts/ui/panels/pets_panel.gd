@@ -1,6 +1,9 @@
 extends PanelWindow
 ## Pet collection: pick the active companion, see levels and bonuses.
 
+const SILHOUETTE_SHADER := preload("res://assets/shaders/silhouette.gdshader")
+var _silhouette: ShaderMaterial
+
 var _grid: GridContainer
 var _info: VBoxContainer
 var _sel := ""
@@ -118,6 +121,30 @@ func _stall(pid: String) -> Control:
 			AudioManager.play("ui_click", 0.05, 0.5)
 			refresh())
 	var seed := float(pid.length()) * 0.37
+	if ic and not own:
+		# not found yet: a flat cool silhouette (same shader as the bestiary) and a small "?" seal
+		var art := Control.new()
+		art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		art.position = Vector2(STALL.x / 2.0 - 14, STALL.y - 44)
+		art.size = Vector2(28, 28)
+		art.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+		if _silhouette == null:
+			_silhouette = ShaderMaterial.new()
+			_silhouette.shader = SILHOUETTE_SHADER
+		art.material = _silhouette
+		art.draw.connect(func(): art.draw_texture_rect(ic, Rect2(Vector2.ZERO, art.size), false))
+		c.add_child(art)
+		var q := Control.new()
+		q.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		q.position = Vector2(STALL.x / 2.0 + 6, STALL.y - 30)
+		q.size = Vector2(10, 10)
+		q.draw.connect(func():
+			UISkin.circle(q.get_canvas_item(), Vector2(5, 5), 4.6, UISkin.OUTLINE, UISkin.OUTLINE)
+			UISkin.circle(q.get_canvas_item(), Vector2(5, 5), 4.0, UISkin.BRONZE_HI, UISkin.BRONZE_LO)
+			var fq := UITheme.font_title
+			var qw := fq.get_string_size("?", HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
+			q.draw_string(fq, Vector2(5 - qw / 2.0, 7.6), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#2A1606")))
+		c.add_child(q)
 	c.draw.connect(func():
 		var ci := c.get_canvas_item()
 		var r := Rect2(Vector2.ZERO, c.size)
@@ -142,12 +169,10 @@ func _stall(pid: String) -> Control:
 			for k in 4:
 				c.draw_circle(Vector2(r.size.x / 2.0, r.size.y - 22), 16.0 - k * 4.0, Color(rcol, 0.05))
 		# the creature: bobbing a little when owned
-		if ic:
-			var bob := sin(_t * 2.4 + seed) * 1.2 if own else 0.0
+		if ic and own:
+			var bob := sin(_t * 2.4 + seed) * 1.2
 			var ir := Rect2(r.size.x / 2.0 - 14, r.size.y - 44 + bob, 28, 28)
-			c.draw_texture_rect(ic, ir, false, Color.WHITE if own else Color(0.05, 0.04, 0.06, 0.85))
-		if not own:
-			c.draw_string(UITheme.font_title, Vector2(r.size.x / 2.0 - 3, r.size.y - 22), "?", HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color(0.8, 0.7, 0.55, 0.55))
+			c.draw_texture_rect(ic, ir, false, Color.WHITE)
 		# name plate
 		var nm := DataDB.tx(pd.get("name", {})) if own else "???"
 		var pl := Rect2(1, r.size.y - 11, r.size.x - 2, 10)
@@ -214,7 +239,7 @@ func _build_info() -> void:
 		card.draw_circle(Vector2.ZERO, 16.0, Color("#3A2E36"))
 		card.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		if ic:
-			card.draw_texture_rect(ic, Rect2(6, 18, 36, 36), false, Color.WHITE if own else Color(0.05, 0.04, 0.06, 0.85))
+			card.draw_texture_rect(ic, Rect2(6, 18, 36, 36), false, Color.WHITE if own else Color(0.30, 0.31, 0.40, 0.55))
 		var f := UITheme.font_title
 		var fb := UITheme.font_body
 		var x := 50.0

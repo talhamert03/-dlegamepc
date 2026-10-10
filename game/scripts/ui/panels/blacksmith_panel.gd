@@ -1,7 +1,7 @@
 extends PanelWindow
+## Blacksmith: Combine (3x3 + pity) / Enhance / Salvage / Craft.
 
 const SLATE := preload("res://assets/ui_hd/frame/slate.png")
-## Blacksmith: Combine (3x3 + pity) / Enhance / Salvage / Craft.
 
 var tab := 0
 var picks: Array = []          # combine selection (uids)
