@@ -397,3 +397,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — loot filter dialog TR/EN 4x (#152).
 - 2026-10-10 — 16-panel sweep 4K TR clean; tooltips TR/EN fine; context menu icons (#153).
 - 2026-10-10 — HD world maps (#154) checked all 4 acts at 2x/4x; tests 39/39, Windows smoke OK with the JPEG maps.
+- 2026-10-10 — 17:03 shift checkpoint: #131-#154 done (strip notices, boss telegraph/enrage/backlight, revive pose bug, open-panel staleness, mini mode clip + tab, panel glow spill, HD world maps...). Shop tabs, ending, tooltips, 16-panel 4K TR sweep clean; tests 39/39; Windows smoke OK.
