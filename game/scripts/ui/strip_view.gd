@@ -667,6 +667,8 @@ func _spawn_number(text: String, pos: Vector2, color: Color, big := false) -> vo
 	# stack downwards instead so the labels never collapse onto one line
 	base.y = maxf(base.y, 21.0)
 	base.y = base.y - dy if base.y - dy >= 21.0 else base.y + dy
+	# enemies entering from the right edge: keep the whole number (plus its sideways drift) on the strip
+	base.x = clampf(base.x, 4.0, maxf(4.0, size.x - sz.x - 8.0))
 	l.position = base.round()
 	_active_nums.append({"l": l, "t": 0.0, "life": 0.95 if big else 0.75, "vx": _rng.randf_range(-10, 10), "y0": l.position.y, "big": big, "x0": pos.x, "w": sz.x})
 

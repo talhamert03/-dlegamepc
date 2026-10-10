@@ -115,6 +115,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 ## Replay backlog 6 (shift 2026-10-10 13:03)
 
 - [x] 117. "Not usable by this hero" mark on item slots was a tiny black square with a red pixel X (read as noise across a whole bag): now a small no-entry seal (dark rim, red disc, white bar) in the corner
+- [x] 118. Damage numbers on enemies just entering from the right edge were cut in half by the strip edge at 4x; spawn x is now clamped so the whole number (and its drift) stays on the strip
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -326,3 +327,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — perf check after the VFX/bloom/plate-spreading work: --perf=60 --speed=3 with 5 heroes, current vs b182885 (start of shift, git worktree): fps 60 both, process ms 16-33 vs 19-49 (software-render noise), nodes ~125, objects ~1770, 0 orphans, memory 45.5-46.1 MB in both. No regression.
 - 2026-10-10 — checkpoint: 16-panel sweep at 2x TR (no engine errors), Windows smoke == OK; #116 at 4x.
 - 2026-10-10 13:03 shift — replay: title menu plaques and bag drag (ghost, dimmed source, gold target) fine at 4x; #117 done.
+- 2026-10-10 — replay: damage numbers at 4x via --burst=40 (legible, orange with dark outline); right-edge clipping fixed (#118).
