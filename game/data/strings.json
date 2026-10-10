@@ -2382,5 +2382,9 @@
  "session_xp": {
   "tr": "Bu oturum kazanılan tecrübe",
   "en": "XP earned this session"
+ },
+ "costume_new_title": {
+  "tr": "Yeni kostüm açıldı",
+  "en": "New costume unlocked"
  }
 }

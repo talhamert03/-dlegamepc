@@ -41,7 +41,12 @@ static func check_unlocks() -> Array:
 		if ok:
 			have.append(cid)
 			fresh.append(cid)
-			EventBus.notify.emit(DataDB.t("costume_new", {"name": DataDB.tx(defs()[cid].get("name", {}))}), Color("#FFB0D8"))
+			# a reward plate above the strip (several at once fold into one "×3" plate), not text over the fight
+			var nm := DataDB.tx(defs()[cid].get("name", {}))
+			if Engine.get_main_loop() and WindowManager.top_layer:
+				Toast.show_reward(UITheme.icon("sparkle"), DataDB.t("costume_new_title"), nm, "", "coin")
+			else:
+				EventBus.notify.emit(DataDB.t("costume_new", {"name": nm}), Color("#FFB0D8"))
 	if not fresh.is_empty():
 		GameState.flags["costumes"] = have
 	return fresh

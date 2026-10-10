@@ -652,23 +652,31 @@ func _spawn_number(text: String, pos: Vector2, color: Color, big := false) -> vo
 	l.add_theme_font_override("font", UITheme.font_big if big else UITheme.font_small)
 	l.add_theme_font_size_override("font_size", 12 if big else 9)
 	var sz := l.get_minimum_size()
+	l.size = sz   # pooled labels keep their old size otherwise, which would skew the overlap rects
 	l.pivot_offset = sz / 2.0
-	# numbers that land on the same spot within a moment stack upwards instead of covering each other
-	var stack := 0
-	for n in _active_nums:
-		# overlap test uses both label widths, so long skill names stack instead of printing over each other
-		var reach := maxf(16.0, (float(n.get("w", 0.0)) + sz.x) * 0.5 + 10.0)   # a clear gap (pop scale and drift eat into it), so "132" "130" never read as "132130"
-		var window := 0.22 if sz.x < 30.0 else 0.6
-		if float(n["t"]) < window and absf(float(n["x0"]) - pos.x) < reach:
-			stack += 1
+	# place the number where it covers no label already on screen: try its own spot, then step up by the
+	# label height (big crits are taller than 8 px), then down; rects keep a gap so "132" "130" never read
+	# as "132130" and numbers born a moment apart don't print over each other
 	var base := pos - Vector2(sz.x / 2.0, sz.y * 0.6)
-	var dy := maxf(8.0, sz.y * 0.72) * mini(stack, 3)   # step by the label height: big crits are taller than 8 px
-	# keep the arc clear of the zone plaque / goal ribbon along the top edge; when stacking up would hit it,
-	# stack downwards instead so the labels never collapse onto one line
-	base.y = maxf(base.y, 21.0)
-	base.y = base.y - dy if base.y - dy >= 21.0 else base.y + dy
+	base.y = maxf(base.y, 21.0)   # clear of the zone plaque / goal ribbon along the top edge
 	# enemies entering from the right edge: keep the whole number (plus its sideways drift) on the strip
 	base.x = clampf(base.x, 4.0, maxf(4.0, size.x - sz.x - 8.0))
+	var step := maxf(8.0, sz.y * 0.72)
+	var taken: Array = []
+	for n in _active_nums:
+		var ol: Label = n["l"]
+		if ol.visible and ol.modulate.a > 0.2:
+			taken.append(Rect2(ol.position - ol.size * (ol.scale - Vector2.ONE) * 0.5, ol.size * ol.scale).grow_individual(4, 1, 4, 1))
+	var best := base
+	for off in [0, -1, -2, -3, 1, 2]:
+		var cand := base + Vector2(0, step * off)
+		if cand.y < 21.0:
+			continue
+		var r := Rect2(cand, sz)
+		if not taken.any(func(t): return t.intersects(r)):
+			best = cand
+			break
+	base = best
 	l.position = base.round()
 	_active_nums.append({"l": l, "t": 0.0, "life": 0.95 if big else 0.75, "vx": _rng.randf_range(-6, 6), "y0": l.position.y, "big": big, "x0": pos.x, "w": sz.x})
 

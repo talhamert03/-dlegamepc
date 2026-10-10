@@ -42,6 +42,8 @@ var unit: Combatant
 var kind := "hero"
 var sheet_id := ""
 var mat: ShaderMaterial
+## bosses get a soft pale haze behind them, so dark bosses (Morvath) separate from dark arenas
+var _backlight := false
 var body: Node2D                      # pivot at the feet: flip, squash & stretch, lunge
 var spr: Sprite2D
 var mode := ""                        # "sheet" | "hd" | ""
@@ -102,6 +104,7 @@ func setup(u: Combatant) -> void:
 	_fallback_color = Color(str(vis.get("def", {}).get("color", "#6CC24A")))
 	if kind == "enemy" and vis.get("boss", false):
 		_show_bar = false
+		_backlight = true
 	if u.etype == "pet":
 		_show_bar = false
 	body = Node2D.new()
@@ -572,6 +575,12 @@ func _animate_hd() -> void:
 func _draw() -> void:
 	if unit == null:
 		return
+	if _backlight and unit.alive:
+		var pulse := 0.85 + 0.15 * sin(Time.get_ticks_msec() / 700.0)
+		draw_set_transform(Vector2(0, -_h * 0.52 - _fly), 0.0, Vector2(0.72, 1.0))
+		for k in 7:
+			draw_circle(Vector2.ZERO, _h * (0.64 - k * 0.075), Color(1.0, 0.88, 0.70, 0.032 * pulse))
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	# soft contact shadow
 	var sw := clampf(_h * 0.32, 6.0, 20.0)
 	var sa := 1.0 if unit.alive else clampf(1.0 - (_death_t - 0.6) * 2.0, 0.0, 1.0)
