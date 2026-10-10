@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "İstatistik penceresi yenilendi: en çok hasar veren üç kahramanda altın, gümüş ve bronz sıra mühürleri; yeni \"Bu Oturum\" kartları (öldürme, kazanılan altın ve tecrübe); Sıfırla düğmesi pencerenin altında.", "en": "Statistics window refreshed: gold, silver and bronze rank seals on the top three damage dealers, new \"This Session\" cards (kills, gold and XP earned), and the Reset button sits at the bottom."},
     {"tr": "Dünya: bölge kartındaki DPS göstergesi panel açıkken canlı güncelleniyor; henüz ölçülmemiş parti DPS'i artık kırmızı değil. \"~18\" yerine \"≈18\" yazılıyor (eksi gibi okunuyordu).", "en": "World: the zone card DPS gauge now updates live while the panel is open, and an unmeasured party DPS is no longer shown in red. \"~18\" became \"≈18\" (it read like a minus sign)."},
     {"tr": "Envanter: çanta doluluk göstergesi kahraman seçicinin sağına taşındı; İngilizcede alt düğme satırı artık pencereden taşmıyor. Ekipman yuvaları ortalandı.", "en": "Inventory: the bag capacity gauge moved next to the hero picker, so the bottom button row no longer spills out of the window in English. Equipment slots are centred."},
     {"tr": "Savaş şeridinin sağ kenarından gelen düşmanlardaki hasar sayıları artık yarım kesilmiyor.", "en": "Damage numbers on enemies entering from the right edge of the strip are no longer cut in half."},

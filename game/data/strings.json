@@ -920,7 +920,7 @@
   "en": "Sort"
  },
  "xp_hour": {
-  "tr": "Tecrübe / saat",
+  "tr": "Tecrübe/saat",
   "en": "XP/hour"
  },
  "acc_kills": {
@@ -2370,5 +2370,17 @@
  "bag_capacity_tip": {
   "tr": "Çanta doluluğu. Çanta doluyken yeni ganimet otomatik satılır; efsanevi ve üstü yine de çantaya girer.",
   "en": "Bag space. While the bag is full, new loot is sold automatically; legendary and better still go in."
+ },
+ "dps_sec_session": {
+  "tr": "Bu Oturum",
+  "en": "This Session"
+ },
+ "session_gold": {
+  "tr": "Bu oturum kazanılan altın",
+  "en": "Gold earned this session"
+ },
+ "session_xp": {
+  "tr": "Bu oturum kazanılan tecrübe",
+  "en": "XP earned this session"
  }
 }
