@@ -137,6 +137,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 134. Stacked damage numbers stepped 8 px even for 12 pt crits, so stacks overlapped ("389" over "631"): the step now follows the label height; side-by-side gap widened and sideways drift halved. Follow-up: placement now tests the real on-screen rects of live labels (own spot, then up 1-3 steps, then down), so numbers born a moment apart no longer print over each other ("30932")
 - [x] 135. Costume unlocks went to the strip notice feed, three at once covered the boss's entry; they are rewards, so they now use the reward plate above the strip (sparkle icon, costume name; a burst folds into one "×3" plate)
 - [x] 136. Dark bosses (Morvath in his crimson throne room) melted into the arena: bosses get a soft, slowly breathing pale backlight behind the body
+- [x] 137. Tutorial / bark bubble was a fixed 200 px text column, so most tips wrapped to two lines and the bubble sat on the speaker's head in the low strip: width now follows the line (up to the 290 px battle view), so most tips are one line; portrait chip 18 → 15 px, centred, shorter tail, text vertically centred
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -365,3 +366,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 17:03 shift — replay late zones (Akt 2-4) at 4x: notice plates (#131), number gap (#132).
 - 2026-10-10 — boss fights (Isolde, Morvath, tower 10) at 4x via --burst: telegraph band (#133), number stacking (#134).
 - 2026-10-10 — boss replay follow-ups: costume toasts (#135), boss backlight (#136), rect-based number placement (#134 follow-up), compared old/new via git stash.
+- 2026-10-10 — first-minutes replay EN/TR at 2x/4x: one-line tutorial bubble clears the hero (#137).

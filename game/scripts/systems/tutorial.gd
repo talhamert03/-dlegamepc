@@ -8,9 +8,10 @@ var bubble_label: Label
 var bubble_t := 0.0
 var _speaker := "kael"
 var _tail_x := 0.0
-const PAD := 4.0
-const PORTRAIT := 18.0
+const PAD := 3.0
+const PORTRAIT := 15.0
 const TEXT_W := 200.0
+const TEXT_W_MAX := 290.0   # 336 px battle view minus portrait, padding and margins
 var shown: Dictionary = {}
 var _bark_cd := 0.0
 
@@ -109,17 +110,25 @@ func _check_elements() -> void:
 func _show_bubble(text: String, hero_id: String, dur: float) -> void:
 	_speaker = hero_id
 	bubble_label.text = text
-	bubble_label.size = Vector2(TEXT_W, 0)
+	# as wide as the line needs (up to the battle view), so most tips are one line: a two-line bubble in the
+	# low strip sits on the speaker's head
+	var fnt := bubble_label.get_theme_font("font")
+	var fsz := bubble_label.get_theme_font_size("font_size")
+	var one := fnt.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fsz).x + 8.0   # slack: the label wraps a hair before the measured width
+	var text_w := clampf(one, TEXT_W * 0.6, TEXT_W_MAX)
+	bubble_label.custom_minimum_size = Vector2(text_w, 0)
+	bubble_label.size = Vector2(text_w, 0)
 	bubble_label.reset_size()
 	var h := maxf(bubble_label.get_combined_minimum_size().y + PAD * 2, PORTRAIT + PAD * 2)
-	bubble.size = Vector2(TEXT_W + PORTRAIT + PAD * 3, h)
+	bubble.size = Vector2(text_w + PORTRAIT + PAD * 3, h)
+	bubble_label.position = Vector2(PAD * 2 + PORTRAIT, (h - bubble_label.get_combined_minimum_size().y) / 2.0)
 	var x := 150.0
 	for u in BattleSim.heroes:
 		if u.id == hero_id:
 			x = u.x
 	var w := bubble.size.x
 	# stay inside the 360 px battle view (the control block starts at x 360)
-	bubble.position = Vector2(clamp(x - w / 2.0, 20.0, 356.0 - w), 13)
+	bubble.position = Vector2(clamp(x - w / 2.0, 20.0, 356.0 - w), 12)
 	_tail_x = clampf(x - bubble.position.x, 10.0, w - 10.0)
 	bubble.pivot_offset = Vector2(_tail_x, h)
 	bubble.visible = true
@@ -136,12 +145,12 @@ func _draw_bubble() -> void:
 	var ci := bubble.get_canvas_item()
 	var r := Rect2(Vector2.ZERO, bubble.size)
 	# the popup family (leather + slim walnut frame) with a brass speech tail
-	var tail := PackedVector2Array([Vector2(_tail_x - 5, r.end.y - 1.5), Vector2(_tail_x + 5, r.end.y - 1.5), Vector2(_tail_x, r.end.y + 6)])
+	var tail := PackedVector2Array([Vector2(_tail_x - 5, r.end.y - 1.5), Vector2(_tail_x + 5, r.end.y - 1.5), Vector2(_tail_x, r.end.y + 4.5)])
 	bubble.draw_colored_polygon(PackedVector2Array([tail[0] + Vector2(-1.4, 0), tail[1] + Vector2(1.4, 0), tail[2] + Vector2(0, 1.8)]), UISkin.OUTLINE)
 	UISkin.poly(ci, tail, UISkin.BRONZE_HI, UISkin.BRONZE_LO)
 	UISkin.popup(ci, r, 0.45, 0.2)
 	# the speaker in a jewel tile
-	var pr := Rect2(PAD, PAD, PORTRAIT, PORTRAIT)
+	var pr := Rect2(PAD, (r.size.y - PORTRAIT) / 2.0, PORTRAIT, PORTRAIT)
 	UISkin.slot(ci, pr, Color("#8C6A3A"), true, false)
 	var ic := SpriteLib.hero_icon(_speaker)
 	if ic:
