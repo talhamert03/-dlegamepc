@@ -54,17 +54,44 @@ static func draw(n: CanvasItem, foot: Vector2, w: float, kind: String, open := 0
 		n.draw_circle(o, w * 0.32 * open, Color(gc2, 0.25 * open))
 	# lid thrown back: its lit inner face leans away above the seam
 	var s := 1.0 - open * 1.8
+	var sw0 := w * 0.1
 	if s < 0.0:
+		# the domed lid seen from inside: an arched inner face, lit from below by the treasure, the lid's
+		# metal-bound rim along the arch and the straps running over the inside
 		var ih := lh * minf(1.0, -s) * 1.5
 		var lean := w * 0.06 * minf(1.0, -s)
-		var inner := PackedVector2Array([Vector2(x0 + w * 0.02, seam), Vector2(x1 - w * 0.02, seam),
-			Vector2(x1 - w * 0.06 + lean, seam - ih), Vector2(x0 + w * 0.06 - lean, seam - ih)])
-		_grad_poly(n, inner, p["b1"].darkened(0.3), p["b0"].lerp(p["glow"], 0.45 * open), seam - ih, seam)
-		for k in 3:
-			var yy := seam - ih * (0.3 + k * 0.25)
-			n.draw_line(Vector2(x0 + w * 0.06, yy), Vector2(x1 - w * 0.06, yy), Color(p["b1"].darkened(0.4), 0.6), max(1.0, w / 80.0))
+		var lx0 := x0 + w * 0.02
+		var lx1 := x1 - w * 0.02
+		var tx0 := x0 + w * 0.05 - lean
+		var tx1 := x1 - w * 0.05 + lean
+		var shoulder := seam - ih * 0.58
+		var inner := PackedVector2Array([Vector2(lx0, seam), Vector2(lx1, seam), Vector2(tx1, shoulder)])
+		var arc := PackedVector2Array()
+		for i in 13:
+			var u := float(i) / 12.0
+			arc.append(Vector2(lerpf(tx1, tx0, u), shoulder - sin(u * PI) * ih * 0.42))
+		inner.append_array(arc)
+		_grad_poly(n, inner, p["b1"].darkened(0.45), p["b0"].lerp(p["glow"], 0.55 * open), seam - ih, seam)
+		# planks following the curve
+		for k in 2:
+			var f := 0.38 + k * 0.3
+			var pl := PackedVector2Array()
+			for i in 9:
+				var u2 := float(i) / 8.0
+				pl.append(Vector2(lerpf(tx0, tx1, u2), lerpf(seam, shoulder, f) - sin(u2 * PI) * ih * 0.42 * f))
+			n.draw_polyline(pl, Color(p["b1"].darkened(0.5), 0.55), max(1.0, w / 85.0), true)
+		# straps on the inside of the lid
+		for sx: float in [-0.3, 0.3]:
+			var bx: float = foot.x + w * sx
+			var top_y := shoulder - sin(clampf((bx - tx0) / (tx1 - tx0), 0.0, 1.0) * PI) * ih * 0.42
+			var st := PackedVector2Array([Vector2(bx - sw0 / 2, seam), Vector2(bx + sw0 / 2, seam), Vector2(bx + sw0 / 2, top_y + 1), Vector2(bx - sw0 / 2, top_y + 1)])
+			_grad_poly_h(n, st, p["m0"].darkened(0.25), p["m1"].darkened(0.35), bx - sw0 / 2, bx + sw0 / 2)
 		_outline(n, inner, ink, olw)
-		n.draw_line(Vector2(x0 + w * 0.06 - lean, seam - ih), Vector2(x1 - w * 0.06 + lean, seam - ih), p["m0"], olw * 1.4)
+		# the rim: lid thickness in metal along the arch, catching the light
+		n.draw_polyline(arc, p["m1"].darkened(0.2), olw * 2.4, true)
+		n.draw_polyline(arc, p["m0"], olw * 1.2, true)
+		n.draw_line(Vector2(tx1, shoulder), Vector2(lx1, seam), Color(p["m1"], 0.8), olw * 1.2)
+		n.draw_line(Vector2(tx0, shoulder), Vector2(lx0, seam), Color(p["m1"], 0.8), olw * 1.2)
 	# body
 	var body := PackedVector2Array([Vector2(x0, seam), Vector2(x1, seam), Vector2(x1, foot.y), Vector2(x0, foot.y)])
 	_grad_poly(n, body, p["b0"], p["b1"], seam, foot.y)

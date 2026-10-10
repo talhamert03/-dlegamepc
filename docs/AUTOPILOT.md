@@ -138,6 +138,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 135. Costume unlocks went to the strip notice feed, three at once covered the boss's entry; they are rewards, so they now use the reward plate above the strip (sparkle icon, costume name; a burst folds into one "×3" plate)
 - [x] 136. Dark bosses (Morvath in his crimson throne room) melted into the arena: bosses get a soft, slowly breathing pale backlight behind the body
 - [x] 137. Tutorial / bark bubble was a fixed 200 px text column, so most tips wrapped to two lines and the bubble sat on the speaker's head in the low strip: width now follows the line (up to the 290 px battle view), so most tips are one line; portrait chip 18 → 15 px, centred, shorter tail, text vertically centred
+- [x] 138. Opened chest: the thrown-back lid was a flat brown trapezoid with three lines (read as a crate panel). Now the domed lid seen from inside: arched inner face lit from below by the treasure, planks following the curve, straps on the inside, a metal rim along the arch showing the lid's thickness, hinged sides
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -367,3 +368,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — boss fights (Isolde, Morvath, tower 10) at 4x via --burst: telegraph band (#133), number stacking (#134).
 - 2026-10-10 — boss replay follow-ups: costume toasts (#135), boss backlight (#136), rect-based number placement (#134 follow-up), compared old/new via git stash.
 - 2026-10-10 — first-minutes replay EN/TR at 2x/4x: one-line tutorial bubble clears the hero (#137).
+- 2026-10-10 — chests tab / chest opening at 4x: open lid redrawn (#138).
