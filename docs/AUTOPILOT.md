@@ -151,6 +151,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 148. Taskbar (mini) mode: the strip above the crop was drawn into the bubble row, a stray band of sky over the taskbar wherever the region covered it; the strip now sits in a clip the size of the bar while in mini mode (reparented back on exit, checked with the new --miniround flag)
 - [x] 149. Mini mode: the stage plate sat inside the tiny battlefield over the first two heroes' health bars; it is now a folder tab on top of the frame in the free corner left of the chest bubble (added to the window region), so all five bars show
 - [x] 150. Stash: an empty unlocked tab was 36 blank wells with no clue; a quiet smoked note now sits over the grid (chest icon, "This tab is empty", how to fill it), click-through so drops still land, hidden as soon as the tab holds anything
+- [x] 151. Bulk sale dialog: rarity rows with nothing in the bag (e.g. Common 0) looked as live as the rest; they now fade back, and a gilded rule separates the choices from the total
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -389,3 +390,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — town at 4x: no HP bars in town (#147).
 - 2026-10-10 — taskbar mode at 4x: clip (#148), stage tab (#149), --miniround round-trip OK.
 - 2026-10-10 — Windows smoke OK after the mini region change; stash empty note (#150) TR/EN at 2x/4x.
+- 2026-10-10 — ending slides 1-5 TR/EN fine; bulk sale polish (#151).

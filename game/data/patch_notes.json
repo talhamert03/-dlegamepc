@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Toplu Satış: çantada hiç olmayan nadirlik satırları soluk görünüyor; toplam satırı yaldızlı bir çizgiyle ayrıldı.", "en": "Bulk Sale: rarity rows with nothing in the bag are faded, and the total is set off by a gilded rule."},
     {"tr": "Depo: boş bir sekmede artık nasıl doldurulacağını anlatan küçük bir not var.", "en": "Stash: an empty tab now shows a short note on how to fill it."},
     {"tr": "Görev çubuğu modu: çerçevenin üstüne taşan manzara şeridi kaldırıldı; bölge adı artık çerçevenin üstünde bir sekme ve kahramanların can barlarını örtmüyor.", "en": "Taskbar mode: removed a strip of landscape that leaked above the frame; the zone name is now a tab on top of the frame and no longer covers the heroes' health bars."},
     {"tr": "Kasabada kahramanların üstündeki can barları gizlendi; kasaba artık sakin bir mola gibi görünüyor.", "en": "Health bars are hidden while the party is in town, so the town feels like a calm stop."},

@@ -611,8 +611,18 @@ func _sell_dialog() -> void:
 	var title := UITheme.label(DataDB.t("sell_title"), UITheme.C_TITLE, 10, UITheme.font_title)
 	title.position = Vector2(10, 6)
 	card.add_child(title)
+	# gilded rule between the choices and the total
+	var rule := Control.new()
+	rule.position = Vector2(10, 102)
+	rule.size = Vector2(176, 2)
+	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	rule.draw.connect(func():
+		var ci := rule.get_canvas_item()
+		UISkin.line(ci, Vector2(0, 0.5), Vector2(rule.size.x, 0.5), Color(UISkin.BRONZE, 0.5), 0.6)
+		UISkin.diamond(ci, Vector2(rule.size.x / 2.0, 0.5), 1.8))
+	card.add_child(rule)
 	var summary := UITheme.label("", UITheme.C_GOLD, 8, UITheme.font_body)
-	summary.position = Vector2(10, 104)
+	summary.position = Vector2(10, 105)
 	summary.size = Vector2(176, 10)
 	card.add_child(summary)
 	var go: Button
@@ -660,10 +670,12 @@ func _sell_dialog() -> void:
 				b.draw_polyline(PackedVector2Array([Vector2(6.6, 7.2), Vector2(8.6, 9.2), Vector2(12, 4.6)]), Color("#8CFF7A"), 1.4, true)
 			UISkin.diamond(ci, Vector2(21, 7), 3.0, rcol.lightened(0.25), rcol.darkened(0.35))
 			var fb := UITheme.font_body
-			b.draw_string(fb, Vector2(28, 10), label, HORIZONTAL_ALIGNMENT_LEFT, 110, 8, rcol if on else Color(rcol, 0.6))
+			# nothing of this rarity in the bag: the row fades back, it would not change the sale
+			var k := 1.0 if cnt > 0 else 0.45
+			b.draw_string(fb, Vector2(28, 10), label, HORIZONTAL_ALIGNMENT_LEFT, 110, 8, Color(rcol if on else Color(rcol, 0.6), (1.0 if on else 0.6) * k))
 			var ct := str(cnt)
 			var cw := fb.get_string_size(ct, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
-			b.draw_string(fb, Vector2(rect.size.x - cw - 6, 10), ct, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#E8D8B8") if on else UITheme.C_DIM))
+			b.draw_string(fb, Vector2(rect.size.x - cw - 6, 10), ct, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(Color("#E8D8B8") if on else UITheme.C_DIM, k)))
 		b.toggled.connect(func(on: bool):
 			picks[rr] = on
 			AudioManager.play("ui_click", 0.05, 0.4)
