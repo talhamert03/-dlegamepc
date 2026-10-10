@@ -352,3 +352,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — EN sub-tab sweep (smith 1-3, codex 1-2, growth 1-2, supporter detail): craft odds locale fixed (#128), rest clean.
 - 2026-10-10 — Windows smoke == OK; settings EN/TR: hotkey label column, background-volume wording (#129).
 - 2026-10-10 — tavern owned-hero tiles (#130), 1 and 15 owned at 4x.
+- 2026-10-10 — end of shift checkpoint: 16-panel sweep at 2x TR (no engine errors), tests 39/39, Windows smoke == OK earlier in the shift; #118-#130 done.
