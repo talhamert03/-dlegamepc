@@ -105,6 +105,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 108. Battle banners ('Boss approaching...', 'X arrived!', zone name) were a flat dark box: now a ribbon of the window-title family (crimson with cream text for bosses, walnut with gold text otherwise) with folded tails and a soft shadow; UISkin.ribbon takes optional colours
 - [x] 109. Boss HP gauge: recessed channel, glossy blood fill with a pale damage trail and a bright leading edge, gilded bezel with spiked brass end caps, name on a small title ribbon tucked behind the gauge, skull in a red seal
 - [x] 110. Level-up and loot beam effects were thin pale strokes: additive blend for both; level-up = 3-layer pillar, golden ground ring racing out, climbing four-point stars; loot beam = taller 3-layer column in the rarity colour that rises in, glowing ground pool with a slow ripple. New --vfxshot screenshot flag
+- [x] 111. Tavern rarity tags (flat grey/blue/gold pills with dark text) -> enamel badges in a gilded bezel with a gloss line and cream title-font text, SSR with a gold jewel
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -312,3 +313,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — #109: first pass drew the name ribbon on top and its folded tails covered the bar; now drawn before the gauge (text after). 4x TR.
 - 2026-10-10 — #108 follow-up: the crimson ribbon was chosen by guessing from the text colour, so a legendary drop (orange) got the boss ribbon; _show_banner now takes an explicit danger flag (boss incoming / arrived, party wiped).
 - 2026-10-10 — #110: checked at 4x on the meadow; additive orange reads yellow on green grass (expected for light), the epic beam keeps its violet.
+- 2026-10-10 — #111 + checks: 'Okcu' on a tavern card looked like a missing ç, but the cedilla was only clipped by the scroll view's bottom edge (all 6 fonts cover çÇşŞğĞıİöÖüÜâîû, checked with fontTools). Windows smoke after #107-#110: == OK. Additive VFX checked on the dark tower too.

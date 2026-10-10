@@ -179,10 +179,20 @@ func _card(hid: String, pos: Vector2) -> void:
 		var pulse := 0.65 + 0.35 * sin(_t * 3.0) if rar == "SSR" else 0.85
 		UISkin.stroke(ci, r, 4, Color(0, 0, 0, 0.95), 1.0)
 		UISkin.stroke(ci, r.grow(-1.0), 3, Color(rcol, pulse) if not hov else rcol.lightened(0.35), 1.3 if not hov else 1.8)
-		var tag := Rect2(3, 3, 21 if rar == "SSR" else 16, 9)
-		UISkin.fill(ci, tag, 2, rcol.lightened(0.15), rcol.darkened(0.35))
-		UISkin.stroke(ci, tag, 2, Color(0, 0, 0, 0.9), 1.0)
-		c.draw_string(UITheme.font_body, tag.position + Vector2(2.5, 7.5), rar, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#1A1208"))
+		# rarity badge: an enamel plate in a gilded bezel (steel R, sapphire SR, gold SSR with a jewel)
+		var tw0 := UITheme.font_title.get_string_size(rar, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x
+		var tag := Rect2(3, 3, tw0 + (14.0 if rar == "SSR" else 8.0), 10)
+		UISkin.fill(ci, Rect2(tag.position + Vector2(0, 1), tag.size), 2.5, Color(0, 0, 0, 0.5), Color(0, 0, 0, 0.5))
+		UISkin.fill(ci, tag, 2.5, UISkin.BRONZE_HI, UISkin.BRONZE_LO)
+		UISkin.fill(ci, tag.grow(-1.0), 2, rcol.lightened(0.25), rcol.darkened(0.45))
+		UISkin.fill(ci, Rect2(tag.position + Vector2(1.5, 1.2), Vector2(tag.size.x - 3.0, 3.0)), 1.5, Color(1, 1, 1, 0.35), Color(1, 1, 1, 0.0))
+		UISkin.stroke(ci, tag, 2.5, UISkin.OUTLINE, 0.8)
+		var tx := tag.position.x + 4.0
+		if rar == "SSR":
+			UISkin.diamond(ci, Vector2(tag.position.x + 5.0, tag.get_center().y), 2.2, Color("#FFF2B0"), Color("#C07A10"))
+			tx += 5.5
+		c.draw_string_outline(UITheme.font_title, Vector2(tx, tag.end.y - 2.4), rar, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, 2, Color(0, 0, 0, 0.6))
+		c.draw_string(UITheme.font_title, Vector2(tx, tag.end.y - 2.4), rar, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color("#FFF6E0"))
 		var f := UITheme.font_title
 		var nm := str(d.get("name", hid))
 		var fsz := 9
