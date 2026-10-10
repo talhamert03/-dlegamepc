@@ -657,7 +657,7 @@ func _spawn_number(text: String, pos: Vector2, color: Color, big := false) -> vo
 	var stack := 0
 	for n in _active_nums:
 		# overlap test uses both label widths, so long skill names stack instead of printing over each other
-		var reach := maxf(16.0, (float(n.get("w", 0.0)) + sz.x) * 0.5 + 2.0)
+		var reach := maxf(16.0, (float(n.get("w", 0.0)) + sz.x) * 0.5 + 7.0)   # a clear gap, so "132" "130" never read as "132130"
 		var window := 0.22 if sz.x < 30.0 else 0.6
 		if float(n["t"]) < window and absf(float(n["x0"]) - pos.x) < reach:
 			stack += 1

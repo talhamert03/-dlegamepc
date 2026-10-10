@@ -129,6 +129,11 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 129. Settings: hotkey key caps right-aligned in a key column per grid column so the labels line up (M / Esc no longer push their label out of line; very wide Ctrl+Shift+H just flows); "Unfocused duck" / "Odak dışı kısma" jargon renamed "Volume in background" / "Arka plandayken ses"
 - [x] 130. Tavern: recruited heroes were full 74x108 cards, so one owned hero took a whole row and the buyable cards (with prices) sat below the fold. Owned heroes are now compact portrait tiles (5 a row: head-and-shoulders crop on the faction colour, rarity rim, gold level, green party seal, benched dimmed); clicking one opens it in the Hero panel
 
+## Replay backlog 7 (shift 2026-10-10 17:03, late-game strip, tower, bosses)
+
+- [x] 131. Strip notices ("Yeni kostüm açıldı: ...", sold-for, etc.) were loose outlined text over the enemies; now smoked-glass plates with a bronze hairline and a diamond in the notice colour, sliding in from the right and fading out, slim (10 px, 7 pt) so three stacked ones cover little of the fight
+- [x] 132. Damage numbers on neighbouring enemies could land edge to edge and read as one number ("132" + "130" = "132130"): the overlap test now keeps a clear gap before stacking
+
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
 Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and EN, before/after kept in the log.
@@ -353,3 +358,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — Windows smoke == OK; settings EN/TR: hotkey label column, background-volume wording (#129).
 - 2026-10-10 — tavern owned-hero tiles (#130), 1 and 15 owned at 4x.
 - 2026-10-10 — end of shift checkpoint: 16-panel sweep at 2x TR (no engine errors), tests 39/39, Windows smoke == OK earlier in the shift; #118-#130 done.
+- 2026-10-10 17:03 shift — replay late zones (Akt 2-4) at 4x: notice plates (#131), number gap (#132).

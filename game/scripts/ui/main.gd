@@ -38,6 +38,7 @@ func _ready() -> void:
 	_notify_box.position = Vector2(190, 12)
 	_notify_box.size = Vector2(166, 48)
 	_notify_box.alignment = BoxContainer.ALIGNMENT_END
+	_notify_box.add_theme_constant_override("separation", 1)
 	_notify_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_notify_box.z_index = 50
 	strip_root.add_child(_notify_box)
@@ -262,18 +263,40 @@ func _update_auto() -> void:
 
 
 func _on_notify(text: String, color: Color) -> void:
-	var l := UITheme.label(text, color)
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	l.add_theme_color_override("font_outline_color", Color("#0B0D14"))
-	l.add_theme_constant_override("outline_size", 3)
-	_notify_box.add_child(l)
+	# a notice plate: smoked glass, bronze hairline, a diamond in the notice colour; it slides in from the
+	# right and fades out, so stacked notices read as separate items instead of loose text over the fight
+	var f := UITheme.font_body
+	var fs := 7
+	var tw := f.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
+	var n := Control.new()
+	n.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	n.custom_minimum_size = Vector2(minf(tw + 16.0, _notify_box.size.x), 10)
+	n.size_flags_horizontal = Control.SIZE_SHRINK_END
+	n.set_meta("slide", 14.0)
+	n.draw.connect(func():
+		var ci := n.get_canvas_item()
+		var dx: float = n.get_meta("slide", 0.0)
+		var r := Rect2(Vector2(dx, 0.5), n.size - Vector2(0, 1))
+		UISkin.fill(ci, r, 3, Color(0.10, 0.07, 0.05, 0.74), Color(0.04, 0.03, 0.02, 0.74))
+		UISkin.stroke(ci, r, 3, Color(0, 0, 0, 0.9), 0.8)
+		UISkin.stroke(ci, r.grow(-0.8), 2.5, Color(UISkin.BRONZE, 0.45), 0.6)
+		UISkin.diamond(ci, Vector2(r.position.x + 5.5, r.get_center().y), 2.2, color.lightened(0.3), color.darkened(0.4))
+		n.draw_string_outline(f, Vector2(r.position.x + 10.5, r.position.y + 7.0), text, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 12.0, fs, 2, Color(0, 0, 0, 0.7))
+		n.draw_string(f, Vector2(r.position.x + 10.5, r.position.y + 7.0), text, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 12.0, fs, color.lightened(0.15)))
+	_notify_box.add_child(n)
 	while _notify_box.get_child_count() > 3:
 		_notify_box.get_child(0).queue_free()
 		_notify_box.remove_child(_notify_box.get_child(0))
-	var tw := create_tween()
-	tw.tween_interval(3.5)
-	tw.tween_property(l, "modulate:a", 0.0, 0.6)
-	tw.tween_callback(l.queue_free)
+	n.modulate.a = 0.0
+	var tw2 := create_tween()
+	tw2.set_parallel(true)
+	tw2.tween_property(n, "modulate:a", 1.0, 0.18)
+	tw2.tween_method(func(v: float):
+		n.set_meta("slide", v)
+		n.queue_redraw(), 14.0, 0.0, 0.25).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tw2.chain().tween_interval(3.5)
+	tw2.chain().tween_property(n, "modulate:a", 0.0, 0.6)
+	tw2.chain().tween_callback(n.queue_free)
 
 
 func _input(ev: InputEvent) -> void:
