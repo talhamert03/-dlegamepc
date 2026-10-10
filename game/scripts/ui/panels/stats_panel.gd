@@ -825,12 +825,17 @@ func _draw_detail() -> void:
 	var meta := "%s  ·  %d/%d" % [DataDB.t("skill_" + str(sd.get("type", "active"))), lv, int(sd.get("max", 1))]
 	if sd.has("cd"):
 		meta += "  ·  " + DataDB.t("cooldown", {"s": "%.0f" % float(sd["cd"])})
-	_detail.draw_string(UITheme.font_body, Vector2(24, 20), meta, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 28, 7, UITheme.C_DIM)
+	_detail.draw_string(UITheme.font_body, Vector2(24, 21.5), meta, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 28, 7, UITheme.C_DIM)
 	var req := int(sd.get("req_lv", 1))
 	var line := _describe(sd, maxi(1, lv))
 	if h.level < req:
 		line = DataDB.t("status_need_lv", {"lv": req}) + "  " + line
-	_detail.draw_multiline_string(UITheme.font_body, Vector2(5, 30), line, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 10, 7, 2, UITheme.C_TEXT)
+	# the card is only ~2 lines tall: long descriptions (EN) step down a size rather than lose their last line
+	var fb := UITheme.font_body
+	var fs := 7
+	while fs > 6 and 23.5 + fb.get_multiline_string_size(line, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 10, fs).y > r.size.y - 1.0:
+		fs -= 1
+	_detail.draw_multiline_string(fb, Vector2(5, 23.5 + fb.get_ascent(fs)), line, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 10, fs, 3, UITheme.C_TEXT)
 
 
 func _on_learn() -> void:

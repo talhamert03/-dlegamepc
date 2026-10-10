@@ -1485,7 +1485,7 @@
  },
  "formation_hint": {
   "tr": "Sürükle-bırak: yerleştir, yer değiştir; aşağı bırak: yedeğe al.",
-  "en": "Drag heroes to place or swap them; drop one below the stage to bench it."
+  "en": "Drag to place or swap heroes; drop one below the stage to bench it."
  },
  "formation_last": {
   "tr": "Partide en az bir kahraman kalmalı.",

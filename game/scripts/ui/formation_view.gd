@@ -323,4 +323,12 @@ func _draw_stage() -> void:
 
 func _draw_info() -> void:
 	var s := DataDB.t("formation_hint")
-	_info.draw_string(UITheme.font_body, Vector2(3, 9), s, HORIZONTAL_ALIGNMENT_LEFT, _info.size.x - 6, 7, UITheme.C_DIM)
+	var f := UITheme.font_body
+	# one line; longer translations (EN) step down a size, and only then wrap, instead of being cut mid-word
+	var fs := 7
+	while fs > 6 and f.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > _info.size.x - 6:
+		fs -= 1
+	if f.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > _info.size.x - 6:
+		_info.draw_multiline_string(f, Vector2(3, 6), s, HORIZONTAL_ALIGNMENT_LEFT, _info.size.x - 6, fs, 2, UITheme.C_DIM)
+	else:
+		_info.draw_string(f, Vector2(3, 9), s, HORIZONTAL_ALIGNMENT_LEFT, _info.size.x - 6, fs, UITheme.C_DIM)
