@@ -110,6 +110,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 113. Rune detail: gold coin drawn right in front of the 'Buy 150' price (Button.icon sat at the far-left edge); single-rank runes no longer show one empty rank box under the name
 - [x] 114. Pets: undiscovered companions were black on black; now the bestiary's flat cool silhouette (shader on a child layer) with a small bronze '?' seal, detail card shows a dim silhouette tint
 - [x] 115. Settings > Game: the hotkey help was one run-on line; now a two-column list of key caps (bronze-edged) + capitalised labels, parsed from the same localised string (font steps down to 7 when a label is long). New --settingstab= screenshot flag
+- [x] 116. Blacksmith combine stage on the same veined smithy wall as the enhance stage, washed from the result side in the target rarity colour (was a flat black well)
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -319,3 +320,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — #110: checked at 4x on the meadow; additive orange reads yellow on green grass (expected for light), the epic beam keeps its violet.
 - 2026-10-10 — #111 + checks: 'Okcu' on a tavern card looked like a missing ç, but the cedilla was only clipped by the scroll view's bottom edge (all 6 fonts cover çÇşŞğĞıİöÖüÜâîû, checked with fontTools). Windows smoke after #107-#110: == OK. Additive VFX checked on the dark tower too.
 - 2026-10-10 — perf check after the VFX/bloom/plate-spreading work: --perf=60 --speed=3 with 5 heroes, current vs b182885 (start of shift, git worktree): fps 60 both, process ms 16-33 vs 19-49 (software-render noise), nodes ~125, objects ~1770, 0 orphans, memory 45.5-46.1 MB in both. No regression.
+- 2026-10-10 — checkpoint: 16-panel sweep at 2x TR (no engine errors), Windows smoke == OK; #116 at 4x.

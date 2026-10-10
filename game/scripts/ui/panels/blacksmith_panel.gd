@@ -131,7 +131,13 @@ func _build_combine() -> void:
 		var ci := stage.get_canvas_item()
 		var rr := Rect2(Vector2.ZERO, stage.size)
 		UISkin.well(ci, rr)
+		# the same smithy wall as the enhance stage, lit cool from the result side
+		UISkin._tile(ci, SLATE, rr.grow(-1.0), 96.0)
+		UISkin.fill(ci, rr.grow(-1.0), 2, Color(0.05, 0.03, 0.02, 0.35), Color(0.02, 0.01, 0.0, 0.55))
 		var col := ItemUtil.rarity_color(cur_r)
+		var lc := Color(col, 0.12)
+		RenderingServer.canvas_item_add_polygon(ci, PackedVector2Array([Vector2(rr.size.x * 0.5, 1), Vector2(rr.size.x - 1, 1), Vector2(rr.size.x - 1, rr.size.y - 1), Vector2(rr.size.x * 0.5, rr.size.y - 1)]),
+			PackedColorArray([Color(lc, 0.0), lc, lc, Color(lc, 0.0)]))
 		var c := Vector2(gx + 39, gy + 39)
 		# rune circle under the grid, turning slowly, brighter as it fills
 		var fill := picks.size() / 9.0
