@@ -804,6 +804,13 @@ func _on_vfx(vfx: String, pos: Vector2, data: Dictionary) -> void:
 		return
 	var col := Color.WHITE
 	match vfx:
+		"enrage":
+			# the boss turns: a danger banner, a red burst on it and a jolt, instead of a line of text
+			_show_banner(DataDB.t("boss_enraged", {"name": str(data.get("name", ""))}), Color("#FF5A3A"), true)
+			_spawn_vfx("burst", pos - Vector2(0, 22), Color("#FF4A2A"), 22)
+			_spawn_vfx("burst", pos - Vector2(0, 12), Color("#FFB04A"), 12)
+			_shake = maxf(_shake, 0.3)
+			return
 		"telegraph":
 			_spawn_vfx("telegraph", Vector2(170, BattleSim.GROUND_Y + 1), Color.RED, 110, data)
 			return

@@ -349,7 +349,12 @@ func _process(delta: float) -> void:
 		_animate_sheet()
 	elif mode == "hd":
 		_animate_hd()
-	mat.set_shader_parameter("flash", clamp(unit.flash_t / 0.12, 0.0, 1.0) * 0.7)
+	# a boss is hit by the whole party many times a second: a full flash kept it washed out white most of
+	# the time, so big targets take a lighter tint
+	mat.set_shader_parameter("flash", clamp(unit.flash_t / 0.12, 0.0, 1.0) * (0.3 if _backlight else 0.7))
+	if _backlight and unit.alive and unit.stats.get("enraged", false):
+		# enraged boss: a red heat pulsing through the body (HD bosses take no sheet glow otherwise)
+		mat.set_shader_parameter("glow", Color(1.0, 0.22, 0.12, 0.10 + 0.08 * sin(_clock * 6.0)))
 	if not unit.alive:
 		_death_t += delta
 		if kind != "hero":
@@ -576,10 +581,12 @@ func _draw() -> void:
 	if unit == null:
 		return
 	if _backlight and unit.alive:
-		var pulse := 0.85 + 0.15 * sin(Time.get_ticks_msec() / 700.0)
+		var rage: bool = unit.stats.get("enraged", false)
+		var pulse := 0.85 + 0.15 * sin(Time.get_ticks_msec() / (700.0 if not rage else 160.0))
+		var hc := Color(1.0, 0.88, 0.70, 0.032 * pulse) if not rage else Color(1.0, 0.25, 0.12, 0.05 * pulse)
 		draw_set_transform(Vector2(0, -_h * 0.52 - _fly), 0.0, Vector2(0.72, 1.0))
 		for k in 7:
-			draw_circle(Vector2.ZERO, _h * (0.64 - k * 0.075), Color(1.0, 0.88, 0.70, 0.032 * pulse))
+			draw_circle(Vector2.ZERO, _h * (0.64 - k * 0.075), hc)
 		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 	# soft contact shadow
 	var sw := clampf(_h * 0.32, 6.0, 20.0)

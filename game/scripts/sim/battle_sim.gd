@@ -737,7 +737,7 @@ func _enemy_act(e: Combatant, dt: float, fx: float) -> void:
 			e.stats["enraged"] = true
 			e.stats["aps"] = float(e.stats["aps"]) * 1.5
 			if not quiet:
-				EventBus.notify.emit(DataDB.t("boss_enraged", {"name": e.name}), Color("#FF5A3A"))
+				EventBus.vfx_requested.emit("enrage", Vector2(e.x, GROUND_Y), {"name": e.name, "uid": e.uid})
 	if e.busy_t > 0 or e.atk_cd > 0:
 		return
 	var range_: float = float(e.stats.get("range", 24))
