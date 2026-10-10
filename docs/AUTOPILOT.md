@@ -107,6 +107,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 110. Level-up and loot beam effects were thin pale strokes: additive blend for both; level-up = 3-layer pillar, golden ground ring racing out, climbing four-point stars; loot beam = taller 3-layer column in the rarity colour that rises in, glowing ground pool with a slow ripple. New --vfxshot screenshot flag
 - [x] 111. Tavern rarity tags (flat grey/blue/gold pills with dark text) -> enamel badges in a gilded bezel with a gloss line and cream title-font text, SSR with a gold jewel
 - [x] 112. Guild upgrade buttons showed a bare '500': Fancy.small_button takes an optional currency icon (greyed with the button), guild prices show the gold coin
+- [x] 113. Rune detail: gold coin drawn right in front of the 'Buy 150' price (Button.icon sat at the far-left edge); single-rank runes no longer show one empty rank box under the name
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 

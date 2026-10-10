@@ -112,6 +112,13 @@ func _build_side() -> void:
 	_detail.add_child(_buy)
 	_buy.size = Vector2(w - 12, 14)
 	_buy.position = Vector2(6, 75)
+	# the gold coin right in front of the price (Button.icon would sit at the far left edge)
+	_buy.draw.connect(func():
+		if not _buy.get_meta("coin", false):
+			return
+		var tw := UITheme.font_body.get_string_size(_buy.text, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
+		var x := (_buy.size.x - tw) / 2.0 - 11.0
+		_buy.draw_texture_rect(UITheme.icon("gold"), Rect2(x, (_buy.size.y - 8.0) / 2.0, 8, 8), false, Color(1, 1, 1, 0.45) if _buy.disabled else Color.WHITE))
 
 
 func _icon(id: String) -> Texture2D:
@@ -476,6 +483,8 @@ func _update_detail() -> void:
 	_buy.visible = rk < mx
 	_buy.disabled = not Runes.can_buy(id)
 	_buy.text = DataDB.t("rune_buy") + "  " + F.fmt_num(Runes.cost(id)) if Runes.is_open(id) else DataDB.t("rune_locked")
+	_buy.set_meta("coin", Runes.is_open(id))
+	_buy.queue_redraw()
 	_detail_id = id
 	_detail.queue_redraw()
 
@@ -506,9 +515,9 @@ func _draw_detail() -> void:
 		rfs -= 1
 	_detail.draw_string_outline(f, Vector2(34, 15), rn, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 38, rfs, 2, Color(0, 0, 0, 0.7))
 	_detail.draw_string(f, Vector2(34, 15), rn, HORIZONTAL_ALIGNMENT_LEFT, r.size.x - 38, rfs, bc.lightened(0.35))
-	# rank pips
+	# rank pips (a single-rank rune has none: one empty box read as a glitch)
 	var pw := minf(6.0, (r.size.x - 40.0 - (mx - 1) * 1.5) / maxf(1.0, mx))
-	for k in mx:
+	for k in (mx if mx > 1 else 0):
 		var pr := Rect2(34 + k * (pw + 1.5), 19.5, pw, 2.5)
 		_detail.draw_rect(pr.grow(0.5), Color(0, 0, 0, 0.9))
 		_detail.draw_rect(pr, bc.lightened(0.2) if k < rk else Color("#3A3440"))
