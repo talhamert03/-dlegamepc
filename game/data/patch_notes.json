@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Ayarlar: kısayol listesindeki yazılar artık tek hizada; \"Odak dışı kısma\" ayarının adı \"Arka plandayken ses\" oldu.", "en": "Settings: hotkey labels now line up; \"Unfocused duck\" is now called \"Volume in background\"."},
     {"tr": "Demirci > Üretim: İngilizcede olasılıklar artık doğru biçimde (85%) yazılıyor.", "en": "Blacksmith > Craft: odds are now written the English way (85%)."},
     {"tr": "İngilizcede kesilen metinler düzeltildi: diziliş ipucu ve yetenek açıklamasının son satırı.", "en": "Fixed English text being cut off: the formation hint and the last line of skill descriptions."},
     {"tr": "Durum sayfası: eksi değerler (ör. Hazine Avcısının Yüzüğü'nün hasar cezası) kırmızı, hiç olmayan %0 istatistikler soluk; kahramanın gerçekten sahip olduğu değerler öne çıkıyor.", "en": "Status page: penalties (such as the Treasure Hunter's Ring damage malus) are shown in red and unused 0% stats are faded, so the stats your hero really has stand out."},

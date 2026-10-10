@@ -680,8 +680,8 @@
   "en": "Effects"
  },
  "set_duck": {
-  "tr": "Odak dışı kısma",
-  "en": "Unfocused duck"
+  "tr": "Arka plandayken ses",
+  "en": "Volume in background"
  },
  "set_mute": {
   "tr": "Sessiz",

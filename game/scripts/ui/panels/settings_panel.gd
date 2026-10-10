@@ -161,6 +161,7 @@ func _hotkey_grid(help: String, w: float) -> Control:
 	g.add_theme_constant_override("h_separation", 6)
 	g.add_theme_constant_override("v_separation", 2)
 	var colw := (w - 6.0) / 2.0
+	var rows: Array = []
 	for part in help.split(" · "):
 		var toks := part.split(" ")
 		var keys: Array = []
@@ -172,21 +173,42 @@ func _hotkey_grid(help: String, w: float) -> Control:
 		var label := " ".join(toks.slice(i))
 		if label != "":
 			label = UITheme.upper(label.left(1)) + label.substr(1)
-		g.add_child(_hotkey_row(keys, label, colw))
+		rows.append([keys, label])
+	# a key column per grid column: caps right-aligned in it so the labels line up; a very wide combo
+	# (Ctrl+Shift+H) is left out of the measure and simply flows
+	var keyw := [0.0, 0.0]
+	for n in rows.size():
+		var kw := _keys_width(rows[n][0])
+		if kw <= 26.0:
+			keyw[n % 2] = maxf(keyw[n % 2], kw)
+	for n in rows.size():
+		g.add_child(_hotkey_row(rows[n][0], rows[n][1], colw, keyw[n % 2]))
 	return g
 
 
-func _hotkey_row(keys: Array, label: String, w: float) -> Control:
+func _cap_w(kt: String) -> float:
+	return maxf(10.0, UITheme.font_body.get_string_size(kt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x + 6.0)
+
+
+func _keys_width(keys: Array) -> float:
+	var t := 0.0
+	for k in keys:
+		t += _cap_w(str(k)) + 2.0
+	return maxf(0.0, t - 2.0)
+
+
+func _hotkey_row(keys: Array, label: String, w: float, keyw := 0.0) -> Control:
 	var c := Control.new()
 	c.custom_minimum_size = Vector2(w, 12)
 	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	c.draw.connect(func():
 		var ci := c.get_canvas_item()
 		var fb := UITheme.font_body
-		var x := 0.0
+		var kb := _keys_width(keys)
+		var x := maxf(0.0, keyw - kb)
 		for k in keys:
 			var kt := str(k)
-			var kw := maxf(10.0, fb.get_string_size(kt, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x + 6.0)
+			var kw := _cap_w(kt)
 			var kr := Rect2(x, 1, kw, 10)
 			# a key cap: dark base, lighter top face, bronze edge
 			UISkin.fill(ci, kr, 2, Color("#1A120C"), Color("#0A0604"))
