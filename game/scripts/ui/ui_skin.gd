@@ -129,6 +129,19 @@ static func diamond(ci: RID, c: Vector2, s: float, top: Color = BRONZE_HI, bot: 
 ## Fantasy window: a carved walnut frame with a raised bevel and a groove, gilded corner caps set with
 ## rubies, gem plates halfway down the sides and at the bottom, a dark leather body lit warmly from the
 ## top, and a header band whose title ribbon rests on a gilded crest with scroll curls.
+## A disc clamped into a rect (both convex, so clamping the rim points gives their intersection).
+static func _disc_in(c: Vector2, rad: float, r: Rect2) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for i in 40:
+		var a := TAU * i / 40.0
+		var p := (c + Vector2(cos(a), sin(a)) * rad).clamp(r.position, r.end)
+		if out.is_empty() or out[out.size() - 1].distance_squared_to(p) > 0.01:
+			out.append(p)
+	if out.size() > 1 and out[0].distance_squared_to(out[out.size() - 1]) <= 0.01:
+		out.remove_at(out.size() - 1)
+	return out
+
+
 static func panel(ci: RID, r: Rect2, header_h := 0.0, ribbon_w := 0.0) -> void:
 	RenderingServer.canvas_item_set_default_texture_filter(ci, RenderingServer.CANVAS_ITEM_TEXTURE_FILTER_LINEAR_WITH_MIPMAPS)
 	# cast shadow
@@ -138,9 +151,12 @@ static func panel(ci: RID, r: Rect2, header_h := 0.0, ribbon_w := 0.0) -> void:
 	_tile(ci, LEATHER_TEX, r.grow(-4.5), LEATHER_TILE)
 	fill(ci, body, 3, Color(1.0, 0.82, 0.6, 0.05), Color(0, 0, 0, 0.30))
 	var glow_c := Vector2(body.get_center().x, body.position.y + (header_h if header_h > 0.0 else 0.0))
+	# clipped to the leather: unclipped circles spilled a warm haze above the window onto the desktop
 	for k in 5:
 		var rad := minf(body.size.x * 0.55, 120.0) * (1.0 - k * 0.17)
-		RenderingServer.canvas_item_add_circle(ci, glow_c, rad, Color(1.0, 0.7, 0.4, 0.014))
+		var disc := _disc_in(glow_c, rad, body)
+		if disc.size() >= 3:
+			RenderingServer.canvas_item_add_polygon(ci, disc, PackedColorArray([Color(1.0, 0.7, 0.4, 0.014)]))
 	var rr := Rect2()
 	if header_h > 0.0:
 		var band := Rect2(body.position, Vector2(body.size.x, header_h))

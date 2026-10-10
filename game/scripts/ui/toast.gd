@@ -67,10 +67,35 @@ func _place() -> void:
 	# plates below this one that left free their place: settle down smoothly
 	var want := maxi(0, _live.find(self))
 	_slot_f = want if _t < 0.05 else lerpf(_slot_f, float(want), 0.25)
-	var y := sr.position.y - SIZE.y - 4.0 - _slot_f * (SIZE.y + 3.0)
+	var x0 := sr.end.x - SIZE.x - 4.0
+	var base := _clear_base(x0, sr.position.y - 4.0)
+	if base - SIZE.y * (MAX_STACK) < 2.0:
+		# the right end is walled in by a tall window: use the strip's left end instead
+		x0 = sr.position.x + 4.0
+		x = x0 - (1.0 - ease) * 40.0
+		base = _clear_base(x0, sr.position.y - 4.0)
+	var y := base - SIZE.y - _slot_f * (SIZE.y + 3.0)
 	if y < 2.0:
 		y = sr.end.y + 4.0 + _slot_f * (SIZE.y + 3.0)
 	position = Vector2(x, y).round()
+
+
+## Bottom edge for the stack in the column at x0: just above the strip, or above any window docked over
+## that spot, so the plates never cover a window's footer (bag capacity, buttons).
+static func _clear_base(x0: float, start: float) -> float:
+	var base := start
+	var layer: Control = WindowManager.panels_layer
+	if layer == null:
+		return base
+	var col := Rect2(x0, 0, SIZE.x, start)
+	for p in layer.get_children():
+		var pc := p as Control
+		if pc == null or not pc.visible:
+			continue
+		var pr := Rect2(pc.position, pc.size)
+		if pr.intersects(col) and pr.end.y > base - SIZE.y * MAX_STACK:
+			base = minf(base, pr.position.y - 4.0)
+	return base
 
 
 func _process(delta: float) -> void:

@@ -139,6 +139,8 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 136. Dark bosses (Morvath in his crimson throne room) melted into the arena: bosses get a soft, slowly breathing pale backlight behind the body
 - [x] 137. Tutorial / bark bubble was a fixed 200 px text column, so most tips wrapped to two lines and the bubble sat on the speaker's head in the low strip: width now follows the line (up to the 290 px battle view), so most tips are one line; portrait chip 18 → 15 px, centred, shorter tail, text vertically centred
 - [x] 138. Opened chest: the thrown-back lid was a flat brown trapezoid with three lines (read as a crate panel). Now the domed lid seen from inside: arched inner face lit from below by the treasure, planks following the curve, straps on the inside, a metal rim along the arch showing the lid's thickness, hinged sides
+- [x] 139. Every window spilled a faint warm haze above itself onto the desktop (the leather's top-light discs, up to 120 px, were not clipped to the body; alpha up to ~5% for ~75 logical px above the frame, visible as a grey circle on a light wallpaper). The discs are now clamped into the leather; alpha above all windows is 0 (checked on 7 panels)
+- [x] 140. Reward plates (achievements, costumes, chests) sat on the footer of a window docked over the strip's right end (bag capacity, +10 button at 768p): the stack now rises above any window in its column, or moves to the strip's left end if that column is walled in
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -369,3 +371,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — boss replay follow-ups: costume toasts (#135), boss backlight (#136), rect-based number placement (#134 follow-up), compared old/new via git stash.
 - 2026-10-10 — first-minutes replay EN/TR at 2x/4x: one-line tutorial bubble clears the hero (#137).
 - 2026-10-10 — chests tab / chest opening at 4x: open lid redrawn (#138).
+- 2026-10-10 — 1366x768 replay: panel glow spill on the desktop fixed (#139, alpha scan), toast placement vs docked windows (#140).
