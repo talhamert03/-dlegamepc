@@ -99,6 +99,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 ## Replay backlog 5 (shift 2026-10-10 09:03, intro + first minutes replay)
 
 - [x] 104. Intro: flying crystal shards wore hard-edged translucent discs (read as bubbles) -> 4-step soft glow + a bright facet edge; letterbox bars feathered into the picture instead of a hard black cut
+- [x] 105. Notification bursts (several achievements at once) stacked a tower of plates over the windows: same-title toasts within their life fold into one plate ('×3', newest detail), at most 3 plates (oldest hurries out), the rest settle down smoothly when one leaves
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -298,3 +299,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-09 — #103: enhance stage backdrop (first hearth try was a rounded orange pill that read as a button; redrawn as an arch with animated flames). 4x TR.
 - 2026-10-09 — regression sweep after #91-#103: all 16 panels + strip at 4x EN (no engine errors, no clipping; EN 'Advance' seal fits), Windows smoke under Wine == OK, control panel/full-party battle checked at 4x. Tavern section banners deliberately kept (same language as the Status 'CLASS ABILITIES' banner).
 - 2026-10-10 09:03 shift — backlog empty, replayed the intro (6 beats). #104 done (shard glow, feathered letterbox). 2x TR.
+- 2026-10-10 — #105: Toast merges same-title notices (count in the title, life restarted, quieter sound), MAX_STACK 3, slot index recomputed from _live each frame with a lerp. Checked with the lv40 burst (3 achievements -> one '×3' plate).

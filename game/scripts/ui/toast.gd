@@ -13,7 +13,11 @@ var _title := ""
 var _sub := ""
 var _t := 0.0
 var _slot := 0
+var _base_title := ""
+var _slot_f := 0.0
+var _count := 1
 static var _live: Array = []
+const MAX_STACK := 3
 
 
 ## icon: a texture, or chest: a chest kind drawn with ChestArt.
@@ -21,7 +25,21 @@ static func show_reward(icon: Texture2D, title: String, sub := "", chest := "", 
 	var layer: Control = WindowManager.top_layer
 	if layer == null:
 		return
+	_live = _live.filter(func(x): return is_instance_valid(x))
+	# a burst of the same notice (three achievements at once) folds into one plate: "×3" in the title and
+	# the newest detail line, instead of a tower of plates over the windows
+	for o in _live:
+		if o._base_title == title and o._chest == chest and o._t < LIFE - 1.0:
+			o._count += 1
+			o._title = "%s  ×%d" % [title, o._count]
+			if sub != "":
+				o._sub = sub
+			o._t = minf(o._t, 0.45)
+			o.queue_redraw()
+			AudioManager.play(sound if sound != "" else ("chest_drop" if chest != "" else "coin"), 0.05, 0.5)
+			return
 	var t := Toast.new()
+	t._base_title = title
 	t._icon = icon
 	t._chest = chest
 	t._title = title
@@ -30,7 +48,10 @@ static func show_reward(icon: Texture2D, title: String, sub := "", chest := "", 
 	t.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	t.z_index = 60
 	t.set_meta("region", true)
-	_live = _live.filter(func(x): return is_instance_valid(x))
+	# at most three plates: the oldest one hurries out
+	if _live.size() >= MAX_STACK:
+		var oldest = _live[0]
+		oldest._t = maxf(oldest._t, LIFE - 0.3)
 	t._slot = _live.size()
 	_live.append(t)
 	layer.add_child(t)
@@ -43,9 +64,12 @@ func _place() -> void:
 	var sr := WindowManager.strip_rect()
 	var ease := 1.0 - pow(1.0 - clampf(_t / 0.35, 0.0, 1.0), 3.0)
 	var x := sr.end.x - SIZE.x - 4.0 + (1.0 - ease) * 40.0
-	var y := sr.position.y - SIZE.y - 4.0 - _slot * (SIZE.y + 3.0)
+	# plates below this one that left free their place: settle down smoothly
+	var want := maxi(0, _live.find(self))
+	_slot_f = want if _t < 0.05 else lerpf(_slot_f, float(want), 0.25)
+	var y := sr.position.y - SIZE.y - 4.0 - _slot_f * (SIZE.y + 3.0)
 	if y < 2.0:
-		y = sr.end.y + 4.0 + _slot * (SIZE.y + 3.0)
+		y = sr.end.y + 4.0 + _slot_f * (SIZE.y + 3.0)
 	position = Vector2(x, y).round()
 
 
