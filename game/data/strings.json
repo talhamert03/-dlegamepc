@@ -2386,5 +2386,13 @@
  "costume_new_title": {
   "tr": "Yeni kostüm açıldı",
   "en": "New costume unlocked"
+ },
+ "stash_empty": {
+  "tr": "Bu sekme boş",
+  "en": "This tab is empty"
+ },
+ "stash_empty_hint": {
+  "tr": "Çantadan eşya sürükle ya da Tümü Depoya'ya bas",
+  "en": "Drag items here from the bag, or press All to Stash"
  }
 }

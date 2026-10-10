@@ -1,6 +1,7 @@
 extends PanelWindow
 ## Shared stash with 7 purchasable tabs (6x6 each).
 
+var _empty: Control
 var tab := 0
 var _tabs: HBoxContainer
 var _grid: GridContainer
@@ -43,6 +44,26 @@ func build(c: Control) -> void:
 		s.dropped.connect(_on_drop)
 		_grid.add_child(s)
 		_slots.append(s)
+	# empty tab: a quiet note over the grid on how to fill it (clicks and drops pass through to the slots)
+	_empty = Control.new()
+	_empty.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_empty.size = Vector2(gw - 24, 46)
+	_empty.position = Vector2((_bed.size.x - _empty.size.x) / 2.0, (_bed.size.y - _empty.size.y) / 2.0)
+	_empty.draw.connect(func():
+		var ci := _empty.get_canvas_item()
+		var r := Rect2(Vector2.ZERO, _empty.size)
+		UISkin.fill(ci, r, 4, Color(0.10, 0.07, 0.05, 0.82), Color(0.05, 0.03, 0.02, 0.82))
+		UISkin.stroke(ci, r, 4, Color(UISkin.BRONZE, 0.45), 0.7)
+		var ic := UITheme.icon("chest")
+		if ic:
+			_empty.draw_texture_rect(ic, Rect2(r.size.x / 2.0 - 6, 4, 12, 12), false, Color(1, 1, 1, 0.8))
+		var f := UITheme.font_title
+		var fb := UITheme.font_body
+		var t1 := DataDB.t("stash_empty")
+		var w1 := f.get_string_size(t1, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x
+		_empty.draw_string(f, Vector2((r.size.x - w1) / 2.0, 25), t1, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("#E8D8B8"))
+		_empty.draw_multiline_string(fb, Vector2(6, 34), DataDB.t("stash_empty_hint"), HORIZONTAL_ALIGNMENT_CENTER, r.size.x - 12, 7, 2, UITheme.C_DIM))
+	_bed.add_child(_empty)
 	var y := _bed.position.y + _bed.size.y + 4
 	_cap = Control.new()
 	_cap.position = Vector2(0, y)
@@ -167,6 +188,7 @@ func refresh() -> void:
 	for ch in _cap.get_children():
 		ch.queue_free()
 	var n := items.size()
+	_empty.visible = unlocked and n == 0
 	_cap.add_child(Fancy.bar(_cap.size.x, 11, float(n) / maxf(1.0, _slots.size()), Color("#C9A04E") if n < _slots.size() else Color("#D0503A"),
 		DataDB.t("stash_capacity", {"n": n, "m": _slots.size()}) if unlocked else DataDB.t("tab_locked")))
 	_bed.queue_redraw()
