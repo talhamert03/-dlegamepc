@@ -119,6 +119,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 119. Inventory (EN): "Stash · Blacksmith · sort · Sell · 49/60" ran past the right frame; the capacity pill now sits right-aligned on the hero-picker row, and the 6-wide equipment grid is centred over the 7-wide bag
 - [x] 120. World zone card DPS gauge: unmeasured party DPS showed a red "—" (read as "too weak") and never updated while the panel stayed open; now a neutral dash that turns into the live value (gauge redraws twice a second). "~18.4" read as "-18.4" at 2x: approx sign is now ≈
 - [x] 121. Statistics: gold / silver / bronze rank seals on the top three damage dealers, gold bar for the leader, new "This Session" row of three cards (kills, gold, XP earned, hover explains), Reset pinned to the bottom edge instead of floating mid-panel; panel 214 → 236 tall so a full party fits. TR "Tecrübe / saat" spacing matched to "Altın/saat"
+- [x] 122. Pets with nothing selected: the hint and sources were two loose paragraphs under the stalls; now the same well card as the pet detail (claw seal on an empty pedestal, hint, boss / tower source rows with their icons). Long source lines step down a font size instead of being cut (EN tower line)
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -334,3 +335,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — 16-panel sweep at 4K EN (no engine errors): inventory bottom row overflow fixed (#119).
 - 2026-10-10 — world panel EN/TR: DPS gauge live + neutral when unmeasured, ≈ instead of ~ (#120).
 - 2026-10-10 — statistics panel v2 (#121), TR/EN at 2x and 4x, empty and full party.
+- 2026-10-10 — pets empty-state card (#122), TR/EN at 2x and 4x.

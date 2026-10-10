@@ -205,10 +205,7 @@ func _stall(pid: String) -> Control:
 
 func _build_info() -> void:
 	if _sel == "":
-		var none := UITheme.para(DataDB.t("pets_hint"), _host.size.x, UITheme.C_DIM)
-		_info.add_child(none)
-		# where pets come from, so an empty collection is not a dead end
-		_info.add_child(UITheme.para("• " + DataDB.t("pet_src_act", {"n": "1-4"}) + "\n• " + DataDB.t("pet_src_tower"), _host.size.x, Color("#C9B08A")))
+		_info.add_child(_empty_card())
 		return
 	var pd := GameState.pet_def(_sel)
 	if pd.is_empty():
@@ -266,6 +263,48 @@ func _build_info() -> void:
 			GameState.set_active_pet("" if active else _sel), Vector2(w, 15))
 		b.tooltip_text = DataDB.t("pet_toggle_tip")
 		_info.add_child(b)
+
+
+## Nothing picked yet: the same well as the detail card, with an empty pedestal under a claw seal, what pets
+## do, and where they come from (boss / tower rows with their icons), so an empty collection is not a dead end.
+func _empty_card() -> Control:
+	var w := _host.size.x
+	var card := Control.new()
+	card.custom_minimum_size = Vector2(w, 74)
+	var claw := UITheme.icon("claw")
+	var srcs := [[UITheme.icon("skull"), DataDB.t("pet_src_act", {"n": "1-4"})], [UITheme.icon("tower"), DataDB.t("pet_src_tower")]]
+	card.draw.connect(func():
+		var ci := card.get_canvas_item()
+		var r := Rect2(Vector2.ZERO, card.size)
+		UISkin.well(ci, r)
+		for k in 4:
+			card.draw_circle(Vector2(24, 40), 22.0 - k * 5.0, Color(UISkin.BRONZE, 0.035))
+		card.draw_set_transform(Vector2(24, 58), 0.0, Vector2(1.0, 0.3))
+		card.draw_circle(Vector2.ZERO, 16.0, Color("#3A2E36"))
+		card.draw_circle(Vector2.ZERO, 11.0, Color("#2A2028"))
+		card.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		# bronze seal with the claw: "a companion goes here"
+		var c := Vector2(24, 42)
+		card.draw_circle(c, 12.5, UISkin.OUTLINE)
+		card.draw_circle(c, 11.6, UISkin.BRONZE_LO)
+		card.draw_circle(c, 10.4, Color("#2A1E16"))
+		card.draw_arc(c, 11.0, PI * 1.05, PI * 1.95, 16, Color(UISkin.BRONZE_HI, 0.55), 0.8, true)
+		if claw:
+			card.draw_texture_rect(claw, Rect2(c - Vector2(7, 7), Vector2(14, 14)), false, Color(0.85, 0.72, 0.5, 0.85))
+		var fb := UITheme.font_body
+		var x := 50.0
+		var tw := r.size.x - x - 6.0
+		card.draw_multiline_string(fb, Vector2(x, 12), DataDB.t("pets_hint"), HORIZONTAL_ALIGNMENT_LEFT, tw, 8, 3, Color("#E8D8B8"))
+		var y := 46.0
+		UISkin.line(ci, Vector2(x, y - 8), Vector2(r.size.x - 6, y - 8), Color(UISkin.BRONZE, 0.25), 0.6)
+		for e in srcs:
+			if e[0]:
+				card.draw_texture_rect(e[0], Rect2(x, y - 7, 8, 8), false)
+			# long source lines (EN tower) step down a size instead of being cut off
+			var fs := 7 if fb.get_string_size(str(e[1]), HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x <= tw - 11 else 6
+			card.draw_string(fb, Vector2(x + 11, y), str(e[1]), HORIZONTAL_ALIGNMENT_LEFT, tw - 11, fs, Color("#C9B08A"))
+			y += 11.0)
+	return card
 
 
 func _source_text(pd: Dictionary) -> String:
