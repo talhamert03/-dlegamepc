@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Envanter: çanta doluluk göstergesi kahraman seçicinin sağına taşındı; İngilizcede alt düğme satırı artık pencereden taşmıyor. Ekipman yuvaları ortalandı.", "en": "Inventory: the bag capacity gauge moved next to the hero picker, so the bottom button row no longer spills out of the window in English. Equipment slots are centred."},
     {"tr": "Savaş şeridinin sağ kenarından gelen düşmanlardaki hasar sayıları artık yarım kesilmiyor.", "en": "Damage numbers on enemies entering from the right edge of the strip are no longer cut in half."},
     {"tr": "Çantada seçili kahramanın giyemediği eşyalar artık küçük kırmızı \"yasak\" mührüyle işaretleniyor (önceki nokta gibi işaret yerine).", "en": "Items the selected hero cannot wear now carry a small red no-entry seal instead of a speck."},
     {"tr": "Ayarlar > Oyun: kısayollar artık tuş kapaklarıyla iki sütunlu, okunaklı bir liste.", "en": "Settings > Game: hotkeys are now a readable two-column list with key caps."},

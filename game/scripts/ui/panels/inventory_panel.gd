@@ -21,6 +21,7 @@ func build(c: Control) -> void:
 	v.size = c.size
 	c.add_child(v)
 	var eq := W.grid(6, 2)
+	eq.size_flags_horizontal = Control.SIZE_SHRINK_CENTER   # 6 equip slots over the 7-wide bag: centred, not hugging the left
 	v.add_child(eq)
 	for s in EQUIP_LAYOUT:
 		var slot := ItemSlot.new()
@@ -47,12 +48,16 @@ func build(c: Control) -> void:
 	var sell := UITheme.button(DataDB.t("btn_sell_junk"), "red", _sell_junk)
 	sell.tooltip_text = DataDB.t("tip_sell_junk")
 	bottom.add_child(sell)
+	# hero picker on the left, bag capacity on the right: the button row stays inside the frame in every language
+	var foot := W.hbox(2)
+	v.add_child(foot)
+	_sel_box = W.hbox(1)
+	_sel_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	foot.add_child(_sel_box)
 	_count = Fancy.capacity(44, 11)
 	_count.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_count.tooltip_text = DataDB.t("bag_capacity_tip")
-	bottom.add_child(_count)
-	_sel_box = W.hbox(1)
-	v.add_child(_sel_box)
+	foot.add_child(_count)
 	EventBus.inventory_changed.connect(refresh)
 	EventBus.equipment_changed.connect(func(_h): refresh())
 	refresh()
