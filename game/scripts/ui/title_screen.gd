@@ -363,8 +363,11 @@ func _draw_view() -> void:
 				var r: float = p["r"]
 				var pts := PackedVector2Array([pos + Vector2(cos(r), sin(r)) * s, pos + Vector2(cos(r + 2.3), sin(r + 2.3)) * s * 0.5,
 					pos + Vector2(cos(r + 3.6), sin(r + 3.6)) * s * 0.7])
+				# soft glow (several faint rings, no hard disc edge), the crystal, a bright facet edge
+				for g in 4:
+					_view.draw_circle(pos, s * (1.5 - g * 0.3), Color(0.55, 0.85, 1.0, 0.035 * (1.0 - k)))
 				_view.draw_colored_polygon(pts, Color(0.62, 0.9, 1.0, 1.0 - k))
-				_view.draw_circle(pos, s * 1.4, Color(0.6, 0.9, 1.0, 0.12 * (1.0 - k)))
+				_view.draw_line(pts[0], pts[1], Color(1, 1, 1, 0.8 * (1.0 - k)), 0.8, true)
 			"spark":
 				_view.draw_circle(pos, 1.6, Color(p["c"], 1.0 - k))
 	# letterbox + flash + fade
@@ -372,6 +375,13 @@ func _draw_view() -> void:
 		var bar := f.y * 0.115 * clampf(_it / 0.7, 0.0, 1.0) if _stage == "intro" else f.y * 0.115
 		_view.draw_rect(Rect2(0, 0, f.x, bar), Color(0, 0, 0, 0.92))
 		_view.draw_rect(Rect2(0, f.y - bar * 1.25, f.x, bar * 1.25), Color(0, 0, 0, 0.92))
+		# the bars feather into the picture instead of cutting it with a hard edge
+		var fh := bar * 0.45
+		var b0 := Color(0, 0, 0, 0.92)
+		var b1 := Color(0, 0, 0, 0.0)
+		_view.draw_polygon(PackedVector2Array([Vector2(0, bar), Vector2(f.x, bar), Vector2(f.x, bar + fh), Vector2(0, bar + fh)]), PackedColorArray([b0, b0, b1, b1]))
+		var by := f.y - bar * 1.25
+		_view.draw_polygon(PackedVector2Array([Vector2(0, by - fh), Vector2(f.x, by - fh), Vector2(f.x, by), Vector2(0, by)]), PackedColorArray([b1, b1, b0, b0]))
 		# subtitle plate: a soft gilded band behind the narration
 		var sp := Rect2(f.x * 0.06, f.y - bar * 1.25 + 2.0, f.x * 0.88, bar * 1.25 - 12.0)
 		UISkin.fill(ci, sp, 4, Color(0.08, 0.05, 0.03, 0.55), Color(0.02, 0.01, 0.01, 0.7))
