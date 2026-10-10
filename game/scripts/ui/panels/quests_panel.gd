@@ -20,6 +20,7 @@ func refresh() -> void:
 	if _body == null:
 		return
 	Quests.ensure_daily()
+	_sig = _progress_sig()
 	for ch in _body.get_children():
 		ch.queue_free()
 	var w := _body.custom_minimum_size.x
@@ -182,6 +183,21 @@ func _process(delta: float) -> void:
 			_tick_clock(ch)
 	if Quests.today() != str(GameState.flags.get("daily", {}).get("date", "")):
 		refresh()
+		return
+	# progress moves while the board is open (kills, chests, salvage): re-render when any count changes,
+	# so a finished quest shows its wax seal without reopening the window
+	if _progress_sig() != _sig:
+		refresh()
+
+
+var _sig := ""
+
+
+func _progress_sig() -> String:
+	var parts: PackedStringArray = []
+	for q in GameState.flags.get("daily", {}).get("list", []):
+		parts.append("%d%s" % [int(minf(Quests.progress(q), float(q["target"]))), "c" if q["claimed"] else ""])
+	return ",".join(parts)
 
 
 func _tick_clock(l: Label) -> void:

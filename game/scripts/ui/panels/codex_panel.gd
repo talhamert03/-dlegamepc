@@ -23,7 +23,33 @@ func build(c: Control) -> void:
 	_body = W.vbox(1)
 	_body.custom_minimum_size = Vector2(c.size.x - 6, 0)
 	sc.add_child(_body)
+	# stay current while open: a burst of unlocks (12 at once) is folded into one rebuild next frame
+	EventBus.achievement_unlocked.connect(func(_id):
+		if tab == 0 and not _pending:
+			_pending = true
+			_rebuild_later.call_deferred())
 	refresh()
+
+
+var _pending := false
+var _seen_beasts := -1
+var _poll_t := 0.0
+
+
+func _rebuild_later() -> void:
+	_pending = false
+	if is_instance_valid(self) and visible:
+		refresh()
+
+
+func _process(delta: float) -> void:
+	# the bestiary fills in as new monsters fall: re-render only when the discovered count changes
+	_poll_t += delta
+	if _poll_t < 1.0 or tab != 1:
+		return
+	_poll_t = 0.0
+	if GameState.codex.get("enemies", {}).size() != _seen_beasts:
+		refresh()
 
 
 ## Achievement: a medallion (gold star when earned, dark lock otherwise), the name and its condition.
@@ -106,6 +132,7 @@ func _note_card(text: String, w: float) -> Control:
 func refresh() -> void:
 	if _body == null:
 		return
+	_seen_beasts = GameState.codex.get("enemies", {}).size()
 	for ch in _body.get_children():
 		ch.queue_free()
 	var w := _body.custom_minimum_size.x
