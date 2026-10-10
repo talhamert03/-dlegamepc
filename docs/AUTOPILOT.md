@@ -106,6 +106,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 109. Boss HP gauge: recessed channel, glossy blood fill with a pale damage trail and a bright leading edge, gilded bezel with spiked brass end caps, name on a small title ribbon tucked behind the gauge, skull in a red seal
 - [x] 110. Level-up and loot beam effects were thin pale strokes: additive blend for both; level-up = 3-layer pillar, golden ground ring racing out, climbing four-point stars; loot beam = taller 3-layer column in the rarity colour that rises in, glowing ground pool with a slow ripple. New --vfxshot screenshot flag
 - [x] 111. Tavern rarity tags (flat grey/blue/gold pills with dark text) -> enamel badges in a gilded bezel with a gloss line and cream title-font text, SSR with a gold jewel
+- [x] 112. Guild upgrade buttons showed a bare '500': Fancy.small_button takes an optional currency icon (greyed with the button), guild prices show the gold coin
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 

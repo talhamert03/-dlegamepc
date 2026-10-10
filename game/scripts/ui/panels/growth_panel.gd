@@ -210,7 +210,7 @@ func _guild_card(nid: String, icon: String, w: float) -> Control:
 				AudioManager.play("smith_success", 0.05, 0.5)
 				refresh()
 			else:
-				EventBus.notify.emit(DataDB.t("not_enough_gold"), UITheme.C_RED), Vector2(54, 14))
+				EventBus.notify.emit(DataDB.t("not_enough_gold"), UITheme.C_RED), Vector2(54, 14), UITheme.icon("gold"))
 		b.disabled = not ok
 		b.tooltip_text = DataDB.t("guild_cost_tip", {"g": F.fmt_num(int(c["gold"])), "b": int(c["guild_badge"])})
 		b.position = Vector2(w - 58, 5)

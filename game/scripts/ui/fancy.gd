@@ -278,7 +278,7 @@ static func set_capacity(c: Control, used: int, mx: int) -> void:
 
 ## Small hand-drawn wooden button with an exact size (theme buttons have a minimum height).
 ## kind: brown | gold | red | green
-static func small_button(text: String, kind: String, cb: Callable, sz: Vector2) -> Button:
+static func small_button(text: String, kind: String, cb: Callable, sz: Vector2, icon: Texture2D = null) -> Button:
 	var b := Button.new()
 	b.flat = true
 	b.focus_mode = Control.FOCUS_NONE
@@ -299,7 +299,11 @@ static func small_button(text: String, kind: String, cb: Callable, sz: Vector2) 
 		var f := UITheme.font_body
 		var fs := 8 if r.size.y >= 13 else 7
 		var tw := f.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
-		var tp := Vector2((r.size.x - tw) / 2.0, r.position.y + r.size.y / 2.0 + fs * 0.36)
+		var iw := (fs + 2.0) if icon else 0.0
+		var tp := Vector2((r.size.x - tw - iw) / 2.0 + iw, r.position.y + r.size.y / 2.0 + fs * 0.36)
+		if icon:
+			# the currency in front of the price (greyed with the button when it is off)
+			b.draw_texture_rect(icon, Rect2(tp.x - iw, r.position.y + (r.size.y - fs) / 2.0, fs, fs), false, Color(1, 1, 1, 0.45) if b.disabled else Color.WHITE)
 		if tc.v > 0.5 and not b.disabled:
 			b.draw_string_outline(f, tp, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 2, Color(0, 0, 0, 0.5))
 		b.draw_string(f, tp, text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, tc))
