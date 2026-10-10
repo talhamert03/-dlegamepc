@@ -111,25 +111,54 @@ func _notice(i: int, q: Dictionary, w: float) -> Control:
 			b.draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 			return
 		var hov := b.is_hovered() and done
-		var wax := Color("#B3141E") if done else Color("#6A5E58")
-		if done:
-			var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 250.0)
-			b.draw_circle(ctr, 12.5, Color(1.0, 0.8, 0.4, 0.15 + 0.15 * pulse))
-		# irregular wax blob
+		if not done:
+			# not ready: a bronze-bezelled progress ring with the percentage, so the seal only appears when it can be claimed
+			var frac := clampf(p / maxf(1.0, target), 0.0, 1.0)
+			b.draw_circle(ctr + Vector2(0, 1), 11.0, Color(0, 0, 0, 0.3))
+			b.draw_circle(ctr, 11.0, UISkin.OUTLINE)
+			b.draw_circle(ctr, 10.3, UISkin.BRONZE.darkened(0.2))
+			b.draw_arc(ctr, 9.7, PI * 1.05, PI * 1.95, 16, Color(UISkin.BRONZE_HI, 0.8), 0.9, true)
+			b.draw_arc(ctr, 9.7, PI * 0.05, PI * 0.95, 16, Color(UISkin.BRONZE_LO, 0.9), 0.9, true)
+			b.draw_circle(ctr, 9.0, Color("#1E1610"))
+			b.draw_arc(ctr, 7.2, 0, TAU, 32, Color("#0C0806"), 2.2, true)
+			if frac > 0.0:
+				b.draw_arc(ctr, 7.2, -PI / 2.0, -PI / 2.0 + TAU * frac, maxi(4, int(32 * frac)), Color("#5FBF5A"), 2.2, true)
+			var pt := "%d%%" % int(floor(frac * 100.0))
+			var fb := UITheme.font_body
+			var pw := fb.get_string_size(pt, HORIZONTAL_ALIGNMENT_LEFT, -1, 6).x
+			b.draw_string(fb, ctr + Vector2(-pw / 2.0, 2.2), pt, HORIZONTAL_ALIGNMENT_LEFT, -1, 6, Color("#E8D8B8"))
+			return
+		var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 250.0)
+		b.draw_circle(ctr, 13.0, Color(1.0, 0.8, 0.4, 0.12 + 0.14 * pulse))
+		# ribbon tails under the seal, notched ends
+		for sd in [-1.0, 1.0]:
+			var tail := PackedVector2Array([ctr + Vector2(sd * 2.0, 4), ctr + Vector2(sd * 7.5, 4),
+				ctr + Vector2(sd * 10.5, 13), ctr + Vector2(sd * 7.8, 11.4), ctr + Vector2(sd * 6.0, 13.4)])
+			UISkin.poly(ci, tail, Color("#9A1C24"), Color("#5E0E14"))
+			b.draw_polyline(tail + PackedVector2Array([tail[0]]), Color(0, 0, 0, 0.5), 0.6, true)
+		# organic wax blob: smooth uneven rim instead of a gear-like polygon
 		var pts := PackedVector2Array()
-		for k in 14:
-			var a := TAU * k / 14.0
-			var rad := 10.5 + (1.2 if k % 2 == 0 else 0.0)
+		for k in 36:
+			var a := TAU * k / 36.0
+			var rad := 10.4 + 0.8 * sin(a * 5.0 + 1.3) + 0.4 * sin(a * 9.0 + 0.4)
 			pts.append(ctr + Vector2(cos(a), sin(a)) * rad)
-		UISkin.poly(ci, pts, wax.lightened(0.2 if hov else 0.05), wax.darkened(0.35))
-		UISkin.ring(ci, ctr, 7.5, Color(0, 0, 0, 0.35), 1.0)
+		var wax := Color("#C0182A")
+		b.draw_colored_polygon(_shift(pts, Vector2(0, 1.2)), Color(0, 0, 0, 0.35))
+		UISkin.poly(ci, pts, wax.lightened(0.22 if hov else 0.08), wax.darkened(0.4))
+		b.draw_polyline(pts + PackedVector2Array([pts[0]]), Color("#4A0810"), 0.7, true)
+		# pressed rim of the stamp and a soft highlight
+		b.draw_arc(ctr, 7.6, 0, TAU, 32, Color(0.35, 0.02, 0.06, 0.55), 1.1, true)
+		b.draw_arc(ctr + Vector2(-0.4, -0.4), 7.6, PI * 1.05, PI * 1.6, 10, Color(1, 0.7, 0.65, 0.35), 0.7, true)
+		b.draw_arc(ctr + Vector2(-2.5, -3.0), 3.2, PI * 1.0, PI * 1.5, 8, Color(1, 0.85, 0.8, 0.5), 0.9, true)
 		var t := DataDB.t("btn_claim")
-		# fit inside the 15 px seal (CLAIM is wider than AL)
+		# fit inside the stamp (CLAIM is wider than AL)
 		var fs := 8
-		while fs > 5 and f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > 15.0:
+		while fs > 5 and f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > 14.0:
 			fs -= 1
 		var tw := f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
-		b.draw_string(f, ctr + Vector2(-tw / 2.0, fs * 0.37), t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("#FFE7C8") if done else Color("#C8BEB8")))
+		var tp := ctr + Vector2(-tw / 2.0, fs * 0.37)
+		b.draw_string_outline(f, tp, t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, 2, Color("#4A0810"))
+		b.draw_string(f, tp, t, HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color("#FFE3A8")))
 	if done and not claimed:
 		var tm := Timer.new()
 		tm.wait_time = 0.05
@@ -161,3 +190,9 @@ func _tick_clock(l: Label) -> void:
 	var txt := ("%d sa %d dk" % [left / 3600, (left % 3600) / 60]) if DataDB.lang == "tr" else ("%dh %dm" % [left / 3600, (left % 3600) / 60])
 	l.text = "↺ " + DataDB.t("refresh_in", {"t": txt})
 
+
+static func _shift(pts: PackedVector2Array, d: Vector2) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for v in pts:
+		out.append(v + d)
+	return out
