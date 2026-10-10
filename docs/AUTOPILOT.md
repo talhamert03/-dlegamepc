@@ -143,6 +143,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 140. Reward plates (achievements, costumes, chests) sat on the footer of a window docked over the strip's right end (bag capacity, +10 button at 768p): the stack now rises above any window in its column, or moves to the strip's left end if that column is walled in
 - [x] 141. Bug: the Codex went stale while open: a toast said "Achievement unlocked ×12" while the open list still read 0/44 with First Blood locked. It now rebuilds on achievement_unlocked (a burst folds into one deferred rebuild) and the bestiary re-renders when the discovered-monster count changes
 - [x] 142. Bug: the daily quest board did not move while open (0/20 elites after kills); it now re-renders when any quest count or claim changes (checked each second), so a finished quest shows its wax seal without reopening
+- [x] 143. Growth: the Guild tab rebuilt its whole list on every gold change (several times a second in a fight: flicker, lost hovers); it now rebuilds only when a price crosses the purse and otherwise just repaints the purse. The Account ledger (kills, gold, play time) now keeps counting while open (2 s)
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -375,3 +376,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — chests tab / chest opening at 4x: open lid redrawn (#138).
 - 2026-10-10 — 1366x768 replay: panel glow spill on the desktop fixed (#139, alpha scan), toast placement vs docked windows (#140).
 - 2026-10-10 — open-panel staleness: codex (#141) and quests (#142) now live; verified 13/44 and 1/20 with the ring at 5%.
+- 2026-10-10 — open-panel audit: growth guild/account live without churn (#143); chests, stash, pets, runes, world, shop already hooked.

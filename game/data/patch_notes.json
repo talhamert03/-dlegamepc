@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Gelişim: Lonca listesi savaş sırasında sürekli yeniden çizilip titremiyor; Hesap sekmesindeki toplamlar pencere açıkken güncelleniyor.", "en": "Growth: the Guild list no longer flickers while gold comes in during a fight, and the Account totals keep updating while the window is open."},
     {"tr": "Hata düzeltmesi: Kodeks ve Görevler pencereleri açıkken güncellenmiyordu (başarım açılsa da 0/44, görev ilerlese de 0/20 görünüyordu). Artık anında yenileniyorlar.", "en": "Bug fix: the Codex and Quests windows did not update while open (0/44 after achievements unlocked, 0/20 while a quest progressed). They now refresh right away."},
     {"tr": "Pencerelerin üstünde masaüstüne taşan soluk ışık halesi kaldırıldı. Ödül bildirimleri artık açık bir pencerenin alt kısmını (çanta kapasitesi, düğmeler) örtmüyor; pencerenin üstüne çıkıyor.", "en": "Removed a faint glow that spilled above windows onto the desktop. Reward notices no longer cover the bottom of an open window (bag capacity, buttons); they rise above it."},
     {"tr": "Sandık açılışı: açılan kapak artık düz bir tahta değil; içten görülen kubbeli kapak, metal kenarı, kuşakları ve hazinenin ışığıyla aydınlanan iç yüzü.", "en": "Chest opening: the opened lid is no longer a flat board but the domed lid seen from inside, with its metal rim, straps and an inner face lit by the treasure."},

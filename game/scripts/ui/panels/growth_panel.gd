@@ -21,10 +21,41 @@ func build(c: Control) -> void:
 	_body.custom_minimum_size = Vector2(c.size.x - 6, 0)
 	sc.add_child(_body)
 	EventBus.hero_unlocked.connect(func(_h): refresh())
+	# gold changes on every kill: rebuilding the guild list each time made it flicker and reset hovers. Only
+	# rebuild when a price crosses the purse (a button turns on or off); otherwise just repaint the purse.
 	EventBus.gold_changed.connect(func(_g):
-		if tab == 1:
-			refresh())
+		if tab != 1:
+			return
+		if _afford_sig() != _sig:
+			refresh()
+		elif is_instance_valid(_purse):
+			_purse.queue_redraw())
 	refresh()
+
+
+var _sig := ""
+var _purse: Control
+var _acct_t := 0.0
+
+
+func _afford_sig() -> String:
+	var out := ""
+	for nid in GuildHall.NODES:
+		var lv := int(GameState.guild.get(nid, 0))
+		if lv >= int(GuildHall.NODES[nid]["max"]):
+			out += "m"
+			continue
+		var c := GuildHall.cost(nid, lv + 1)
+		out += "1" if GameState.gold >= int(c["gold"]) and GameState.has_material("guild_badge", int(c["guild_badge"])) else "0"
+	return out
+
+
+func _process(delta: float) -> void:
+	# the account ledger (kills, gold, play time) keeps counting while it is open
+	_acct_t += delta
+	if tab == 2 and _acct_t >= 2.0:
+		_acct_t = 0.0
+		refresh()
 
 
 func refresh() -> void:
@@ -147,7 +178,9 @@ func _guild() -> void:
 	var w := content.size.x - 8
 	var hint := UITheme.para(DataDB.t("guild_hint"), w, UITheme.C_DIM, 7)
 	_body.add_child(hint)
+	_sig = _afford_sig()
 	var purse := Control.new()
+	_purse = purse
 	purse.custom_minimum_size = Vector2(w, 16)
 	purse.draw.connect(func():
 		var ci := purse.get_canvas_item()
