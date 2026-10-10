@@ -133,6 +133,8 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 
 - [x] 131. Strip notices ("Yeni kostüm açıldı: ...", sold-for, etc.) were loose outlined text over the enemies; now smoked-glass plates with a bronze hairline and a diamond in the notice colour, sliding in from the right and fading out, slim (10 px, 7 pt) so three stacked ones cover little of the fight
 - [x] 132. Damage numbers on neighbouring enemies could land edge to edge and read as one number ("132" + "130" = "132130"): the overlap test now keeps a clear gap before stacking
+- [x] 133. Boss slam telegraph was a 3 px blinking line and a small sign, easy to miss: now a hazard band on the ground (diagonal moving stripes, bright edges and end posts) that charges from the centre outwards until the hit lands, a faint red haze rising from it, and a larger bobbing warning sign
+- [x] 134. Stacked damage numbers stepped 8 px even for 12 pt crits, so stacks overlapped ("389" over "631"): the step now follows the label height; side-by-side gap widened and sideways drift halved
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -359,3 +361,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — tavern owned-hero tiles (#130), 1 and 15 owned at 4x.
 - 2026-10-10 — end of shift checkpoint: 16-panel sweep at 2x TR (no engine errors), tests 39/39, Windows smoke == OK earlier in the shift; #118-#130 done.
 - 2026-10-10 17:03 shift — replay late zones (Akt 2-4) at 4x: notice plates (#131), number gap (#132).
+- 2026-10-10 — boss fights (Isolde, Morvath, tower 10) at 4x via --burst: telegraph band (#133), number stacking (#134).

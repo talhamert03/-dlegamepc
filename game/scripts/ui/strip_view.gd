@@ -657,12 +657,12 @@ func _spawn_number(text: String, pos: Vector2, color: Color, big := false) -> vo
 	var stack := 0
 	for n in _active_nums:
 		# overlap test uses both label widths, so long skill names stack instead of printing over each other
-		var reach := maxf(16.0, (float(n.get("w", 0.0)) + sz.x) * 0.5 + 7.0)   # a clear gap, so "132" "130" never read as "132130"
+		var reach := maxf(16.0, (float(n.get("w", 0.0)) + sz.x) * 0.5 + 10.0)   # a clear gap (pop scale and drift eat into it), so "132" "130" never read as "132130"
 		var window := 0.22 if sz.x < 30.0 else 0.6
 		if float(n["t"]) < window and absf(float(n["x0"]) - pos.x) < reach:
 			stack += 1
 	var base := pos - Vector2(sz.x / 2.0, sz.y * 0.6)
-	var dy := 8.0 * mini(stack, 3)
+	var dy := maxf(8.0, sz.y * 0.72) * mini(stack, 3)   # step by the label height: big crits are taller than 8 px
 	# keep the arc clear of the zone plaque / goal ribbon along the top edge; when stacking up would hit it,
 	# stack downwards instead so the labels never collapse onto one line
 	base.y = maxf(base.y, 21.0)
@@ -670,7 +670,7 @@ func _spawn_number(text: String, pos: Vector2, color: Color, big := false) -> vo
 	# enemies entering from the right edge: keep the whole number (plus its sideways drift) on the strip
 	base.x = clampf(base.x, 4.0, maxf(4.0, size.x - sz.x - 8.0))
 	l.position = base.round()
-	_active_nums.append({"l": l, "t": 0.0, "life": 0.95 if big else 0.75, "vx": _rng.randf_range(-10, 10), "y0": l.position.y, "big": big, "x0": pos.x, "w": sz.x})
+	_active_nums.append({"l": l, "t": 0.0, "life": 0.95 if big else 0.75, "vx": _rng.randf_range(-6, 6), "y0": l.position.y, "big": big, "x0": pos.x, "w": sz.x})
 
 
 func _update_numbers(delta: float) -> void:

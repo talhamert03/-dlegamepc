@@ -244,18 +244,41 @@ func _draw() -> void:
 				var yy := -fmod(t * 30.0 + i * 14.0, h2)
 				_px(Vector2(_rng.randf_range(-3, 3), yy), Color(color.lightened(0.6), fade))
 		"telegraph":
+			# danger zone for a boss slam: a hazard band on the ground that charges from the centre outwards
+			# until the hit lands, a red haze rising from it and a bobbing warning sign above
 			var blink := 0.35 + 0.35 * sin(t * 14.0)
 			var w := size
-			draw_rect(Rect2(-w, -2, w * 2, 3), Color(1.0, 0.2, 0.15, blink))
-			draw_rect(Rect2(-w, -2, w * 2, 1), Color(1.0, 0.6, 0.5, blink))
+			var chg := clampf(t / maxf(0.01, life), 0.0, 1.0)
+			var band := Rect2(-w, -3.5, w * 2, 6)
+			for j in 6:
+				var hh := 4.0 + j * 5.0
+				draw_rect(Rect2(-w, -3.5 - hh, w * 2, 5), Color(1.0, 0.15, 0.1, 0.05 * (1.0 - j / 6.0) * (0.6 + chg)))
+			draw_rect(band, Color(0.9, 0.08, 0.05, 0.16 + 0.10 * blink))
+			# hazard stripes, clipped to the band by construction
+			var x := -w + fposmod(t * 12.0, 6.0) - 6.0
+			while x < w:
+				var x0 := maxf(-w, x)
+				var x1 := minf(w, x + 3.0)
+				if x1 > x0:
+					draw_colored_polygon(PackedVector2Array([Vector2(x0, band.end.y), Vector2(x1, band.end.y),
+						Vector2(minf(w, x1 + 3.0), band.position.y), Vector2(minf(w, x0 + 3.0), band.position.y)]), Color(1.0, 0.25, 0.15, 0.22))
+				x += 6.0
+			# charge: fills from the middle out as the slam approaches
+			var cw := w * chg
+			draw_rect(Rect2(-cw, band.position.y, cw * 2, band.size.y), Color(1.0, 0.3, 0.15, 0.22 + 0.2 * chg))
+			draw_line(Vector2(-w, band.position.y), Vector2(w, band.position.y), Color(1.0, 0.45, 0.35, 0.5 + blink * 0.5), 0.8)
+			draw_line(Vector2(-w, band.end.y), Vector2(w, band.end.y), Color(1.0, 0.25, 0.2, 0.6 + blink * 0.4), 1.0)
+			for sd in [-1.0, 1.0]:
+				draw_line(Vector2(sd * w, band.position.y - 3), Vector2(sd * w, band.end.y), Color(1.0, 0.5, 0.4, 0.8), 1.0)
 			# warning sign over the danger zone
-			var wy := -60.0
-			var tri := PackedVector2Array([Vector2(0, wy - 6), Vector2(5.5, wy + 3.5), Vector2(-5.5, wy + 3.5)])
-			draw_colored_polygon(tri, Color(0.1, 0.02, 0.02, 0.85))
-			var tri2 := PackedVector2Array([Vector2(0, wy - 4.6), Vector2(4.3, wy + 2.7), Vector2(-4.3, wy + 2.7)])
+			var wy := -60.0 + sin(t * 5.0) * 1.2
+			var sc := 1.35
+			var tri := PackedVector2Array([Vector2(0, wy - 6 * sc), Vector2(5.5 * sc, wy + 3.5 * sc), Vector2(-5.5 * sc, wy + 3.5 * sc)])
+			draw_colored_polygon(tri, Color(0.1, 0.02, 0.02, 0.9))
+			var tri2 := PackedVector2Array([Vector2(0, wy - 4.6 * sc), Vector2(4.3 * sc, wy + 2.7 * sc), Vector2(-4.3 * sc, wy + 2.7 * sc)])
 			draw_colored_polygon(tri2, Color(1.0, 0.35, 0.2, 0.55 + blink))
-			draw_line(Vector2(0, wy - 2.2), Vector2(0, wy + 0.4), Color(1, 1, 0.9, 0.95), 1.0, true)
-			draw_circle(Vector2(0, wy + 1.7), 0.55, Color(1, 1, 0.9, 0.95))
+			draw_line(Vector2(0, wy - 2.6 * sc), Vector2(0, wy + 0.3 * sc), Color(1, 1, 0.9, 0.95), 1.2, true)
+			draw_circle(Vector2(0, wy + 1.7 * sc), 0.7, Color(1, 1, 0.9, 0.95))
 		"notes":
 			for p in _parts:
 				var tt2: float = max(0.0, t - float(p[2]))
