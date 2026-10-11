@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Kalkanlı kahramanların can barı artık mavi bir çerçeve ve cam katmanla belirgin.", "en": "Shielded heroes now show a blue frame and a glassy layer on their health bar."},
     {"tr": "Hazine Goblini belirdiğinde artık altın bir afiş çıkıyor; yakalandığında ödül plakası gösteriliyor.", "en": "A Treasure Goblin's appearance now gets a gold banner, and catching it shows a reward plate."},
     {"tr": "Kahramanların nihai yetenek şarjı artık can barının altında ayrı bir göstergede; dolunca parlıyor.", "en": "Heroes' ultimate charge now has its own gauge under the health bar and glows when ready."},
     {"tr": "Savaşta düşen kahramanın üstünde artık ne zaman dirileceğini gösteren küçük bir sayaç halkası var.", "en": "A hero who falls in battle now shows a small countdown ring until they get back up."},

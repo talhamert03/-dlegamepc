@@ -527,12 +527,15 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 		if a == "--ultshot":
 			# gauges at different fills (one full) for the ultimate gauge review
 			get_tree().create_timer(maxf(0.5, secs - 1.5)).timeout.connect(func():
-				var fills := [0.25, 0.6, 1.0, 0.9, 0.4]
+				var fills := [0.25, 0.6, 0.95, 0.9, 0.4]
 				var i := 0
 				for u in BattleSim.heroes:
 					if u.etype == "hero":
 						u.ult_id = "ult"
 						u.ult_charge = 100.0 * fills[i % fills.size()]
+						if i % 2 == 0:
+							u.shield = u.max_hp * 0.4
+							u.shield_t = 30.0
 						i += 1)
 		if a == "--herodown":
 			# two heroes fall a few seconds before the shot, for the revive countdown ring

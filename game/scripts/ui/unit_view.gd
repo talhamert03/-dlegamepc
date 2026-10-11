@@ -637,8 +637,11 @@ func _draw() -> void:
 	draw_rect(Rect2(x0, y, round(w * frac), 2), col)
 	draw_rect(Rect2(x0, y, round(w * frac), 0.6), col.lightened(0.5))
 	if unit.shield > 0:
+		# a barrier: pale blue glass laid over the health, and the case edge turns blue while it holds
 		var sf: float = clamp(unit.shield / max(1.0, unit.max_hp), 0.0, 1.0)
-		draw_rect(Rect2(x0, y - 1, round(w * sf), 1), Color("#8FD8FF"))
+		draw_rect(Rect2(x0, y, maxf(1.0, w * sf), 2), Color(0.62, 0.86, 1.0, 0.6))
+		draw_rect(Rect2(x0, y, maxf(1.0, w * sf), 0.7), Color(0.9, 0.97, 1.0, 0.9))
+		UISkin.stroke(ci, case.grow(0.4), 1.8, Color("#8FD8FF", 0.85), 0.7)
 	if unit.is_hero_side() and unit.ult_id != "":
 		# ultimate gauge: its own slim groove under the health case, gold while charging, pulsing when ready
 		var g := Rect2(x0 - 0.5, y + 4.2, w + 1, 1.8)
