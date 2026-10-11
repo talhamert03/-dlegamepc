@@ -430,3 +430,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-11 — shift checkpoint: #160-#163 (revive countdown, ultimate gauge, treasure goblin moment, shield readout); tests 39/39, Windows smoke OK.
 - 2026-10-11 17:03 shift — replay: set tooltip piece count + active bonuses (#164), TR/EN 4x.
 - 2026-10-11 — zone background cross-fade (#165) checked via --burst.
+- 2026-10-11 — shift checkpoint: #164-#165 (set tooltip piece count / active bonuses, zone background cross-fade); tests 39/39, Windows smoke OK.
