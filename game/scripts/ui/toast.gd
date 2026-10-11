@@ -133,6 +133,9 @@ func _draw() -> void:
 	var fb := UITheme.font_body
 	var tx := 33.0
 	var tw := r.size.x - tx - 6.0
-	draw_string(f, Vector2(tx, 14 if _sub != "" else 19), _title, HORIZONTAL_ALIGNMENT_LEFT, tw, 8, Color("#FFE2A0"))
+	# long lines step down a size before they would be cut at the plate edge
+	var tfs := 8 if f.get_string_size(_title, HORIZONTAL_ALIGNMENT_LEFT, -1, 8).x <= tw else 7
+	var sfs := 7 if fb.get_string_size(_sub, HORIZONTAL_ALIGNMENT_LEFT, -1, 7).x <= tw else 6
+	draw_string(f, Vector2(tx, 14 if _sub != "" else 19), _title, HORIZONTAL_ALIGNMENT_LEFT, tw, tfs, Color("#FFE2A0"))
 	if _sub != "":
-		draw_string(fb, Vector2(tx, 25), _sub, HORIZONTAL_ALIGNMENT_LEFT, tw, 7, Color("#CFC6B4"))
+		draw_string(fb, Vector2(tx, 25), _sub, HORIZONTAL_ALIGNMENT_LEFT, tw, sfs, Color("#CFC6B4"))

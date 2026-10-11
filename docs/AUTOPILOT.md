@@ -156,6 +156,10 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 153. Right-click item menu was a plain text list; each action now carries its icon in a small dark well (equip shield, stash chest, sell gold, salvage hammer, lock padlock) in a shared column, the text aligned after it (ContextMenu takes an optional icon per row; bag and inventory menus use it)
 - [x] 154. World maps were 240x150 flat pixel blobs (the cheapest-looking art left in the game). New tools/art/build_maps_hd.py paints 1440x900 atlases from the same height field and seeds (zone nodes unchanged): depth-graded water with foam and wave strokes, organic land tint and soft relief (no diagonal banding from the sine field), inked coastline, tapered river, shaded trees / snow peaks / dunes / obsidian spires kept off the route, the whole route as a dashed ink line, compass rose in the emptiest corner, aged paper rim. Stored as JPEG q90 (~290 KB each, 4 maps 1.2 MB vs 7 MB PNG), mipmapped, drawn with a linear filter. The party marker steps beside a waypoint that sits under the act ribbon
 
+## Replay backlog 8 (shift 2026-10-11 09:03)
+
+- [x] 155. Class advance (lv 30 and the lv 70 specialisation) was one line in the notice feed; it is now a moment: gold banner in the strip ("Kael artık Paladin Adayı!"), a big level-up light and burst on that hero, and a reward plate with the hero's portrait and the gain (+10 stat · +3 skill points). Reward plates now step their title / detail down a size before cutting them. New --advanceshot flag
+
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
 Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and EN, before/after kept in the log.
@@ -398,3 +402,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — 16-panel sweep 4K TR clean; tooltips TR/EN fine; context menu icons (#153).
 - 2026-10-10 — HD world maps (#154) checked all 4 acts at 2x/4x; tests 39/39, Windows smoke OK with the JPEG maps.
 - 2026-10-10 — 17:03 shift checkpoint: #131-#154 done (strip notices, boss telegraph/enrage/backlight, revive pose bug, open-panel staleness, mini mode clip + tab, panel glow spill, HD world maps...). Shop tabs, ending, tooltips, 16-panel 4K TR sweep clean; tests 39/39; Windows smoke OK.
+- 2026-10-11 09:03 shift — replay: strip HUD, SSR recruit reveal, formation, away panel, goal ribbon widths all fine; class advance moment (#155).

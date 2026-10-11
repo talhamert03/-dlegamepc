@@ -711,6 +711,12 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 		if a == "--selldlg" and WindowManager.is_open("hero"):
 			WindowManager.panels["hero"]._sell_dialog()
 			await get_tree().create_timer(0.3).timeout
+		if a == "--advanceshot" and WindowManager.is_open("stats"):
+			var h: HeroState = GameState.heroes.get(W.current_hero())
+			if h:
+				h.advancement = 0
+				WindowManager.panels["stats"]._advance(h)
+			await get_tree().create_timer(0.9).timeout
 		if a == "--lootfilterdlg" and WindowManager.is_open("hero"):
 			WindowManager.panels["hero"]._loot_filter_dialog()
 			await get_tree().create_timer(0.3).timeout

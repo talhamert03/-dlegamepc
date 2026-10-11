@@ -2394,5 +2394,9 @@
  "stash_empty_hint": {
   "tr": "Çantadan eşya sürükle ya da Tümü Depoya'ya bas",
   "en": "Drag items here from the bag, or press All to Stash"
+ },
+ "advance_gain": {
+  "tr": "+10 özellik · +3 yetenek puanı",
+  "en": "+10 stat · +3 skill points"
  }
 }

@@ -866,8 +866,7 @@ func _advance(h: HeroState) -> void:
 		h.advancement = 1
 		h.stat_points += 10
 		h.skill_points += 3
-		AudioManager.play("levelup", 0.0, 0.8)
-		EventBus.notify.emit(DataDB.t("advanced", {"name": h.display_name(), "cls": h.class_title()}), UITheme.C_GOLD)
+		_celebrate(h)
 		_changed(h)
 
 
@@ -878,9 +877,17 @@ func _set_spec(h: HeroState, sp: String) -> void:
 	h.spec = sp
 	h.stat_points += 10
 	h.skill_points += 3
-	AudioManager.play("levelup", 0.0, 0.8)
-	EventBus.notify.emit(DataDB.t("advanced", {"name": h.display_name(), "cls": h.class_title()}), UITheme.C_GOLD)
+	_celebrate(h)
 	_changed(h)
+
+
+## A class advance is a milestone: a gold banner and a rising light on the hero in the strip, and a reward
+## plate with the hero's portrait and what was gained (instead of one line in the notice feed).
+func _celebrate(h: HeroState) -> void:
+	AudioManager.play("levelup", 0.0, 0.8)
+	var line := DataDB.t("advanced", {"name": h.display_name(), "cls": h.class_title()})
+	EventBus.vfx_requested.emit("advance", Vector2.ZERO, {"hid": h.id, "text": line})
+	Toast.show_reward(SpriteLib.hero_icon(h.id), line, DataDB.t("advance_gain"), "", "levelup")
 
 
 func _changed(h: HeroState) -> void:
