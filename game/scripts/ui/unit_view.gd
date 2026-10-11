@@ -655,13 +655,16 @@ func _draw() -> void:
 		if unit.has_status(s) and shown < 4:
 			var tx := UITheme.hd("st_" + s)
 			if tx:
-				draw_texture_rect(tx, Rect2(px, y - 6.5, 5, 5), false)
-			px += 5.5
+				# a dark rim behind each disc so it reads over bright skies and snow
+				draw_circle(Vector2(px + 3.25, y - 4.5), 3.6, Color(0, 0, 0, 0.55))
+				draw_texture_rect(tx, Rect2(px, y - 7.75, 6.5, 6.5), false)
+			px += 7.0
 			shown += 1
 	if not unit.buffs.is_empty() and shown < 4:
 		var bt := UITheme.hd("st_buff")
 		if bt:
-			draw_texture_rect(bt, Rect2(px, y - 6.5, 5, 5), false)
+			draw_circle(Vector2(px + 3.25, y - 4.5), 3.6, Color(0, 0, 0, 0.55))
+			draw_texture_rect(bt, Rect2(px, y - 7.75, 6.5, 6.5), false)
 
 
 ## Where the blow of this unit's attack lands (logical, strip space): in front of the weapon.
