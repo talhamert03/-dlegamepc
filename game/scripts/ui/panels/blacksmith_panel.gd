@@ -338,8 +338,8 @@ func _do_combine() -> void:
 		EventBus.notify.emit(DataDB.t(str(res.get("error", ""))), UITheme.C_RED)
 	elif res["success"]:
 		var it: Dictionary = res["item"]
-		EventBus.notify.emit(DataDB.t("smith_combine_ok", {"name": ItemUtil.display_name(it)}), ItemUtil.rarity_color(it["rarity"]))
-		AudioManager.play("smith_success")
+		# the new item is a reward: its icon on a plate above the strip, rarity named underneath
+		Toast.show_reward(SpriteLib.item_icon(it), DataDB.t("smith_combine_ok", {"name": ItemUtil.display_name(it)}), ItemUtil.rarity_name(str(it["rarity"])), "", "smith_success")
 	else:
 		EventBus.notify.emit(DataDB.t("smith_combine_fail"), UITheme.C_RED)
 		AudioManager.play("smith_fail")
@@ -870,8 +870,7 @@ func _build_craft() -> void:
 		if it.is_empty():
 			EventBus.notify.emit(DataDB.t("not_enough_mats"), UITheme.C_RED)
 		else:
-			EventBus.notify.emit(DataDB.t("smith_crafted", {"name": ItemUtil.display_name(it)}), ItemUtil.rarity_color(it["rarity"]))
-			AudioManager.play("smith_success")
+			Toast.show_reward(SpriteLib.item_icon(it), DataDB.t("smith_crafted", {"name": ItemUtil.display_name(it)}), ItemUtil.rarity_name(str(it["rarity"])), "", "smith_success")
 		refresh(), w))
 
 

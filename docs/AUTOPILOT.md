@@ -160,6 +160,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 
 - [x] 155. Class advance (lv 30 and the lv 70 specialisation) was one line in the notice feed; it is now a moment: gold banner in the strip ("Kael artık Paladin Adayı!"), a big level-up light and burst on that hero, and a reward plate with the hero's portrait and the gain (+10 stat · +3 skill points). Reward plates now step their title / detail down a size before cutting them. New --advanceshot flag
 - [x] 156. Other milestones that were one line in the notice feed now use the reward plate: a hero joining (portrait + class), a new pet (its HD art + where to find it), a new difficulty unlocked (skull + where to switch it, plus a gold banner in the strip)
+- [x] 157. Blacksmith: a successful combine or a craft (a brand-new item) was a notice-feed line; it now shows the item's icon on a reward plate with its rarity underneath (single success sound, the duplicate play removed)
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -405,3 +406,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-10 — 17:03 shift checkpoint: #131-#154 done (strip notices, boss telegraph/enrage/backlight, revive pose bug, open-panel staleness, mini mode clip + tab, panel glow spill, HD world maps...). Shop tabs, ending, tooltips, 16-panel 4K TR sweep clean; tests 39/39; Windows smoke OK.
 - 2026-10-11 09:03 shift — replay: strip HUD, SSR recruit reveal, formation, away panel, goal ribbon widths all fine; class advance moment (#155).
 - 2026-10-11 — milestone plates for hero join / new pet / difficulty unlock (#156).
+- 2026-10-11 — smith combine / craft results as item plates (#157).

@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Demirci: birleştirme ve üretimle elde edilen yeni eşya artık simgesiyle bir ödül plakasında gösteriliyor.", "en": "Blacksmith: items made by combining or crafting are now shown with their icon on a reward plate."},
     {"tr": "Yeni kahraman katılması, yeni evcil dost ve yeni zorluk açılması artık resimli ödül plakalarıyla duyuruluyor.", "en": "A hero joining, a new pet and a newly unlocked difficulty are now announced with illustrated reward plates."},
     {"tr": "Sınıf yükseltme artık bir kutlama anı: savaş şeridinde altın afiş, kahramanın üstünde yükselen ışık ve kahraman portreli ödül plakası.", "en": "Class advancement is now a celebration: a gold banner in the battle strip, a rising light on the hero and a reward plate with the hero's portrait."},
     {"tr": "Dünya haritaları baştan çizildi: yüksek çözünürlüklü, el çizimi atlas görünümü; derinliği değişen sular, kıyı köpüğü, gölgeli araziler, ağaçlar, karlı zirveler, kum tepeleri, pusula gülü ve eskimiş kâğıt kenarları.", "en": "World maps redrawn: high-resolution hand-drawn atlas look with depth-shaded water, shore foam, relief, trees, snowy peaks, dunes, a compass rose and aged paper edges."},
