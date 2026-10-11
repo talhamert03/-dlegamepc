@@ -548,6 +548,9 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 							u.shield = u.max_hp * 0.4
 							u.shield_t = 30.0
 						i += 1)
+		if a == "--zonefade":
+			# switch to another act's zone shortly before the burst, for the background cross-fade
+			get_tree().create_timer(maxf(0.5, secs - 0.4)).timeout.connect(func(): BattleSim.go_to_zone(12))
 		if a == "--herodown":
 			# two heroes fall a few seconds before the shot, for the revive countdown ring
 			get_tree().create_timer(maxf(0.5, secs - 3.0)).timeout.connect(func():

@@ -174,6 +174,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 ## Replay backlog 10 (shift 2026-10-11 17:03)
 
 - [x] 164. Set item tooltip listed the (2)/(4)/(6) bonuses all alike, with no idea how many pieces were worn; it now shows the worn count in the set title ("Imperial Guard (2/6)") for the compared hero, and earned bonuses bright with a filled dot, the rest dim with an empty one. New --settip flag
+- [x] 165. Changing zone cut the HD panorama instantly; the old panorama now stays on top as a copy and dissolves over the new one (0.9 s sine), under the zone banner. New --zonefade flag
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -428,3 +429,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-11 — shield readout on HP bars (#163).
 - 2026-10-11 — shift checkpoint: #160-#163 (revive countdown, ultimate gauge, treasure goblin moment, shield readout); tests 39/39, Windows smoke OK.
 - 2026-10-11 17:03 shift — replay: set tooltip piece count + active bonuses (#164), TR/EN 4x.
+- 2026-10-11 — zone background cross-fade (#165) checked via --burst.

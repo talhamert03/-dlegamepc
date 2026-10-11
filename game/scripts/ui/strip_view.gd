@@ -405,6 +405,21 @@ func _set_theme(theme_name: String) -> void:
 	var fpath := "res://assets/backgrounds/%s/fore.png" % theme_name
 	fore.texture = load(fpath) if ResourceLoader.exists(fpath) else null
 	var hpath := "res://assets/hd/bg/%s.jpg" % theme_name
+	# cross-fade: the old panorama stays on top as a copy and dissolves over the new one, instead of a cut
+	if hd_bg.visible and hd_bg.texture != null and is_inside_tree():
+		var old := Sprite2D.new()
+		old.centered = false
+		old.region_enabled = true
+		old.texture = hd_bg.texture
+		old.region_rect = hd_bg.region_rect
+		old.texture_repeat = hd_bg.texture_repeat
+		old.texture_filter = hd_bg.texture_filter
+		old.scale = hd_bg.scale
+		bg_root.add_child(old)
+		bg_root.move_child(old, hd_bg.get_index() + 1)
+		var tw := old.create_tween()
+		tw.tween_property(old, "modulate:a", 0.0, 0.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		tw.tween_callback(old.queue_free)
 	hd_bg.texture = load(hpath) if ResourceLoader.exists(hpath) else null
 	hd_bg.visible = hd_bg.texture != null
 	for l in LAYERS:
