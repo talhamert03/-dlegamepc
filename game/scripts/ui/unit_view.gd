@@ -640,8 +640,16 @@ func _draw() -> void:
 		var sf: float = clamp(unit.shield / max(1.0, unit.max_hp), 0.0, 1.0)
 		draw_rect(Rect2(x0, y - 1, round(w * sf), 1), Color("#8FD8FF"))
 	if unit.is_hero_side() and unit.ult_id != "":
-		var uc := Color("#F7C948") if unit.ult_charge < 100 else Color(1, 1, 1, 0.6 + 0.4 * sin(_clock * 10.0))
-		draw_rect(Rect2(x0, y + 2, round(w * unit.ult_charge / 100.0), 1), uc)
+		# ultimate gauge: its own slim groove under the health case, gold while charging, pulsing when ready
+		var g := Rect2(x0 - 0.5, y + 4.2, w + 1, 1.8)
+		draw_rect(g, Color(0.05, 0.03, 0.02, 0.9))
+		var uk := clampf(unit.ult_charge / 100.0, 0.0, 1.0)
+		if uk < 1.0:
+			draw_rect(Rect2(g.position + Vector2(0.4, 0.4), Vector2((g.size.x - 0.8) * uk, g.size.y - 0.8)), Color("#E8B23A"))
+		else:
+			var p := 0.5 + 0.5 * sin(_clock * 8.0)
+			draw_rect(Rect2(g.position - Vector2(0.6, 0.6), g.size + Vector2(1.2, 1.2)), Color(1.0, 0.85, 0.4, 0.25 + 0.3 * p))
+			draw_rect(Rect2(g.position + Vector2(0.4, 0.4), g.size - Vector2(0.8, 0.8)), Color(1.0, 0.92, 0.6).lerp(Color.WHITE, p))
 	# name plate for elites and mini-bosses: element disc + name on a dark plate over the bar
 	if _plate != "":
 		var f := UITheme.font_body

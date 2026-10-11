@@ -524,6 +524,16 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			pc.add_child(tl)
 			pc.position = Vector2(40, 40)
 			add_child(pc)
+		if a == "--ultshot":
+			# gauges at different fills (one full) for the ultimate gauge review
+			get_tree().create_timer(maxf(0.5, secs - 1.5)).timeout.connect(func():
+				var fills := [0.25, 0.6, 1.0, 0.9, 0.4]
+				var i := 0
+				for u in BattleSim.heroes:
+					if u.etype == "hero":
+						u.ult_id = "ult"
+						u.ult_charge = 100.0 * fills[i % fills.size()]
+						i += 1)
 		if a == "--herodown":
 			# two heroes fall a few seconds before the shot, for the revive countdown ring
 			get_tree().create_timer(maxf(0.5, secs - 3.0)).timeout.connect(func():
