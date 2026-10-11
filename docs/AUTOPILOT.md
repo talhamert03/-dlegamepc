@@ -422,3 +422,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-11 — ultimate gauge (#161) at 4x.
 - 2026-10-11 — treasure goblin banner + catch plate (#162).
 - 2026-10-11 — shield readout on HP bars (#163).
+- 2026-10-11 — shift checkpoint: #160-#163 (revive countdown, ultimate gauge, treasure goblin moment, shield readout); tests 39/39, Windows smoke OK.
