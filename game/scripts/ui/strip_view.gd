@@ -714,7 +714,9 @@ func _on_damage(src, tgt, amount: float, crit: bool, element: String, kind: Stri
 		txt += "!"
 	if kind == "block":
 		_spawn_number(DataDB.t("fx_block"), pos + Vector2(0, -6), Color("#8FB4FF"))
-	_spawn_number(txt, pos, Color("#FFD84A") if crit and not tgt.is_hero_side() else col, crit)
+	# a tick that rounds to nothing (heavily resisted dots) would print a confusing "0"
+	if amount >= 0.5 or kind == "block":
+		_spawn_number(txt, pos, Color("#FFD84A") if crit and not tgt.is_hero_side() else col, crit)
 	if kind != "dot":
 		AudioManager.play("crit" if crit else _hit_sound(src, element), 0.08, 0.55 if not crit else 0.75)
 		var tv: UnitView = views.get(tgt.uid)

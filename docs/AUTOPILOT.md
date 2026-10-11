@@ -162,6 +162,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 156. Other milestones that were one line in the notice feed now use the reward plate: a hero joining (portrait + class), a new pet (its HD art + where to find it), a new difficulty unlocked (skull + where to switch it, plus a gold banner in the strip)
 - [x] 157. Blacksmith: a successful combine or a craft (a brand-new item) was a notice-feed line; it now shows the item's icon on a reward plate with its rarity underneath (single success sound, the duplicate play removed)
 - [x] 158. Status discs over enemy health bars were 5 px (10 px at 2x) and vanished over bright skies / snow; now 6.5 px with a dark rim behind each disc, spaced 7 px
+- [x] 159. Damage ticks that round to nothing (heavily resisted dots) printed a "0" over the target; such ticks no longer spawn a number
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
