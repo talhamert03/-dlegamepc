@@ -410,3 +410,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-11 — milestone plates for hero join / new pet / difficulty unlock (#156).
 - 2026-10-11 — smith combine / craft results as item plates (#157).
 - 2026-10-11 — status icon readability (#158) via --statusshot at 2x/4x; Windows smoke OK.
+- 2026-10-11 — shift checkpoint: #155-#159 (class advance moment, milestone/item reward plates, status discs, no zero ticks); 16-panel sweep 2x EN clean, tests 39/39, Windows smoke OK.
