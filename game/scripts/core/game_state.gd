@@ -132,7 +132,9 @@ func unlock_hero(hid: String, notify := true) -> HeroState:
 	heroes[hid] = h
 	if notify:
 		EventBus.hero_unlocked.emit(hid)
-		EventBus.notify.emit(DataDB.t("hero_joined", {"name": h.display_name()}), Color("#7FE07A"))
+		# a new companion is a reward: portrait plate above the strip, not a line in the notice feed
+		Toast.show_reward(SpriteLib.hero_icon(hid), DataDB.t("hero_joined", {"name": h.display_name()}),
+			h.class_title(), "", "levelup")
 	return h
 
 
@@ -274,7 +276,7 @@ func grant_pet(pid: String) -> bool:
 	EventBus.pet_changed.emit(pid)
 	var nm := DataDB.tx(pet_def(pid).get("name", {}))
 	if lv == 0:
-		EventBus.notify.emit(DataDB.t("pet_new", {"name": nm}), Color("#FFB0D8"))
+		Toast.show_reward(SpriteLib.hd_sprite("pets", pid), DataDB.t("pet_new", {"name": nm}), DataDB.t("pet_new_sub"), "", "chest_drop")
 	else:
 		EventBus.notify.emit(DataDB.t("pet_up", {"name": nm, "n": lv + 1}), Color("#FFB0D8"))
 	return true

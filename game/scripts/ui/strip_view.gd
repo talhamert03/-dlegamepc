@@ -804,6 +804,9 @@ func _on_vfx(vfx: String, pos: Vector2, data: Dictionary) -> void:
 		return
 	var col := Color.WHITE
 	match vfx:
+		"milestone":
+			_show_banner(str(data.get("text", "")), Color("#F7C948"))
+			return
 		"advance":
 			_show_banner(str(data.get("text", "")), Color("#F7C948"))
 			for u in BattleSim.heroes:

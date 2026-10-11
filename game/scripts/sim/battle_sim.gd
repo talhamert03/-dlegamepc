@@ -1343,7 +1343,10 @@ func _boss_killed() -> void:
 			EventBus.zone_unlocked.emit(DataDB.zone(zone_idx + 1)["id"])
 	elif difficulty < 2 and int(maxz[difficulty + 1]) < 0:
 		maxz[difficulty + 1] = 0
-		EventBus.notify.emit(DataDB.t("difficulty_unlocked", {"name": DataDB.tx(DataDB.difficulties[difficulty + 1]["name"])}), Color("#FF8A1F"))
+		var dn := DataDB.tx(DataDB.difficulties[difficulty + 1]["name"])
+		if not quiet:
+			EventBus.vfx_requested.emit("milestone", Vector2.ZERO, {"text": DataDB.t("difficulty_unlocked", {"name": dn})})
+			Toast.show_reward(UITheme.icon("skull"), DataDB.t("difficulty_unlocked", {"name": dn}), DataDB.t("difficulty_unlocked_sub"), "", "levelup")
 	if first:
 		_first_clear_rewards()
 	var btype: String = str(DataDB.enemy_def(str(zone().get("boss", ""))).get("type", "boss"))

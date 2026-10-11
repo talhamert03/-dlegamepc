@@ -2398,5 +2398,13 @@
  "advance_gain": {
   "tr": "+10 özellik · +3 yetenek puanı",
   "en": "+10 stat · +3 skill points"
+ },
+ "pet_new_sub": {
+  "tr": "Evcil Dostlar penceresinde seni bekliyor",
+  "en": "Waiting for you in the Pets window"
+ },
+ "difficulty_unlocked_sub": {
+  "tr": "Dünya penceresinden zorluğu değiştir",
+  "en": "Switch difficulty in the World window"
  }
 }
