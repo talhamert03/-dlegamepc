@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Hazine Goblini belirdiğinde artık altın bir afiş çıkıyor; yakalandığında ödül plakası gösteriliyor.", "en": "A Treasure Goblin's appearance now gets a gold banner, and catching it shows a reward plate."},
     {"tr": "Kahramanların nihai yetenek şarjı artık can barının altında ayrı bir göstergede; dolunca parlıyor.", "en": "Heroes' ultimate charge now has its own gauge under the health bar and glows when ready."},
     {"tr": "Savaşta düşen kahramanın üstünde artık ne zaman dirileceğini gösteren küçük bir sayaç halkası var.", "en": "A hero who falls in battle now shows a small countdown ring until they get back up."},
     {"tr": "Düşman can barlarının üstündeki durum simgeleri (yanma, zehir, sersemleme...) büyütüldü ve koyu bir zemin aldı; parlak arka planlarda kaybolmuyor.", "en": "Status icons above enemy health bars (burn, poison, stun...) are larger and sit on a dark rim, so they no longer vanish on bright backgrounds."},

@@ -458,7 +458,7 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			if not BattleSim.enemies.any(func(e): return e.tags.has("treasure")):
 				var g := BattleSim._spawn_enemy("treasure_goblin", maxi(1, GameState.max_hero_level()), "elite", BattleSim.SPAWN_X + 4.0)
 				g.mech_t = 1.6
-				EventBus.notify.emit(DataDB.t("treasure_appears"), Color("#FFD24A")), CONNECT_ONE_SHOT)
+				EventBus.vfx_requested.emit("milestone", Vector2.ZERO, {"text": DataDB.t("treasure_appears")}), CONNECT_ONE_SHOT)
 	if cmd.has("--boss"):
 		if cmd.has("--bossfails"):
 			BattleSim.boss_fail_count = 4

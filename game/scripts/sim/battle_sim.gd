@@ -420,7 +420,7 @@ func _maybe_treasure(lv: int) -> void:
 	g.mech_t = 1.4
 	if not quiet:
 		AudioManager.play("coins", 0.05, 0.7)
-		EventBus.notify.emit(DataDB.t("treasure_appears"), Color("#FFD24A"))
+		EventBus.vfx_requested.emit("milestone", Vector2.ZERO, {"text": DataDB.t("treasure_appears")})
 
 
 func _treasure_move(e: Combatant, dt: float, stop_x: float) -> void:
@@ -1274,7 +1274,7 @@ func _on_enemy_killed(e: Combatant) -> void:
 		if not quiet:
 			EventBus.chest_dropped.emit("gold", Vector2(e.x, GROUND_Y))
 			AudioManager.play("loot_legendary", 0.0, 0.7)
-			EventBus.notify.emit(DataDB.t("treasure_caught", {"g": F.fmt_num(g + bonus)}), Color("#FFD24A"))
+			Toast.show_reward(UITheme.icon("gold"), DataDB.t("treasure_caught_title"), DataDB.t("treasure_caught", {"g": F.fmt_num(g + bonus)}), "", "coins")
 	var ck := Chests.roll(GameState.rng, e.etype, iff / n)
 	if ck != "":
 		Chests.add(ck, e.level)

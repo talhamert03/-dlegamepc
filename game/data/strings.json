@@ -2336,8 +2336,8 @@
   "en": "The Treasure Goblin got away..."
  },
  "treasure_caught": {
-  "tr": "Hazine Goblini yakalandı! +{g} altın ve Altın Sandık",
-  "en": "Treasure Goblin caught! +{g} gold and a Golden Chest"
+  "tr": "+{g} altın ve Altın Sandık",
+  "en": "+{g} gold and a Golden Chest"
  },
  "goal_fill_party": {
   "tr": "Hedef: Partideki boş yuvayı doldur",
@@ -2406,5 +2406,9 @@
  "difficulty_unlocked_sub": {
   "tr": "Dünya penceresinden zorluğu değiştir",
   "en": "Switch difficulty in the World window"
+ },
+ "treasure_caught_title": {
+  "tr": "Hazine Goblini yakalandı!",
+  "en": "Treasure Goblin caught!"
  }
 }

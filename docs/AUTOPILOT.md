@@ -168,6 +168,7 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 
 - [x] 160. A hero who falls mid-fight lay there for 15 s with nothing saying they would come back; a small ring over the body now fills up to the revive with the seconds left (drawn above the body on its own node). New --herodown flag
 - [x] 161. The ultimate charge was a 1 px gold line inside the health case (hard to see, unclear when ready); it is now its own slim dark groove under the case, gold while charging and pulsing white-gold with a glow when ready. New --ultshot flag
+- [x] 162. Treasure Goblin: its appearance (a rare, timed chase) was a line in the notice feed; it now gets the gold strip banner, and catching it shows a gold reward plate ("Treasure Goblin caught!" / +gold and a Golden Chest). The --treasure flag uses the same path
 
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
@@ -418,3 +419,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-11 — shift checkpoint: #155-#159 (class advance moment, milestone/item reward plates, status discs, no zero ticks); 16-panel sweep 2x EN clean, tests 39/39, Windows smoke OK.
 - 2026-10-11 13:03 shift — replay: fallen-hero revive countdown (#160) at 4x.
 - 2026-10-11 — ultimate gauge (#161) at 4x.
+- 2026-10-11 — treasure goblin banner + catch plate (#162).
