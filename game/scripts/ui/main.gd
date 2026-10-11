@@ -506,6 +506,17 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			get_tree().create_timer(maxf(0.5, secs - 1.0)).timeout.connect(func():
 				var it := LootSystem.generate(GameState.rng, 34, "legendary", "warrior")
 				WindowManager.show_item_tooltip(it, GameState.party[0] if GameState.party.size() > 0 else ""))
+		if a == "--settip":
+			# a set item with two pieces worn, for the set tooltip review
+			get_tree().create_timer(maxf(0.5, secs - 1.0)).timeout.connect(func():
+				var it := LootSystem.generate(GameState.rng, 34, "set", "warrior")
+				var h: HeroState = GameState.heroes.get(GameState.party[0])
+				if h and str(it.get("set", "")) != "":
+					for sl in ["helm", "boots"]:
+						var other := LootSystem.generate(GameState.rng, 34, "set", "warrior")
+						other["set"] = it["set"]
+						h.equipment[sl] = other
+				WindowManager.show_item_tooltip(it, GameState.party[0]))
 		if a == "--vfxshot":
 			# level-up and a legendary loot beam side by side, for the effect review
 			get_tree().create_timer(maxf(0.5, secs - 0.45)).timeout.connect(func():

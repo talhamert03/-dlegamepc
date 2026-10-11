@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Set eşyası ipucu artık kaç parçanın giyildiğini (ör. 2/6) gösteriyor; kazanılan set bonusları parlak, henüz açılmayanlar soluk.", "en": "Set item tooltips now show how many pieces are worn (e.g. 2/6); earned set bonuses are bright, the rest are dimmed."},
     {"tr": "Kalkanlı kahramanların can barı artık mavi bir çerçeve ve cam katmanla belirgin.", "en": "Shielded heroes now show a blue frame and a glassy layer on their health bar."},
     {"tr": "Hazine Goblini belirdiğinde artık altın bir afiş çıkıyor; yakalandığında ödül plakası gösteriliyor.", "en": "A Treasure Goblin's appearance now gets a gold banner, and catching it shows a reward plate."},
     {"tr": "Kahramanların nihai yetenek şarjı artık can barının altında ayrı bir göstergede; dolunca parlıyor.", "en": "Heroes' ultimate charge now has its own gauge under the health bar and glows when ready."},

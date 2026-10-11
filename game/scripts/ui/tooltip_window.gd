@@ -161,13 +161,26 @@ func show_item(item: Dictionary, compare_hero := "") -> void:
 					_line(desc, Color("#FFC08A"))
 	if item.get("set", "") != "":
 		var sd: Dictionary = DataDB.items["sets"].get(item["set"], {})
+		# how many pieces the hero being compared wears (this item counts if it is one of them), so the
+		# bonuses read as earned (bright, ✓) or still ahead (dim)
+		var worn := 0
+		var total: int = sd.get("pieces", []).size()
+		if compare_hero != "" and GameState.heroes.has(compare_hero):
+			var hh: HeroState = GameState.heroes[compare_hero]
+			for sl in hh.equipment:
+				if str(hh.equipment[sl].get("set", "")) == str(item["set"]):
+					worn += 1
 		_rule(Color("#3DDC84"))
-		_line(DataDB.tx(sd.get("name", {})), Color("#3DDC84"))
+		var set_head := DataDB.tx(sd.get("name", {}))
+		if compare_hero != "" and total > 0:
+			set_head += "  (%d/%d)" % [worn, total]
+		_line(set_head, Color("#3DDC84"))
 		for need in sd.get("bonus", {}):
 			var parts: Array = []
 			for k in sd["bonus"][need]:
 				parts.append(ItemUtil.affix_label(k, float(sd["bonus"][need][k])))
-			_line("(%s) %s" % [need, ", ".join(parts)], Color("#7FD8A0"))
+			var on := compare_hero != "" and worn >= int(need)
+			_line(("● " if on else "○ ") + "(%s) %s" % [need, ", ".join(parts)], Color("#7FFFA8") if on else Color(0.5, 0.62, 0.55))
 	if item.get("mythic", false):
 		_line(DataDB.t("mythic_power"), Color("#FF6A8A"))
 	_rule()
