@@ -164,6 +164,10 @@ Rule for every item: before/after screenshots at 2x AND 4x, TR and EN, nothing c
 - [x] 158. Status discs over enemy health bars were 5 px (10 px at 2x) and vanished over bright skies / snow; now 6.5 px with a dark rim behind each disc, spaced 7 px
 - [x] 159. Damage ticks that round to nothing (heavily resisted dots) printed a "0" over the target; such ticks no longer spawn a number
 
+## Replay backlog 9 (shift 2026-10-11 13:03)
+
+- [x] 160. A hero who falls mid-fight lay there for 15 s with nothing saying they would come back; a small ring over the body now fills up to the revive with the seconds left (drawn above the body on its own node). New --herodown flag
+
 ## Visual overhaul backlog (owner request, 2026-10-07) — work top to bottom
 
 Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and EN, before/after kept in the log.
@@ -411,3 +415,4 @@ Every item ends with screenshots at 2x and 4x (and 5x where it matters), TR and 
 - 2026-10-11 — smith combine / craft results as item plates (#157).
 - 2026-10-11 — status icon readability (#158) via --statusshot at 2x/4x; Windows smoke OK.
 - 2026-10-11 — shift checkpoint: #155-#159 (class advance moment, milestone/item reward plates, status discs, no zero ticks); 16-panel sweep 2x EN clean, tests 39/39, Windows smoke OK.
+- 2026-10-11 13:03 shift — replay: fallen-hero revive countdown (#160) at 4x.

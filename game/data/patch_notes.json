@@ -8,6 +8,7 @@
     "en": "Polish and Animations"
    },
    "items": [
+    {"tr": "Savaşta düşen kahramanın üstünde artık ne zaman dirileceğini gösteren küçük bir sayaç halkası var.", "en": "A hero who falls in battle now shows a small countdown ring until they get back up."},
     {"tr": "Düşman can barlarının üstündeki durum simgeleri (yanma, zehir, sersemleme...) büyütüldü ve koyu bir zemin aldı; parlak arka planlarda kaybolmuyor.", "en": "Status icons above enemy health bars (burn, poison, stun...) are larger and sit on a dark rim, so they no longer vanish on bright backgrounds."},
     {"tr": "Demirci: birleştirme ve üretimle elde edilen yeni eşya artık simgesiyle bir ödül plakasında gösteriliyor.", "en": "Blacksmith: items made by combining or crafting are now shown with their icon on a reward plate."},
     {"tr": "Yeni kahraman katılması, yeni evcil dost ve yeni zorluk açılması artık resimli ödül plakalarıyla duyuruluyor.", "en": "A hero joining, a new pet and a newly unlocked difficulty are now announced with illustrated reward plates."},

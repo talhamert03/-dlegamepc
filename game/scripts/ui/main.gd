@@ -524,6 +524,15 @@ func _screenshot_mode(cmd: PackedStringArray) -> void:
 			pc.add_child(tl)
 			pc.position = Vector2(40, 40)
 			add_child(pc)
+		if a == "--herodown":
+			# two heroes fall a few seconds before the shot, for the revive countdown ring
+			get_tree().create_timer(maxf(0.5, secs - 3.0)).timeout.connect(func():
+				var n := 0
+				for u in BattleSim.heroes:
+					if u.etype == "hero" and n < 2:
+						u.hp = 1.0
+						BattleSim._die(u, null)
+						n += 1)
 		if a == "--statusshot":
 			# long-lived statuses on the first enemies so the status icons over the bars can be checked
 			get_tree().create_timer(maxf(0.5, secs - 1.0)).timeout.connect(func():

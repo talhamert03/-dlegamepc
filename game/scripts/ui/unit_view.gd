@@ -44,6 +44,8 @@ var sheet_id := ""
 var mat: ShaderMaterial
 ## bosses get a soft pale haze behind them, so dark bosses (Morvath) separate from dark arenas
 var _backlight := false
+var _rev_max := 0.0   # revive time at the moment of falling, for the countdown ring
+var _rev_node: Node2D = null
 var body: Node2D                      # pivot at the feet: flip, squash & stretch, lunge
 var spr: Sprite2D
 var mode := ""                        # "sheet" | "hd" | ""
@@ -363,6 +365,7 @@ func _process(delta: float) -> void:
 			modulate.a = 0.75
 	else:
 		_death_t = 0.0
+		_rev_max = 0.0
 		modulate.a = 1.0
 		mat.set_shader_parameter("dissolve", 0.0)
 	queue_redraw()
@@ -600,6 +603,16 @@ func _draw() -> void:
 	if mode == "":
 		draw_circle(Vector2(0, -7), 7.0, _fallback_color.darkened(0.5))
 		draw_circle(Vector2(0, -7), 6.0, _fallback_color)
+	var falling: bool = not unit.alive and unit.is_hero_side() and unit.etype == "hero" and unit.revive_t > 0.0
+	if falling and _rev_node == null:
+		_rev_node = Node2D.new()
+		_rev_node.z_index = 2
+		_rev_node.draw.connect(_draw_revive)
+		add_child(_rev_node)
+	if _rev_node:
+		_rev_node.visible = falling
+		if falling:
+			_rev_node.queue_redraw()
 	if not unit.alive or not _show_bar or BattleSim.phase == "town":   # no fight in town: no health bars
 		return
 	var w := float(_bar_w)
@@ -665,6 +678,24 @@ func _draw() -> void:
 		if bt:
 			draw_circle(Vector2(px + 3.25, y - 4.5), 3.6, Color(0, 0, 0, 0.55))
 			draw_texture_rect(bt, Rect2(px, y - 7.75, 6.5, 6.5), false)
+
+
+## A fallen hero: a small ring over the body fills back up to the revive, with the seconds left, so a
+## corpse reads as "back in 9 s" and not as lost.
+func _draw_revive() -> void:
+	if unit.revive_t > _rev_max or _rev_max <= 0.0:
+		_rev_max = unit.revive_t
+	var n := _rev_node
+	var k := clampf(1.0 - unit.revive_t / maxf(0.1, _rev_max), 0.0, 1.0)
+	var c := Vector2(0, -20)
+	n.draw_circle(c, 6.4, Color(0.02, 0.04, 0.02, 0.85))
+	n.draw_arc(c, 5.0, 0, TAU, 28, Color(0.3, 0.38, 0.3, 0.9), 1.7, true)
+	if k > 0.0:
+		n.draw_arc(c, 5.0, -PI / 2.0, -PI / 2.0 + TAU * k, maxi(4, int(28 * k)), Color("#8CFF7A"), 1.7, true)
+	var f := UITheme.font_body
+	var t := str(int(ceil(unit.revive_t)))
+	var tw := f.get_string_size(t, HORIZONTAL_ALIGNMENT_LEFT, -1, 6).x
+	n.draw_string(f, c + Vector2(-tw / 2.0, 2.2), t, HORIZONTAL_ALIGNMENT_LEFT, -1, 6, Color("#F0FFE8"))
 
 
 ## Where the blow of this unit's attack lands (logical, strip space): in front of the weapon.
